@@ -1,0 +1,240 @@
+// Alur kerja gabungan. Satu panggilan menggantikan rantai tiga sampai lima
+// panggilan, dan bagian yang tidak saling bergantung dijalankan paralel.
+// Tujuannya bukan sekadar cepat: keluarannya sudah lengkap untuk dikutip,
+// dan membawa peringatan atas jebakan yang sudah terbukti nyata.
+
+import { cariPeraturan, detailPeraturan, teksPeraturan } from "./bpk.js";
+import { cariDalamPdf } from "./pdf.js";
+import { cariPutusanMK } from "./mk.js";
+import { cariFatwaDsn, teksFatwaDsn } from "./dsn.js";
+import { telusuriPutusan } from "./ma.js";
+import { cariPerma } from "./perma.js";
+
+/** "UU 27/2022", "UU No. 27 Tahun 2022", "27/2022" menjadi {keywords, nomor, tahun}. */
+function uraikanRujukan(teks = "") {
+  const m = String(teks).match(
+    /^\s*([A-Za-z][A-Za-z .-]*?)?\s*(?:no\.?|nomor)?\s*(\d+)\s*[/ ]\s*(?:tahun\s*)?(\d{4})\s*$/i
+  );
+  if (!m) return { keywords: teks };
+  return { keywords: (m[1] || "").trim(), nomor: m[2], tahun: m[3] };
+}
+
+const LEWAT_JDIH_MA = /^(perma|sema|kma)\b/i;
+
+/**
+ * Satu panggilan untuk menjawab "apa bunyi pasal X, dan apakah masih berlaku".
+ * Menggabungkan pencarian, status, relasi antarperaturan, kutipan verbatim dari
+ * PDF resmi, dan silang-periksa putusan MK.
+ */
+export async function periksaPasal({
+  peraturan,
+  pasal = "",
+  nomor = "",
+  tahun = "",
+  jenis = "",
+  sertakan_putusan_mk = true,
+  maks_karakter = 4000,
+}) {
+  const r = uraikanRujukan(peraturan);
+  const kueri = {
+    keywords: r.keywords || peraturan,
+    nomor: nomor || r.nomor || "",
+    tahun: tahun || r.tahun || "",
+    jenis,
+    limit: 8,
+  };
+
+  if (LEWAT_JDIH_MA.test(String(peraturan))) {
+    const p = await cariPerma({ query: peraturan, limit: 5 });
+    const pilih = p.hasil[0];
+    if (!pilih) {
+      return { ditemukan: false, catatan: "Produk hukum MA tidak ditemukan di JDIH MA.", pencarian: p };
+    }
+    const teks =
+      pasal && pilih.url_pdf
+        ? await teksPeraturan({ url_pdf: pilih.url_pdf, cari: pasal, maks_karakter })
+        : null;
+    return {
+      sumber: "JDIH Mahkamah Agung RI",
+      peraturan: pilih,
+      pasal: teks
+        ? {
+            dicari: pasal,
+            total_halaman: teks.total_halaman,
+            halaman: teks.halaman_dikembalikan,
+            kutipan: teks.isi,
+          }
+        : null,
+      peringatan: [
+        "Produk hukum MA tidak terindeks di JDIH BPK, sehingga status dan relasi antarperaturannya tidak tersedia seperti pada peraturan pusat.",
+      ],
+    };
+  }
+
+  const cari = await cariPeraturan(kueri);
+  const pilih =
+    cari.hasil.find(
+      (h) => (!kueri.nomor || h.nomor === kueri.nomor) && (!kueri.tahun || h.tahun === kueri.tahun)
+    ) || cari.hasil[0];
+  if (!pilih) return { ditemukan: false, catatan: "Peraturan tidak ditemukan.", pencarian: cari };
+
+  const detail = await detailPeraturan(pilih.id);
+  const pdf = detail.berkas.find((f) => f.kategori === "Peraturan");
+
+  const [teks, mk] = await Promise.all([
+    pasal && pdf ? teksPeraturan({ url_pdf: pdf.url, cari: pasal, maks_karakter }) : Promise.resolve(null),
+    sertakan_putusan_mk
+      ? cariPutusanMK({
+          query: (detail.metadata["Judul"] || pilih.judul || "").slice(0, 60),
+          jenis: "PUU",
+          limit: 6,
+          // Silang-periksa bersifat tambahan: diberi anggaran waktu ketat agar
+          // situs MK yang sedang lambat tidak menahan seluruh jawaban.
+          opsi_jaringan: { retries: 0, timeout: 8000 },
+        }).catch((e) => ({ galat: e.message }))
+      : Promise.resolve(null),
+  ]);
+
+  const peringatan = [];
+  if (/tidak berlaku|dicabut/i.test(detail.status || "")) {
+    peringatan.push(
+      `STATUS: ${detail.status}. Jangan dipakai sebagai hukum yang berlaku tanpa menyatakan hal ini.`
+    );
+  }
+  if (detail.relasi_status["Diubah dengan"]) {
+    peringatan.push(
+      "Peraturan ini pernah diubah. Teks yang berlaku adalah teks asli sebagaimana diubah; sebut rantainya memakai juncto."
+    );
+  }
+  if (!detail.uji_materi?.length) {
+    peringatan.push(
+      "Daftar uji materi di JDIH BPK tidak lengkap. Hasil putusan_mk_terkait di bawah adalah silang-periksanya, bukan daftar resmi."
+    );
+  }
+  if (mk?.galat) {
+    peringatan.push(
+      "Silang-periksa ke situs MK tidak berhasil dijalankan, jadi daftar putusan_mk_terkait kosong bukan karena " +
+        "tidak ada perkara. Ulangi nanti atau panggil cari_putusan_mk tersendiri. Sebab: " +
+        String(mk.galat).slice(0, 90)
+    );
+  }
+  if (pasal && teks && !teks.halaman_dikembalikan?.length) {
+    peringatan.push(`Kata kunci "${pasal}" tidak ditemukan dalam PDF. Periksa penulisannya atau telusuri manual.`);
+  }
+
+  return {
+    sumber: "JDIH BPK RI",
+    peraturan: {
+      id: pilih.id,
+      judul: detail.judul,
+      jenis: pilih.jenis,
+      nomor: pilih.nomor,
+      tahun: pilih.tahun,
+      status: detail.status,
+      tanggal_penetapan: detail.metadata["Tanggal Penetapan"] || null,
+      tanggal_pengundangan: detail.metadata["Tanggal Pengundangan"] || null,
+      tanggal_berlaku: detail.metadata["Tanggal Berlaku"] || null,
+      sumber_lembaran: detail.metadata["Sumber"] || null,
+      url: detail.url,
+      url_pdf: pdf?.url || null,
+    },
+    relasi_status: detail.relasi_status,
+    uji_materi_menurut_bpk: detail.uji_materi,
+    pasal: teks
+      ? { dicari: pasal, total_halaman: teks.total_halaman, halaman: teks.halaman_dikembalikan, kutipan: teks.isi }
+      : null,
+    putusan_mk_terkait: mk?.hasil ?? null,
+    abstrak: detail.abstrak,
+    catatan: detail.catatan,
+    peringatan,
+  };
+}
+
+/**
+ * Sisir sekumpulan putusan MK sekaligus: untuk tiap nomor perkara, ambil
+ * metadata dan hitung kemunculan kata kunci di seluruh salinan putusannya.
+ * Menjawab "apakah pasal X pernah diuji" tanpa membuka satu per satu.
+ */
+export async function sisirPutusanMK({ nomor_perkara = [], kata_kunci = [], kueri = "", limit_kueri = 20 }) {
+  const daftar = [...nomor_perkara];
+
+  if (kueri) {
+    const r = await cariPutusanMK({ query: kueri, jenis: "PUU", limit: limit_kueri });
+    for (const h of r.hasil) if (!daftar.includes(h.nomor_perkara)) daftar.push(h.nomor_perkara);
+  }
+
+  const hasil = await Promise.all(
+    daftar.slice(0, 25).map(async (no) => {
+      try {
+        const r = await cariPutusanMK({ query: no, limit: 30 });
+        const h = r.hasil.find((x) => x.nomor_perkara === no);
+        if (!h) return { nomor_perkara: no, catatan: "tidak ada hasil yang nomornya persis sama" };
+
+        const url = (h.berkas_pendukung || h.berkas_putusan || "").split(" ").join("%20");
+        const dasar = {
+          nomor_perkara: h.nomor_perkara,
+          status: h.status,
+          tanggal: h.tanggal,
+          pokok_perkara: h.pokok_perkara,
+          amar_putusan: h.amar_putusan,
+          berkas: url || null,
+        };
+        if (!url || !kata_kunci.length) return dasar;
+
+        const temuan = {};
+        for (const kk of kata_kunci) {
+          const c = await cariDalamPdf({ url_pdf: url, kata_kunci: kk, maks_temuan: 3, konteks: 200 });
+          temuan[kk] = { jumlah: c.jumlah_temuan, contoh: c.temuan.slice(0, 2) };
+          dasar.total_halaman = c.total_halaman;
+        }
+        return { ...dasar, kata_kunci: temuan };
+      } catch (e) {
+        return { nomor_perkara: no, catatan: "gagal: " + String(e.message).slice(0, 80) };
+      }
+    })
+  );
+
+  return {
+    sumber: "Mahkamah Konstitusi RI",
+    jumlah_perkara: hasil.length,
+    kata_kunci_dicari: kata_kunci,
+    catatan:
+      "Angka nol pada sebuah kata kunci berarti frasa itu tidak muncul dalam salinan putusan, bukan bahwa isunya " +
+      "tidak dibahas dengan rumusan lain. Baca cuplikannya sebelum menyimpulkan.",
+    hasil,
+  };
+}
+
+/**
+ * Titik masuk analisis dua perspektif untuk satu akad syariah: fatwa DSN-MUI,
+ * peraturan positif terkait, dan praktik peradilan agama, dalam satu panggilan.
+ */
+export async function risetAkadSyariah({ akad, sertakan_teks_fatwa = true, maks_karakter = 3500 }) {
+  const [fatwa, peraturan, putusan] = await Promise.all([
+    cariFatwaDsn({ query: akad, limit: 8 }).catch((e) => ({ galat: e.message })),
+    cariPeraturan({ keywords: akad + " syariah", limit: 6 }).catch((e) => ({ galat: e.message })),
+    telusuriPutusan({ kategori: "ekonomi-syari-ah-1", limit: 5 }).catch((e) => ({ galat: e.message })),
+  ]);
+
+  let ketentuan = null;
+  const utama = fatwa?.hasil?.[0];
+  if (sertakan_teks_fatwa && utama?.nomor) {
+    ketentuan = await teksFatwaDsn({ rujukan: utama.nomor, cari: "Menetapkan", maks_karakter }).catch((e) => ({
+      galat: e.message,
+    }));
+  }
+
+  return {
+    akad,
+    fatwa_dsn: fatwa,
+    fatwa_utama: utama || null,
+    ketentuan_fatwa_utama: ketentuan,
+    peraturan_positif_terkait: peraturan,
+    contoh_putusan_ekonomi_syariah: putusan,
+    peringatan: [
+      "Fatwa DSN-MUI bukan peraturan perundang-undangan. Daya ikat hukumnya lahir setelah dipositifkan lewat POJK, PBI, atau KHES; periksa instrumen itu sebelum menyimpulkan.",
+      "Teks Arab pada PDF fatwa keluar rusak karena font non-Unicode. Ambil dalil Arab lewat ambil_ayat atau ambil_hadis.",
+      "Daftar putusan di atas adalah yang terbaru pada kategori ekonomi syariah, bukan hasil pencarian kata kunci; pencarian teks-bebas di Direktori Putusan MA terkunci CAPTCHA.",
+    ],
+  };
+}

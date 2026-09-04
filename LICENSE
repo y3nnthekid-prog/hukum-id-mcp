@@ -1,0 +1,56 @@
+MIT License
+
+Copyright (c) 2026 hukum-id-mcp contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+CATATAN PENTING TENTANG ISI DOKUMEN HUKUM
+
+Lisensi MIT di atas berlaku untuk KODE perangkat lunak ini saja.
+
+Isi dokumen hukum yang diambil melalui perangkat ini — peraturan perundang-
+undangan, putusan pengadilan, fatwa, dan naskah lain — bukan milik proyek ini.
+Hak dan tanggung jawab atasnya tetap berada pada lembaga penerbitnya masing-
+masing: Badan Pemeriksa Keuangan, Mahkamah Agung, Mahkamah Konstitusi, Dewan
+Syariah Nasional MUI, dan lembaga lain yang bersangkutan.
+
+Perangkat ini mengambil dokumen atas permintaan pengguna, satu permintaan pada
+satu waktu, untuk keperluan rujukan. Ia tidak melakukan penjelajahan massal dan
+tidak dimaksudkan untuk pelatihan model. Lihat bagian Etika Pemakaian pada
+README sebelum menyebarkannya kembali.
+
+Perangkat ini bukan nasihat hukum dan bukan fatwa.
+
+---
+
+IMPORTANT NOTE ON LEGAL DOCUMENT CONTENT
+
+The MIT license above covers the SOFTWARE CODE only.
+
+Legal documents retrieved through this tool — statutes, court decisions,
+fatwas, and other texts — are not owned by this project. Rights and
+responsibility remain with the issuing institutions.
+
+This tool retrieves documents on user request, one request at a time, for
+reference use. It does not perform bulk crawling and is not intended for model
+training. See the Ethics of Use section in the README before redistributing.
+
+This tool is not legal advice and not a fatwa.
