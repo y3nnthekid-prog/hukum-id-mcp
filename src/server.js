@@ -28,6 +28,7 @@ import { cariTurats, penulisTurats } from "./turats.js";
 import { konsolidasiPeraturan } from "./konsolidasi.js";
 import { verifikasiKutipan } from "./verifikasi.js";
 import { hukumPadaTanggal, daftarPeriksaAkad } from "./analisis.js";
+import { periksaKesehatanSumber } from "./kesehatan.js";
 
 const server = new McpServer({ name: "hukum-id", version: "1.0.0" });
 
@@ -592,6 +593,26 @@ server.registerTool(
     },
   },
   bungkus(daftarPeriksaAkad)
+);
+
+server.registerTool(
+  "periksa_kesehatan_sumber",
+  {
+    title: "Periksa kesehatan seluruh sumber",
+    description:
+      "Tembak tiap sumber dengan kueri yang hasilnya sudah diketahui, lalu laporkan statusnya: sehat, lambat, " +
+      "membatasi, gagal_jaringan, atau berubah_struktur. " +
+      "Status berubah_struktur adalah yang paling penting: permintaan berhasil tetapi hasilnya kosong atau tidak " +
+      "sesuai bentuk yang diharapkan — gejala situs sumber berganti tampilan sehingga parser perlu diperbarui. " +
+      "Kerusakan semacam itu senyap: tool tetap menjawab dan jawabannya terdengar wajar. " +
+      "Secara bawaan cache dilewati, karena pemeriksaan yang dilayani cache akan selalu tampak sehat. " +
+      "Jalankan ini bila hasil riset terasa janggal, atau secara berkala sebelum memakai alat untuk pekerjaan penting.",
+    inputSchema: {
+      pakai_cache: z.boolean().optional().describe("Default false; nyalakan hanya untuk memeriksa isi cache"),
+      hanya_penting: z.boolean().optional().describe("Periksa sumber inti saja: JDIH BPK, MK, dan DSN-MUI"),
+    },
+  },
+  bungkus(periksaKesehatanSumber)
 );
 
 await server.connect(new StdioServerTransport());

@@ -6,14 +6,14 @@ import { getText, toText, inline, decodeEntities } from "./http.js";
 
 const BASE = "https://peraturan.bpk.go.id";
 
-function parseSlug(slug = "") {
+export function parseSlug(slug = "") {
   const m = slug.match(/^(.+?)-no-(.+?)-tahun-(\d{4})$/i);
   if (!m) return {};
   return { jenis: m[1].replace(/-/g, " ").toUpperCase(), nomor: m[2], tahun: m[3] };
 }
 
 /** Ambil blok relasi ("Mencabut", "Diubah dengan", "Dicabut dengan", ...). */
-function parseRelasi(html, maksPerLabel = 30) {
+export function parseRelasi(html, maksPerLabel = 30) {
   const out = {};
   const labelRe = /<div class="[^"]*bg-light-[a-z]+[^"]*"[^>]*>\s*([^<>{}]{3,60}?)\s*:?\s*<\/div>/g;
   const marks = [];
@@ -82,7 +82,8 @@ export async function cariPeraturan({
     });
   }
 
-  const pages = [...html.matchAll(/[?&]p=(\d+)/g)].map((x) => Number(x[1]));
+  // HTML mentah BPK menulis pemisah kueri sebagai entitas: "&amp;p=2", bukan "&p=2".
+  const pages = [...html.matchAll(/[?&](?:amp;)?p=(\d+)/g)].map((x) => Number(x[1]));
   return {
     sumber: "JDIH BPK RI",
     url_pencarian: url,

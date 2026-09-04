@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en-US">
+
+<head>
+    <!-- Google Tag Manager -->
+    <script type="4d63974bb25d2d2f8b5913fa-text/javascript">
+        (function(w, d, s, l, i) {
+            w[l] = w[l] || [];
+            w[l].push({
+                'gtm.start': new Date().getTime(),
+                event: 'gtm.js'
+            });
+            var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s),
+                dl = l != 'dataLayer' ? '&l=' + l : '';
+            j.async = true;
+            j.src =
+                'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+            f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-5LF4ZPX');
+    </script>
+    <!-- End Google Tag Manager -->
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="Kepaniteraan Mahkamah Agung" />
+
+    <!-- Stylesheets
+	============================================= -->
+    <link rel="icon" href="https://putusan3.mahkamahagung.go.id/public/images/favicon.ico" sizes="16x16" type="image/ico">
+    <style type="text/css">@font-face {font-family:'Lato';font-style:normal;font-weight:300;src:url(/cf-fonts/s/lato/5.2.7/latin/300/normal.woff2);unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-display:swap;}@font-face {font-family:'Lato';font-style:normal;font-weight:300;src:url(/cf-fonts/s/lato/5.2.7/latin-ext/300/normal.woff2);unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;font-display:swap;}@font-face {font-family:'Lato';font-style:normal;font-weight:400;src:url(/cf-fonts/s/lato/5.2.7/latin-ext/400/normal.woff2);unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;font-display:swap;}@font-face {font-family:'Lato';font-style:normal;font-weight:400;src:url(/cf-fonts/s/lato/5.2.7/latin/400/normal.woff2);unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-display:swap;}@font-face {font-family:'Lato';font-style:italic;font-weight:400;src:url(/cf-fonts/s/lato/5.2.7/latin-ext/400/italic.woff2);unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;font-display:swap;}@font-face {font-family:'Lato';font-style:italic;font-weight:400;src:url(/cf-fonts/s/lato/5.2.7/latin/400/italic.woff2);unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-display:swap;}@font-face {font-family:'Lato';font-style:normal;font-weight:700;src:url(/cf-fonts/s/lato/5.2.7/latin/700/normal.woff2);unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-display:swap;}@font-face {font-family:'Lato';font-style:normal;font-weight:700;src:url(/cf-fonts/s/lato/5.2.7/latin-ext/700/normal.woff2);unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;font-display:swap;}@font-face {font-family:'Raleway';font-style:normal;font-weight:300;src:url(/cf-fonts/s/raleway/5.2.8/cyrillic-ext/300/normal.woff2);unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F;font-display:swap;}@font-face {font-family:'Raleway';font-style:normal;font-weight:300;src:url(/cf-fonts/s/raleway/5.2.8/latin-ext/300/normal.woff2);unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;font-display:swap;}@font-face {font-family:'Raleway';font-style:normal;font-weight:300;src:url(/cf-fonts/s/raleway/5.2.8/latin/300/normal.woff2);unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-display:swap;}@font-face {font-family:'Raleway';font-style:normal;font-weight:300;src:url(/cf-fonts/s/raleway/5.2.8/cyrillic/300/normal.woff2);unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116;font-display:swap;}@font-face {font-family:'Raleway';font-style:normal;font-weight:300;src:url(/cf-fonts/s/raleway/5.2.8/vietnamese/300/normal.woff2);unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB;font-display:swap;}@font-face {font-family:'Raleway';font-style:normal;font-weight:400;src:url(/cf-fonts/s/raleway/5.2.8/cyrillic/400/normal.woff2);unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116;font-display:swap;}@font-face {font-family:'Raleway';font-style:normal;font-weight:400;src:url(/cf-fonts/s/raleway/5.2.8/cyrillic-ext/400/normal.woff2);unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F;font-display:swap;}@font-face {font-family:'Raleway';font-style:normal;font-weight:400;src:url(/cf-fonts/s/raleway/5.2.8/latin/400/normal.woff2);unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-display:swap;}@font-face {font-family:'Raleway';font-style:normal;font-weight:400;src:url(/cf-fonts/s/raleway/5.2.8/latin-ext/400/normal.woff2);unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;font-display:swap;}@font-face {font-family:'Raleway';font-style:normal;font-weight:400;src:url(/cf-fonts/s/raleway/5.2.8/vietnamese/400/normal.woff2);unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB;font-display:swap;}@font-face {font-family:'Raleway';font-style:normal;font-weight:500;src:url(/cf-fonts/s/raleway/5.2.8/latin/500/normal.woff2);unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-display:swap;}@font-face {font-family:'Raleway';font-style:normal;font-weight:500;src:url(/cf-fonts/s/raleway/5.2.8/cyrillic/500/normal.woff2);unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116;font-display:swap;}@font-face {font-family:'Raleway';font-style:normal;font-weight:500;src:url(/cf-fonts/s/raleway/5.2.8/latin-ext/500/normal.woff2);unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;font-display:swap;}@font-face {font-family:'Raleway';font-style:normal;font-weight:500;src:url(/cf-fonts/s/raleway/5.2.8/cyrillic-ext/500/normal.woff2);unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F;font-display:swap;}@font-face {font-family:'Raleway';font-style:normal;font-weight:500;src:url(/cf-fonts/s/raleway/5.2.8/vietnamese/500/normal.woff2);unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB;font-display:swap;}@font-face {font-family:'Raleway';font-style:normal;font-weight:600;src:url(/cf-fonts/s/raleway/5.2.8/latin/600/normal.woff2);unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-display:swap;}@font-face {font-family:'Raleway';font-style:normal;font-weight:600;src:url(/cf-fonts/s/raleway/5.2.8/cyrillic-ext/600/normal.woff2);unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F;font-display:swap;}@font-face {font-family:'Raleway';font-style:normal;font-weight:600;src:url(/cf-fonts/s/raleway/5.2.8/cyrillic/600/normal.woff2);unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116;font-display:swap;}@font-face {font-family:'Raleway';font-style:normal;font-weight:600;src:url(/cf-fonts/s/raleway/5.2.8/vietnamese/600/normal.woff2);unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB;font-display:swap;}@font-face {font-family:'Raleway';font-style:normal;font-weight:600;src:url(/cf-fonts/s/raleway/5.2.8/latin-ext/600/normal.woff2);unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;font-display:swap;}@font-face {font-family:'Raleway';font-style:normal;font-weight:700;src:url(/cf-fonts/s/raleway/5.2.8/cyrillic/700/normal.woff2);unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116;font-display:swap;}@font-face {font-family:'Raleway';font-style:normal;font-weight:700;src:url(/cf-fonts/s/raleway/5.2.8/latin/700/normal.woff2);unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-display:swap;}@font-face {font-family:'Raleway';font-style:normal;font-weight:700;src:url(/cf-fonts/s/raleway/5.2.8/latin-ext/700/normal.woff2);unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;font-display:swap;}@font-face {font-family:'Raleway';font-style:normal;font-weight:700;src:url(/cf-fonts/s/raleway/5.2.8/cyrillic-ext/700/normal.woff2);unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F;font-display:swap;}@font-face {font-family:'Raleway';font-style:normal;font-weight:700;src:url(/cf-fonts/s/raleway/5.2.8/vietnamese/700/normal.woff2);unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB;font-display:swap;}@font-face {font-family:'Crete Round';font-style:italic;font-weight:400;src:url(/cf-fonts/s/crete-round/5.2.8/latin-ext/400/italic.woff2);unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;font-display:swap;}@font-face {font-family:'Crete Round';font-style:italic;font-weight:400;src:url(/cf-fonts/s/crete-round/5.2.8/latin/400/italic.woff2);unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-display:swap;}</style>
+    <link rel="stylesheet" href="https://putusan3.mahkamahagung.go.id/public/js/plugins/Autocomplete/Autocomplete.css" type="text/css" />
+    <link rel="stylesheet" href="https://putusan3.mahkamahagung.go.id/public/frontend/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="https://putusan3.mahkamahagung.go.id/public/js/plugins/DatePicker/DatePicker3.css">
+    <link rel="stylesheet" href="https://putusan3.mahkamahagung.go.id/public/frontend/css/style.min.css" type="text/css" />
+    <link rel="stylesheet" href="https://putusan3.mahkamahagung.go.id/public/frontend/css/dark.min.css" type="text/css" />
+    <link rel="stylesheet" href="https://putusan3.mahkamahagung.go.id/public/frontend/css/font-icons.min.css" type="text/css" />
+    <link rel="stylesheet" href="https://putusan3.mahkamahagung.go.id/public/frontend/css/animate.min.css" type="text/css" />
+    <link rel="stylesheet" href="https://putusan3.mahkamahagung.go.id/public/css/font-awesome/css/font-awesome.min.css" type="text/css" />
+
+    <link rel="stylesheet" href="https://putusan3.mahkamahagung.go.id/public/frontend/css/responsive.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script data-cfasync="false" async defer src="https://cdn.jsdelivr.net/npm/altcha@3/dist/main/altcha.i18n.min.js" type="module"></script>
+    <!--[if lt IE 9]>
+		<script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
+	<![endif]-->
+
+    <!-- External JavaScripts
+	============================================= -->
+    <script src="https://putusan3.mahkamahagung.go.id/public/frontend/js/jquery.js" type="4d63974bb25d2d2f8b5913fa-text/javascript"></script>
+
+    <script src="https://putusan3.mahkamahagung.go.id/public/js/plugins/Autocomplete/Autocomplete.js" type="4d63974bb25d2d2f8b5913fa-text/javascript"></script>
+    <script src="https://putusan3.mahkamahagung.go.id/public/frontend/js/plugins.js" type="4d63974bb25d2d2f8b5913fa-text/javascript"></script>
+    <script src="https://putusan3.mahkamahagung.go.id/public/js/plugins/DatePicker/BootstrapDatePicker.js" type="4d63974bb25d2d2f8b5913fa-text/javascript"></script>
+
+    <!-- Document Title
+	============================================= -->
+    <title>Direktori Putusan</title>
+
+    <style>
+        .revo-slider-emphasis-text {
+            font-size: 64px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            font-family: 'Raleway', sans-serif;
+            padding: 15px 20px;
+            border-top: 2px solid #FFF;
+            border-bottom: 2px solid #FFF;
+        }
+
+        .revo-slider-desc-text {
+            font-size: 20px;
+            font-family: 'Lato', sans-serif;
+            width: 650px;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .revo-slider-caps-text {
+            font-size: 16px;
+            font-weight: 400;
+            letter-spacing: 3px;
+            font-family: 'Raleway', sans-serif;
+        }
+
+        .tp-video-play-button {
+            display: none !important;
+        }
+
+        .tp-caption {
+            white-space: nowrap;
+        }
+
+        .topleft {
+            margin-top: -4px;
+            margin-left: 16px;
+            margin-bottom: 16px;
+            padding: 16px;
+            border: 1px solid black;
+        }
+
+        .i-bordered:hover {
+            background-color: #fff !important;
+            color: #444;
+            border-color: #444;
+        }
+    </style>
+
+</head>
+
+<body class="stretched">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5LF4ZPX" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <!-- Document Wrapper
+	============================================= -->
+    <div id="wrapper" class="clearfix">
+
+        <!-- Header
+		============================================= -->
+        <header id="header" class="semi-transparent transparent-header full-header" data-sticky-class="not-dark">
+            <div id="header-wrap">
+                <div class="container clearfix">
+                    <div id="primary-menu-trigger"><i class="i-bordered icon-reorder" style="margin: 0 11px 0 11px;"></i></div>
+
+                    <!-- Logo
+					============================================= -->
+                    <div id="logo">
+                        <a href="https://putusan3.mahkamahagung.go.id/beranda.html" class="standard-logo" data-dark-logo="image/logo-dark.png"><img src=https://putusan3.mahkamahagung.go.id/public/frontend/images/logo.png alt="Mahkamah Agung Logo"></a>
+                        <a href="https://putusan3.mahkamahagung.go.id/beranda.html" class="retina-logo" style="margin-left: 50px" data-dark-logo="image/logo-dark@2x.png"><img src=https://putusan3.mahkamahagung.go.id/public/frontend/images/logo-mobile.png alt="Mahkamah Agung Logo"></a>
+                    </div><!-- #logo end -->
+
+                    <!-- Primary Navigation
+					============================================= -->
+                    <nav id="primary-menu">
+                        <ul>
+                            <li><a href="https://putusan3.mahkamahagung.go.id/beranda.html" style="padding-left: 0;">
+                                    <div>Beranda</div>
+                                </a></li>
+                            <li><a href="https://putusan3.mahkamahagung.go.id/search.html">
+                                    <div>Pencarian</div>
+                                </a></li>
+                            <li class="mega-menu"><a href="https://putusan3.mahkamahagung.go.id/direktori.html">
+                                    <div>Direktori</div>
+                                </a>
+                                <div class="mega-menu-content style-2 clearfix">
+                                    <ul class="mega-menu-column col-lg-3">
+                                        <li class="mega-menu-title"><a href="https://putusan3.mahkamahagung.go.id/direktori.html">
+                                                <div>Klasifikasi</div>
+                                            </a>
+                                            <ul>
+                                                <li><a href="https://putusan3.mahkamahagung.go.id/direktori.html">
+                                                        <div>SEMUA</div>
+                                                    </a></li>
+                                                                                                        <li><a href="https://putusan3.mahkamahagung.go.id/direktori/index/kategori/pidana-militer-1.html">Pidana Militer</a></li>
+                                                                                                        <li><a href="https://putusan3.mahkamahagung.go.id/direktori/index/kategori/perdata-khusus.html">Perdata Khusus</a></li>
+                                                                                                        <li><a href="https://putusan3.mahkamahagung.go.id/direktori/index/kategori/perdata-agama-1.html">Perdata Agama</a></li>
+                                                                                                        <li><a href="https://putusan3.mahkamahagung.go.id/direktori/index/kategori/pidana-khusus-1.html">Pidana Khusus</a></li>
+                                                                                                        <li><a href="https://putusan3.mahkamahagung.go.id/direktori/index/kategori/paten-1.html">Paten</a></li>
+                                                                                                        <li><a href="https://putusan3.mahkamahagung.go.id/direktori/index/kategori/sengketa-kewenangan-mengadili-1.html">Sengketa Kewenangan Mengadili</a></li>
+                                                                                                        <li><a href="https://putusan3.mahkamahagung.go.id/direktori/index/kategori/perdata-1.html">Perdata</a></li>
+                                                                                                        <li><a href="https://putusan3.mahkamahagung.go.id/direktori/index/kategori/pajak-2.html">Pajak</a></li>
+                                                                                                        <li><a href="https://putusan3.mahkamahagung.go.id/direktori/index/kategori/tun-1.html">TUN</a></li>
+                                                                                                        <li><a href="https://putusan3.mahkamahagung.go.id/direktori/index/kategori/pidana-umum-1.html">Pidana Umum</a></li>
+                                                                                            </ul>
+                                        </li>
+                                    </ul>
+                                    <ul class="mega-menu-column col-lg-2">
+                                        <li class="mega-menu-title"><a href="https://putusan3.mahkamahagung.go.id/direktori/periode/tahunjenis/putus.html">
+                                                <div>Putus</div>
+                                            </a>
+                                            <ul>
+                                                                                                    <li><a href="https://putusan3.mahkamahagung.go.id/direktori/index/tahunjenis/putus/tahun/2026.html">
+                                                            <div>2026</div>
+                                                        </a></li>
+                                                                                                    <li><a href="https://putusan3.mahkamahagung.go.id/direktori/index/tahunjenis/putus/tahun/2025.html">
+                                                            <div>2025</div>
+                                                        </a></li>
+                                                                                                    <li><a href="https://putusan3.mahkamahagung.go.id/direktori/index/tahunjenis/putus/tahun/2024.html">
+                                                            <div>2024</div>
+                                                        </a></li>
+                                                                                                    <li><a href="https://putusan3.mahkamahagung.go.id/direktori/index/tahunjenis/putus/tahun/2023.html">
+                                                            <div>2023</div>
+                                                        </a></li>
+                                                                                                    <li><a href="https://putusan3.mahkamahagung.go.id/direktori/index/tahunjenis/putus/tahun/2022.html">
+                                                            <div>2022</div>
+                                                        </a></li>
+                                                                                                <li><a href="https://putusan3.mahkamahagung.go.id/direktori/periode/tahunjenis/putus.html">
+                                                        <div>Selengkapnya</div>
+                                                    </a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                    <ul class="mega-menu-column col-lg-2">
+                                        <li class="mega-menu-title"><a href="https://putusan3.mahkamahagung.go.id/direktori/periode/tahunjenis/regis.html">
+                                                <div>Register</div>
+                                            </a>
+                                            <ul>
+                                                                                                    <li><a href="https://putusan3.mahkamahagung.go.id/direktori/index/tahunjenis/regis/tahun/2026.html">
+                                                            <div>2026</div>
+                                                        </a></li>
+                                                                                                    <li><a href="https://putusan3.mahkamahagung.go.id/direktori/index/tahunjenis/regis/tahun/2025.html">
+                                                            <div>2025</div>
+                                                        </a></li>
+                                                                                                    <li><a href="https://putusan3.mahkamahagung.go.id/direktori/index/tahunjenis/regis/tahun/2024.html">
+                                                            <div>2024</div>
+                                                        </a></li>
+                                                                                                    <li><a href="https://putusan3.mahkamahagung.go.id/direktori/index/tahunjenis/regis/tahun/2023.html">
+                                                            <div>2023</div>
+                                                        </a></li>
+                                                                                                    <li><a href="https://putusan3.mahkamahagung.go.id/direktori/index/tahunjenis/regis/tahun/2022.html">
+                                                            <div>2022</div>
+                                                        </a></li>
+                                                                                                <li><a href="https://putusan3.mahkamahagung.go.id/direktori/periode/tahunjenis/regis.html">
+                                                        <div>Selengkapnya</div>
+                                                    </a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                    <ul class="mega-menu-column col-lg-2">
+                                        <li class="mega-menu-title"><a href="https://putusan3.mahkamahagung.go.id/direktori/periode/tahunjenis/upload.html">
+                                                <div>Upload</div>
+                                            </a>
+                                            <ul>
+                                                                                                    <li><a href="https://putusan3.mahkamahagung.go.id/direktori/index/tahunjenis/upload/tahun/2026.html">
+                                                            <div>2026</div>
+                                                        </a></li>
+                                                                                                    <li><a href="https://putusan3.mahkamahagung.go.id/direktori/index/tahunjenis/upload/tahun/2025.html">
+                                                            <div>2025</div>
+                                                        </a></li>
+                                                                                                    <li><a href="https://putusan3.mahkamahagung.go.id/direktori/index/tahunjenis/upload/tahun/2024.html">
+                                                            <div>2024</div>
+                                                        </a></li>
+                                                                                                    <li><a href="https://putusan3.mahkamahagung.go.id/direktori/index/tahunjenis/upload/tahun/2023.html">
+                                                            <div>2023</div>
+                                                        </a></li>
+                                                                                                    <li><a href="https://putusan3.mahkamahagung.go.id/direktori/index/tahunjenis/upload/tahun/2022.html">
+                                                            <div>2022</div>
+                                                        </a></li>
+                                                                                                <li><a href="https://putusan3.mahkamahagung.go.id/direktori/periode/tahunjenis/upload.html">
+                                                        <div>Selengkapnya</div>
+                                                    </a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                    <ul class="mega-menu-column col-lg-3">
+                                        <li class="mega-menu-title"><a href="https://putusan3.mahkamahagung.go.id/direktori/pilihan.html">
+                                                <div>Putusan Penting</div>
+                                            </a></li>
+                                        <li class="mega-menu-title"><a href="https://putusan3.mahkamahagung.go.id/kaidah.html">
+                                                <div>Kompilasi Kaidah Hukum</div>
+                                            </a></li>
+                                        <li class="mega-menu-title"><a href="https://putusan3.mahkamahagung.go.id/restatement.html">
+                                                <div>Restatement</div>
+                                            </a></li>
+                                        <li class="mega-menu-title"><a href="https://putusan3.mahkamahagung.go.id/rumusan_kamar.html">
+                                                <div>Rumusan Kamar</div>
+                                            </a></li>
+                                        <li class="mega-menu-title"><a href="https://putusan3.mahkamahagung.go.id/rumusan_rakernas.html">
+                                                <div>Rumusan Rakernas</div>
+                                            </a></li>
+                                        <li class="mega-menu-title"><a href="https://putusan3.mahkamahagung.go.id/yurisprudensi.html">
+                                                <div>Yurisprudensi</div>
+                                            </a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li><a href="https://putusan3.mahkamahagung.go.id/pengadilan.html">
+                                    <div>Pengadilan</div>
+                                </a>
+                                <ul>
+                                    <li><a href="https://putusan3.mahkamahagung.go.id/pengadilan.html">
+                                            <div><i class="icon-stack"></i>SEMUA</div>
+                                        </a>
+                                                                            <li><a href="https://putusan3.mahkamahagung.go.id/pengadilan/index/ditjen/mahkamah-agung.html">
+                                            <div>Mahkamah Agung</div>
+                                        </a>
+                                                                        <li><a href="https://putusan3.mahkamahagung.go.id/pengadilan/index/ditjen/umum.html">
+                                            <div>Peradilan Umum</div>
+                                        </a>
+                                                                        <li><a href="https://putusan3.mahkamahagung.go.id/pengadilan/index/ditjen/agama.html">
+                                            <div>Peradilan Agama</div>
+                                        </a>
+                                                                        <li><a href="https://putusan3.mahkamahagung.go.id/pengadilan/index/ditjen/militer.html">
+                                            <div>Peradilan Militer</div>
+                                        </a>
+                                                                        <li><a href="https://putusan3.mahkamahagung.go.id/pengadilan/index/ditjen/tun.html">
+                                            <div>Peradilan Tata Usaha Negara</div>
+                                        </a>
+                                                                        <li><a href="https://putusan3.mahkamahagung.go.id/pengadilan/index/ditjen/pengadilan-pajak.html">
+                                            <div>Pengadilan Pajak</div>
+                                        </a>
+                                                                    </ul>
+                            </li>
+                            <li class="mega-menu"><a href="https://putusan3.mahkamahagung.go.id/peraturan.html">
+                                    <div>Peraturan</div>
+                                </a></li>
+                            <li><a href="https://putusan3.mahkamahagung.go.id/tentang.html">
+                                    <div>Tentang</div>
+                                </a>
+                                <ul>
+                                    <li><a href="https://putusan3.mahkamahagung.go.id/panduan/index.html" target="_blank">
+                                            <div>Petunjuk</div>
+                                        </a></li>
+                                    <li><a href="https://putusan3.mahkamahagung.go.id/rss.html">
+                                            <div>RSS</div>
+                                        </a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </nav>
+                    <!-- #primary-menu end -->
+                </div>
+            </div>
+        </header><!-- #header end -->
+
+        
+        <!-- Breadcrumb
+		============================================= -->
+        <style>
+    .breadcrumb {
+        position: static !important;
+        width: auto !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        margin: 0 !important;
+        background-color: transparent !important;
+        padding: 0 !important;
+        font-size: 12px;
+    }
+</style>
+<section id="page-title" style = "margin-bottom : 10px">
+    <div class="container clearfix">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="https://putusan3.mahkamahagung.go.id/beranda.html">Beranda</a></li>
+            <li class="breadcrumb-item"><a href="https://putusan3.mahkamahagung.go.id/pengadilan.html">Pengadilan</a></li>
+            <li class="breadcrumb-item"><a href="https://putusan3.mahkamahagung.go.id/pengadilan/profil/pengadilan/mahkamah-agung.html">MAHKAMAH AGUNG</a></li>
+
+            <li class="breadcrumb-item"><a href="https://putusan3.mahkamahagung.go.id/direktori/index/pengadilan/mahkamah-agung/kategori/pidana-khusus-1.html">Pidana Khusus</a></li>
+            <li class="breadcrumb-item"><a href="https://putusan3.mahkamahagung.go.id/direktori/index/pengadilan/mahkamah-agung/kategori/korupsi-1.html">Korupsi</a></li>
+
+
+        </ol>
+        <h1>Putusan MAHKAMAH AGUNG<br>7549 K/PID.SUS/2026</h1>
+    </div>
+</section>
+        <!-- Content
+		============================================= -->
+        <section id="content">
+            <div class="content-wrap" style="padding: 0">
+
+                
+                <div class="container">
+                                </div>
+
+                
+                <div class="container bottommargin-lg clearfix" style="margin-top: 30px">
+                                        <!-- batas antara content dan side menu-->
+                    	<style>
+		.table td {
+		border-top: none;
+	}
+		th {
+		text-align: inherit;
+		vertical-align : middle;
+		text-align:center;
+	}
+	@media (max-width: 575.98px) {
+		.container,
+		#header.full-header .container,
+		.container-fullwidth {
+			width: 100% !important;
+			padding-left: 15px !important;
+			padding-right: 15px !important;
+		}
+	}
+	#page-title {
+		position: relative;
+		padding: 20px 0;
+		background-color: #F5F5F5;
+		border-bottom: 1px solid #EEE;
+    }
+    .bg-success {
+		background-color: #f5f5f5 !important;
+		border-top: 4px solid #006600;
+	}
+	</style>
+<!-- Content
+============================================= -->
+<section id="content">
+
+	
+		<div class="container clearfix">
+			<!--content data-->
+			<div class="row">
+				<div class="col-sm-8 portfolio-single-content nobottommargin">
+										<div id="tab" class="widget clearfix">
+						<div class="tabs nobottommargin clearfix ui-tabs ui-corner-all ui-widget ui-widget-content" id="sidebar-tabs">
+							<ul class="tab-nav clearfix ui-tabs-nav ui-corner-all ui-helper-reset ui-helper-clearfix ui-widget-header" role="tablist">
+								<li role="tab" tabindex="0" class="ui-tabs-tab ui-corner-top ui-state-default ui-tab ui-tabs-active ui-state-active"
+								aria-controls="tabs-1" aria-labelledby="ui-id-1" aria-selected="true" aria-expanded="true"><a href="#tabs-1" role="presentation"
+									tabindex="-1" class="ui-tabs-anchor" id="ui-id-1">Putusan</a></li>
+																<!-- // tab metadata -->
+															</ul>
+							<div class="tab-container">
+								<div class="tab-content clearfix ui-tabs-panel ui-corner-bottom ui-widget-content" id="tabs-1" aria-labelledby="ui-id-1" role="tabpanel" aria-hidden="false">
+									<div id="popular-post-list-sidebar">
+										<ul class="portfolio-meta nobottommargin">
+											<table class="table" width= 100%>
+												<tbody >
+												<tr>
+													<td colspan="2">
+														<h2><strong>Putusan MAHKAMAH AGUNG Nomor 7549 K/PID.SUS/2026</strong> <br>Tanggal 24 Juni 2026 &#8212;<span id="title_pihak" class="nocolor">Penuntut Umum VS Widatoto S, S.E., M.T. (Terdakwa), Parlinggoman, S.Ip., M.M. (Terdakwa)</span></h2>													</td>
+												</tr>
+
+												<tr>
+													<td class="text-right" style="width:30%">Nomor</td>
+													<td >7549 K/PID.SUS/2026</td>
+												</tr>
+
+											
+												<tr>
+													<td class="text-right">Tingkat Proses</td>
+													<td >Kasasi</td>
+												</tr>
+												<tr>
+													<td class="text-right">Klasifikasi</td>
+													<td >
+																													<a style="font-size: 12px;" href="https://putusan3.mahkamahagung.go.id/direktori/index/kategori/pidana-khusus-1.html"> Pidana Khusus </a><i class="fa fa-angle-double-right"></i><a style="font-size: 12px;" href="https://putusan3.mahkamahagung.go.id/direktori/index/kategori/korupsi-1.html"> Korupsi </a><br>
+																															<a style="font-size: 12px;" href="https://putusan3.mahkamahagung.go.id/direktori/index/kategori/pidana-khusus-1.html"> Pidana Khusus </a><br>
+																												</td>
+                                                </tr>
+												<tr>
+													<td class="text-right">Kata Kunci</td>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+												<tr>
+													<td class="text-right">Tahun</td>
+													<td >
+														2026													</td>
+												</tr>
+												<tr>
+													<td class="text-right">Tanggal Register</td>
+													<td >
+														13 Mei 2026													</td>
+												</tr>
+												<tr>
+													<td class="text-right">Lembaga Peradilan</td>
+													<td ><a href="https://putusan3.mahkamahagung.go.id/pengadilan/profil/pengadilan/mahkamah-agung.html">MAHKAMAH AGUNG</a></td>
+												</tr>
+												<tr>
+													<td class="text-right">Jenis Lembaga Peradilan</td>
+													<td >MA</td>
+												</tr>
+
+																								<tr>
+													<td class="text-right">Hakim Ketua</td>
+													<td>Yohanes Priyana</td>
+												</tr>
+												
+																								<tr>
+													<td class="text-right">Hakim Anggota</td>
+													<td>
+														Sinintha Yuliansih Sibarani, Noor Edi Yono													</td>
+												</tr>
+												
+												
+																									<tr>
+														<td class="text-right">Panitera</td>
+														<td>
+															Asri Surya Wildhana														</td>
+													</tr>
+												
+												<tr>
+													<td class="text-right">Amar</td>
+													<td >
+														Tolak Perbaikan													</td>
+												</tr>
+												
+												<tr>
+													<td class="text-right">Catatan Amar</td>
+													<td >
+														Kabul kasasi Penuntut Umum, batal judex facti, adili sendiri:- Tidak terbukti dakwaan Primair;- Membebaskan Para Terdakwa dari dakwaan Primair;- Terbukti dakwaan Subsidair Pasal 3 UU PTPK juncto Pasal 55 Ayat (1) ke-1 KUHP;- Pidana penjara masing-masing selama 4 (empat) tahun dan pidana denda masing-masing sebesar Rp200.000.000,00 (dua ratus juta rupiah) subsidair masing-masing 80 (delapan puluh) hari penjara.													</td>
+												</tr>
+
+												<tr>
+													<td class="text-right">Tanggal Musyawarah</td>
+													<td >
+														24 Juni 2026													</td>
+												</tr>
+												<tr>
+													<td class="text-right">Tanggal Dibacakan</td>
+													<td >
+														24 Juni 2026													</td>
+												</tr>
+												<tr>
+													<td class="text-right">Kaidah</td>
+													<td >&#8212;</td>
+                                                </tr>
+                                                												<tr>
+													<td class="text-right">Abstrak</td>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+												</tbody>
+											</table>
+																					</ul>
+									</div>
+								</div>
+								<div class="tab-content clearfix ui-tabs-panel ui-corner-bottom ui-widget-content" id="tabs-2" aria-labelledby="ui-id-2" role="tabpanel" aria-hidden="true" style="display: none;">
+									<div id="popular-post-list-sidebar">
+										Data Identitas Tidak Ditemukan									</div>
+								</div>
+															</div>
+						</div>
+					</div>
+									</div>
+
+				<!-- visible side kanan -->
+								<div class="col-sm-4 nobottommargin col_last">
+					<!-- Portfolio Single - Meta
+										============================================= -->
+					<div class="card bg-success mb-3">
+                        <div class="card-header" role="tab" id="headingThree">
+                            <h5 class="mb-0">
+                                <div class="toggle" style="margin: 0">
+                                    <div class="togglet" data-toggle="collapse" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+                                    <i class="toggle-closed icon-angle-down"></i><i class="toggle-open icon-angle-right"></i>Lampiran</div>
+                                </div>
+                            </h5>
+						</div>
+                        <div id="collapseThree" class="collapse show" role="tabpanel" aria-labelledby="headingTwo">
+                            <div class="card-body bg-white">
+                                <div style="margin-bottom: 10px">
+                                    <ul class="portfolio-meta nobottommargin">
+                                        <li><span><i class="icon-download"></i>Download Zip</span></li>
+                                        <li>
+                                                                                                <li><a href="https://putusan3.mahkamahagung.go.id/direktori/download_file/11f1a51d7a441f80912b313632323234/zip/11f1a51d7a4105208c01313632323234">7549_K/PID.SUS/2026.zip</a></li>
+                                                                                        </li>
+                                        <li><span><i class="icon-files"></i>Download PDF</span></li>
+                                        <li>
+                                                                                                <li><a href="https://putusan3.mahkamahagung.go.id/direktori/download_file/11f1a51d7a441f80912b313632323234/pdf/11f1a51d7a4105208c01313632323234">7549_K/PID.SUS/2026.pdf</a></li>
+                                                                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+					</div>
+					<br>
+					<div class="card bg-success mb-3">
+						<div class="card-header" role="tab" id="headingTwo">
+                            <h5 class="mb-0">
+                                <div class="toggle" style="margin: 0">
+                                    <div class="togglet" data-toggle="collapse" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                                    <i class="toggle-closed icon-angle-down"></i><i class="toggle-open icon-angle-right"></i>Putusan Terkait</div>
+                                </div>
+                            </h5>
+                        </div>
+                        <div id="collapseTwo" class="collapse show" role="tabpanel" aria-labelledby="headingTwo">
+                            <div class="card-body bg-white">
+                                <div style="margin-bottom: 10px">
+                                    <ul class="portfolio-meta nobottommargin">
+                                        <li>
+                                                                                                                                    <tr>
+                                                    <td><strong>Kasasi</td>
+                                                    <td><strong> : </td>
+                                                                                                <td><a href="https://putusan3.mahkamahagung.go.id/direktori/putusan/11f1a51d7a4105208c01313632323234.html">7549 K/PID.SUS/2026</a></td><br>
+                                                                                            <tr>
+                                                    <td><strong>Pertama</td>
+                                                    <td><strong> : </td>
+                                                                                                <td><a href="https://putusan3.mahkamahagung.go.id/direktori/putusan/zaf10340f1c197ec84e6313634383039.html">42/Pid.Sus-TPK/2025/PN Ptk</a></td><br>
+                                                                                            <tr>
+                                                    <td><strong>Banding</td>
+                                                    <td><strong> : </td>
+                                                                                                <td><a href="https://putusan3.mahkamahagung.go.id/direktori/putusan/zaf0f6aa5ad5cd6eaf7a313631393537.html">2/Pid.Sus-TPK/2026/PT PTK</a></td><br>
+                                                                                                                            </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+					</div>
+                    <br>
+					<div class="card bg-success mb-3 ">
+                        <div class="card-header" role="tab" id="headingOne">
+                            <h5 class="mb-0">
+                                <div class="toggle" style="margin: 0">
+                                    <div class="togglet" data-toggle="collapse" href="#collapseTen" aria-expanded="true" aria-controls="collapseTen">
+                                    <i class="toggle-closed icon-angle-down"></i><i class="toggle-open icon-angle-right"></i>Statistik</div>
+                                </div>
+                            </h5>
+                        </div>
+                        <div id="collapseTen" class="collapse show" role="tabpanel" aria-labelledby="headingOne">
+                            <div class="card-body bg-white">
+                                <div class="row">
+									<div class="col-md-6" title="Jumlah view"><i class="icon-eye mr-1"></i>0</div>
+									<div class="col-md-6" title="Jumlah download"><i class="icon-download mr-1"></i>0</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+																			</div>
+				
+			</div>
+        </div>
+
+        <div id="report-message-placeholder"></div>
+
+<script type="4d63974bb25d2d2f8b5913fa-text/javascript">
+    $(document).ready(function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const reportStatus = urlParams.get('report_status');
+        const reportMessage = urlParams.get('report_message');
+        const placeholder = $('#report-message-placeholder');
+
+        if (reportStatus === 'success') {
+            placeholder.html('<div class="alert alert-success" role="alert">Laporan Anda berhasil dikirimkan. Terima kasih.</div>');
+        } else if (reportStatus === 'error' && reportMessage) {
+            placeholder.html('<div class="alert alert-danger" role="alert">' + decodeURIComponent(reportMessage) + '</div>');
+        } else if (reportStatus === 'submit_error') {
+            placeholder.html('<div class="alert alert-danger" role="alert">Terjadi kesalahan saat mengirim laporan. Silakan coba lagi.</div>');
+        }
+
+        if(reportStatus) {
+            $('html, body').animate({
+                scrollTop: placeholder.offset().top - 100
+            }, 1000);
+
+            if (window.history && window.history.pushState) {
+                var cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                window.history.pushState({path: cleanUrl}, '', cleanUrl);
+            }
+        }
+    });
+</script>        <div class="container">
+    <hr>
+    <!-- report form placeholder -->
+    <button id="load_report_form" data-ref-id="11f1a51d7a4105208c01313632323234" style="margin: 20px auto;" class="btn btn-sm">Kirim Masukan</button>
+    <div id="form-report-container" style="display: none;">
+    </div>
+</div>
+
+<script src="https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit" async defer type="4d63974bb25d2d2f8b5913fa-text/javascript"></script>
+<script type="4d63974bb25d2d2f8b5913fa-text/javascript">
+// This function will be called by the reCAPTCHA script once it's loaded.
+function onRecaptchaLoad() {
+    // Now we can safely attach our click handler.
+    $('#load_report_form').on('click', function(e) {
+        e.preventDefault();
+        var button = $(this);
+        var refId = button.data('ref-id');
+        var container = $('#form-report-container');
+        var url = "https://putusan3.mahkamahagung.go.id/laporan/get_form";
+
+        if (container.children().length === 0) {
+            container.html('<p>Mohon tunggu, sedang memuat formulir...</p>').show();
+            $.ajax({
+                url: url,
+                type: 'GET',
+                data: { ref_id: refId },
+                success: function(response) {
+                    container.html(response);
+                    // The form's own script will handle the rendering now.
+                },
+                error: function() {
+                    container.html('<p class="text-danger">Gagal memuat formulir. Silakan coba lagi.</p>');
+                }
+            });
+        } else {
+            container.toggle();
+        }
+    });
+}
+</script>
+		</section><!-- #content end -->
+
+<script type="4d63974bb25d2d2f8b5913fa-text/javascript">
+	var tingkat_proses = '';
+
+			var object = [{"response":true,"data":"Korupsi","type":"Nilai Kerugian","hide":false},{"response":false,"data":"Pidana Khusus","type":"","hide":false}];
+	
+	$(document).ready (function(){
+		Cek_tingkat_kategori();
+
+		for (i=0;i<object.length;i++){
+			if (object[i].response == true) {
+				$("#putusan_nilai").html(object[i].type);
+
+				//stop looping apabila sudah ada response true
+				break;
+			}
+		}
+	 });
+
+	 function Cek_tingkat_kategori(value){
+		$('#data_pemohon').hide();
+		$('#data_institusi').hide();
+
+		for (i=0;i<object.length;i++){
+			if (tingkat_proses == 0 && (object[i].data == 'Pidana Umum' || object[i].data == 'Pidana Khusus' || object[i].data == 'Pidana Militer')) {
+				$('#data_pemohon').hide();
+				$('#data_institusi').show();
+			} else if (tingkat_proses == 0 && (object[i].data == 'Perdata' || object[i].data == 'Perdata Khusus' || object[i].data == 'Perdata Agama' || object[i].data == 'TUN' || object[i].data == 'Pajak')) {
+				$('#data_pemohon').hide();
+				$('#data_institusi').hide();
+			} else if ((tingkat_proses == 1 || tingkat_proses == 2 || tingkat_proses == 3) && (object[i].data == 'Perdata' || object[i].data == 'Perdata Khusus' || object[i].data == 'Perdata Agama' || object[i].data == 'TUN' || object[i].data == 'Pajak')) {
+				$('#data_pemohon').show();
+				$('#data_institusi').hide();
+			} else {
+				$('#data_pemohon').show();
+				$('#data_institusi').show();
+			}
+		}
+	}
+</script>                </div>
+
+                            </div>
+        </section><!-- #content end -->
+
+        <!-- Footer ============================================= -->
+        <footer id="footer" class="dark">
+            <div class="container">
+                <!-- Footer Widgets ============================================= -->
+                <div class="footer-widgets-wrap clearfix">
+                    <div class="col_full">
+                        <div class="col_two_fifth">
+                            <div class="widget clearfix">
+                                <img src=https://putusan3.mahkamahagung.go.id/public/frontend/images/logo-putih.png alt="" class="footer-logo">
+                                <p>Publikasi Dokumen Elektronik <strong>Putusan</strong> seluruh Pengadilan di Indonesia</p>
+                                <div style="background: url('https://putusan3.mahkamahagung.go.id/public/frontend/images/world-map.png') no-repeat center center; background-size: 100%;">
+                                    <address>
+                                        <strong>Mahkamah Agung RI:</strong><br>
+                                        Jl. Medan Merdeka Utara No. 9-13.<br>
+                                        Jakarta Pusat - DKI Jakarta<br>
+                                        Indonesia 10110<br>
+                                    </address>
+                                    <abbr title="Phone Number"><strong>Phone:</strong></abbr> (021) 384 3348<br>
+                                    <abbr title="Phone Number"><strong>Phone:</strong></abbr> (021) 381 0350<br>
+                                    <abbr title="Phone Number"><strong>Phone:</strong></abbr> (021) 345 7661<br>
+                                    <abbr title="Email Address"><strong>Email:</strong></abbr> info[at]mahkamahagung.go.id
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col_one_fourth">
+                            <div class="widget widget_links clearfix">
+                                <h4>Direktori</h4>
+                                <ul>
+                                    <li><a href="https://putusan3.mahkamahagung.go.id/direktori.html">Putusan</a></li>
+                                    <li><a href="https://putusan3.mahkamahagung.go.id/peraturan.html">Peraturan Perundangan</a></li>
+                                    <li><a href="https://putusan3.mahkamahagung.go.id/kaidah.html">Kompilasi Kaidah</a></li>
+                                    <li><a href="https://putusan3.mahkamahagung.go.id/rumusan_kamar.html">Rumusan Kamar</a></li>
+                                    <li><a href="https://putusan3.mahkamahagung.go.id/rumusan_rakernas.html">Rumusan Rakernas</a></li>
+                                    <li><a href="https://putusan3.mahkamahagung.go.id/restatement.html">Restatement</a></li>
+                                    <li><a href="https://putusan3.mahkamahagung.go.id/yurisprudensi.html">Yurisprudensi</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="col_one_third col_last">
+                            <div class="widget clearfix">
+                                <h4>Putusan Terbaru</h4>
+                                <div id="post-list-footer">
+                                                                                <div class="spost clearfix">
+                                                <div class="entry-c">
+                                                    <div class="entry-title">
+                                                        <h4><a href="https://putusan3.mahkamahagung.go.id/direktori/putusan/11f1a51d8b36ed5eb12b313632323533.html">MAHKAMAH AGUNG Nomor 2144 PK/PID.SUS/2026</a></h4>
+                                                    </div>
+                                                    <ul class="entry-meta">
+                                                        <li>08 Jun 2026</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                                                                <div class="spost clearfix">
+                                                <div class="entry-c">
+                                                    <div class="entry-title">
+                                                        <h4><a href="https://putusan3.mahkamahagung.go.id/direktori/putusan/11f1a51d8a78c694b855313632323532.html">MAHKAMAH AGUNG Nomor 7159 K/PID.SUS/2026</a></h4>
+                                                    </div>
+                                                    <ul class="entry-meta">
+                                                        <li>10 Jun 2026</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                                                                <div class="spost clearfix">
+                                                <div class="entry-c">
+                                                    <div class="entry-title">
+                                                        <h4><a href="https://putusan3.mahkamahagung.go.id/direktori/putusan/11f1a51d89d0ec62aaeb313632323531.html">MAHKAMAH AGUNG Nomor 1132 K/PID/2026</a></h4>
+                                                    </div>
+                                                    <ul class="entry-meta">
+                                                        <li>23 Jun 2026</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                                                        <div class="spost clearfix">
+                                        <div class="entry-c">
+                                            <div class="col_full">
+                                                <img class="cookie-accept cookie-noti-btn btn btn-sm" id="set_homepage" data-toggle="tooltip" data-placement="left" title="Klik Untuk Set Halaman Pengadilan" src="https://putusan3.mahkamahagung.go.id/public/frontend/images/set-homepage.png" alt="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- .footer-widgets-wrap end -->
+            </div>
+
+            <!-- Copyrights ============================================ -->
+            <div id="copyrights">
+                <div class="container clearfix">
+                    <div class="col_half" style="color:#c7c7c7 !important;">
+                        Dikelola oleh Kepaniteraan Mahkamah Agung Republik Indonesia<br>
+                        &copy; 2026. Hak Cipta dan Kekayaan Intelektual dilindungi Undang-Undang. <br>
+                        Halaman ini dibuka dalam waktu 1.8356 / 0.4187 detik. 7.42MB
+                    </div>
+                </div>
+            </div><!-- #copyrights end -->
+        </footer><!-- #footer end -->
+    </div><!-- #wrapper end -->
+
+    <!-- Go To Top
+	============================================= -->
+    <div id="gotoTop" class="icon-angle-up"></div>
+
+    <!-- Footer Scripts
+	============================================= -->
+    <script src="https://putusan3.mahkamahagung.go.id/public/frontend/js/functions.js" type="4d63974bb25d2d2f8b5913fa-text/javascript"></script>
+
+    <script type="4d63974bb25d2d2f8b5913fa-text/javascript">
+        var tpj = jQuery;
+        
+        function redirect(url) {
+            var ua = navigator.userAgent.toLowerCase(),
+                isIE = ua.indexOf('msie') !== -1,
+                version = parseInt(ua.substr(4, 2), 10);
+
+            // Internet Explorer 8 and lower
+            if (isIE && version < 9) {
+                var link = document.createElement('a');
+                link.href = url;
+                document.body.appendChild(link);
+                link.click();
+
+                // All other browsers can use the standard window.location.href (they don't lose HTTP_REFERER like Internet Explorer 8 & lower does)
+            } else {
+                window.location.href = url;
+            }
+        }
+
+        $('#set_homepage').click(function() {
+            var url = window.location.href;
+            var value = 'mahkamah-agung';
+            var data = {
+                "base_url": value
+            };
+            $.ajax({
+                url: 'https://putusan3.mahkamahagung.go.id/pengadilan/set_cookies/',
+                type: 'POST',
+                data: data,
+                success: function(data) {
+                    if (data == false)
+                        alert('Gagal Set Page! Tidak dapat set home page karena belum membuka halaman pengadilan yang dipilih');
+                    else {
+                        alert('Set Page Sukses ! Untuk selanjutnya halaman depan secara default akan dipilih berdasarkan pengadilan ' + data);
+                    }
+                }
+            });
+        });
+    </script>
+<script src="/cdn-cgi/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js" data-cf-settings="4d63974bb25d2d2f8b5913fa-|49" defer></script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a35e316fa8d05f3f',t:'MTc4ODUzNzQ3OQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"ecfe778389f14a3db7af0dab0841af55","spa":2}' crossorigin="anonymous"></script>
+</body>
+
+</html>

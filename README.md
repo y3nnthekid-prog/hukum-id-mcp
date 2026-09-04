@@ -42,6 +42,7 @@ sehingga jawaban hukum bertumpu pada dokumen yang benar-benar diambil, bukan pad
 | **`verifikasi_kutipan`** | Periksa seluruh sitasi dalam sebuah draf: keberadaan, status, nomor pasal, dan frasa yang dikutip |
 | **`hukum_pada_tanggal`** | Apakah sebuah peraturan berlaku pada tanggal tertentu, berikut garis waktunya |
 | **`daftar_periksa_akad`** | Butir ketentuan fatwa DSN-MUI sebagai daftar periksa kepatuhan akad |
+| **`periksa_kesehatan_sumber`** | Tembak tiap sumber dengan kueri yang hasilnya sudah diketahui, lalu laporkan sehat, lambat, membatasi, atau berubah struktur |
 | `cari_fatwa_dsn` | Cari fatwa DSN-MUI dari indeks lengkap, di-cache 7 hari |
 | `teks_fatwa_dsn` | Ambil isi salinan fatwa DSN-MUI sebagai teks |
 | `ambil_ayat`, `cari_ayat` | Ayat Al-Quran: Arab, transliterasi, terjemahan Kemenag, asbab nuzul |
@@ -74,11 +75,24 @@ git clone <url-repo> && cd hukum-id-mcp && npm install
 claude mcp add hukum-id --scope user -- node "$(pwd)/src/server.js"
 ```
 
-Uji asap end-to-end (memanggil server sungguhan lewat stdio dan mengetes seluruh tool):
+Pengujian:
 
 ```bash
-npm run smoke
+npm test           # uji parser tanpa jaringan, lalu uji asap end-to-end
+npm run test:parser  # parser saja, tanpa satu pun permintaan jaringan
+npm run smoke        # uji asap end-to-end lewat stdio
 ```
+
+`test/parser.test.js` menjalankan seluruh parser terhadap salinan HTML nyata di
+`test/fixtures/`. Ini penting karena risiko terbesar proyek ini bukan salah logika,
+melainkan situs sumber yang berganti tampilan — ketika itu terjadi, parser rusak diam-diam:
+tool tetap menjawab, tetapi isinya kosong. Uji fixture menangkapnya sebelum pengguna
+terdampak, dan sudah terbukti: ia menemukan bug pagination yang membuat jumlah halaman hasil
+pencarian terbaca 1 padahal 3.560.
+
+Untuk memeriksa apakah situs sumbernya sendiri yang berubah, jalankan tool
+`periksa_kesehatan_sumber`. Status `berubah_struktur` berarti permintaan berhasil tetapi
+hasilnya tidak sesuai bentuk yang diharapkan — itu sinyal parser perlu diperbarui.
 
 ### Snapshot korpus inti
 

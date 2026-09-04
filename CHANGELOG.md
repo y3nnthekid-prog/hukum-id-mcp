@@ -4,6 +4,30 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.1.0/), versi
 [Semantic Versioning](https://semver.org/lang/id/). Peneliti disarankan menyebutkan versi
 alat ini dalam tulisannya demi reproduktibilitas.
 
+## [0.4.0] — 2026-09-04
+
+### Ditambahkan — ketahanan
+
+- `test/parser.test.js` — 20 pemeriksaan parser terhadap salinan HTML nyata di
+  `test/fixtures/`, tanpa satu pun permintaan jaringan. Menahan kerusakan senyap ketika
+  situs sumber berganti tampilan.
+- `periksa_kesehatan_sumber` — menembak tiap sumber dengan kueri yang hasilnya sudah
+  diketahui, lalu melaporkan sehat, lambat, membatasi, gagal_jaringan, atau
+  berubah_struktur. Cache dilewati secara bawaan, karena pemeriksaan yang dilayani cache
+  akan selalu tampak sehat meski situsnya sudah berubah.
+- `npm test` menjalankan uji parser lalu uji asap; `prepublishOnly` memakainya.
+- LICENSE MIT dengan pemisahan tegas antara lisensi kode dan kepemilikan isi dokumen hukum.
+- README dwibahasa, panduan pemasangan, dan bagian Etika Pemakaian.
+- `scripts/bangun-snapshot.js` untuk menyiapkan korpus inti yang dapat dibagikan.
+
+### Diperbaiki
+
+- **Pagination JDIH BPK tidak pernah terbaca.** HTML mentah menulis pemisah kueri sebagai
+  `&amp;p=2`, sementara regex hanya mengenali `&p=2`, sehingga `total_halaman` selalu 1.
+  Pada kueri uji, angka sebenarnya 3.560. Ditemukan oleh uji fixture, bukan oleh manusia.
+- Probe kesehatan DSN semula memakai indeks yang tersimpan di memori proses, sehingga selalu
+  tampak sehat tanpa benar-benar menyentuh sumber. Kini menembak halaman mentah.
+
 ## [0.3.0] — 2026-09-04
 
 ### Ditambahkan — kemampuan analitis

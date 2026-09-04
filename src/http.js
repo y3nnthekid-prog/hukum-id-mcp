@@ -79,6 +79,13 @@ function headers(referer) {
 
 const CURL_ONLY = new Set(["putusan3.mahkamahagung.go.id"]);
 
+// Pemeriksaan kesehatan harus menembak sumber sungguhan, bukan dilayani cache.
+// Tanpa saklar ini, hasilnya selalu terlihat sehat meski situsnya sudah berubah.
+let lewatiCacheGlobal = false;
+export function paksaLewatiCache(nyala) {
+  lewatiCacheGlobal = Boolean(nyala);
+}
+
 function curlArgs(url, referer, timeout, outFile) {
   const h = headers(referer);
   const args = ["-sS", "-L", "--compressed", "--max-time", String(Math.ceil(timeout / 1000)),
@@ -125,7 +132,7 @@ async function viaFetch(url, referer, timeout) {
 async function request(url, { referer, timeout = 45000, retries = 2, lewati_cache = false } = {}) {
   const host = new URL(url).host;
 
-  if (!lewati_cache) {
+  if (!lewati_cache && !lewatiCacheGlobal) {
     const tersimpan = await ambil(url, umurSimpan(url));
     if (tersimpan) return { status: 200, buffer: tersimpan, dari_cache: true };
   }

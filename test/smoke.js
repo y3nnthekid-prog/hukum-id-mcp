@@ -47,7 +47,7 @@ await call("initialize", {
 p.stdin.write(JSON.stringify({ jsonrpc: "2.0", method: "notifications/initialized" }) + "\n");
 
 const tools = (await call("tools/list", {})).result.tools;
-ok("tools/list", tools.length === 31, tools.map((t) => t.name).join(", "));
+ok("tools/list", tools.length === 32, tools.map((t) => t.name).join(", "));
 
 async function tool(name, args) {
   const r = await call("tools/call", { name, arguments: args });
@@ -319,6 +319,18 @@ ok(
   "daftar_periksa_akad menolak memutuskan sendiri",
   (akadUji.peringatan || []).some((p) => /BUKAN fatwa/.test(p)),
   "batas kewenangan dinyatakan"
+);
+
+const sehat = await tool("periksa_kesehatan_sumber", { hanya_penting: true });
+ok(
+  "periksa_kesehatan_sumber memeriksa sumber inti",
+  (sehat.hasil?.length || 0) >= 3 && sehat.hasil.every((h) => h.status && h.bukti),
+  `${JSON.stringify(sehat.ringkasan)}`
+);
+ok(
+  "periksa_kesehatan_sumber melewati cache secara bawaan",
+  sehat.memakai_cache === false,
+  "menembak sumber sungguhan, bukan cache"
 );
 
 p.kill();

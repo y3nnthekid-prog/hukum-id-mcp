@@ -1,0 +1,1362 @@
+<!doctype html>
+<html lang="jdih">
+
+<head>
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="Awaiken">
+    <meta name="csrf-token" content="7PMUrR5yugxCyr7rRvCnZzH9ZOwf46pkOBJuT4eM">
+
+    <!-- Page Title -->
+      <title>JDIH MAHKAMAH AGUNG RI</title>
+    <!-- Favicon Icon -->
+    <link rel="shortcut icon" type="image/x-icon" href="https://jdih.mahkamahagung.go.id/images/new-desain/Logo_Mahkamah_Agung_RI_new.png">
+    <!-- Google Fonts Css-->
+    
+    
+    <style type="text/css">@font-face {font-family:'Onest';font-style:normal;font-weight:100 900;src:url(/cf-fonts/v/onest/5.2.11/latin-ext/wght/normal.woff2);unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;font-display:swap;}@font-face {font-family:'Onest';font-style:normal;font-weight:100 900;src:url(/cf-fonts/v/onest/5.2.11/latin/wght/normal.woff2);unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-display:swap;}@font-face {font-family:'Onest';font-style:normal;font-weight:100 900;src:url(/cf-fonts/v/onest/5.2.11/cyrillic/wght/normal.woff2);unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116;font-display:swap;}@font-face {font-family:'Onest';font-style:normal;font-weight:100 900;src:url(/cf-fonts/v/onest/5.2.11/cyrillic-ext/wght/normal.woff2);unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F;font-display:swap;}</style>
+    <!-- Bootstrap Css -->
+    <link href="https://jdih.mahkamahagung.go.id/assets/front-desain/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <!-- SlickNav Css -->
+    <link href="https://jdih.mahkamahagung.go.id/assets/front-desain/css/slicknav.min.css" rel="stylesheet">
+    <!-- Swiper Css -->
+    <link rel="stylesheet" href="https://jdih.mahkamahagung.go.id/assets/front-desain/css/swiper-bundle.min.css">
+    <!-- Font Awesome Icon Css-->
+    <link href="https://jdih.mahkamahagung.go.id/assets/front-desain/css/all.min.css" rel="stylesheet" media="screen">
+    <!-- Animated Css -->
+    <link href="https://jdih.mahkamahagung.go.id/assets/front-desain/css/animate.css" rel="stylesheet">
+    <!-- Magnific Popup Core Css File -->
+    <link rel="stylesheet" href="https://jdih.mahkamahagung.go.id/assets/front-desain/css/magnific-popup.css">
+    <!-- Mouse Cursor Css File -->
+    <link rel="stylesheet" href="https://jdih.mahkamahagung.go.id/assets/front-desain/css/mousecursor.css">
+    <link rel="stylesheet" href="https://jdih.mahkamahagung.go.id/assets/front-desain/select2/dist/css/select2.css">
+    <!-- Main Custom Css -->
+    <link href="https://jdih.mahkamahagung.go.id/assets/front-desain/css/custom.css" rel="stylesheet" media="screen">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+    .custom-badge-mini {
+        background-color: #173b5f; /* Biru tua */
+        color: #fff; /* Putih */
+        padding: 2px 5px; /* Padding badge */
+        border-radius: 3px; /* Sudut badge */
+        font-size: 12px !important; /* Ukuran font */
+        white-space: nowrap; /* Mencegah teks terpotong */
+        float: right; /* Pindahkan ke kanan */
+        margin-left: 10px; /* Jarak dengan elemen di sebelah kiri */
+    }
+    .pdf-to-img {
+        object-fit: cover !important;     /* Memastikan gambar memenuhi area */
+        object-position: top center !important; /* MEMAKSA POSISI DI ATAS */
+        width: 100%;                      /* Sesuaikan dengan lebar kontainer */
+        height: 100%;                     /* Sesuaikan dengan tinggi kontainer */
+    }
+    .li-pengadilan {
+        list-style: none;     /* hilangkan bullet */
+        padding: 0;           /* hilangkan space */
+        margin: 0;
+        border: none;
+    }
+
+    /* saat wrapper masih hidden → li benar-benar rata */
+    .li-pengadilan:has(#pengadilanWrapper[style*="display:none"]) {
+        padding: 0;
+        margin: 0;
+        border: none;
+    }
+
+</style>
+
+
+<body>
+    <!--::header part start::-->
+            <!-- Header Start -->
+    <header class="main-header header-metal">
+        <div class="header-sticky bg-section">
+            <nav class="navbar navbar-expand-lg">
+                <div class="container-fluid">
+                   <!-- Logo Start -->
+                    <a class="navbar-brand" href="https://jdih.mahkamahagung.go.id">
+                        <img src="https://jdih.mahkamahagung.go.id/images/new-desain/JDIH-MA.png" alt="Logo">
+                    </a>
+                    <!-- Logo End -->
+
+                    <!-- Main Menu Start -->
+                    <div class="collapse navbar-collapse main-menu">
+                        <div class="nav-menu-wrapper">
+                            <ul class="navbar-nav mr-auto" id="menu">
+                                <li class="nav-item submenu"><a class="nav-link" href="#">Dokumen Hukum</a>
+                                    <ul>
+                                        <li class="nav-item"><a class="nav-link" href="https://jdih.mahkamahagung.go.id/dokumen?jenis=puu">
+                                        Peraturan</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="https://jdih.mahkamahagung.go.id/dokumen?jenis=monografi-hukum">Monografi Hukum</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="https://jdih.mahkamahagung.go.id/dokumen?jenis=artikel-hukum">Artikel Hukum</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="https://jdih.mahkamahagung.go.id/dokumen?jenis=putusan">Putusan/Yurisprudensi</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="https://jdih.mahkamahagung.go.id/dokumen?jenis=terjemahan">Terjemahan</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="https://jdih.mahkamahagung.go.id/dokumen?jenis=dokumen-langka">Dokumen Langka</a></li>
+                                    </ul>
+                                </li>
+                                <li class="nav-item submenu"><a class="nav-link" href="#">Dokumen Pembentukan PUU</a>
+                                    <ul>
+                                       <li class="nav-item"><a class="nav-link" href="https://jdih.mahkamahagung.go.id/dokumen?jenis=program-penyusunan-puu">Program Penyusunan PUU</a></li>
+                                       <li class="nav-item"><a class="nav-link" href="https://jdih.mahkamahagung.go.id/dokumen?jenis=rancangan-puu">Rancangan PUU</a></li>
+                                       <li class="nav-item"><a class="nav-link" href="https://jdih.mahkamahagung.go.id/dokumen?jenis=naskah-akademik">Naskah Akademik</a></li>
+                                       <li class="nav-item"><a class="nav-link" href="https://jdih.mahkamahagung.go.id/dokumen?jenis=analisis-dan-evaluasi">Analisis dan Evaluasi</a></li>
+                                       <li class="nav-item"><a class="nav-link" href="https://jdih.mahkamahagung.go.id/dokumen?jenis=risalah-pembahasan">Risalah Pembahasan</a></li>
+                                       <li class="nav-item"><a class="nav-link" href="https://jdih.mahkamahagung.go.id/dokumen?jenis=kajian-dan-penelitian-hukum">Kajian dan Penelitian Hukum</a></li>
+                                    </ul>
+                                </li>
+                                <li class="nav-item submenu"><a class="nav-link" href="#">Informasi Hukum</a>
+                                    <ul>
+                                        <li class="nav-item"><a class="nav-link" href="https://jdih.mahkamahagung.go.id/dokumen?jenis=tulisan-hukum">Tulisan Hukum</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="https://jdih.mahkamahagung.go.id/berita">Berita</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="https://jdih.mahkamahagung.go.id/infografis"> Infografis</a></li>
+                                    </ul>
+                                </li>
+                                <li class="nav-item submenu"><a class="nav-link" href="#">Tentang Kami</a>
+                                    <ul>
+                                        <li class="nav-item"><a class="nav-link" href="https://jdih.mahkamahagung.go.id/tentang-kami/profil-jdih">Profil JDIH MA RI</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="https://jdih.mahkamahagung.go.id/jdih-satker">JDIH Satuan Kerja</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="https://jdih.mahkamahagung.go.id/tentang-kami/dasar-hukum"> Dasar Hukum</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="https://jdih.mahkamahagung.go.id/tentang-kami/struktur-organisasi"> Struktur Organisasi</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="https://jdih.mahkamahagung.go.id/tentang-kami/sop">SOP</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="https://jdih.mahkamahagung.go.id/tentang-kami/tim-teknis"> Tim Teknis</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="https://jdih.mahkamahagung.go.id/hubungi-kami">Hubungi Kami</a></li>
+                                    </ul>
+                                </li>
+                               
+                            </ul>
+                        </div>
+                        <!-- Header Btn Start -->
+                        <div class="header-btn header-search">
+                                <div class="footer-newsletter-form wow fadeInUp">
+                                    <form id="searchForm-header" method="get" action="https://jdih.mahkamahagung.go.id/dokumen">
+                                        <div class="form-group">
+                                            <input type="text" name="search" value="ekonomi syariah" class="form-control" onfocus="if (!window.__cfRLUnblockHandlers) return false; this.placeholder = ''" onblur="if (!window.__cfRLUnblockHandlers) return false; this.placeholder = 'Tuliskan kata kunci...'" placeholder="Tuliskan kata kunci..." required data-cf-modified-8cff4b4ac6218fdb4fcfd88a-="">
+                                            <button id="btn-search" type="submit" class="newsletter-btn"><i class="fas fa-search"></i></button>
+                                        </div>
+                                    </form>
+                                </div>
+                        </div>
+                        <!-- Header Btn End -->
+                    </div>
+                    <!-- Main Menu End -->
+                    <div class="navbar-toggle"></div>
+                </div>
+            </nav>
+            <div class="responsive-menu"></div>
+        </div>
+    </header>
+    <!-- Header End -->
+            <!-- Header part end-->
+
+    <!-- Modal for Subscribe -->
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <embed id="pdfRenderer" type="application/pdf" src="" frameborder="0" width="100%" height="700px">
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Page Header Section Start -->
+    <div class="page-header parallaxie">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <!-- Page Header Box Start -->
+                    <div class="page-header-box">
+                        <h1 class="text-anime-style-3" data-cursor="-opaque">Daftar Dokumen</h1>
+                    </div>
+                    <!-- Page Header Box End -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Page Header Section End -->
+
+    <!-- Page Schedule Single Start -->
+    <div class="page-schedule-single light-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <!-- Page Single Sidebar Start -->
+                    <div class="page-single-sidebar">
+                        <!-- Page Category List Start -->
+                        <form id="searchForm" method="GET" action="#">
+                            <div class="page-category-list wow fadeInUp">
+                                <ul>
+                                    
+                                    <li>
+                                        <div class="checkbox-wrapper">
+                                            <label class="form-label">
+                                                Jenis Produk Hukum
+                                            </label>
+                                            <div class="checkbox-group indent collapsed" id="checkboxList">
+                                                <!-- AJAX inject -->
+                                            </div>
+                                            <button type="button"
+                                                    class="checkbox-toggle"
+                                                    id="toggleCheckbox">
+                                                <span>Selengkapnya</span>
+                                                <i class="arrow"></i>
+                                            </button>
+                                        </div>
+                                    </li>
+                                    
+                                    
+                                    <li class="li-pengadilan">
+                                        <div class="checkbox-wrapper">
+                                            <div class="custom-select-wrapper"
+                                                 id="pengadilanWrapper"
+                                                 style="display:none">
+                                                <label class="form-label">
+                                                    Pengadilan
+                                                </label>
+                                                <div class="custom-select" id="pengadilanSelect">
+                                                    <div class="select-trigger">
+                                                        <span class="selected-text">
+                                                            Pilih Pengadilan
+                                                        </span>
+                                                        <i class="select-arrow"></i>
+                                                    </div>
+                                                    <div class="select-dropdown">
+                                                        <input type="text"
+                                                               class="select-search"
+                                                               placeholder="Cari pengadilan...">
+                                                        <ul class="select-options"></ul>
+                                                    </div>
+                                                    <input type="hidden"
+                                                           name="pengadilan"
+                                                           id="pengadilanValue">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="checkbox-wrapper">
+                                            <label class="form-label">
+                                                Nomor
+                                            </label>
+                                            <div class="form-group">
+                                                <input type="text"
+                                                       name="nomor"
+                                                        value=""
+                                                       class="form-control"
+                                                       placeholder="Nomor">
+                                            </div>
+                                        </div>
+                                    </li>
+                                    
+                                    <li>
+                                        <div class="checkbox-wrapper">
+                                            <label class="form-label">
+                                                Tahun
+                                            </label>
+                                            <div class="checkbox-group indent year-grid">
+                                                                                                                                                                                                        <label class="custom-checkbox year-item">
+                                                        <input type="checkbox"
+                                                               name="tahun[]"
+                                                               value="2026"
+                                                               >
+                                                        <span class="checkmark"></span>
+                                                        2026
+                                                    </label>
+                                                                                                                                                        <label class="custom-checkbox year-item">
+                                                        <input type="checkbox"
+                                                               name="tahun[]"
+                                                               value="2025"
+                                                               >
+                                                        <span class="checkmark"></span>
+                                                        2025
+                                                    </label>
+                                                                                                                                                        <label class="custom-checkbox year-item">
+                                                        <input type="checkbox"
+                                                               name="tahun[]"
+                                                               value="2024"
+                                                               >
+                                                        <span class="checkmark"></span>
+                                                        2024
+                                                    </label>
+                                                                                                                                                        <label class="custom-checkbox year-item">
+                                                        <input type="checkbox"
+                                                               name="tahun[]"
+                                                               value="2023"
+                                                               >
+                                                        <span class="checkmark"></span>
+                                                        2023
+                                                    </label>
+                                                                                                                                                        <label class="custom-checkbox year-item">
+                                                        <input type="checkbox"
+                                                               name="tahun[]"
+                                                               value="2022"
+                                                               >
+                                                        <span class="checkmark"></span>
+                                                        2022
+                                                    </label>
+                                                                                                                                                        <label class="custom-checkbox year-item">
+                                                        <input type="checkbox"
+                                                               name="tahun[]"
+                                                               value="2021"
+                                                               >
+                                                        <span class="checkmark"></span>
+                                                        2021
+                                                    </label>
+                                                                                                                                                        <label class="custom-checkbox year-item">
+                                                        <input type="checkbox"
+                                                               name="tahun[]"
+                                                               value="2020"
+                                                               >
+                                                        <span class="checkmark"></span>
+                                                        2020
+                                                    </label>
+                                                                                                                                                        <label class="custom-checkbox year-item">
+                                                        <input type="checkbox"
+                                                               name="tahun[]"
+                                                               value="2019"
+                                                               >
+                                                        <span class="checkmark"></span>
+                                                        2019
+                                                    </label>
+                                                                                                                                                        <label class="custom-checkbox year-item">
+                                                        <input type="checkbox"
+                                                               name="tahun[]"
+                                                               value="2018"
+                                                               >
+                                                        <span class="checkmark"></span>
+                                                        2018
+                                                    </label>
+                                                                                                                                                        <label class="custom-checkbox year-item">
+                                                        <input type="checkbox"
+                                                               name="tahun[]"
+                                                               value="2017"
+                                                               >
+                                                        <span class="checkmark"></span>
+                                                        2017
+                                                    </label>
+                                                                                                                                                        <label class="custom-checkbox year-item">
+                                                        <input type="checkbox"
+                                                               name="tahun[]"
+                                                               value="2016"
+                                                               >
+                                                        <span class="checkmark"></span>
+                                                        2016
+                                                    </label>
+                                                                                                                                                        <label class="custom-checkbox year-item">
+                                                        <input type="checkbox"
+                                                               name="tahun[]"
+                                                               value="2015"
+                                                               >
+                                                        <span class="checkmark"></span>
+                                                        2015
+                                                    </label>
+                                                                                                                                                        <label class="custom-checkbox year-item">
+                                                        <input type="checkbox"
+                                                               name="tahun[]"
+                                                               value="2014"
+                                                               >
+                                                        <span class="checkmark"></span>
+                                                        2014
+                                                    </label>
+                                                                                                                                                        <label class="custom-checkbox year-item">
+                                                        <input type="checkbox"
+                                                               name="tahun[]"
+                                                               value="2013"
+                                                               >
+                                                        <span class="checkmark"></span>
+                                                        2013
+                                                    </label>
+                                                                                                <label class="custom-checkbox year-item">
+                                                    <input type="checkbox"
+                                                           name="tahun[]"
+                                                           value="older"
+                                                           >
+                                                    <span class="checkmark"></span>
+                                                    ≤ 2012
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="checkbox-wrapper">
+                                            <label class="form-label">
+                                                Terjemahan
+                                            </label>
+                                            <div class="checkbox-group indent">
+                                                <label class="custom-checkbox">
+                                                    <input type="checkbox"
+                                                           name="jenis[]"
+                                                            value="terjemahan">
+                                                    <span class="checkmark"></span>
+                                                    Tersedia Terjemahan
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    
+                                    <li>
+                                        <div class="checkbox-wrapper">
+                                            <label class="form-label">
+                                                Status Berlaku
+                                            </label>
+                                            <div class="checkbox-group indent">
+                                                <label class="custom-checkbox">
+                                                    <input type="checkbox"
+                                                           name="status_berlaku[]"
+                                                           value="1">
+                                                    <span class="checkmark"></span>
+                                                    Berlaku
+                                                </label>
+                                                <label class="custom-checkbox">
+                                                    <input type="checkbox"
+                                                           name="status_berlaku[]"
+                                                           value="0">
+                                                    <span class="checkmark"></span>
+                                                    Tidak Berlaku
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </form>
+                        <!-- Page Category List End -->
+                    </div>
+                    <!-- Page Single Sidebar End -->
+                </div>
+                <div class="col-lg-8">
+                    <!-- Schedule Single Content Start -->
+                    <!-- =========================
+                         ACTIVE FILTER TAGS
+                    ========================== -->
+                    <!-- =========================
+                         ACTIVE FILTER TAGS
+                    ========================== -->
+                    <div id="active-filters-wrapper" style="display:none">
+                        <div class="active-filters-inner">
+                            <span class="filter-title">Filter Aktif:</span>
+
+                            <div id="active-filters-tags"></div>
+                            <button type="button" id="reset-all-filters" title="Reset Filter">
+                            <i style="color: var(--primary-color);" class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="schedule-single-content">
+                        <div class="blog_left_sidebar" id="search-result-wrapper">
+                                                                                                                            <div class="event-item-metal">
+                                        <!-- Event Item Image Start -->
+                                        <div class="event-item-image-metal">
+                                            <a href="javascript:void(0)" 
+                                               class="open-pdf-modal" 
+                                               data-pdf="https://jdih.mahkamahagung.go.id/storage/uploads/produk_hukum/file/PerMA No. 5 Th 2016.pdf" 
+                                               data-bs-toggle="modal" 
+                                               data-bs-target="#myModal"
+                                               data-cursor-text="View">
+                                                <figure>
+                                                    <img src="images/loading-placeholder.jpg" 
+                                                         class="pdf-to-img" 
+                                                         data-pdf-url=" https://jdih.mahkamahagung.go.id/storage/uploads/produk_hukum/file/PerMA No. 5 Th 2016.pdf" 
+                                                         alt="Preview Document">
+                                                </figure>
+                                            </a>
+                                        </div>
+                                        <!-- Event Item Image End -->
+
+                                        <!-- Event Item Body Box Start -->
+                                        <div class="event-item-body-box-metal">
+                                            <!-- Event Item Content Box Start -->
+                                            <div class="event-item-content-box-metal-peraturan">
+                                                <!-- Event Info List Start -->
+                                                <div class="event-info-list-metal">
+                                                    <ul>
+                                                         <li><img src="https://jdih.mahkamahagung.go.id/images/new-desain/icon-date-accent.svg" alt="">19 April 2016
+                                                         </li>
+                                                         <li><img src="https://jdih.mahkamahagung.go.id/images/new-desain/icon-view.svg" alt="">2.2K x dilihat</li>
+                                                         <li><img src="https://jdih.mahkamahagung.go.id/images/new-desain/icon-unduh.svg" alt="">3.6K x diunduh</li>
+                                                                                                                                                                       </ul>
+                                                 </div>
+                                                 <!-- Event Info List End -->
+                                                 <!-- Event Item Content Start -->
+                                                 <div class="event-item-content-metal">
+                                                     <h3><a href="https://jdih.mahkamahagung.go.id/legal-product/perma-nomor-5-tahun-2016/detail">PERMA NOMOR 5 TAHUN 2016</a></h3>
+                                                     <p class="highlight-text">
+                                                                                                                  SERTIFIKASI HAKIM <em style='background-color:#FF0;'>EKONOMI SYARIAH</em>
+                                                     </p>
+                                                 </div>
+                                                <!-- Event Item Content End -->
+                                               
+                                            </div>
+                                            <!-- Event Item Content Box End -->
+                                        </div>
+                                        <!-- Event Item Body Box End -->
+                                    </div>
+                                    <!-- Event Item End -->
+                                                                                                                                <div class="event-item-metal">
+                                        <!-- Event Item Image Start -->
+                                        <div class="event-item-image-metal">
+                                            <a href="javascript:void(0)" 
+                                               class="open-pdf-modal" 
+                                               data-pdf="https://jdih.mahkamahagung.go.id/storage/uploads/produk_hukum/file/PERMA_14_2016_web.pdf" 
+                                               data-bs-toggle="modal" 
+                                               data-bs-target="#myModal"
+                                               data-cursor-text="View">
+                                                <figure>
+                                                    <img src="images/loading-placeholder.jpg" 
+                                                         class="pdf-to-img" 
+                                                         data-pdf-url=" https://jdih.mahkamahagung.go.id/storage/uploads/produk_hukum/file/PERMA_14_2016_web.pdf" 
+                                                         alt="Preview Document">
+                                                </figure>
+                                            </a>
+                                        </div>
+                                        <!-- Event Item Image End -->
+
+                                        <!-- Event Item Body Box Start -->
+                                        <div class="event-item-body-box-metal">
+                                            <!-- Event Item Content Box Start -->
+                                            <div class="event-item-content-box-metal-peraturan">
+                                                <!-- Event Info List Start -->
+                                                <div class="event-info-list-metal">
+                                                    <ul>
+                                                         <li><img src="https://jdih.mahkamahagung.go.id/images/new-desain/icon-date-accent.svg" alt="">22 Desember 2016
+                                                         </li>
+                                                         <li><img src="https://jdih.mahkamahagung.go.id/images/new-desain/icon-view.svg" alt="">7.0K x dilihat</li>
+                                                         <li><img src="https://jdih.mahkamahagung.go.id/images/new-desain/icon-unduh.svg" alt="">9.4K x diunduh</li>
+                                                                                                                                                                       </ul>
+                                                 </div>
+                                                 <!-- Event Info List End -->
+                                                 <!-- Event Item Content Start -->
+                                                 <div class="event-item-content-metal">
+                                                     <h3><a href="https://jdih.mahkamahagung.go.id/legal-product/perma-nomor-14-tahun-2016/detail">PERMA NOMOR 14 TAHUN 2016</a></h3>
+                                                     <p class="highlight-text">
+                                                                                                                  TATA CARA PENYELESAIAN PERKARA <em style='background-color:#FF0;'>EKONOMI SYARIAH</em>
+                                                     </p>
+                                                 </div>
+                                                <!-- Event Item Content End -->
+                                               
+                                            </div>
+                                            <!-- Event Item Content Box End -->
+                                        </div>
+                                        <!-- Event Item Body Box End -->
+                                    </div>
+                                    <!-- Event Item End -->
+                                                                                                                                <div class="event-item-metal">
+                                        <!-- Event Item Image Start -->
+                                        <div class="event-item-image-metal">
+                                            <a href="javascript:void(0)" 
+                                               class="open-pdf-modal" 
+                                               data-pdf="https://jdih.mahkamahagung.go.id/storage/uploads/produk_hukum/file/KMA_SK_85_V_2016.pdf" 
+                                               data-bs-toggle="modal" 
+                                               data-bs-target="#myModal"
+                                               data-cursor-text="View">
+                                                <figure>
+                                                    <img src="images/loading-placeholder.jpg" 
+                                                         class="pdf-to-img" 
+                                                         data-pdf-url=" https://jdih.mahkamahagung.go.id/storage/uploads/produk_hukum/file/KMA_SK_85_V_2016.pdf" 
+                                                         alt="Preview Document">
+                                                </figure>
+                                            </a>
+                                        </div>
+                                        <!-- Event Item Image End -->
+
+                                        <!-- Event Item Body Box Start -->
+                                        <div class="event-item-body-box-metal">
+                                            <!-- Event Item Content Box Start -->
+                                            <div class="event-item-content-box-metal-peraturan">
+                                                <!-- Event Info List Start -->
+                                                <div class="event-info-list-metal">
+                                                    <ul>
+                                                         <li><img src="https://jdih.mahkamahagung.go.id/images/new-desain/icon-date-accent.svg" alt="">13 Mei 2016
+                                                         </li>
+                                                         <li><img src="https://jdih.mahkamahagung.go.id/images/new-desain/icon-view.svg" alt="">472 x dilihat</li>
+                                                         <li><img src="https://jdih.mahkamahagung.go.id/images/new-desain/icon-unduh.svg" alt="">713 x diunduh</li>
+                                                                                                                                                                       </ul>
+                                                 </div>
+                                                 <!-- Event Info List End -->
+                                                 <!-- Event Item Content Start -->
+                                                 <div class="event-item-content-metal">
+                                                     <h3><a href="https://jdih.mahkamahagung.go.id/legal-product/sk-kma-nomor-85kmaskv2016/detail">SK KMA NOMOR 85/KMA/SK/V/2016</a></h3>
+                                                     <p class="highlight-text">
+                                                                                                                  Keputusan Ketua Mahkamah Agung Nomor 85/KMA/SK/V/2016 tentang Pembentukan Tim Seleksi Sertifikasi Hakim <em style='background-color:#FF0;'>Ekonomi Syariah</em>
+                                                     </p>
+                                                 </div>
+                                                <!-- Event Item Content End -->
+                                               
+                                            </div>
+                                            <!-- Event Item Content Box End -->
+                                        </div>
+                                        <!-- Event Item Body Box End -->
+                                    </div>
+                                    <!-- Event Item End -->
+                                                                                                                                <div class="event-item-metal">
+                                        <!-- Event Item Image Start -->
+                                        <div class="event-item-image-metal">
+                                            <a href="javascript:void(0)" 
+                                               class="open-pdf-modal" 
+                                               data-pdf="https://jdih.mahkamahagung.go.id/storage/uploads/produk_hukum/file/KMA_SK_84_V_2016.pdf" 
+                                               data-bs-toggle="modal" 
+                                               data-bs-target="#myModal"
+                                               data-cursor-text="View">
+                                                <figure>
+                                                    <img src="images/loading-placeholder.jpg" 
+                                                         class="pdf-to-img" 
+                                                         data-pdf-url=" https://jdih.mahkamahagung.go.id/storage/uploads/produk_hukum/file/KMA_SK_84_V_2016.pdf" 
+                                                         alt="Preview Document">
+                                                </figure>
+                                            </a>
+                                        </div>
+                                        <!-- Event Item Image End -->
+
+                                        <!-- Event Item Body Box Start -->
+                                        <div class="event-item-body-box-metal">
+                                            <!-- Event Item Content Box Start -->
+                                            <div class="event-item-content-box-metal-peraturan">
+                                                <!-- Event Info List Start -->
+                                                <div class="event-info-list-metal">
+                                                    <ul>
+                                                         <li><img src="https://jdih.mahkamahagung.go.id/images/new-desain/icon-date-accent.svg" alt="">13 Mei 2016
+                                                         </li>
+                                                         <li><img src="https://jdih.mahkamahagung.go.id/images/new-desain/icon-view.svg" alt="">380 x dilihat</li>
+                                                         <li><img src="https://jdih.mahkamahagung.go.id/images/new-desain/icon-unduh.svg" alt="">662 x diunduh</li>
+                                                                                                                                                                       </ul>
+                                                 </div>
+                                                 <!-- Event Info List End -->
+                                                 <!-- Event Item Content Start -->
+                                                 <div class="event-item-content-metal">
+                                                     <h3><a href="https://jdih.mahkamahagung.go.id/legal-product/sk-kma-nomor-84kmaskv2016/detail">SK KMA NOMOR 84/KMA/SK/V/2016</a></h3>
+                                                     <p class="highlight-text">
+                                                                                                                  Keputusan Ketua Mahkamah Agung Nomor  84/KMA/SK/V/2016 tentang Pembentukan Tim Khusus Dalam Sistem Sertifikasi Hakim <em style='background-color:#FF0;'>Ekonomi Syariah</em>
+                                                     </p>
+                                                 </div>
+                                                <!-- Event Item Content End -->
+                                               
+                                            </div>
+                                            <!-- Event Item Content Box End -->
+                                        </div>
+                                        <!-- Event Item Body Box End -->
+                                    </div>
+                                    <!-- Event Item End -->
+                                                                                        <nav class="blog-pagination justify-content-center d-flex">
+                                <ul class="pagination-sm">
+                                    
+                                </ul>
+                            </nav>
+                            
+                        </div>
+                    </div>
+                    <!-- Schedule Single Content End -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Page Schedule Single End -->
+
+
+    <!--::footer_part start::-->
+    <!-- Footer Section Start -->
+    <footer class="main-footer dark-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <!-- About Footer Start -->
+                    <div class="about-footer">
+                        <div class="footer-logo">
+                            <img src="https://jdih.mahkamahagung.go.id/images/new-desain/logo-default_MA_white.png" alt="">
+                        </div>
+
+                        <!-- About Footer Content Start -->
+                        <div class="about-footer-content">
+                            <p>Database Peraturan ini merupakan bagian dari pelaksanaan JDIH di lingkungan MA RI. Secara khusus dimaksudkan untuk menyebarluaskan informasi peraturan perundang-undangan dan dokumentasi hukum secara mudah, cepat dan akurat kepada para pengguna baik kalangan internal MA RI maupun masyarakat.</p>
+                        </div>
+                        <!-- About Footer Content End -->
+
+                        <!-- Footer Social Icons Start -->
+                        <div class="footer-social-icons">
+                            <ul>
+                                <li><a href="https://www.youtube.com/@jdih.mahkamahagung"><i class="fab fa-youtube"></i></a></li>
+                                <li><a href="https://instagram.com/jdihmahkamahagung?igshid=MzRlODBiNWFlZA=="><i class="fa-brands fa-instagram"></i></a></li>
+                            </ul>
+                        </div>
+                        <!-- Footer Social Icons End -->
+                    </div>
+                    <!-- About Footer End -->
+                </div>
+                <div class="col-md-4">
+                  <div class="about-footer">
+                        <!-- Footer Links End -->
+                        <div class="footer-links">
+                            <h3>Hubungi Kami</h3>
+                            <ul>
+                                <li> 
+                                    <div style="border-top: 0px !important; padding-top: 5px !important;" class="contact-info-item location-item">
+                                        <div style="padding-top: 5px;">
+                                            <img src="https://jdih.mahkamahagung.go.id/images/new-desain/icon-location-white.svg" alt="">
+                                        </div>
+                                        <div class="contact-info-content">
+                                            <p>Mahkamah Agung RI. Gedung F Lantai 1, Jl. Medan Merdeka Utara No. 9-13. Jakarta Pusat - DKI Jakarta Indonesia 10110</p>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div style="border-top: 0px !important; padding-top: 5px !important;" class="contact-info-item location-item">
+                                        <div style="padding-top: 5px;">
+                                            <img src="https://jdih.mahkamahagung.go.id/images/new-desain/icon-phone-white.svg" alt="">
+                                        </div>
+                                        <div class="contact-info-content">
+                                            <p><a href="tel:123456789">(021)-3843348</a></p>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div style="border-top: 0px !important; padding-top: 5px !important;" class="contact-info-item location-item">
+                                        <div style="padding-top: 5px;">
+                                            <img src="https://jdih.mahkamahagung.go.id/images/new-desain/icon-mail-white.svg" alt="">
+                                        </div>
+                                        <div class="contact-info-content">
+                                            <p><a href="/cdn-cgi/l/email-protection#63101613130c111723070c0e020a0d0d020e064d000c0e"><span class="__cf_email__" data-cfemail="f1819483df8484b19c90999a909c90999096849f96df969edf9895">[email&#160;protected]</span></a></p>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- Footer Links End -->
+                    </div>
+                    <!-- About Footer End -->
+                </div>
+                <div class="col-md-2">
+                 <div class="about-footer">
+                        <!-- Footer Links Start -->
+                        <div class="footer-links footer-contact-links">
+                            <h3>Penghargaan</h3>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <img style=" padding-right: 0px; margin-bottom: 10px;" src="https://jdih.mahkamahagung.go.id/images/new-desain/JDIHN_2023.png" width="100" alt="#">
+                                </div>
+                                <div class="col-md-6">
+                                    <img style="margin-bottom: 10px; padding-right: 0px;" src="https://jdih.mahkamahagung.go.id/images/new-desain/JDIHN_2024.png" width="100" alt="#">
+                                </div>
+                            </div>
+                            <h3>Aplikasi Mobile</h3>
+                            <div class="row" style="padding-left: 20px;">
+                                <a target="_blank" href="https://apps.apple.com/id/app/jdih-mahkamah-agung-ri/id6523424925" class="footer_logo_iner"> <img style="margin-bottom: 10px;" src="https://jdih.mahkamahagung.go.id/images/new-desain/logo_apple.png" width="140" alt="#"> </a>
+                                <a target="_blank" href="https://play.google.com/store/apps/details?id=com.jdih.mobile" class="footer_logo_iner"> <img style="margin-top: 0px; margin-bottom: 0px;" src="https://jdih.mahkamahagung.go.id/images/new-desain/logo_google.png" width="140" alt="#"> </a>
+                            </div>
+                        </div>
+                        <!-- Footer Links End -->
+                    </div>
+                    <!-- About Footer End -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Copyright Start -->
+        <div class="footer-copyright">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <!-- Footer Copyright Text Start -->
+                        <div class="footer-copyright-text">
+                            <p>Copyright © 2025 All Rights Reserved.</p>
+                        </div>
+                        <!-- Footer Copyright Text End -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer Copyright End -->
+    </footer>
+    <!-- Footer Section End -->
+        <!--::footer_part end::-->
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.userway.org/widget.js" data-account="lqygccDhJ9" type="8cff4b4ac6218fdb4fcfd88a-text/javascript"></script>
+
+<script src="/cdn-cgi/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js" data-cf-settings="8cff4b4ac6218fdb4fcfd88a-|49" defer></script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a359eb17cf58ff78',t:'MTc4ODQ5MjY1NQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+  <!-- JavaScript Libraries -->
+    <!-- Jquery Library File -->
+    <script src="https://jdih.mahkamahagung.go.id/assets/front-desain/js/jquery-3.7.1.min.js" type="8cff4b4ac6218fdb4fcfd88a-text/javascript"></script>
+    <!-- Bootstrap js file -->
+    <script src="https://jdih.mahkamahagung.go.id/assets/front-desain/js/bootstrap.min.js" type="8cff4b4ac6218fdb4fcfd88a-text/javascript"></script>
+    <!-- Validator js file -->
+    <script src="https://jdih.mahkamahagung.go.id/assets/front-desain/js/validator.min.js" type="8cff4b4ac6218fdb4fcfd88a-text/javascript"></script>
+    <!-- SlickNav js file -->
+    <script src="https://jdih.mahkamahagung.go.id/assets/front-desain/js/jquery.slicknav.js" type="8cff4b4ac6218fdb4fcfd88a-text/javascript"></script>
+    <!-- Swiper js file -->
+    <script src="https://jdih.mahkamahagung.go.id/assets/front-desain/js/swiper-bundle.min.js" type="8cff4b4ac6218fdb4fcfd88a-text/javascript"></script>
+    <!-- Counter js file -->
+    <script src="https://jdih.mahkamahagung.go.id/assets/front-desain/js/jquery.waypoints.min.js" type="8cff4b4ac6218fdb4fcfd88a-text/javascript"></script>
+    <script src="https://jdih.mahkamahagung.go.id/assets/front-desain/js/jquery.counterup.min.js" type="8cff4b4ac6218fdb4fcfd88a-text/javascript"></script>
+    <!-- Magnific js file -->
+    <script src="https://jdih.mahkamahagung.go.id/assets/front-desain/js/jquery.magnific-popup.min.js" type="8cff4b4ac6218fdb4fcfd88a-text/javascript"></script>
+    <!-- SmoothScroll -->
+    <script src="https://jdih.mahkamahagung.go.id/assets/front-desain/js/SmoothScroll.js" type="8cff4b4ac6218fdb4fcfd88a-text/javascript"></script>
+    <!-- Parallax js -->
+    <script src="https://jdih.mahkamahagung.go.id/assets/front-desain/js/parallaxie.js" type="8cff4b4ac6218fdb4fcfd88a-text/javascript"></script>
+    <!-- MagicCursor js file -->
+    <script src="https://jdih.mahkamahagung.go.id/assets/front-desain/js/gsap.min.js" type="8cff4b4ac6218fdb4fcfd88a-text/javascript"></script>
+    <script src="https://jdih.mahkamahagung.go.id/assets/front-desain/js/magiccursor.js" type="8cff4b4ac6218fdb4fcfd88a-text/javascript"></script>
+    <!-- Text Effect js file -->
+    <script src="https://jdih.mahkamahagung.go.id/assets/front-desain/js/SplitText.min.js" type="8cff4b4ac6218fdb4fcfd88a-text/javascript"></script>
+    <script src="https://jdih.mahkamahagung.go.id/assets/front-desain/js/ScrollTrigger.min.js" type="8cff4b4ac6218fdb4fcfd88a-text/javascript"></script>
+    <!-- YTPlayer js File -->
+    <script src="https://jdih.mahkamahagung.go.id/assets/front-desain/js/jquery.mb.YTPlayer.min.js" type="8cff4b4ac6218fdb4fcfd88a-text/javascript"></script>
+    <!-- Wow js file -->
+    <script src="https://jdih.mahkamahagung.go.id/assets/front-desain/js/wow.min.js" type="8cff4b4ac6218fdb4fcfd88a-text/javascript"></script>
+    <!-- Main Custom js file -->
+    <script src="https://jdih.mahkamahagung.go.id/assets/front-desain/js/function.js" type="8cff4b4ac6218fdb4fcfd88a-text/javascript"></script>
+
+   <script src="https://jdih.mahkamahagung.go.id/assets/front-desain/select2/dist/js/select2.min.js" type="8cff4b4ac6218fdb4fcfd88a-text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" type="8cff4b4ac6218fdb4fcfd88a-text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js" type="8cff4b4ac6218fdb4fcfd88a-text/javascript"></script>
+<script type="8cff4b4ac6218fdb4fcfd88a-text/javascript">
+    document.getElementById('searchForm').addEventListener('submit', function (e) {
+        // Ambil nilai dari setiap input
+        const search = document.querySelector('[name="search"]').value.trim();
+        const nomor = document.querySelector('[name="nomor"]').value.trim();
+        const bentukPeraturan = document.querySelector('[name="bentuk_peraturan"]').value.trim();
+        const year = document.querySelector('[name="year"]').value.trim();
+
+        // Jika semua kosong, cegah submit dan tampilkan alert
+        if (!search && !nomor && !bentukPeraturan && !year) {
+            e.preventDefault(); // Stop form submit
+            Swal.fire({
+                icon: 'warning',
+                title: 'Oops!',
+                text: 'Minimal satu filter pencarian harus diisi.',
+            });
+        }
+    });
+    function renderPdfPreview() {
+
+        document.querySelectorAll('.pdf-to-img').forEach(imgElement => {
+
+            let url = imgElement.getAttribute('data-pdf-url');
+            if (!url) return;
+
+            url = decodeURIComponent(url);
+
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+
+            pdfjsLib.getDocument(url).promise
+                .then(pdf => pdf.getPage(1))
+                .then(page => {
+
+                    const viewport = page.getViewport({ scale: 1.5 });
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+
+                    return page.render({
+                        canvasContext: context,
+                        viewport: viewport
+                    }).promise;
+                })
+                .then(() => {
+                    imgElement.src = canvas.toDataURL('image/png');
+                })
+                .catch(err => {
+                    console.warn('Preview gagal:', url);
+                    imgElement.src = 'images/default-pdf-icon.jpg';
+                });
+        });
+    }
+
+                // Konfigurasi Worker PDF.js
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+
+        function slugify(text) {
+            return text
+                .toString()
+                .toLowerCase()              // huruf kecil semua
+                .trim()
+                .replace(/\s+/g, '-')       // spasi → -
+                .replace(/[^\w\-]+/g, '')   // hapus karakter aneh
+                .replace(/\-\-+/g, '-');    // -- → -
+        }
+
+
+        $(document).ready(function(){
+            renderPdfPreview();
+            $('.js-example-basic-single').select2();
+            $(document).on('click', '.open-pdf-modal', function () {
+                var pdfUrl = $(this).data('pdf');
+                $('#pdfRenderer').attr('src', pdfUrl);
+            });
+            // Opsional: Bersihkan src saat modal ditutup agar PDF tidak loading terus di background
+            $('#myModal').on('hidden.bs.modal', function () {
+                $('#pdfRenderer').attr('src', '');
+            });
+            $(document).on('click', '.popup-infografis', function (e) {
+                e.preventDefault();
+
+                $.magnificPopup.open({
+                    items: {
+                        src: $(this).attr('href')
+                    },
+                    type: 'image',
+                    mainClass: 'mfp-fade',
+                    removalDelay: 300,
+                    closeOnContentClick: true,
+                    fixedContentPos: true
+                });
+            });
+
+            window.selectedJenis = ["puu"];
+
+                $.get('/search/init', function(res) {
+                    let html = '';
+
+                    res.types.forEach(item => {
+
+                        let slug = slugify(item.name);
+
+                        let checked = selectedJenis.includes(slug)
+                            ? 'checked'
+                            : '';
+
+                        html += `
+                            <label class="custom-checkbox">
+                                <input type="checkbox"
+                                       name="jenis[]"
+                                       value="${slug}"
+                                       ${checked}>
+                                <span class="checkmark"></span>
+                                ${item.name}
+                            </label>
+                        `;
+                    });
+
+                    // PUTUSAN (manual, sudah slug)
+                    let checkedPutusan = selectedJenis.includes('putusan')
+                        ? 'checked'
+                        : '';
+
+                    html += `
+                        <label class="custom-checkbox">
+                            <input type="checkbox"
+                                   name="jenis[]"
+                                   value="putusan"
+                                   id="chkPutusan"
+                                   ${checkedPutusan}>
+                            <span class="checkmark"></span>
+                            Putusan
+                        </label>
+                    `;
+
+                    $('#checkboxList')
+                        .html(html)
+                        .removeClass('expanded')
+                        .addClass('collapsed');
+
+                    // 🔥 BARU BOLEH RENDER TAG
+                    setTimeout(() => {
+                        renderActiveFilters();
+
+                        // auto buka pengadilan kalau putusan dari URL
+                        if ($('#chkPutusan').is(':checked')) {
+                            $('#pengadilanWrapper').show();
+                        }
+                    }, 0);
+                });
+
+            $('#toggleCheckbox').on('click', function () {
+
+                const list = $('#checkboxList');
+
+                if (list.hasClass('collapsed')) {
+                    list.removeClass('collapsed').addClass('expanded');
+                    $(this).addClass('active');
+                    $(this).find('span').text('Lebih sedikit');
+                } else {
+                    list.removeClass('expanded').addClass('collapsed');
+                    $(this).removeClass('active');
+                    $(this).find('span').text('Selengkapnya');
+                }
+
+            });
+        });
+
+        $(document).on('change', '#chkPutusan', function () {
+            if ($(this).is(':checked')) {
+                $('#pengadilanWrapper').slideDown(200);
+                // load pengadilan
+                $.get('/search/pengadilan', function (res) {
+                    let html = '';
+                    res.forEach(item => {
+                        html += `<li data-value="${item.name}">${item.name}</li>`;
+                    });
+                    $('#pengadilanSelect .select-options').html(html);
+                });
+
+            } else {
+                // reset
+                $('#pengadilanSelect').val(null).trigger('change');
+                $('#pengadilanWrapper').slideUp(200);
+            }
+        });
+        // open dropdown
+        $(document).on('click', '.select-trigger', function () {
+            $(this).closest('.custom-select').toggleClass('open');
+            $(this).siblings('.select-dropdown').toggle();
+        });
+
+        // pilih item
+        $(document).on('click', '.select-options li', function () {
+            let text = $(this).text();
+            let val  = $(this).data('value');
+            let box = $(this).closest('.custom-select');
+            box.find('.selected-text').text(text);
+            box.find('#pengadilanValue').val(val).trigger('change');
+            box.removeClass('open');
+            box.find('.select-dropdown').hide();
+
+        });
+        // search filter
+        $(document).on('keyup', '.select-search', function () {
+            let val = $(this).val().toLowerCase();
+            $(this).siblings('.select-options').find('li').each(function () {
+                $(this).toggle($(this).text().toLowerCase().includes(val));
+            });
+        });
+
+        // klik luar tutup
+        $(document).on('click', function (e) {
+            if (!$(e.target).closest('.custom-select').length) {
+                $('.custom-select').removeClass('open');
+                $('.select-dropdown').hide();
+            }
+        });
+
+        // ===============================
+        // AJAX PAGINATION
+        // ===============================
+        $(document).on('click', '#search-result-wrapper .pagination a', function (e) {
+            e.preventDefault();
+
+            let url = $(this).attr('href');
+
+            if (!url) return;
+
+            $.ajax({
+                url: url,
+                type: "GET",
+
+                beforeSend() {
+                    // ⬇️ SCROLL KE ATAS HASIL
+                    $('html, body').animate({
+                        scrollTop: $('#search-result-wrapper').offset().top - 250
+                    }, 400);
+
+                    $('#search-result-wrapper').html(
+                        '<p style="padding:20px">Memuat data...</p>'
+                    );
+                },
+
+                success(res) {
+                    let html = $(res).find('#search-result-wrapper').html();
+                    $('#search-result-wrapper').html(html);
+                    renderPdfPreview();
+                    // update URL browser
+                    history.pushState(null, '', url);
+                },
+
+                error(err) {
+                    console.log(err);
+                }
+            });
+        });
+
+        function renderActiveFilters() {
+
+                let tagsHtml = '';
+                let hasFilter = false;
+
+                /* ======================
+                   JENIS PRODUK HUKUM
+                ====================== */
+                $('#searchForm input[name="jenis[]"]:checked').each(function () {
+                    hasFilter = true;
+                    let val  = $(this).val();
+                    let text = $(this).closest('label').text().trim();
+                    if (val === 'terjemahan' || text.toLowerCase().includes('terjemahan')) {
+                        tagsHtml += makeTag(
+                                'Tersedia Terjemahan',   // label
+                                '',                      // isi dikosongkan
+                                'checkbox',
+                                'jenis[]',
+                                val
+                            );
+                        } else {
+                            tagsHtml += makeTag(
+                                'Jenis',
+                                text,
+                                'checkbox',
+                                'jenis[]',
+                                val
+                            );
+                        }
+                });
+
+                /* ======================
+                   TAHUN
+                ====================== */
+                $('#searchForm input[name="tahun[]"]:checked').each(function () {
+                    hasFilter = true;
+                    let year = $(this).val();
+                    let label = (year === 'older')
+                        ? '≤ ' + (new Date().getFullYear() - 14)
+                        : year;
+                    tagsHtml += makeTag('Tahun', label, 'checkbox', 'tahun[]', year);
+                });
+
+                /* ======================
+                   STATUS BERLAKU
+                ====================== */
+                $('#searchForm input[name="status_berlaku[]"]:checked').each(function () {
+                    hasFilter = true;
+                    let label = $(this).val() === '1'
+                        ? 'Berlaku'
+                        : 'Tidak Berlaku';
+                    tagsHtml += makeTag('Status', label, 'checkbox', 'status_berlaku[]', $(this).val());
+                });
+
+                /* ======================
+                   NOMOR
+                ====================== */
+                let nomor = $('input[name="nomor"]').val();
+                if (nomor !== '') {
+                    hasFilter = true;
+                    tagsHtml += makeTag('Nomor', nomor, 'text', 'nomor');
+                }
+                // =======================
+                // FILTER PENGADILAN ✅
+                // =======================
+                let pengadilanVal = $('#pengadilanValue').val();
+
+                if (pengadilanVal) {
+                    hasFilter = true;
+
+                    let pengadilanText = $('#pengadilanSelect .selected-text').text().trim();
+
+                    tagsHtml += makeTag(
+                        'Pengadilan',
+                        pengadilanText,
+                        'select',
+                        'pengadilan',
+                        pengadilanVal
+                    );
+                }
+
+                /* ======================
+                   KEYWORD HEADER
+                ====================== */
+                let keyword = $('#searchForm-header input[name="search"]').val();
+                if (keyword !== '') {
+                    hasFilter = true;
+                    tagsHtml += makeTag('Kata Kunci', keyword, 'header', 'search');
+                }
+
+                if (hasFilter) {
+                    $('#active-filters-tags').html(tagsHtml);
+                    $('#active-filters-wrapper').fadeIn(150);
+                } else {
+                    $('#active-filters-wrapper').fadeOut(150);
+                }
+            }
+
+            function runSearch() {
+
+                let filterData = $('#searchForm').serialize();
+                let headerData = $('#searchForm-header').serialize();
+
+                let finalQuery = [filterData, headerData]
+                    .filter(v => v && v.trim() !== '')
+                    .join('&');
+
+                $.ajax({
+                    url: "https://jdih.mahkamahagung.go.id/dokumen",
+                    type: "GET",
+                    data: finalQuery,
+
+                    beforeSend() {
+                        $('html, body').animate({
+                            scrollTop: $('#search-result-wrapper').offset().top - 250
+                        }, 400);
+
+                        $('#search-result-wrapper').html(
+                            '<p style="padding:20px">Memuat data...</p>'
+                        );
+                    },
+
+                    success(res) {
+                        let html = $(res).find('#search-result-wrapper').html();
+                        $('#search-result-wrapper').html(html);
+
+                        renderPdfPreview();
+
+                        if (finalQuery.length > 0) {
+                            history.pushState(null, '', '?' + finalQuery);
+                        } else {
+                            history.pushState(null, '', window.location.pathname);
+                        }
+
+                        setTimeout(renderActiveFilters, 10);
+                    },
+
+                    error(err) {
+                        console.log(err);
+                    }
+                });
+            }
+
+
+            /**
+             * ===========================
+             * 1️⃣ CHECKBOX → LANGSUNG
+             * ===========================
+             */
+            $('#searchForm').on('change', 'input[type="checkbox"]', function () {
+                if (isResetting) return;
+                runSearch();
+            });
+
+            /**
+             * ===========================
+             * 2️⃣ SELECT PENGADILAN → LANGSUNG
+             * ===========================
+             */
+            $('#pengadilanValue').on('change', function () {
+                if (isResetting) return;
+                runSearch();
+            });
+
+            /**
+             * ===========================
+             * 3️⃣ INPUT NOMOR → ENTER SAJA
+             * ===========================
+             */
+            $('#searchForm').on('keypress', 'input[type="text"]', function (e) {
+                if (isResetting) return;
+                if (e.which === 13) {
+                    e.preventDefault();
+                    runSearch();
+                }
+            });
+
+        // remove one tag
+        $(document).on('click', '.remove-filter', function () {
+            let tag = $(this).closest('.filter-tag');
+            let type  = tag.data('type');
+            let name  = tag.data('name');
+            let value = tag.data('value');
+
+            // 1️⃣ hapus dari FORM
+            if (type === 'checkbox') {
+                $('#searchForm input[name="' + name + '"][value="' + value + '"]')
+                    .prop('checked', false)
+                    .trigger('change'); // 🔥 penting
+            }
+            if (type === 'text') {
+                $('#searchForm input[name="' + name + '"]')
+                    .val('')
+                    .trigger('input'); // 🔥 penting
+            }
+            if (type === 'header') {
+                $('#searchForm-header input[name="search"]')
+                    .val('')
+                    .trigger('input');
+            }
+
+            if (type === 'select' && name === 'pengadilan') {
+
+                $('#pengadilanValue')
+                    .val('')
+                    .trigger('change');
+
+                // reset text tampilannya
+                $('#pengadilanSelect .selected-text')
+                    .text('Pilih Pengadilan');
+            }
+
+            // 2️⃣ hapus tag visual
+            tag.fadeOut(150, function () {
+                $(this).remove();
+            });
+            // 3️⃣ TUNGGU DOM SELESAI → BARU AJAX
+            setTimeout(() => {
+                runSearch();
+            }, 10);
+        });
+
+        let isResetting = false;
+        $(document).on('click', '#reset-all-filters', function () {
+
+            isResetting = true;
+
+            // ======================
+            // RESET CHECKBOX
+            // ======================
+            $('#searchForm input[type="checkbox"]').prop('checked', false);
+
+            // ======================
+            // RESET TEXT INPUT
+            // ======================
+            $('#searchForm input[type="text"]').val('');
+
+            // ======================
+            // RESET HEADER SEARCH
+            // ======================
+            $('#searchForm-header input[name="search"]').val('');
+
+            // ======================
+            // RESET PENGADILAN
+            // ======================
+            $('#pengadilanValue')
+                .val('')
+                .trigger('change');
+
+            $('#pengadilanSelect .selected-text')
+                .text('Pilih Pengadilan');
+
+            // ======================
+            // HAPUS TAG
+            // ======================
+            $('#active-filters-wrapper').fadeOut(150, function () {
+                $('#active-filters-tags').html('');
+            });
+
+            // ======================
+            // RUN AJAX
+            // ======================
+            setTimeout(() => {
+                isResetting = false;
+                runSearch(); // 🔥 SEKARANG BARU BENAR
+            }, 20);
+
+        });
+
+        function makeTag(group, text, type, name, value = null) {
+            return `
+                <div class="filter-tag"
+                     data-type="${type}"
+                     data-name="${name}"
+                     data-value="${value}">
+                    <strong>${group}:</strong> ${text}
+                    <button type="button" class="remove-filter">
+                        <i style="color: var(--primary-color);" class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            `;
+        }
+</script>
+
+
+</html>

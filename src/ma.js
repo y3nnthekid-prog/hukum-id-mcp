@@ -8,7 +8,7 @@ import { getText, inline, toText, decodeEntities } from "./http.js";
 
 const BASE = "https://putusan3.mahkamahagung.go.id";
 
-function parseDaftar(html, limit) {
+export function parseDaftar(html, limit) {
   const out = [];
   const re = /<a href="(https?:\/\/putusan3[^"]*\/direktori\/putusan\/([a-z0-9]+)\.html)"[^>]*>([\s\S]*?)<\/a>/g;
   const seen = new Set();

@@ -15,7 +15,7 @@ const CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
 let memori = null;
 
-function parseHalaman(html) {
+export function parseHalaman(html) {
   const keluar = [];
   const baris = html.match(/<tr>[\s\S]*?<\/tr>/g) || [];
   for (const tr of baris) {
@@ -167,7 +167,7 @@ const JENIS_PRODUK = {
 };
 
 /** Tabel produk memakai 4 kolom: nomor urut, nomor dokumen, tentang, tautan. */
-function parseTabelProduk(html) {
+export function parseTabelProduk(html) {
   const keluar = [];
   for (const tr of html.match(/<tr>[\s\S]*?<\/tr>/g) || []) {
     const sel = [...tr.matchAll(/<td[^>]*>([\s\S]*?)<\/td>/g)].map((m) => inline(m[1]));
