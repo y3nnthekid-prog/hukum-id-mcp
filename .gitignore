@@ -1,2 +1,8 @@
 node_modules/
 .cache/
+dist/
+.env
+.env.local
+.env.*.local
+*.pem
+*.key

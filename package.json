@@ -5,10 +5,12 @@
   "type": "module",
   "license": "MIT",
   "bin": {
-    "hukum-id-mcp": "src/server.js"
+    "hukum-id-mcp": "dist/mcp/stdio.js"
   },
-  "main": "src/server.js",
+  "main": "dist/mcp/stdio.js",
+  "types": "dist/core/contracts.d.ts",
   "files": [
+    "dist/",
     "src/",
     "scripts/",
     "test/",
@@ -21,14 +23,20 @@
     "node": ">=20"
   },
   "scripts": {
-    "start": "node src/server.js",
+    "start": "tsx src/mcp/stdio.ts",
+    "start:legacy": "node src/server.js",
+    "dev:api": "tsx watch src/api/server.ts",
+    "start:api": "tsx src/api/server.ts",
+    "typecheck": "tsc --noEmit",
+    "build": "tsc",
     "test": "npm run test:unit",
-    "test:unit": "node test/trust-foundation.test.js && node test/parser.test.js",
+    "test:unit": "node test/trust-foundation.test.js && node test/parser.test.js && node --import tsx --test test/core-contract.test.ts test/core-service.test.ts test/api.test.ts test/mcp-contract.test.ts test/remote-mcp.test.ts",
     "test:parser": "node test/parser.test.js",
     "smoke": "node test/smoke.js",
     "snapshot": "node scripts/bangun-snapshot.js",
     "snapshot:ringkas": "node scripts/bangun-snapshot.js --ringkas",
-    "prepublishOnly": "npm test"
+    "verify": "npm test && npm run typecheck && npm run build",
+    "prepublishOnly": "npm run verify"
   },
   "keywords": [
     "mcp",
@@ -47,9 +55,16 @@
     "fatwa"
   ],
   "dependencies": {
+    "@hono/node-server": "^2.1.1",
     "@modelcontextprotocol/sdk": "^1.12.0",
+    "hono": "^4.11.4",
     "ipaddr.js": "^1.9.1",
     "pdfjs-dist": "^4.10.38",
     "zod": "^4.5.4"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0"
   }
 }
