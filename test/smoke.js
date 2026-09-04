@@ -333,5 +333,68 @@ ok(
   "menembak sumber sungguhan, bukan cache"
 );
 
+// Regresi: sitasi Indonesia lazim menulis pasal SEBELUM rujukan.
+// Penelusuran satu arah dulu melewatkannya diam-diam, sehingga "Pasal 9999"
+// yang tidak ada pun dilaporkan terverifikasi.
+const gayaLazim = await tool("verifikasi_kutipan", {
+  teks: "Kewenangan itu diatur dalam Pasal 49 huruf i UU 3/2006 tentang Peradilan Agama.",
+  maks_rujukan: 2,
+});
+ok(
+  "verifikasi_kutipan memeriksa pasal yang ditulis sebelum rujukan",
+  gayaLazim.hasil?.[0]?.pasal_disebut === "Pasal 49" && gayaLazim.hasil[0].pasal_ditemukan === true,
+  `${gayaLazim.hasil?.[0]?.pasal_disebut} ditemukan=${gayaLazim.hasil?.[0]?.pasal_ditemukan}`
+);
+
+const pasalPalsu = await tool("verifikasi_kutipan", {
+  teks: "Pasal 9999 UU 27/2022 mengatur hal itu.",
+  maks_rujukan: 2,
+});
+ok(
+  "verifikasi_kutipan menandai pasal yang tidak ada",
+  pasalPalsu.hasil?.[0]?.status_verifikasi === "bermasalah" && pasalPalsu.hasil[0].pasal_ditemukan === false,
+  pasalPalsu.hasil?.[0]?.catatan?.find((c) => /tidak ditemukan/.test(c))?.slice(0, 60)
+);
+
+const tanpaSitasi = await tool("verifikasi_kutipan", { teks: "Tulisan biasa tanpa rujukan hukum apa pun." });
+ok(
+  "verifikasi_kutipan jujur ketika tidak ada rujukan dikenali",
+  tanpaSitasi.jumlah_rujukan_terdeteksi === 0 &&
+    (tanpaSitasi.peringatan || []).some((p) => /tidak ada rujukan yang dikenali/i.test(p)),
+  "menyatakan nihil, bukan diam"
+);
+
+// Regresi: JDIH MA mencocokkan teks judul secara harfiah dan tidak konsisten
+// menulis nomor ("PERMA NOMOR 2" tetapi "SEMA NO. 02"), sehingga rujukan
+// singkat dulu selalu nihil padahal dokumennya ada.
+const permaSingkat = await tool("cari_perma", { query: "PERMA 2/2008", limit: 2 });
+ok(
+  "cari_perma menerima rujukan singkat",
+  permaSingkat.jumlah_ditampilkan > 0 && /PERMA NOMOR 2 TAHUN 2008/i.test(permaSingkat.hasil[0].judul),
+  `via "${permaSingkat.kueri_dipakai}"`
+);
+
+const semaSingkat = await tool("cari_perma", { query: "SEMA 2/1994", limit: 2 });
+ok(
+  "cari_perma mencoba varian penulisan nomor",
+  semaSingkat.jumlah_ditampilkan > 0 && /SEMA NO\. 02/i.test(semaSingkat.hasil[0].judul),
+  `via "${semaSingkat.kueri_dipakai}"`
+);
+
+const permaAlur = await tool("periksa_pasal", { peraturan: "PERMA 14/2016", pasal: "Pasal 1" });
+ok(
+  "periksa_pasal mengalihkan PERMA ke JDIH MA dan menemukan pasalnya",
+  permaAlur.sumber === "JDIH Mahkamah Agung RI" && (permaAlur.pasal?.halaman?.length || 0) > 0,
+  `${permaAlur.peraturan?.judul} — hlm ${JSON.stringify(permaAlur.pasal?.halaman)}`
+);
+
+// Regresi: alamat internal harus ditolak, bukan sekadar gagal kebetulan.
+const internal = await tool("cari_dalam_pdf", { url_pdf: "http://127.0.0.1:8080/x.pdf", kata_kunci: "a" });
+ok(
+  "permintaan ke alamat internal ditolak",
+  Boolean(internal.error) && /alamat internal/i.test(internal.error),
+  "pagar SSRF aktif"
+);
+
 p.kill();
 process.exit(0);

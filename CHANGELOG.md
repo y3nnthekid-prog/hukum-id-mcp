@@ -4,6 +4,45 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.1.0/), versi
 [Semantic Versioning](https://semver.org/lang/id/). Peneliti disarankan menyebutkan versi
 alat ini dalam tulisannya demi reproduktibilitas.
 
+## [0.4.1] — 2026-09-04
+
+Hasil audit mendalam. Empat cacat ditemukan, seluruhnya kelas "kegagalan menyamar
+sebagai keberhasilan" — jenis yang paling berbahaya bagi alat riset.
+
+### Diperbaiki
+
+- **`verifikasi_kutipan` tidak memeriksa pasal yang ditulis sebelum rujukan.** Sitasi
+  Indonesia lazim menulis "Pasal 49 huruf i UU 3/2006", sedangkan penelusuran hanya maju.
+  Akibatnya "Pasal 9999 UU 27/2022" pun dilaporkan **terverifikasi** padahal pasal itu tidak
+  ada. Kini tiap pasal dilekatkan pada rujukan terdekat, dua arah.
+- **`cari_perma` selalu nihil untuk rujukan singkat.** JDIH MA mencocokkan teks judul secara
+  harfiah dan tidak konsisten menulis nomor: "PERMA NOMOR 2 TAHUN 2008" tetapi "SEMA NO. 02
+  TAHUN 1994". Kini beberapa varian penulisan dicoba berurutan. Akibatnya `periksa_pasal`
+  untuk PERMA, yang dijanjikan deskripsinya, kini benar-benar bekerja.
+- **Pencarian hadis hanya menyapu satu kategori.** Diselidiki, lalu diverifikasi bahwa
+  klaster muamalah (143 hadis) seluruhnya sudah termuat dalam kategori fikih — nol tambahan.
+  Perubahan yang semula hendak memperluas justru dibatalkan, dan kategori sempit kini
+  disediakan untuk MEMPERSEMPIT hasil agar lebih presisi.
+
+### Ditambahkan — keamanan
+
+- Pagar terhadap permintaan ke jaringan internal. Seluruh sumber hukum berada di internet
+  publik, sehingga permintaan ke localhost, alamat privat, atau endpoint metadata tidak
+  pernah sah — dan bisa berasal dari instruksi yang diselipkan dalam dokumen yang dibaca.
+  Skema selain http dan https ditolak.
+- Catatan keamanan pada `impor_khes`, yang membaca berkas di komputer pengguna: hanya
+  dipanggil bila pengguna sendiri yang meminta, tidak pernah atas instruksi dari dokumen.
+
+### Diverifikasi
+
+- Seluruh sembilan kaidah fikih pada skill `qawaid-fiqhiyyah` dicocokkan ke kitab turats.
+  Takhrij kaidah qardh diperkuat: *at-Tibyan fi Takhrij Ahadits Bulugh al-Maram* menilai
+  "wa isnaduhu saqith" — sanadnya gugur, menegaskan statusnya kaidah, bukan hadis.
+- Masukan kosong, cacat, dan bermusuhan diuji: seluruhnya ditolak dengan galat jelas atau
+  dibatasi, tanpa ReDoS.
+
+Uji: 76 pemeriksaan, seluruhnya lulus.
+
 ## [0.4.0] — 2026-09-04
 
 ### Ditambahkan — ketahanan

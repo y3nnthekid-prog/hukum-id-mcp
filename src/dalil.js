@@ -102,8 +102,26 @@ import { ambilJson, simpanJson } from "./cache.js";
 const HE = "https://hadeethenc.com/api/v1";
 const TTL_INDEKS = 30 * 24 * 60 * 60 * 1000;
 
-/** Kategori "Fikih dan Usul Fikih" — paling relevan untuk muamalah. */
+/** Kategori "Fikih dan Usul Fikih" — luas, 1.102 hadis. */
 export const KATEGORI_FIKIH = "4";
+
+/**
+ * Kategori muamalah yang lebih sempit, untuk MEMPERSEMPIT pencarian bila hasil
+ * dari kategori fikih terlalu berisik. Contoh: "145" hanya berisi 6 hadis riba.
+ *
+ * Sudah diverifikasi: seluruh 143 hadis pada klaster ini SUDAH termuat dalam
+ * kategori fikih (id 4), nol tambahan. Jadi menyapu klaster ini sebagai bawaan
+ * hanya menambah permintaan jaringan tanpa menambah satu hadis pun — karena itu
+ * bawaannya tetap kategori fikih saja.
+ */
+export const KATEGORI_MUAMALAH = {
+  muamalah_umum: "122",
+  jual_beli: "140",
+  salam: "144",
+  riba: "145",
+  hutang: "146",
+  jual_beli_terlarang: "564",
+};
 
 export async function daftarKategoriHadis() {
   const data = await getJson(`${HE}/categories/list/?language=id`);
@@ -151,8 +169,30 @@ export async function indeksHadisKategori(kategori_id = KATEGORI_FIKIH, { paksa_
 }
 
 /** Cari hadis berdasarkan kata kunci pada judulnya, lalu ambil derajatnya. */
-export async function cariHadisBerderajat({ query, kategori_id = KATEGORI_FIKIH, limit = 5, ambil_detail = true }) {
-  const indeks = await indeksHadisKategori(kategori_id);
+export async function cariHadisBerderajat({
+  query,
+  kategori_id = null,
+  limit = 5,
+  ambil_detail = true,
+}) {
+  // Bawaan kategori fikih; klaster muamalah tidak menambah apa pun (terverifikasi).
+  const daftarKategori = kategori_id
+    ? (Array.isArray(kategori_id) ? kategori_id : [kategori_id]).map(String)
+    : [KATEGORI_FIKIH];
+
+  const kumpulan = [];
+  const gagal = [];
+  for (const kat of daftarKategori) {
+    try {
+      const idx = await indeksHadisKategori(kat);
+      for (const h of idx.hadis) {
+        if (!kumpulan.some((x) => x.id === h.id)) kumpulan.push({ ...h, kategori_id: kat });
+      }
+    } catch {
+      gagal.push(kat);
+    }
+  }
+
   const kata = String(query).toLowerCase().split(/\s+/).filter(Boolean);
 
   // Cocokkan sebagai kata utuh, bukan potongan. Tanpa ini kata "riba" ikut
@@ -160,7 +200,7 @@ export async function cariHadisBerderajat({ query, kategori_id = KATEGORI_FIKIH,
   const jadikanToken = (t) => " " + String(t).toLowerCase().replace(/[^a-z0-9]+/g, " ").trim() + " ";
   const kataToken = kata.map((k) => jadikanToken(k).trim());
 
-  const cocok = indeks.hadis
+  const cocok = kumpulan
     .map((h) => {
       const t = jadikanToken(h.judul);
       return { h, skor: kataToken.reduce((n, k) => n + (t.includes(" " + k + " ") ? 1 : 0), 0) };
@@ -171,18 +211,25 @@ export async function cariHadisBerderajat({ query, kategori_id = KATEGORI_FIKIH,
     .map((x) => x.h);
 
   const hasil = ambil_detail
-    ? await Promise.all(cocok.map((h) => hadisBerderajat({ id: h.id }).catch(() => ({ id: h.id, judul: h.judul, galat: true }))))
+    ? await Promise.all(
+        cocok.map((h) =>
+          hadisBerderajat({ id: h.id }).catch(() => ({ id: h.id, judul: h.judul, galat: true }))
+        )
+      )
     : cocok;
 
   return {
     sumber: "hadeethenc.com (Ensiklopedia Hadis Nabawi)",
     kueri: query,
-    kategori_id: String(kategori_id),
-    total_terindeks: indeks.hadis.length,
+    kategori_disapu: daftarKategori,
+    total_terindeks: kumpulan.length,
     jumlah_ditampilkan: hasil.length,
     catatan:
-      "Pencarian dilakukan pada judul hadis, bukan seluruh matan, sehingga hadis relevan bisa saja terlewat. " +
+      "Pencarian dilakukan pada JUDUL hadis, bukan seluruh matan, sehingga hadis yang relevan bisa terlewat " +
+      "bila redaksi judulnya berbeda. Coba beberapa padanan istilah sebelum menyimpulkan tidak ada, dan periksa " +
+      "juga bagian Mengingat pada fatwa DSN-MUI yang biasanya sudah menyebut hadis yang dipakai. " +
       "Penomoran sumber ini berbeda dari penomoran kitab pada ambil_hadis — jangan disilangkan.",
+    ...(gagal.length ? { kategori_gagal: gagal } : {}),
     hasil,
   };
 }

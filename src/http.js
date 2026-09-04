@@ -77,6 +77,37 @@ function headers(referer) {
   return h;
 }
 
+
+// Pagar terhadap permintaan ke jaringan internal.
+//
+// Seluruh sumber hukum yang dipakai berada di internet publik, jadi tidak ada
+// alasan sah menembak localhost, alamat privat, atau endpoint metadata cloud.
+// Pagar ini penting karena tool menerima URL dari argumen: sebuah instruksi yang
+// diselipkan di dalam dokumen yang sedang dibaca bisa saja meminta model
+// mengambil alamat internal. Sumber hukum tidak pernah berada di sana.
+const HOST_TERLARANG =
+  /^(localhost|127\.|0\.0\.0\.0|\[?::1\]?|10\.|192\.168\.|169\.254\.|172\.(1[6-9]|2\d|3[01])\.)/i;
+
+function tolakAlamatInternal(url) {
+  let u;
+  try {
+    u = new URL(url);
+  } catch {
+    throw new Error(`URL tidak sah: ${String(url).slice(0, 80)}`);
+  }
+  if (u.protocol !== "http:" && u.protocol !== "https:") {
+    throw new Error(`Skema ${u.protocol} tidak diizinkan; hanya http dan https.`);
+  }
+  if (HOST_TERLARANG.test(u.hostname)) {
+    throw new Error(
+      `Permintaan ke alamat internal (${u.hostname}) ditolak. Seluruh sumber hukum berada di internet publik, ` +
+        "jadi permintaan semacam ini tidak pernah sah dan bisa jadi berasal dari instruksi yang diselipkan " +
+        "dalam dokumen yang sedang dibaca."
+    );
+  }
+  return u;
+}
+
 const CURL_ONLY = new Set(["putusan3.mahkamahagung.go.id"]);
 
 // Pemeriksaan kesehatan harus menembak sumber sungguhan, bukan dilayani cache.
@@ -130,7 +161,7 @@ async function viaFetch(url, referer, timeout) {
 }
 
 async function request(url, { referer, timeout = 45000, retries = 2, lewati_cache = false } = {}) {
-  const host = new URL(url).host;
+  const host = tolakAlamatInternal(url).host;
 
   if (!lewati_cache && !lewatiCacheGlobal) {
     const tersimpan = await ambil(url, umurSimpan(url));

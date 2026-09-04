@@ -30,15 +30,30 @@ function jendela(teks, indeks, lebar = 220) {
 }
 
 /**
- * Cari "Pasal N" milik sebuah rujukan. Ditelusuri MAJU dari posisi rujukan dan
- * berhenti sebelum rujukan berikutnya, agar pasal tidak salah dilekatkan pada
- * peraturan yang kebetulan disebut lebih dulu dalam kalimat lain.
+ * Lekatkan tiap "Pasal N" pada rujukan peraturan TERDEKAT, maju maupun mundur.
+ *
+ * Sitasi hukum Indonesia lazim menulis pasal lebih dulu — "Pasal 49 huruf i
+ * UU 3/2006" — sehingga penelusuran satu arah melewatkannya diam-diam. Dan
+ * diam-diam itulah bahayanya: tool melaporkan terverifikasi padahal pasalnya
+ * tidak pernah diperiksa sama sekali.
  */
-function pasalMilikRujukan(teks, mulai, panjangRujukan, batasBerikutnya) {
-  const akhir = Math.min(batasBerikutnya ?? teks.length, mulai + 220);
-  const w = teks.slice(mulai + panjangRujukan, Math.max(akhir, mulai + panjangRujukan));
-  const m = w.match(/\bPasal\s+(\d+)/i);
-  return m ? `Pasal ${m[1]}` : null;
+function petakanPasal(teks, posisiRujukan, jangkauan = 160) {
+  const peta = new Map();
+  for (const m of teks.matchAll(/\bPasal\s+(\d{1,4})/gi)) {
+    let terdekat = null;
+    let jarak = Infinity;
+    for (const p of posisiRujukan) {
+      const d = Math.min(Math.abs(m.index - p.mulai), Math.abs(m.index - (p.mulai + p.panjang)));
+      if (d < jarak) {
+        jarak = d;
+        terdekat = p;
+      }
+    }
+    if (terdekat && jarak <= jangkauan && !peta.has(terdekat.mulai)) {
+      peta.set(terdekat.mulai, `Pasal ${m[1]}`);
+    }
+  }
+  return peta;
 }
 
 /** Frasa berangka atau kutipan yang khas — bagus untuk menguji isi klaim. */
@@ -50,7 +65,7 @@ function frasaUji(teks, indeks) {
   return angka ? angka[0] : null;
 }
 
-async function periksaPeraturan(teks, m, batasBerikutnya) {
+async function periksaPeraturan(teks, m, pasalTerkait) {
   const [penuh, jenisTeks, nomor, tahun] = m;
   const konteks = jendela(teks, m.index);
   const hasil = {
@@ -104,7 +119,7 @@ async function periksaPeraturan(teks, m, batasBerikutnya) {
       );
     }
 
-    const pasal = pasalMilikRujukan(teks, m.index, penuh.length, batasBerikutnya);
+    const pasal = pasalTerkait || null;
     const pdf = d.berkas.find((f) => f.kategori === "Peraturan");
     if (pasal && pdf) {
       hasil.pasal_disebut = pasal;
@@ -238,11 +253,15 @@ export async function verifikasiKutipan({ teks, maks_rujukan = 12, periksa_putus
   const putusanMa = periksa_putusan_ma ? [...teks.matchAll(POLA.putusan_ma)].map((m) => m[0]) : [];
   const dipakai = tugas.slice(0, maks_rujukan);
 
+  const posisiRujukan = dipakai
+    .filter((t) => t.tipe === "peraturan")
+    .map((t) => ({ mulai: t.m.index, panjang: t.m[0].length }));
+  const petaPasal = petakanPasal(teks, posisiRujukan);
+
   const hasil = [];
   for (let i = 0; i < dipakai.length; i++) {
     const t = dipakai[i];
-    const batas = dipakai[i + 1]?.m.index;
-    if (t.tipe === "peraturan") hasil.push(await periksaPeraturan(teks, t.m, batas));
+    if (t.tipe === "peraturan") hasil.push(await periksaPeraturan(teks, t.m, petaPasal.get(t.m.index)));
     else if (t.tipe === "mk") hasil.push(await periksaPutusanMK(t.m));
     else hasil.push(await periksaFatwa(t.m));
   }
