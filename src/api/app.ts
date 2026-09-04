@@ -4,7 +4,7 @@ import { z } from "zod";
 
 import type { LegalResearchService, SearchSource } from "../core/service.js";
 
-type ApiEnv = { Variables: { traceId: string } };
+type ApiEnv = { Variables: { traceId: string; userId: string | null } };
 
 export interface UploadStore {
   createUpload(input: {
@@ -14,6 +14,13 @@ export interface UploadStore {
     classification: "public" | "internal" | "confidential";
     aiConsent: boolean;
     ownerId: string;
+    idempotencyKey: string;
+  }): Promise<unknown>;
+  putUpload(input: {
+    id: string;
+    ownerId: string;
+    contentType: "application/pdf" | "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+    bytes: Uint8Array;
   }): Promise<unknown>;
 }
 
@@ -26,6 +33,7 @@ type ApiDependencies = {
   uploadStore?: UploadStore;
   jobStore?: JobStore;
   allowedOrigins?: string[];
+  authenticate?: (authorization: string | undefined) => Promise<string | null>;
 };
 
 const SearchSourceSchema = z.enum([
@@ -77,7 +85,7 @@ async function readJson(c: Context<ApiEnv>): Promise<unknown> {
   }
 }
 
-function apiError(c: Context<ApiEnv>, status: 400 | 404 | 409 | 413 | 422 | 429 | 500 | 503, code: string, message: string, details?: unknown) {
+function apiError(c: Context<ApiEnv>, status: 400 | 401 | 404 | 409 | 413 | 422 | 429 | 500 | 503, code: string, message: string, details?: unknown) {
   return c.json(
     {
       error: {
@@ -91,13 +99,14 @@ function apiError(c: Context<ApiEnv>, status: 400 | 404 | 409 | 413 | 422 | 429 
   );
 }
 
-export function createApiApp({ service, uploadStore, jobStore, allowedOrigins = [] }: ApiDependencies) {
+export function createApiApp({ service, uploadStore, jobStore, allowedOrigins = [], authenticate }: ApiDependencies) {
   const app = new Hono<ApiEnv>();
   const counters = new Map<string, { count: number; resetAt: number }>();
 
   app.use("*", async (c, next) => {
     const traceId = randomUUID();
     c.set("traceId", traceId);
+    c.set("userId", authenticate ? await authenticate(c.req.header("authorization")) : null);
     c.header("x-trace-id", traceId);
     c.header("x-content-type-options", "nosniff");
     c.header("x-frame-options", "DENY");
@@ -126,7 +135,7 @@ export function createApiApp({ service, uploadStore, jobStore, allowedOrigins = 
   });
 
   app.options("*", (c) => {
-    c.header("access-control-allow-methods", "GET,POST,OPTIONS");
+    c.header("access-control-allow-methods", "GET,POST,PUT,OPTIONS");
     c.header("access-control-allow-headers", "authorization,content-type,idempotency-key,x-gemini-api-key");
     return c.body(null, 204);
   });
@@ -182,16 +191,48 @@ export function createApiApp({ service, uploadStore, jobStore, allowedOrigins = 
 
   app.post("/v1/uploads", async (c) => {
     if (!uploadStore) return apiError(c, 503, "STORAGE_NOT_CONFIGURED", "Penyimpanan unggahan belum dikonfigurasi.");
-    if (!c.req.header("idempotency-key")) return apiError(c, 400, "IDEMPOTENCY_KEY_REQUIRED", "Header Idempotency-Key wajib diisi.");
+    const ownerId = c.get("userId");
+    if (!ownerId) return apiError(c, 401, "AUTHENTICATION_REQUIRED", "Akun diperlukan untuk mengunggah dokumen.");
+    const idempotencyKey = c.req.header("idempotency-key");
+    if (!idempotencyKey) return apiError(c, 400, "IDEMPOTENCY_KEY_REQUIRED", "Header Idempotency-Key wajib diisi.");
     const parsed = UploadSchema.safeParse(await readJson(c));
     if (!parsed.success) return apiError(c, 422, "VALIDATION_ERROR", "Metadata unggahan tidak sah.", parsed.error.flatten());
-    const data = await uploadStore.createUpload({ ...parsed.data, ownerId: clientId(c) });
+    const data = await uploadStore.createUpload({ ...parsed.data, ownerId, idempotencyKey });
     return c.json({ data, meta: { traceId: c.get("traceId") } }, 201);
+  });
+
+  app.put("/v1/uploads/:id/content", async (c) => {
+    if (!uploadStore) return apiError(c, 503, "STORAGE_NOT_CONFIGURED", "Penyimpanan unggahan belum dikonfigurasi.");
+    const ownerId = c.get("userId");
+    if (!ownerId) return apiError(c, 401, "AUTHENTICATION_REQUIRED", "Akun diperlukan untuk mengunggah dokumen.");
+    const contentType = c.req.header("content-type")?.split(";")[0]?.trim();
+    const allowed = [
+      "application/pdf",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ] as const;
+    if (!contentType || !allowed.includes(contentType as (typeof allowed)[number])) {
+      return apiError(c, 422, "CONTENT_TYPE_INVALID", "Content-Type harus PDF atau DOCX.");
+    }
+    const size = Number(c.req.header("content-length") || 0);
+    if (!Number.isInteger(size) || size < 1 || size > 25 * 1024 * 1024) {
+      return apiError(c, 413, "UPLOAD_SIZE_INVALID", "Content-Length wajib dan maksimal 25 MB.");
+    }
+    const bytes = new Uint8Array(await c.req.arrayBuffer());
+    if (bytes.length !== size) return apiError(c, 400, "CONTENT_LENGTH_MISMATCH", "Ukuran body berbeda dari Content-Length.");
+    const data = await uploadStore.putUpload({
+      id: c.req.param("id"),
+      ownerId,
+      contentType: contentType as (typeof allowed)[number],
+      bytes,
+    });
+    return c.json({ data, meta: { traceId: c.get("traceId") } }, 202);
   });
 
   app.get("/v1/jobs/:id", async (c) => {
     if (!jobStore) return apiError(c, 503, "JOB_STORE_NOT_CONFIGURED", "Penyimpanan job belum dikonfigurasi.");
-    const data = await jobStore.getJob(c.req.param("id"), clientId(c));
+    const ownerId = c.get("userId");
+    if (!ownerId) return apiError(c, 401, "AUTHENTICATION_REQUIRED", "Akun diperlukan untuk melihat job.");
+    const data = await jobStore.getJob(c.req.param("id"), ownerId);
     if (!data) return apiError(c, 404, "JOB_NOT_FOUND", "Job tidak ditemukan.");
     return c.json({ data, meta: { traceId: c.get("traceId") } });
   });

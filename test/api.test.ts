@@ -64,3 +64,47 @@ test("unknown routes never expose an internal stack", async () => {
   assert.equal(response.status, 404);
   assert.deepEqual(Object.keys(body.error).sort(), ["code", "message", "traceId"]);
 });
+
+test("upload endpoints require an authenticated owner and preserve the idempotency key", async () => {
+  const calls: any[] = [];
+  const uploadStore = {
+    createUpload: async (input: unknown) => {
+      calls.push(input);
+      return { id: "upload-1", uploadUrl: "/v1/uploads/upload-1/content" };
+    },
+    putUpload: async () => ({ id: "upload-1", status: "queued" }),
+  };
+  const body = JSON.stringify({
+    fileName: "akad.pdf",
+    contentType: "application/pdf",
+    sizeBytes: 20,
+    classification: "confidential",
+    aiConsent: true,
+  });
+  const anonymous = createApiApp({ service: service as any, uploadStore });
+  const denied = await anonymous.request("/v1/uploads", {
+    method: "POST",
+    headers: { "content-type": "application/json", "idempotency-key": "intent-1" },
+    body,
+  });
+  assert.equal(denied.status, 401);
+
+  const authenticated = createApiApp({
+    service: service as any,
+    uploadStore,
+    authenticate: async () => "user-1",
+  });
+  const created = await authenticated.request("/v1/uploads", {
+    method: "POST",
+    headers: {
+      authorization: "Bearer test",
+      "content-type": "application/json",
+      "idempotency-key": "intent-1",
+    },
+    body,
+  });
+
+  assert.equal(created.status, 201);
+  assert.equal(calls[0].ownerId, "user-1");
+  assert.equal(calls[0].idempotencyKey, "intent-1");
+});

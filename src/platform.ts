@@ -15,6 +15,7 @@ type PlatformOptions = {
   uploadStore?: UploadStore;
   jobStore?: JobStore;
   allowedOrigins?: string[];
+  authenticate?: (authorization: string | undefined) => Promise<string | null>;
   authorizeMcp?: (request: IncomingMessage) => boolean | Promise<boolean>;
 };
 
@@ -49,6 +50,7 @@ export function createPlatformServer(options: PlatformOptions) {
     ...(options.uploadStore ? { uploadStore: options.uploadStore } : {}),
     ...(options.jobStore ? { jobStore: options.jobStore } : {}),
     ...(options.allowedOrigins ? { allowedOrigins: options.allowedOrigins } : {}),
+    ...(options.authenticate ? { authenticate: options.authenticate } : {}),
   });
   const apiListener = getRequestListener(app.fetch);
   const allowedOrigins = new Set(options.allowedOrigins ?? []);
