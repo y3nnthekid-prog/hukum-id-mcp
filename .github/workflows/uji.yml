@@ -1,0 +1,91 @@
+name: Uji
+
+# Pemisahan ini disengaja.
+#
+# Uji parser berjalan tanpa jaringan sama sekali, jadi aman dan pantas dijalankan
+# pada setiap perubahan: hasilnya pasti, cepat, dan tidak membebani siapa pun.
+#
+# Uji asap menembak situs lembaga negara sungguhan. Menjalankannya pada tiap push
+# berarti membebani server yang dibiayai anggaran publik hanya untuk kenyamanan
+# kita, dan itu bertentangan dengan bagian Etika Pemakaian pada README. Karena
+# itu ia dijadwalkan seminggu sekali — cukup untuk mendeteksi situs sumber yang
+# berganti tampilan, tanpa menjadi beban.
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  schedule:
+    # Setiap Senin 02:00 UTC, satu kali seminggu.
+    - cron: "0 2 * * 1"
+  workflow_dispatch:
+
+jobs:
+  parser:
+    name: Parser (tanpa jaringan)
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ["20", "22", "24"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      - name: Pasang dependensi
+        run: npm ci
+
+      - name: Uji parser terhadap fixture
+        run: npm run test:parser
+
+      - name: Penjelasan bila gagal
+        if: failure()
+        run: |
+          echo "::error::Parser gagal terhadap fixture yang tidak berubah."
+          echo "Karena uji ini tidak menyentuh jaringan, penyebabnya ada pada kode."
+          echo "Bila situs sumbernya yang berubah, perbarui fixture secara sadar lalu"
+          echo "sesuaikan parsernya — jangan melonggarkan uji agar lulus."
+
+  paket:
+    name: Paket dapat dibangun
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - name: Periksa isi paket
+        run: |
+          npm pack --dry-run
+          echo "Pastikan node_modules/ dan .cache/ tidak ikut terpaket."
+
+  sumber:
+    name: Kesehatan sumber (mingguan)
+    # Hanya berjalan terjadwal atau saat diminta manual. Tidak pada push.
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+
+      - name: Uji asap end-to-end
+        run: npm run smoke
+
+      - name: Penjelasan bila gagal
+        if: failure()
+        run: |
+          echo "::warning::Uji asap gagal. Bedakan dulu penyebabnya."
+          echo "Sumber sedang membatasi atau tumbang: tunggu, lalu jalankan ulang."
+          echo "Sumber berganti tampilan: jalankan tool periksa_kesehatan_sumber."
+          echo "Status berubah_struktur berarti parser perlu diperbarui, dan"
+          echo "fixture di test/fixtures/ perlu diperbarui bersamaan."

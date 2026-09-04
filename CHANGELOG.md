@@ -19,6 +19,12 @@ alat ini dalam tulisannya demi reproduktibilitas.
 - LICENSE MIT dengan pemisahan tegas antara lisensi kode dan kepemilikan isi dokumen hukum.
 - README dwibahasa, panduan pemasangan, dan bagian Etika Pemakaian.
 - `scripts/bangun-snapshot.js` untuk menyiapkan korpus inti yang dapat dibagikan.
+- Integrasi berkelanjutan di `.github/workflows/uji.yml`. Uji parser berjalan pada setiap
+  push di Node 20, 22, dan 24; uji asap yang menembak situs lembaga negara dijadwalkan
+  seminggu sekali agar tidak membebani server publik demi kenyamanan pengembang.
+- `CONTRIBUTING.md` — empat prinsip yang mengikat sumbangan, pola menambah sumber baru,
+  urutan penanganan ketika situs sumber berganti tampilan, dan daftar hal yang tidak akan
+  diterima.
 
 ### Diperbaiki
 

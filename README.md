@@ -94,6 +94,23 @@ Untuk memeriksa apakah situs sumbernya sendiri yang berubah, jalankan tool
 `periksa_kesehatan_sumber`. Status `berubah_struktur` berarti permintaan berhasil tetapi
 hasilnya tidak sesuai bentuk yang diharapkan — itu sinyal parser perlu diperbarui.
 
+### Integrasi berkelanjutan
+
+Alur kerja di `.github/workflows/uji.yml` sengaja dipisah. Uji parser berjalan pada setiap
+push dan pull request, di Node 20, 22, dan 24 — aman karena tidak menyentuh jaringan sama
+sekali. Uji asap yang menembak situs lembaga negara hanya dijadwalkan **seminggu sekali**,
+plus dapat dipicu manual.
+
+Alasannya bukan teknis melainkan etis: menjalankan uji terhadap server yang dibiayai
+anggaran publik pada setiap push berarti membebani mereka demi kenyamanan kita. Sekali
+seminggu sudah cukup untuk mendeteksi situs yang berganti tampilan.
+
+## Kontribusi
+
+Lihat [CONTRIBUTING.md](CONTRIBUTING.md). Ringkasnya: setiap tool wajib mengembalikan
+sumbernya, kegagalan tidak boleh menyamar sebagai temuan negatif, parser harus dapat diuji
+tanpa jaringan, dan penambahan yang menaikkan beban situs sumber tidak akan diterima.
+
 ### Snapshot korpus inti
 
 Agar peneliti baru tidak perlu menembak situs pemerintah untuk dokumen yang hampir selalu
