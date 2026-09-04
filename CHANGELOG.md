@@ -4,6 +4,37 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.1.0/), versi
 [Semantic Versioning](https://semver.org/lang/id/). Peneliti disarankan menyebutkan versi
 alat ini dalam tulisannya demi reproduktibilitas.
 
+## [0.5.0] — 2026-09-05
+
+### Lubang keilmuan terakhir tertutup
+
+Naskah lengkap KHES akhirnya tersedia lewat `impor_khes`: Kompilasi Hukum Ekonomi Syari'ah
+Edisi Revisi 2011 terbitan Direktorat Jenderal Badan Peradilan Agama Mahkamah Agung RI,
+285 halaman, 779 pasal terdeteksi pada rentang 1-790. Naskahnya tidak ikut disebarkan
+bersama perangkat ini; haknya ada pada Mahkamah Agung.
+
+### Diperbaiki — struktur KHES yang selama ini keliru
+
+Struktur buku sebelumnya diambil dari literatur sekunder dan ditandai belum diverifikasi.
+Setelah dicocokkan ke naskah primer, **tiga dari empat batas ternyata salah**:
+
+| Buku | Menurut literatur sekunder | Menurut naskah primer |
+|---|---|---|
+| I | 1-19 | 1-19 (benar) |
+| II | 20-673 | **20-667** |
+| III | 674-734 | **668-727** |
+| IV | 735 ke atas | **728-790** |
+
+Buktinya: Pasal 667 masih mengatur Dana Pensiun Syariah, Pasal 668 membuka Buku III dengan
+definisi Infak, Pasal 727 masih hibah dan waris, dan Pasal 728 membuka Buku IV dengan
+"Akuntansi syari'ah harus dilakukan dengan mencatat, mengelompokkan, dan menyimpulkan
+transaksi". Pasal 790 adalah penutup tentang tanggung jawab hakim menggali hukum.
+
+Ambang peringatan kelengkapan berkas ikut disesuaikan dari 700 menjadi 780.
+
+Uji: 79 pemeriksaan, seluruhnya lulus. Uji KHES ditulis agar benar pada dua keadaan, sudah
+diimpor maupun belum, karena naskahnya tidak dipaketkan.
+
 ## [0.4.1] — 2026-09-04
 
 Hasil audit mendalam. Empat cacat ditemukan, seluruhnya kelas "kegagalan menyamar

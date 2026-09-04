@@ -205,12 +205,13 @@ dengan retry berulang. Data dari cache tetap dilayani selama pemutus aktif.
 - **Indeks fatwa DSN** dibangun sekali (sekitar 25 detik untuk seluruh halaman) lalu
   disimpan di `.cache/fatwa-dsn.json` dan dipakai ulang selama 7 hari. Paksa perbarui dengan
   argumen `paksa_segarkan`.
-- **PDF PERMA 2/2008 di JDIH MA hanya memuat batang tubuh PERMA-nya.** Naskah KHES Buku I
-  sampai IV adalah lampiran yang sampai kini belum ditemukan dalam bentuk yang dapat diambil
-  mesin — perpustakaan BLDK Mahkamah Agung tidak dapat dijangkau dan JDIH Kemenkeu hanya
-  menyajikan halaman aplikasi. `cari_pasal_khes` karena itu menolak dengan jelas, dan
-  `impor_khes` disediakan agar peneliti dapat memuat salinannya sendiri. Ini lubang terbuka
-  yang diakui, bukan disembunyikan.
+- **Naskah KHES tidak beredar dalam bentuk yang dapat diambil mesin.** PDF PERMA 2/2008 di
+  JDIH MA hanya memuat batang tubuh PERMA dua halaman; perpustakaan BLDK Mahkamah Agung tidak
+  dapat dijangkau dan JDIH Kemenkeu hanya menyajikan halaman aplikasi. Karena itu
+  `impor_khes` disediakan: muat salinan Anda sendiri sekali, lalu `cari_pasal_khes` bekerja
+  penuh. Naskahnya tidak ikut disebarkan bersama perangkat ini — haknya ada pada Mahkamah
+  Agung. Struktur bukunya sudah diverifikasi ke naskah primer Edisi Revisi 2011: Buku I
+  Pasal 1-19, Buku II 20-667, Buku III 668-727, Buku IV 728-790.
 - **POJK, SEOJK, dan PBI ternyata sudah terindeks di JDIH BPK** lengkap dengan statusnya,
   sehingga tidak diperlukan modul khusus untuk situs OJK. Pakai kode `jenis`: 80 untuk POJK,
   78 untuk PBI, 79 untuk Surat Edaran Bank Indonesia.

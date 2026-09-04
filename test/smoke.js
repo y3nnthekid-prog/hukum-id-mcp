@@ -181,13 +181,6 @@ ok(
     : s0?.catatan
 );
 
-const khesNaskah = await tool("cari_pasal_khes", { pasal: "20" });
-ok(
-  "cari_pasal_khes menolak dengan jujur saat naskah belum ada",
-  khesNaskah.tersedia === false && Boolean(khesNaskah.cara_melengkapi) && (khesNaskah.peringatan || []).some((p) => /JANGAN/.test(p)),
-  khesNaskah.tersedia === false ? "menolak + memberi cara melengkapi" : "naskah sudah terimpor"
-);
-
 const pojk = await tool("cari_peraturan", { keywords: "syariah", jenis: "80", limit: 3 });
 ok(
   "POJK terjangkau lewat JDIH BPK (jenis=80)",
@@ -395,6 +388,44 @@ ok(
   Boolean(internal.error) && /alamat internal/i.test(internal.error),
   "pagar SSRF aktif"
 );
+
+// KHES: naskahnya tidak ikut disebarkan bersama perangkat ini, jadi uji ini
+// harus benar pada dua keadaan — sudah diimpor maupun belum.
+const khesStatus = await tool("cari_pasal_khes", {});
+if (khesStatus.tersedia) {
+  ok(
+    "cari_pasal_khes melaporkan naskah yang sudah diimpor",
+    khesStatus.jumlah_pasal_terdeteksi > 700 && khesStatus.total_halaman > 200,
+    `${khesStatus.jumlah_pasal_terdeteksi} pasal, ${khesStatus.total_halaman} hlm, rentang ${khesStatus.rentang_pasal}`
+  );
+
+  const p20 = await tool("cari_pasal_khes", { pasal: "20", maks_temuan: 1 });
+  ok(
+    "Pasal 20 KHES terbaca dan dipetakan ke Buku II",
+    p20.buku?.buku === "II" && /Akad adalah kesepakatan/i.test(p20.temuan?.[0]?.cuplikan || ""),
+    `Buku ${p20.buku?.buku} — hlm ${JSON.stringify(p20.halaman)}`
+  );
+
+  const p728 = await tool("cari_pasal_khes", { pasal: "728", maks_temuan: 1 });
+  ok(
+    "batas Buku IV terverifikasi pada Pasal 728",
+    p728.buku?.buku === "IV" && /[Aa]kuntansi syari/i.test(p728.temuan?.[0]?.cuplikan || ""),
+    `Buku ${p728.buku?.buku} — pembuka akuntansi syariah`
+  );
+
+  const pTiada = await tool("cari_pasal_khes", { pasal: "9999" });
+  ok(
+    "pasal di luar rentang dilaporkan tidak ditemukan",
+    pTiada.ditemukan === false,
+    pTiada.catatan?.slice(0, 58)
+  );
+} else {
+  ok(
+    "cari_pasal_khes menolak dengan jujur saat naskah belum diimpor",
+    Boolean(khesStatus.cara_melengkapi) && (khesStatus.peringatan || []).some((p) => /JANGAN/.test(p)),
+    "menolak + memberi cara melengkapi"
+  );
+}
 
 p.kill();
 process.exit(0);
