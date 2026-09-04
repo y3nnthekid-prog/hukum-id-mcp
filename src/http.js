@@ -91,6 +91,9 @@ const SOURCE_HOSTS = new Set([
   "putusan3.mahkamahagung.go.id",
   "www.mkri.id",
   "mkri.id",
+  // MK menyajikan salinan putusannya dari subdomain berkas yang terpisah.
+  // Tanpa baris ini sisir_putusan_mk tertolak pagar sendiri, bukan oleh MK.
+  "s.mkri.id",
   "jdih.mahkamahagung.go.id",
   "perpustakaan.bldk.mahkamahagung.go.id",
   "dsnmui.or.id",
