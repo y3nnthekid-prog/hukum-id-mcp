@@ -7,6 +7,8 @@ import {
 import type { Transport } from "@modelcontextprotocol/sdk/shared/transport.js";
 
 import { createApiApp, type JobStore, type UploadStore } from "./api/app.js";
+import type { EvidenceSynthesisProvider } from "./ai/evidence-synthesis.js";
+import type { Evidence } from "./core/contracts.js";
 import type { LegalResearchService } from "./core/service.js";
 import { createEvidenceFirstMcpServer } from "./mcp/server.js";
 
@@ -17,6 +19,8 @@ type PlatformOptions = {
   allowedOrigins?: string[];
   authenticate?: (authorization: string | undefined) => Promise<string | null>;
   authorizeMcp?: (request: IncomingMessage) => boolean | Promise<boolean>;
+  makeAiProvider?: (ephemeralApiKey: string | undefined) => EvidenceSynthesisProvider | null;
+  resolveEvidence?: (evidenceIds: string[], ownerId: string) => Promise<Evidence[]>;
 };
 
 async function jsonBody(request: IncomingMessage, maxBytes = 1024 * 1024): Promise<unknown> {
@@ -51,6 +55,8 @@ export function createPlatformServer(options: PlatformOptions) {
     ...(options.jobStore ? { jobStore: options.jobStore } : {}),
     ...(options.allowedOrigins ? { allowedOrigins: options.allowedOrigins } : {}),
     ...(options.authenticate ? { authenticate: options.authenticate } : {}),
+    ...(options.makeAiProvider ? { makeAiProvider: options.makeAiProvider } : {}),
+    ...(options.resolveEvidence ? { resolveEvidence: options.resolveEvidence } : {}),
   });
   const apiListener = getRequestListener(app.fetch);
   const allowedOrigins = new Set(options.allowedOrigins ?? []);

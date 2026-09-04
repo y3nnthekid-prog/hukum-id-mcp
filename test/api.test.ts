@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { createApiApp } from "../src/api/app.js";
+import { createEvidence } from "../src/core/contracts.js";
 
 const service = {
   searchLegalSources: async ({ query }: { query: string }) => ({
@@ -107,4 +108,91 @@ test("upload endpoints require an authenticated owner and preserve the idempoten
   assert.equal(created.status, 201);
   assert.equal(calls[0].ownerId, "user-1");
   assert.equal(calls[0].idempotencyKey, "intent-1");
+});
+
+const verifiedEvidence = createEvidence({
+  documentId: "bpk:uu-21-2008",
+  text: "Bank Syariah adalah Bank yang menjalankan kegiatan usahanya berdasarkan Prinsip Syariah.",
+  locator: { article: "Pasal 1 angka 7", page: 3 },
+  provenance: {
+    sourceName: "JDIH BPK RI",
+    sourceUrl: "https://peraturan.bpk.go.id/Details/39655/uu-no-21-tahun-2008",
+    authority: "Republik Indonesia",
+    retrievedAt: "2026-09-05T00:00:00.000Z",
+    indexVersion: "test-1",
+    verificationStatus: "verified_snapshot",
+  },
+});
+
+test("AI research requires an account and explicit upload consent", async () => {
+  const makeAiProvider = () => ({
+    synthesize: async () => ({ summary: "Ringkas", claims: [], conflicts: [] }),
+  });
+  const resolveEvidence = async () => [verifiedEvidence];
+  const anonymous = createApiApp({ service: service as any, makeAiProvider, resolveEvidence });
+  const denied = await anonymous.request("/v1/research", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ question: "Apa definisi Bank Syariah?", useAi: true, evidenceIds: [verifiedEvidence.id] }),
+  });
+  assert.equal(denied.status, 401);
+
+  const authenticated = createApiApp({
+    service: service as any,
+    authenticate: async () => "user-1",
+    makeAiProvider,
+    resolveEvidence,
+    jobStore: { getJob: async () => ({ aiConsent: false, classification: "confidential" }) },
+  });
+  const noConsent = await authenticated.request("/v1/research", {
+    method: "POST",
+    headers: { authorization: "Bearer test", "content-type": "application/json" },
+    body: JSON.stringify({
+      question: "Apa definisi Bank Syariah?",
+      useAi: true,
+      evidenceIds: [verifiedEvidence.id],
+      documentContext: { source: "upload", uploadId: "00000000-0000-4000-8000-000000000010" },
+    }),
+  });
+  const body = await noConsent.json();
+  assert.equal(noConsent.status, 422);
+  assert.equal(body.error.code, "AI_CONSENT_REQUIRED");
+});
+
+test("AI research accepts ephemeral BYOK and drops unsupported provider claims", async () => {
+  let receivedKey: string | undefined;
+  const app = createApiApp({
+    service: service as any,
+    authenticate: async () => "user-1",
+    resolveEvidence: async () => [verifiedEvidence],
+    makeAiProvider: (key) => {
+      receivedKey = key;
+      return {
+        synthesize: async () => ({
+          summary: "Definisi ditemukan.",
+          claims: [
+            { text: "Bank Syariah beroperasi berdasarkan Prinsip Syariah.", evidenceIds: [verifiedEvidence.id] },
+            { text: "Klaim rekaan", evidenceIds: ["ev_000000000000000000000000"] },
+          ],
+          conflicts: [],
+        }),
+      };
+    },
+  });
+  const response = await app.request("/v1/research", {
+    method: "POST",
+    headers: {
+      authorization: "Bearer test",
+      "content-type": "application/json",
+      "x-gemini-api-key": "ephemeral-key",
+    },
+    body: JSON.stringify({ question: "Apa definisi Bank Syariah?", useAi: true, evidenceIds: [verifiedEvidence.id] }),
+  });
+  const body = await response.json();
+
+  assert.equal(response.status, 200);
+  assert.equal(receivedKey, "ephemeral-key");
+  assert.equal(body.data.status, "partial");
+  assert.equal(body.data.claims.length, 1);
+  assert.doesNotMatch(JSON.stringify(body), /ephemeral-key/);
 });

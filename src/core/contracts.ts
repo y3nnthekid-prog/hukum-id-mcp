@@ -43,7 +43,7 @@ export const ProvenanceSchema = z.object({
 export const EvidenceSchema = z.object({
   id: z.string().regex(/^ev_[a-f0-9]{24}$/),
   documentId: z.string().min(1),
-  text: z.string().min(1),
+  text: z.string().min(1).max(50_000),
   locator: EvidenceLocatorSchema,
   provenance: ProvenanceSchema,
 });
@@ -105,7 +105,11 @@ type ResearchResultInput = {
 export function createResearchResult(input: ResearchResultInput): ResearchResult {
   const evidence = input.evidence ?? [];
   const claims = input.claims ?? [];
-  const knownEvidence = new Set(evidence.map((item) => item.id));
+  const knownEvidence = new Set(
+    evidence
+      .filter((item) => ["verified_live", "verified_snapshot"].includes(item.provenance.verificationStatus))
+      .map((item) => item.id)
+  );
   const supportedClaims = claims.filter(
     (claim) => claim.evidenceIds.length > 0 && claim.evidenceIds.every((id) => knownEvidence.has(id))
   );

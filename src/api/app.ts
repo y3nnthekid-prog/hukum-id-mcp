@@ -2,6 +2,9 @@ import { randomUUID } from "node:crypto";
 import { Hono, type Context } from "hono";
 import { z } from "zod";
 
+import { AiProviderError } from "../ai/gemini.js";
+import { synthesizeEvidenceFirst, type EvidenceSynthesisProvider } from "../ai/evidence-synthesis.js";
+import { type Evidence } from "../core/contracts.js";
 import type { LegalResearchService, SearchSource } from "../core/service.js";
 
 type ApiEnv = { Variables: { traceId: string; userId: string | null } };
@@ -34,6 +37,8 @@ type ApiDependencies = {
   jobStore?: JobStore;
   allowedOrigins?: string[];
   authenticate?: (authorization: string | undefined) => Promise<string | null>;
+  makeAiProvider?: (ephemeralApiKey: string | undefined) => EvidenceSynthesisProvider | null;
+  resolveEvidence?: (evidenceIds: string[], ownerId: string) => Promise<Evidence[]>;
 };
 
 const SearchSourceSchema = z.enum([
@@ -55,7 +60,15 @@ const SearchQuerySchema = z.object({
 });
 
 const VerifyCitationSchema = z.object({ text: z.string().trim().min(1).max(100_000) });
-const ResearchSchema = z.object({ question: z.string().trim().min(4).max(5_000) });
+const ResearchSchema = z.object({
+  question: z.string().trim().min(4).max(5_000),
+  useAi: z.boolean().default(false),
+  evidenceIds: z.array(z.string().regex(/^ev_[a-f0-9]{24}$/)).max(40).default([]),
+  documentContext: z.discriminatedUnion("source", [
+    z.object({ source: z.literal("corpus") }),
+    z.object({ source: z.literal("upload"), uploadId: z.string().uuid() }),
+  ]).default({ source: "corpus" }),
+});
 const TimelineSchema = z.object({
   article: z.string().trim().max(80).optional(),
   asOf: z.string().trim().max(40).optional(),
@@ -99,7 +112,15 @@ function apiError(c: Context<ApiEnv>, status: 400 | 401 | 404 | 409 | 413 | 422 
   );
 }
 
-export function createApiApp({ service, uploadStore, jobStore, allowedOrigins = [], authenticate }: ApiDependencies) {
+export function createApiApp({
+  service,
+  uploadStore,
+  jobStore,
+  allowedOrigins = [],
+  authenticate,
+  makeAiProvider,
+  resolveEvidence,
+}: ApiDependencies) {
   const app = new Hono<ApiEnv>();
   const counters = new Map<string, { count: number; resetAt: number }>();
 
@@ -185,7 +206,48 @@ export function createApiApp({ service, uploadStore, jobStore, allowedOrigins = 
   app.post("/v1/research", async (c) => {
     const parsed = ResearchSchema.safeParse(await readJson(c));
     if (!parsed.success) return apiError(c, 422, "VALIDATION_ERROR", "Pertanyaan riset tidak sah.", parsed.error.flatten());
-    const data = await service.analyzeLegalProblem(parsed.data);
+    if (!parsed.data.useAi) {
+      const data = await service.analyzeLegalProblem({ question: parsed.data.question });
+      return c.json({ data, meta: { traceId: c.get("traceId") } });
+    }
+
+    const ownerId = c.get("userId");
+    if (!ownerId) return apiError(c, 401, "AUTHENTICATION_REQUIRED", "Akun diperlukan untuk sintesis AI.");
+    if (!makeAiProvider || !resolveEvidence) {
+      return apiError(c, 503, "AI_NOT_CONFIGURED", "Sintesis AI belum dikonfigurasi pada layanan ini.");
+    }
+    if (parsed.data.documentContext.source === "upload") {
+      const upload = await jobStore?.getJob(parsed.data.documentContext.uploadId, ownerId) as
+        | { aiConsent?: boolean; classification?: string }
+        | null
+        | undefined;
+      if (!upload) return apiError(c, 404, "UPLOAD_NOT_FOUND", "Unggahan tidak ditemukan.");
+      if (upload.aiConsent !== true) {
+        return apiError(
+          c,
+          422,
+          "AI_CONSENT_REQUIRED",
+          "Consent khusus per dokumen wajib sebelum evidence unggahan dikirim ke penyedia AI.",
+          { classification: upload.classification ?? "unknown" }
+        );
+      }
+    }
+
+    const apiKey = c.req.header("x-gemini-api-key")?.trim();
+    if (apiKey && apiKey.length > 512) return apiError(c, 422, "BYOK_INVALID", "Gemini API key tidak sah.");
+    const provider = makeAiProvider(apiKey || undefined);
+    if (!provider) return apiError(c, 503, "AI_KEY_REQUIRED", "Kuota platform tidak tersedia; gunakan BYOK.");
+    const evidence = await resolveEvidence(parsed.data.evidenceIds, ownerId);
+    let data;
+    try {
+      data = await synthesizeEvidenceFirst(
+        { question: parsed.data.question, evidence, signal: c.req.raw.signal },
+        provider
+      );
+    } catch (error) {
+      if (error instanceof AiProviderError) return apiError(c, 503, "AI_PROVIDER_ERROR", error.message);
+      throw error;
+    }
     return c.json({ data, meta: { traceId: c.get("traceId") } });
   });
 
