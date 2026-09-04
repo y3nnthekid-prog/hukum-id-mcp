@@ -4,6 +4,9 @@
   "description": "MCP server untuk riset hukum Indonesia dan hukum ekonomi syariah: peraturan (JDIH BPK), putusan MA & MK, PERMA/SEMA, fatwa DSN-MUI, ayat, hadis berderajat, kitab turats, dan literatur akademik.",
   "type": "module",
   "license": "MIT",
+  "workspaces": [
+    "web"
+  ],
   "bin": {
     "hukum-id-mcp": "dist/mcp/stdio.js"
   },
@@ -26,17 +29,19 @@
     "start": "tsx src/mcp/stdio.ts",
     "start:legacy": "node src/server.js",
     "dev:api": "tsx watch src/api/server.ts",
+    "dev:web": "npm run dev --workspace hukum-id-web",
     "start:api": "tsx src/api/server.ts",
+    "build:web": "npm run build --workspace hukum-id-web",
     "typecheck": "tsc --noEmit",
     "build": "tsc",
     "test": "npm run test:unit",
-    "test:unit": "node test/trust-foundation.test.js && node test/parser.test.js && node --import tsx --test test/core-contract.test.ts test/core-service.test.ts test/api.test.ts test/auth.test.ts test/upload-storage.test.ts test/mcp-contract.test.ts test/remote-mcp.test.ts",
+    "test:unit": "node test/trust-foundation.test.js && node test/parser.test.js && node --import tsx --test test/core-contract.test.ts test/core-service.test.ts test/api.test.ts test/auth.test.ts test/upload-storage.test.ts test/web-client.test.ts test/mcp-contract.test.ts test/remote-mcp.test.ts",
     "test:parser": "node test/parser.test.js",
     "smoke": "node test/smoke.js",
     "snapshot": "node scripts/bangun-snapshot.js",
     "snapshot:ringkas": "node scripts/bangun-snapshot.js --ringkas",
     "sweep:uploads": "tsx src/workers/sweep-uploads.ts",
-    "verify": "npm test && npm run typecheck && npm run build",
+    "verify": "npm test && npm run typecheck && npm run build && npm run build:web",
     "prepublishOnly": "npm run verify"
   },
   "keywords": [
