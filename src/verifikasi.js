@@ -79,7 +79,7 @@ async function periksaPeraturan(teks, m, pasalTerkait) {
 
   try {
     const cari = await cariPeraturan({ keywords: jenisTeks, nomor, tahun, limit: 6 });
-    const selection = selectExactCandidate(cari.hasil, { nomor, tahun });
+    const selection = selectExactCandidate(cari.hasil, { nomor, tahun, jenis: jenisTeks });
     if (selection.status !== "matched") {
       hasil.status_verifikasi = "tidak_ditemukan";
       hasil.catatan.push(

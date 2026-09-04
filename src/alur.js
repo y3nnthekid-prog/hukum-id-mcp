@@ -87,7 +87,7 @@ export async function periksaPasal({
   }
 
   const cari = await cariPeraturan(kueri);
-  const selection = selectExactCandidate(cari.hasil, { nomor: kueri.nomor, tahun: kueri.tahun });
+  const selection = selectExactCandidate(cari.hasil, { nomor: kueri.nomor, tahun: kueri.tahun, jenis: jenis || r.keywords });
   if (selection.status !== "matched") {
     return {
       ditemukan: false,

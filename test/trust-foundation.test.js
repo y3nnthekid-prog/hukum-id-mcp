@@ -46,6 +46,50 @@ await test("exact lookup returns ambiguity instead of guessing", () => {
   assert.equal(result.candidates.length, 2);
 });
 
+await test("jenis yang sudah disebut pemanggil memilah nomor dan tahun yang bertabrakan", () => {
+  // Regresi nyata: periksa_pasal("UU 27/2022") menolak dengan status ambiguous
+  // karena Perbup Kabupaten Klaten 27/2022 ikut cocok pada nomor dan tahun,
+  // lalu meminta pengguna menyebutkan jenis yang sebenarnya sudah ia tulis.
+  const kandidat = [
+    { id: "uu", jenis: "UU", nomor: "27", tahun: "2022" },
+    { id: "perbup", jenis: "PERBUP KAB KLATEN", nomor: "27", tahun: "2022" },
+  ];
+
+  const cocok = selectExactCandidate(kandidat, { nomor: "27", tahun: "2022", jenis: "UU" });
+  assert.equal(cocok.status, "matched");
+  assert.equal(cocok.value.id, "uu");
+
+  // Sinonim ejaan panjang harus setara, tetapi UUD tidak boleh tertukar dengan UU.
+  assert.equal(
+    selectExactCandidate(kandidat, { nomor: "27", tahun: "2022", jenis: "Undang-Undang" }).value.id,
+    "uu"
+  );
+  assert.equal(
+    selectExactCandidate(kandidat, { nomor: "27", tahun: "2022", jenis: "UUD" }).status,
+    "ambiguous"
+  );
+
+  // Tanpa jenis, dan untuk jenis yang tidak dikenali, sifat fail-closed tetap:
+  // hasilnya ambigu, bukan tebakan dan bukan pula tidak-ditemukan yang keliru.
+  assert.equal(selectExactCandidate(kandidat, { nomor: "27", tahun: "2022" }).status, "ambiguous");
+  assert.equal(
+    selectExactCandidate(kandidat, { nomor: "27", tahun: "2022", jenis: "PERDA" }).status,
+    "ambiguous"
+  );
+  assert.equal(
+    selectExactCandidate([kandidat[1]], { nomor: "27", tahun: "2022", jenis: "UU" }).status,
+    "ambiguous"
+  );
+});
+
+await test("exact number matching preserves integers larger than JavaScript precision", () => {
+  const result = selectExactCandidate(
+    [{ id: "right", nomor: "9007199254740993", tahun: "2026" }],
+    { nomor: "9007199254740992", tahun: "2026" }
+  );
+  assert.equal(result.status, "not_found");
+});
+
 await test("PDF keyword filtering fails closed when the phrase is absent", () => {
   const pages = [
     { halaman: 1, teks: "Ketentuan umum" },

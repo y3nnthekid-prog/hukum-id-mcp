@@ -1,0 +1,42 @@
+name: Promote Azure API revision
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        required: true
+        type: choice
+        options: [staging, production]
+      revision:
+        description: Exact canary revision to promote after reviewing metrics
+        required: true
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Verify and promote selected canary
+        shell: bash
+        env:
+          TARGET_REVISION: ${{ inputs.revision }}
+          RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+          PREFIX: ${{ vars.HUKUM_PREFIX }}
+          DEPLOY_ENVIRONMENT: ${{ inputs.environment }}
+        run: |
+          APP_NAME="$PREFIX-$DEPLOY_ENVIRONMENT-api"
+          HEALTH=$(az containerapp revision show -g "$RESOURCE_GROUP" -n "$APP_NAME" --revision "$TARGET_REVISION" --query properties.healthState -o tsv)
+          test "$HEALTH" = "Healthy" -o "$HEALTH" = "None"
+          FQDN=$(az containerapp show -g "$RESOURCE_GROUP" -n "$APP_NAME" --query properties.configuration.ingress.fqdn -o tsv)
+          az containerapp revision label add -g "$RESOURCE_GROUP" -n "$APP_NAME" --revision "$TARGET_REVISION" --label promote-check --yes
+          curl --fail --retry 5 --retry-all-errors --retry-delay 3 "https://promote-check---${FQDN}/health"
+          az containerapp ingress traffic set -g "$RESOURCE_GROUP" -n "$APP_NAME" --revision-weight "$TARGET_REVISION=100"

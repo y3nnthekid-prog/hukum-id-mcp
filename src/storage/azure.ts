@@ -130,7 +130,10 @@ export async function createAzureSecureUploadService() {
       });
     },
     async delete(name) {
-      await container.deleteBlob(name, { deleteSnapshots: "include" });
+      await container.deleteBlob(name, { deleteSnapshots: "include" }).catch((error: unknown) => {
+        const candidate = error as { statusCode?: number };
+        if (candidate.statusCode !== 404) throw error;
+      });
     },
     async download(name) {
       return container.getBlobClient(name).downloadToBuffer();

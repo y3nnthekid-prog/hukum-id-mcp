@@ -214,7 +214,7 @@ a {
 .search-panel > h2,
 .research-rail h2,
 .principles h2 {
-  font-family: "Instrument Serif", Georgia, serif;
+  font-family: Georgia, "Times New Roman", serif;
   font-weight: 400;
   letter-spacing: -0.035em;
 }
@@ -690,7 +690,7 @@ a {
 
 .method-list span {
   color: var(--amber);
-  font-family: "DM Mono", Consolas, monospace;
+  font-family: Consolas, "Courier New", monospace;
   font-size: 9px;
 }
 

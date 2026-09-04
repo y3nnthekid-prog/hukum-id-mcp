@@ -1,7 +1,29 @@
-# hukum-id-mcp
+# HukumID Research Platform
 
-Server MCP untuk riset hukum Indonesia. Menghubungkan asisten ke sumber primer resmi
-sehingga jawaban hukum bertumpu pada dokumen yang benar-benar diambil, bukan pada ingatan.
+Platform evidence-first untuk riset hukum Indonesia dan Hukum Ekonomi Syariah (HES).
+Satu legal core melayani Web, REST API v1, MCP lokal `stdio`, dan remote MCP Streamable HTTP.
+Sistem menolak klaim tanpa evidence dan gagal tertutup ketika rujukan exact ambigu atau tidak ada.
+
+Versi 0.6 adalah fondasi pilot: Web search workspace, 10 MCP tool, REST API, upload terenkripsi,
+AI evidence-first opsional, release indeks atomik, Azure IaC, CI/canary/rollback, dan telemetri
+privacy-first sudah tersedia. Label production-ready tetap menunggu quality gates ahli dan corpus
+yang dirinci di [launch readiness](docs/launch-readiness.md).
+
+## Jalankan lokal
+
+Butuh Node.js 22 atau lebih baru dan `curl` pada PATH.
+
+```bash
+npm ci
+npm run start:api       # http://localhost:3001
+npm run dev:web         # http://localhost:3000
+```
+
+Konfigurasi tersedia di [.env.example](.env.example). Azure menggunakan Managed Identity atau
+`DefaultAzureCredential`; jangan menaruh Storage connection string di repository.
+
+Dokumentasi utama: [arsitektur](docs/architecture.md), [OpenAPI](openapi.yaml),
+[deployment Azure](docs/deployment.md), dan [runbook alert](docs/runbooks/alerts.md).
 
 ## Sumber
 
@@ -17,7 +39,26 @@ sehingga jawaban hukum bertumpu pada dokumen yang benar-benar diambil, bukan pad
 | hadeethenc.com | Ensiklopedia Hadis Nabawi: derajat kesahihan, takhrij, syarah, faedah — berbahasa Indonesia |
 | api.turath.io | Kitab turats untuk memverifikasi redaksi kaidah fikih; kutipan dibatasi pendek dan selalu bersitasi |
 
-## Tool
+## MCP default
+
+Default MCP sengaja dibatasi menjadi sepuluh tool yang tidak tumpang tindih:
+
+| Tool | Fungsi |
+|---|---|
+| `search_legal_sources` | Cari kandidat dari sumber hukum nasional, HES, putusan, dan literatur |
+| `get_legal_document` | Ambil satu dokumen dari rujukan persis |
+| `lookup_article` | Cari bunyi pasal beserta locator dan provenance; fail-closed |
+| `verify_citation` | Periksa sitasi di dalam draf |
+| `trace_regulation` | Telusuri perubahan dan keberlakuan pada tanggal tertentu |
+| `search_jurisprudence` | Cari putusan MA/MK dengan status sumber eksplisit |
+| `research_sharia_issue` | Petakan isu/akad ke fatwa, regulasi, KHES, dalil, dan putusan |
+| `analyze_legal_problem` | Analisis yang abstain jika evidence belum cukup |
+| `analyze_uploaded_document` | Periksa dokumen pengguna sebagai data tidak tepercaya |
+| `get_source_status` | Tampilkan freshness, kegagalan, dan keterbatasan sumber |
+
+Tool lama hanya dimuat bila `HUKUM_MCP_LEGACY=1` dan akan dihapus pada major version berikutnya.
+
+## Tool legacy (opt-in)
 
 | Tool | Fungsi |
 |---|---|
@@ -50,7 +91,7 @@ sehingga jawaban hukum bertumpu pada dokumen yang benar-benar diambil, bukan pad
 
 ## Pemasangan
 
-Butuh Node.js 20 ke atas dan `curl` pada PATH (Windows 10 ke atas sudah menyertakannya).
+Butuh Node.js 22 ke atas dan `curl` pada PATH (Windows 10 ke atas sudah menyertakannya).
 
 **Claude Code**
 
@@ -71,16 +112,17 @@ claude mcp add hukum-id --scope user -- npx -y hukum-id-mcp
 **Dari sumber**
 
 ```bash
-git clone <url-repo> && cd hukum-id-mcp && npm install
-claude mcp add hukum-id --scope user -- node "$(pwd)/src/server.js"
+git clone <url-repo> && cd hukum-id-mcp && npm ci && npm run build
+claude mcp add hukum-id --scope user -- node "$(pwd)/dist/mcp/stdio.js"
 ```
 
 Pengujian:
 
 ```bash
-npm test           # uji parser tanpa jaringan, lalu uji asap end-to-end
+npm test             # uji fixture, unit, security, API, MCP, storage, dan contract
+npm run verify       # lint + OpenAPI + test + typecheck + build API/Web
 npm run test:parser  # parser saja, tanpa satu pun permintaan jaringan
-npm run smoke        # uji asap end-to-end lewat stdio
+npm run smoke        # canary end-to-end; menyentuh sumber live
 ```
 
 `test/parser.test.js` menjalankan seluruh parser terhadap salinan HTML nyata di
@@ -96,10 +138,10 @@ hasilnya tidak sesuai bentuk yang diharapkan — itu sinyal parser perlu diperba
 
 ### Integrasi berkelanjutan
 
-Alur kerja di `.github/workflows/uji.yml` sengaja dipisah. Uji parser berjalan pada setiap
-push dan pull request, di Node 20, 22, dan 24 — aman karena tidak menyentuh jaringan sama
-sekali. Uji asap yang menembak situs lembaga negara hanya dijadwalkan **seminggu sekali**,
-plus dapat dipicu manual.
+Workflow `ci.yml` menjalankan verifikasi deterministik, audit dependency, kompilasi Bicep, dan
+Docker build pada push/PR. `uji.yml` hanya menembak sumber resmi seminggu sekali atau secara
+manual. `deploy.yml` membuat revision canary, `promote.yml` mempromosikannya setelah metrik
+ditinjau, dan `rollback.yml` mengembalikan trafik ke revision sehat yang dipilih operator.
 
 Alasannya bukan teknis melainkan etis: menjalankan uji terhadap server yang dibiayai
 anggaran publik pada setiap push berarti membebani mereka demi kenyamanan kita. Sekali
@@ -121,8 +163,8 @@ npm run snapshot            # korpus inti lengkap dengan PDF
 npm run snapshot:ringkas    # metadata saja, jauh lebih kecil
 ```
 
-Hasilnya ada di `.cache/`. Kemas folder itu menjadi satu arsip dan bagikan; penerima cukup
-membongkarnya ke lokasi yang sama. Korpus inti mencakup undang-undang pokok ekonomi syariah,
+Hasilnya ada di cache pengguna (`~/.cache/hukum-id-mcp`, atau `HUKUM_CACHE_DIR`). Kemas folder
+itu menjadi satu arsip dan bagikan; penerima cukup membongkarnya ke lokasi yang sama. Korpus inti mencakup undang-undang pokok ekonomi syariah,
 KUHP dan KUHAP beserta transisinya, UU pembentukan peraturan perundang-undangan berikut
 seluruh perubahannya, produk hukum Mahkamah Agung, indeks seluruh fatwa DSN-MUI, dan indeks
 hadis kategori fikih.
@@ -159,7 +201,7 @@ pengadilan.
 
 Tiga lapisan membuat pemakaian berulang nyaris seketika:
 
-- **Cache berkas di disk** (`.cache/`). Dokumen hukum resmi yang sudah diundangkan tidak
+- **Cache berkas di disk** (`HUKUM_CACHE_DIR` atau cache pengguna). Dokumen hukum resmi yang sudah diundangkan tidak
   berubah, jadi PDF dan salinan putusan disimpan 60 hari, halaman metadata 7 hari, dan
   hasil pencarian 1 hari.
 - **Cache teks hasil ekstraksi PDF.** Membedah PDF adalah bagian termahal; sekali dibedah,

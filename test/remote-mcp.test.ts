@@ -10,7 +10,9 @@ import { createPlatformServer } from "../src/platform.js";
 const service = {
   searchLegalSources: async () => ({ documents: [], warnings: [], nextCursor: null }),
   getLegalDocument: async () => ({}),
-  lookupArticle: async () => ({ status: "insufficient_evidence", evidence: [] }),
+  lookupArticle: async () => {
+    throw new Error("Gagal membuka C:\\Users\\researcher\\private\\draft.pdf");
+  },
   verifyCitation: async () => ({ hasil: [] }),
   traceRegulation: async () => ({}),
   searchJurisprudence: async () => ({ documents: [] }),
@@ -36,6 +38,13 @@ test("one HTTP server exposes REST health and stateless Streamable HTTP MCP", as
     await client.connect(new StreamableHTTPClientTransport(new URL(`${base}/mcp`)));
     const tools = await client.listTools();
     assert.equal(tools.tools.length, 10);
+    const failed = await client.callTool({
+      name: "lookup_article",
+      arguments: { regulation: "UU 21 Tahun 2008", article: "Pasal 1" },
+    });
+    assert.equal(failed.isError, true);
+    assert.doesNotMatch(JSON.stringify(failed), /researcher|draft\.pdf/);
+    assert.match(JSON.stringify(failed), /path lokal/);
   } finally {
     await client.close();
     server.close();

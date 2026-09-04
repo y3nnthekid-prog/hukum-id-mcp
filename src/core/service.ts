@@ -177,7 +177,9 @@ export function createLegalResearchService(adapters: LegalAdapters) {
   return {
     searchLegalSources,
     async getLegalDocument(input: { source: "regulation" | "ma-decision"; ref: string }) {
-      return input.source === "regulation" ? adapters.getRegulation(input.ref) : adapters.getMaDecision(input.ref);
+      const prefix = input.source === "regulation" ? "bpk:" : "ma:";
+      const ref = input.ref.startsWith(prefix) ? input.ref.slice(prefix.length) : input.ref;
+      return input.source === "regulation" ? adapters.getRegulation(ref) : adapters.getMaDecision(ref);
     },
     lookupArticle,
     async verifyCitation(input: { text: string }) {

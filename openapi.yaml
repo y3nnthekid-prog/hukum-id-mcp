@@ -1,0 +1,358 @@
+openapi: 3.1.0
+info:
+  title: HukumID Evidence-First API
+  version: 0.6.0
+  description: API riset hukum Indonesia. Metadata pencarian bukan evidence isi.
+  license:
+    name: MIT
+    identifier: MIT
+security: []
+servers:
+  - url: http://localhost:3001
+    description: Local development
+tags:
+  - name: Research
+    description: Pencarian, verifikasi sitasi, sintesis, dan unggahan.
+  - name: Documents
+    description: Dokumen hukum dan garis waktu regulasi.
+  - name: Operations
+    description: Kesehatan layanan, sumber, dan status job.
+paths:
+  /health:
+    get:
+      summary: Periksa kesiapan API
+      operationId: health
+      tags: [Operations]
+      responses:
+        "200":
+          description: Service is ready
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status, service, version]
+                properties:
+                  status: { const: ok }
+                  service: { const: hukum-id-api }
+                  version: { type: string }
+        "429": { $ref: "#/components/responses/RateLimited" }
+  /v1/search:
+    get:
+      summary: Cari kandidat sumber hukum
+      operationId: searchLegalSources
+      tags: [Research]
+      parameters:
+        - { name: q, in: query, required: true, schema: { type: string, minLength: 2, maxLength: 300 } }
+        - { name: sources, in: query, schema: { type: string }, description: Comma-separated source IDs }
+        - { name: number, in: query, schema: { type: string, maxLength: 30 } }
+        - { name: year, in: query, schema: { type: string, pattern: "^[0-9]{4}$" } }
+        - { name: pageSize, in: query, schema: { type: integer, minimum: 1, maximum: 50, default: 20 } }
+        - { name: cursor, in: query, schema: { type: string, maxLength: 500 } }
+      responses:
+        "200":
+          description: Kandidat dokumen; belum menjadi evidence isi
+          headers:
+            X-Trace-Id: { schema: { type: string, format: uuid } }
+            X-RateLimit-Limit: { schema: { type: integer } }
+            X-RateLimit-Remaining: { schema: { type: integer } }
+            X-RateLimit-Reset: { schema: { type: integer } }
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SearchEnvelope"
+        "422": { $ref: "#/components/responses/ValidationError" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+  /v1/documents/{id}:
+    get:
+      summary: Ambil satu dokumen hukum
+      operationId: getLegalDocument
+      tags: [Documents]
+      parameters:
+        - $ref: "#/components/parameters/DocumentId"
+        - name: source
+          in: query
+          schema: { type: string, enum: [regulation, ma-decision], default: regulation }
+      responses:
+        "200": { $ref: "#/components/responses/GenericSuccess" }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /v1/documents/{id}/timeline:
+    get:
+      summary: Telusuri garis waktu regulasi
+      operationId: getRegulationTimeline
+      tags: [Documents]
+      parameters:
+        - $ref: "#/components/parameters/DocumentId"
+        - { name: article, in: query, schema: { type: string, maxLength: 80 } }
+        - { name: asOf, in: query, schema: { type: string, maxLength: 40 } }
+      responses:
+        "200": { $ref: "#/components/responses/GenericSuccess" }
+        "422": { $ref: "#/components/responses/ValidationError" }
+  /v1/citations/verify:
+    post:
+      summary: Verifikasi sitasi dalam draf
+      operationId: verifyCitation
+      tags: [Research]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [text]
+              properties:
+                text: { type: string, minLength: 1, maxLength: 100000 }
+      responses:
+        "200": { $ref: "#/components/responses/GenericSuccess" }
+        "422": { $ref: "#/components/responses/ValidationError" }
+  /v1/research:
+    post:
+      summary: Jalankan riset evidence-first
+      operationId: research
+      tags: [Research]
+      security:
+        - {}
+        - bearerAuth: []
+      description: AI mode requires bearer authentication. BYOK may be sent ephemerally in X-Gemini-Api-Key.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [question]
+              properties:
+                question: { type: string, minLength: 4, maxLength: 5000 }
+                useAi: { type: boolean, default: false }
+                evidenceIds:
+                  type: array
+                  maxItems: 40
+                  items: { type: string, pattern: "^ev_[a-f0-9]{24}$" }
+                documentContext:
+                  oneOf:
+                    - type: object
+                      required: [source]
+                      properties: { source: { const: corpus } }
+                    - type: object
+                      required: [source, uploadId]
+                      properties:
+                        source: { const: upload }
+                        uploadId: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Evidence-first research result
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data: { $ref: "#/components/schemas/ResearchResult" }
+                  meta: { $ref: "#/components/schemas/Meta" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "422": { $ref: "#/components/responses/ValidationError" }
+        "503": { $ref: "#/components/responses/Unavailable" }
+  /v1/uploads:
+    post:
+      summary: Buat tiket unggahan terenkripsi
+      operationId: createUpload
+      tags: [Research]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: true
+          schema: { type: string, minLength: 1 }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CreateUpload" }
+      responses:
+        "201": { $ref: "#/components/responses/GenericSuccess" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "422": { $ref: "#/components/responses/ValidationError" }
+  /v1/uploads/{id}/content:
+    put:
+      summary: Unggah konten PDF atau DOCX
+      operationId: putUploadContent
+      tags: [Research]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/pdf: { schema: { type: string, format: binary } }
+          application/vnd.openxmlformats-officedocument.wordprocessingml.document:
+            schema: { type: string, format: binary }
+      responses:
+        "202": { $ref: "#/components/responses/GenericSuccess" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "413": { $ref: "#/components/responses/PayloadTooLarge" }
+        "422": { $ref: "#/components/responses/ValidationError" }
+  /v1/jobs/{id}:
+    get:
+      summary: Ambil status job milik pengguna
+      operationId: getJob
+      tags: [Operations]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        "200": { $ref: "#/components/responses/GenericSuccess" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /v1/sources/status:
+    get:
+      summary: Lihat kesehatan sumber hukum
+      operationId: getSourceStatus
+      tags: [Operations]
+      parameters:
+        - { name: importantOnly, in: query, schema: { type: boolean, default: false } }
+      responses:
+        "200": { $ref: "#/components/responses/GenericSuccess" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    DocumentId:
+      name: id
+      in: path
+      required: true
+      schema: { type: string, minLength: 1, maxLength: 500 }
+  schemas:
+    Meta:
+      type: object
+      required: [traceId]
+      properties:
+        traceId: { type: string, format: uuid }
+        nextCursor: { type: [string, "null"] }
+    LegalDocument:
+      type: object
+      required: [id, jurisdiction, authority, documentType, number, year, title, status, effectiveFrom, effectiveTo, canonicalUrl]
+      properties:
+        id: { type: string }
+        jurisdiction: { const: ID }
+        authority: { type: string }
+        documentType: { type: string }
+        number: { type: [string, "null"] }
+        year: { type: [string, "null"] }
+        title: { type: string }
+        status: { type: [string, "null"] }
+        effectiveFrom: { type: [string, "null"], format: date }
+        effectiveTo: { type: [string, "null"], format: date }
+        canonicalUrl: { type: string, format: uri }
+    Evidence:
+      type: object
+      required: [id, documentId, text, locator, provenance]
+      properties:
+        id: { type: string, pattern: "^ev_[a-f0-9]{24}$" }
+        documentId: { type: string }
+        text: { type: string }
+        locator: { type: object, additionalProperties: true }
+        provenance:
+          type: object
+          required: [sourceName, sourceUrl, authority, retrievedAt, contentHash, indexVersion, verificationStatus]
+          properties:
+            sourceName: { type: string }
+            sourceUrl: { type: string, format: uri }
+            authority: { type: string }
+            retrievedAt: { type: string, format: date-time }
+            contentHash: { type: string, pattern: "^[a-f0-9]{64}$" }
+            indexVersion: { type: string }
+            verificationStatus:
+              type: string
+              enum: [verified_live, verified_snapshot, ambiguous, conflicting, insufficient_evidence]
+    ResearchResult:
+      type: object
+      required: [traceId, query, status, summary, claims, evidence, conflicts, warnings, coverage, confidence, generatedAt]
+      properties:
+        traceId: { type: string, format: uuid }
+        query: { type: string }
+        status: { type: string, enum: [complete, partial, insufficient_evidence] }
+        summary: { type: string }
+        claims:
+          type: array
+          items:
+            type: object
+            required: [text, evidenceIds]
+            properties:
+              text: { type: string }
+              evidenceIds: { type: array, minItems: 1, items: { type: string } }
+        evidence: { type: array, items: { $ref: "#/components/schemas/Evidence" } }
+        conflicts: { type: array, items: { type: string } }
+        warnings: { type: array, items: { type: string } }
+        coverage: { type: number, minimum: 0, maximum: 1 }
+        confidence: { type: number, minimum: 0, maximum: 1 }
+        generatedAt: { type: string, format: date-time }
+    SearchEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: object
+          required: [traceId, query, documents, sourceStatus, warnings, nextCursor]
+          properties:
+            traceId: { type: string, format: uuid }
+            query: { type: string }
+            documents: { type: array, items: { $ref: "#/components/schemas/LegalDocument" } }
+            sourceStatus: { type: object, additionalProperties: { type: string, enum: [ok, failed] } }
+            warnings: { type: array, items: { type: string } }
+            nextCursor: { type: [string, "null"] }
+        meta: { $ref: "#/components/schemas/Meta" }
+    CreateUpload:
+      type: object
+      required: [fileName, contentType, sizeBytes, classification]
+      properties:
+        fileName: { type: string, minLength: 1, maxLength: 180, pattern: "\\.(pdf|PDF|docx|DOCX)$" }
+        contentType:
+          type: string
+          enum: [application/pdf, application/vnd.openxmlformats-officedocument.wordprocessingml.document]
+        sizeBytes: { type: integer, minimum: 1, maximum: 26214400 }
+        classification: { type: string, enum: [public, internal, confidential] }
+        aiConsent: { type: boolean, default: false }
+    ErrorEnvelope:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message, traceId]
+          properties:
+            code: { type: string }
+            message: { type: string }
+            details: {}
+            traceId: { type: string, format: uuid }
+  responses:
+    GenericSuccess:
+      description: Successful response
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [data, meta]
+            properties:
+              data: {}
+              meta: { $ref: "#/components/schemas/Meta" }
+    ValidationError:
+      description: Invalid request
+      content: { application/json: { schema: { $ref: "#/components/schemas/ErrorEnvelope" } } }
+    Unauthorized:
+      description: Authentication required
+      content: { application/json: { schema: { $ref: "#/components/schemas/ErrorEnvelope" } } }
+    NotFound:
+      description: Resource not found
+      content: { application/json: { schema: { $ref: "#/components/schemas/ErrorEnvelope" } } }
+    PayloadTooLarge:
+      description: Payload too large
+      content: { application/json: { schema: { $ref: "#/components/schemas/ErrorEnvelope" } } }
+    RateLimited:
+      description: Request quota exceeded
+      content: { application/json: { schema: { $ref: "#/components/schemas/ErrorEnvelope" } } }
+    Unavailable:
+      description: Optional service is not configured or upstream is unavailable
+      content: { application/json: { schema: { $ref: "#/components/schemas/ErrorEnvelope" } } }

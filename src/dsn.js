@@ -4,12 +4,11 @@
 
 import { getText, inline, decodeEntities } from "./http.js";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
-import { ambilJson, simpanJson } from "./cache.js";
-import { fileURLToPath } from "node:url";
+import { ambilJson, cacheDirectory, simpanJson } from "./cache.js";
 import path from "node:path";
 
 const BASE = "https://dsnmui.or.id";
-const CACHE_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", ".cache");
+const CACHE_DIR = cacheDirectory();
 const CACHE_FILE = path.join(CACHE_DIR, "fatwa-dsn.json");
 const CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 

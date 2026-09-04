@@ -87,3 +87,15 @@ test("article lookup exposes page-level evidence and provenance", async () => {
   assert.equal(result.claims[0]?.evidenceIds[0], result.evidence[0]?.id);
   assert.match(result.evidence[0]?.provenance.contentHash ?? "", /^[a-f0-9]{64}$/);
 });
+
+test("document IDs returned by search are reversible at the adapter boundary", async () => {
+  let received = "";
+  const service = createLegalResearchService(fakeAdapters({
+    getRegulation: async (ref) => {
+      received = ref;
+      return { id: ref };
+    },
+  }));
+  await service.getLegalDocument({ source: "regulation", ref: "bpk:229798" });
+  assert.equal(received, "229798");
+});

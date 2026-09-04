@@ -18,14 +18,35 @@ const BULAN = new Map([
 
 function nomorNormal(value) {
   const text = String(value ?? "").trim();
-  return /^\d+$/.test(text) ? String(Number(text)) : text.toLowerCase();
+  return /^\d+$/.test(text) ? text.replace(/^0+(?=\d)/, "") : text.toLowerCase();
+}
+
+const SINONIM_JENIS = new Map([
+  ["UNDANG-UNDANG", "UU"],
+  ["UNDANG UNDANG", "UU"],
+  ["UNDANG-UNDANG DASAR", "UUD"],
+  ["PERATURAN PEMERINTAH", "PP"],
+  ["PERATURAN PEMERINTAH PENGGANTI UNDANG-UNDANG", "PERPU"],
+  ["PERPPU", "PERPU"],
+  ["PERATURAN PRESIDEN", "PERPRES"],
+  ["KEPUTUSAN PRESIDEN", "KEPPRES"],
+  ["INSTRUKSI PRESIDEN", "INPRES"],
+]);
+
+function jenisNormal(value) {
+  const text = String(value ?? "")
+    .toUpperCase()
+    .replace(/[.]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  return SINONIM_JENIS.get(text) || text;
 }
 
 /**
  * Memilih dokumen hanya bila identitasnya persis dan tunggal. Fungsi ini
  * sengaja tidak pernah memakai kandidat pertama sebagai fallback.
  */
-export function selectExactCandidate(candidates = [], { nomor = "", tahun = "" } = {}) {
+export function selectExactCandidate(candidates = [], { nomor = "", tahun = "", jenis = "" } = {}) {
   const expectedNumber = nomorNormal(nomor);
   const expectedYear = String(tahun ?? "").trim();
   const exact = candidates.filter((candidate) => {
@@ -34,7 +55,29 @@ export function selectExactCandidate(candidates = [], { nomor = "", tahun = "" }
     return numberMatches && yearMatches;
   });
 
-  if (exact.length === 1) return { status: "matched", value: exact[0], candidates: exact };
+  const expectedType = jenisNormal(jenis);
+  if (exact.length === 1) {
+    const only = exact[0];
+    if (!expectedType || jenisNormal(only.jenis) === expectedType) {
+      return { status: "matched", value: only, candidates: exact };
+    }
+    return { status: "ambiguous", value: null, candidates: exact };
+  }
+
+  // Nomor dan tahun saja tidak cukup memilah: UU 27/2022 dan Perbup Kabupaten
+  // Klaten 27/2022 sama-sama bernomor 27 tahun 2022. Rujukan "UU 27/2022"
+  // sebenarnya sudah menyebut jenisnya, jadi jenis itu dipakai mempersempit
+  // alih-alih meminta pengguna mengulang keterangan yang sudah ia berikan.
+  //
+  // Penyempitan hanya berlaku bila menghasilkan kandidat. Jenis yang tidak
+  // dikenali, atau sumber yang tidak memuat kolom jenis, tidak boleh mengubah
+  // ambigu menjadi tidak-ditemukan — sifat fail-closed tetap dipertahankan.
+  if (exact.length > 1 && expectedType) {
+    const seJenis = exact.filter((candidate) => jenisNormal(candidate.jenis) === expectedType);
+    if (seJenis.length === 1) return { status: "matched", value: seJenis[0], candidates: seJenis };
+    if (seJenis.length > 1) return { status: "ambiguous", value: null, candidates: seJenis };
+  }
+
   if (exact.length > 1) return { status: "ambiguous", value: null, candidates: exact };
   return { status: "not_found", value: null, candidates };
 }

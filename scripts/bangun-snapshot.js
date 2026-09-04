@@ -15,7 +15,6 @@
 //   node scripts/bangun-snapshot.js --ringkas  metadata saja, tanpa PDF
 
 import { readdir, stat } from "node:fs/promises";
-import { fileURLToPath } from "node:url";
 import path from "node:path";
 
 import { cariPeraturan, detailPeraturan } from "../src/bpk.js";
@@ -24,9 +23,10 @@ import { indeksFatwa, cariProdukDsn } from "../src/dsn.js";
 import { cariPerma } from "../src/perma.js";
 import { indeksHadisKategori } from "../src/dalil.js";
 import { selectExactCandidate } from "../src/trust.js";
+import { cacheDirectory } from "../src/cache.js";
 
 const RINGKAS = process.argv.includes("--ringkas");
-const CACHE = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", ".cache");
+const CACHE = cacheDirectory();
 
 /** Undang-undang yang hampir selalu jadi rujukan dalam riset hukum ekonomi syariah. */
 const KORPUS = [
@@ -86,7 +86,7 @@ console.log("Peraturan inti:");
 for (const [kata, nomor, tahun] of KORPUS) {
   await langkah(`${nomor}/${tahun} — ${kata.slice(0, 38)}`, async () => {
     const cari = await cariPeraturan({ keywords: kata, nomor, tahun, limit: 4 });
-    const selection = selectExactCandidate(cari.hasil, { nomor, tahun });
+    const selection = selectExactCandidate(cari.hasil, { nomor, tahun, jenis: "UU" });
     if (selection.status !== "matched") throw new Error(`dokumen persis ${selection.status}`);
     const pilih = selection.value;
     const d = await detailPeraturan(pilih.id);
@@ -121,10 +121,10 @@ const ukuran = await ukuranCache();
 console.log(
   `\nSelesai dalam ${((Date.now() - awal) / 1000).toFixed(1)} detik. ` +
     `Berhasil ${berhasil}, gagal ${gagal}.\n` +
-    `Cache kini ${ukuran.jumlah} berkas, ${ukuran.mb} MB, di .cache/\n`
+    `Cache kini ${ukuran.jumlah} berkas, ${ukuran.mb} MB, di ${CACHE}\n`
 );
 console.log(
-  "Untuk membagikannya: kemas folder .cache/ menjadi satu arsip, lalu bagikan kepada peneliti lain.\n" +
+  "Untuk membagikannya: kemas folder cache di atas menjadi satu arsip, lalu bagikan kepada peneliti lain.\n" +
     "Mereka cukup membongkarnya ke folder yang sama, dan korpus inti langsung tersedia tanpa\n" +
     "sekali pun menembak situs sumber."
 );

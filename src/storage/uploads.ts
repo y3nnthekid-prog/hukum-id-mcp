@@ -228,12 +228,29 @@ export function createSecureUploadService({
   async function sweepExpired(at = now()) {
     const expired = await repository.listExpired(at.toISOString());
     let deleted = 0;
+    let failed = 0;
     for (const metadata of expired) {
-      if (metadata.blobName) await blobStore.delete(metadata.blobName);
-      await repository.deleteUpload(metadata.ownerHash, metadata.id);
-      deleted += 1;
+      try {
+        // Hapus wrapped key lebih dahulu. Dengan demikian ciphertext tidak lagi
+        // dapat didekripsi walau soft-delete Blob atau retry jaringan menahannya.
+        if (metadata.wrappedKey || metadata.iv || metadata.authTag || metadata.status !== "expired") {
+          await repository.updateUpload({
+            ...metadata,
+            status: "expired",
+            wrappedKey: null,
+            iv: null,
+            authTag: null,
+          });
+        }
+        if (metadata.blobName) await blobStore.delete(metadata.blobName);
+        await repository.deleteUpload(metadata.ownerHash, metadata.id);
+        deleted += 1;
+      } catch {
+        failed += 1;
+      }
     }
-    return { deleted, sweptAt: at.toISOString() };
+    if (failed > 0) throw new Error(`SWEEP_INCOMPLETE: ${failed} unggahan gagal dihapus; ${deleted} berhasil.`);
+    return { deleted, failed, sweptAt: at.toISOString() };
   }
 
   return { createUpload, putUpload, getJob, decryptUpload, sweepExpired };

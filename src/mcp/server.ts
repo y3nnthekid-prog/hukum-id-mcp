@@ -35,6 +35,15 @@ function linkedSource(data: Record<string, unknown>) {
     : null;
 }
 
+function safeToolError(error: unknown) {
+  const message = error instanceof Error ? error.message : "Galat tidak dikenal";
+  return message
+    .replace(/file:\/\/\/?[^\s]+/gi, "[path lokal]")
+    .replace(/[a-z]:\\[^\r\n]*/gi, "[path lokal]")
+    .replace(/\/(?:home|users|tmp|var\/tmp)\/[^\s]+/gi, "[path lokal]")
+    .slice(0, 600);
+}
+
 async function toolResult(operation: () => Promise<unknown>) {
   const traceId = randomUUID();
   try {
@@ -50,7 +59,7 @@ async function toolResult(operation: () => Promise<unknown>) {
   } catch (error) {
     const data = {
       status: "error",
-      error: error instanceof Error ? error.message : "Galat tidak dikenal",
+      error: safeToolError(error),
     };
     return {
       isError: true,

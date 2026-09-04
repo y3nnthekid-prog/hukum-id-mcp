@@ -70,5 +70,13 @@ server.listen(port, "0.0.0.0", () => {
 });
 
 for (const signal of ["SIGINT", "SIGTERM"] as const) {
-  process.on(signal, () => server.close(() => process.exit(0)));
+  process.once(signal, () => {
+    server.close(async () => {
+      if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
+        const { shutdownAzureMonitor } = await import("@azure/monitor-opentelemetry");
+        await shutdownAzureMonitor().catch(() => undefined);
+      }
+      process.exit(0);
+    });
+  });
 }

@@ -5,10 +5,17 @@
 
 import { readFile, writeFile, mkdir, stat } from "node:fs/promises";
 import { createHash } from "node:crypto";
-import { fileURLToPath } from "node:url";
+import os from "node:os";
 import path from "node:path";
 
-const DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", ".cache");
+export function cacheDirectory() {
+  const configured = process.env.HUKUM_CACHE_DIR?.trim();
+  if (configured) return path.resolve(configured);
+  const base = process.env.XDG_CACHE_HOME?.trim() || path.join(os.homedir(), ".cache");
+  return path.join(base, "hukum-id-mcp");
+}
+
+const DIR = cacheDirectory();
 
 const HARI = 24 * 60 * 60 * 1000;
 

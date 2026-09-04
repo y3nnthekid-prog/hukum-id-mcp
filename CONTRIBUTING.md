@@ -36,11 +36,21 @@ dengan jelas alih-alih menebak nomor pasal.
 
 ```bash
 npm install
-npm test          # uji parser tanpa jaringan, lalu uji asap end-to-end
 npm run test:parser  # cukup ini untuk kerja sehari-hari; tanpa jaringan
+npm test             # seluruh uji deterministik: parser, fondasi, kontrak, TypeScript
+npm run verify       # gerbang yang sama dengan CI: lint, uji, typecheck, build
+npm run smoke        # uji asap end-to-end; MENEMBAK situs sumber sungguhan
 ```
 
-Butuh Node.js 20 ke atas dan `curl` pada PATH.
+Butuh Node.js 22 ke atas dan `curl` pada PATH.
+
+`npm test` sengaja tidak memanggil `npm run smoke`. Uji asap menembak situs lembaga negara,
+sehingga menjalankannya pada tiap perubahan akan membebani server yang dibiayai anggaran
+publik. Ia dijalankan oleh canary terjadwal seminggu sekali, atau manual saat memang perlu.
+
+Perubahan perilaku core wajib menambah uji TypeScript dan lulus `npm run verify`. Perubahan
+REST juga wajib menjaga [openapi.yaml](openapi.yaml) sinkron; keputusan lintas-kanal atau
+penyimpanan dicatat sebagai ADR di `docs/decisions/`.
 
 ## Menambah sumber baru
 

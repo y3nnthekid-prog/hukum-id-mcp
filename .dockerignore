@@ -1,0 +1,14 @@
+.cache
+.git
+.github
+.next
+dist
+docs
+infra
+node_modules
+outputs
+test
+web/.next
+web/out
+*.log
+.env*

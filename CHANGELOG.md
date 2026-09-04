@@ -4,6 +4,29 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.1.0/), versi
 [Semantic Versioning](https://semver.org/lang/id/). Peneliti disarankan menyebutkan versi
 alat ini dalam tulisannya demi reproduktibilitas.
 
+## [0.6.0] — 2026-09-05
+
+### Platform evidence-first
+
+- Satu TypeScript strict legal core untuk Web, REST API v1, MCP `stdio`, dan remote MCP
+  Streamable HTTP; default MCP dipadatkan menjadi sepuluh tool.
+- Kontrak content-addressed `Evidence`, `LegalDocument`, `ResearchResult`, `SourceHealth`, dan
+  `JobStatus`; klaim tanpa evidence terverifikasi dibuang dan hasil wajib abstain.
+- Exact lookup fail-closed, pencarian PDF tidak lagi mengembalikan halaman tanpa keyword,
+  validasi tanggal kalender, smoke exit code nonzero, dan HTTP client tahan SSRF/redirect/DNS
+  rebinding/response bomb.
+- Web research workspace responsif dengan source health, warning, filter, dan trace ID.
+- Upload PDF/DOCX terenkripsi AES-256-GCM; data key unik dibungkus Key Vault RSA-OAEP-256,
+  metadata di Table, pekerjaan di Queue, dan sweeper TTL 24 jam.
+- Gemini 2.5 Flash opsional untuk sintesis evidence yang sudah diselesaikan server. BYOK tidak
+  disimpan; consent unggahan diperiksa per dokumen.
+- Release lexical/semantic index immutable dengan checksum, manifest-last, active pointer CAS,
+  dan materialisasi disk atomik.
+- Bicep untuk Azure Container Apps, Jobs, Static Web Apps, ACR, Key Vault, RBAC, Monitor, serta
+  budget alert 50/75/90%; CI, canary deployment, dan rollback workflow ditambahkan.
+- OpenAPI 3.1, ADR, runbook, launch gates, dan telemetry dengan route label terbatas tanpa query,
+  token, API key, atau isi dokumen.
+
 ## [0.5.0] — 2026-09-05
 
 ### Lubang keilmuan terakhir tertutup

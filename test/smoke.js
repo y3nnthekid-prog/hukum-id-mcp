@@ -36,8 +36,14 @@ function call(method, params) {
   });
 }
 
-const ok = (label, cond, extra = "") =>
+let lulus = 0;
+let gagal = 0;
+
+const ok = (label, cond, extra = "") => {
+  if (cond) lulus++;
+  else gagal++;
   console.log(`${cond ? "PASS" : "FAIL"}  ${label}${extra ? "  — " + extra : ""}`);
+};
 
 await call("initialize", {
   protocolVersion: "2024-11-05",
@@ -385,8 +391,12 @@ ok(
 const internal = await tool("cari_dalam_pdf", { url_pdf: "http://127.0.0.1:8080/x.pdf", kata_kunci: "a" });
 ok(
   "permintaan ke alamat internal ditolak",
-  Boolean(internal.error) && /alamat internal/i.test(internal.error),
-  "pagar SSRF aktif"
+  // Dua pagar dapat menolaknya, dan keduanya sah: daftar host yang diizinkan
+  // memeriksa lebih dulu, pemeriksaan alamat privat menyusul. Yang diuji di
+  // sini adalah penolakan yang disengaja — bukan kegagalan koneksi yang
+  // kebetulan terjadi karena tidak ada yang mendengarkan di porta itu.
+  Boolean(internal.error) && /alamat internal|tidak termasuk sumber yang diizinkan/i.test(internal.error),
+  internal.error?.slice(0, 60)
 );
 
 // KHES: naskahnya tidak ikut disebarkan bersama perangkat ini, jadi uji ini
@@ -428,4 +438,13 @@ if (khesStatus.tersedia) {
 }
 
 p.kill();
-if (gagal > 0) process.exitCode = 1;
+
+console.log(`\n${lulus} lulus, ${gagal} gagal dari ${lulus + gagal} pemeriksaan terhadap sumber sungguhan.`);
+if (gagal > 0) {
+  console.log(
+    "Bedakan dulu penyebabnya: sumber yang sedang membatasi atau tumbang akan pulih sendiri, " +
+      "sedangkan situs yang berganti tampilan menuntut parser dan fixture diperbarui bersamaan. " +
+      "Jalankan tool periksa_kesehatan_sumber untuk memisahkan keduanya."
+  );
+  process.exitCode = 1;
+}

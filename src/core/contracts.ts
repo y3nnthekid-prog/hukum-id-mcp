@@ -67,9 +67,32 @@ export const ResearchResultSchema = z.object({
   generatedAt: z.string().datetime({ offset: true }),
 });
 
+export const SourceHealthSchema = z.object({
+  sourceId: z.string().min(1).max(100),
+  status: z.enum(["healthy", "degraded", "unavailable", "unknown"]),
+  lastSuccessfulAt: z.string().datetime({ offset: true }).nullable(),
+  ageSeconds: z.number().int().nonnegative().nullable(),
+  activeIndexVersion: z.string().min(1).nullable(),
+  lastFailure: z.string().max(500).nullable(),
+  incomplete: z.boolean(),
+});
+
+export const JobStatusSchema = z.object({
+  id: z.string().min(1).max(100),
+  status: z.enum(["queued", "running", "partial", "completed", "failed", "expired"]),
+  progress: z.number().int().min(0).max(100),
+  createdAt: z.string().datetime({ offset: true }),
+  updatedAt: z.string().datetime({ offset: true }),
+  expiresAt: z.string().datetime({ offset: true }).nullable(),
+  warnings: z.array(z.string().max(500)).max(100),
+  errorCode: z.string().max(100).nullable(),
+});
+
 export type Evidence = z.infer<typeof EvidenceSchema>;
 export type ResearchResult = z.infer<typeof ResearchResultSchema>;
 export type Claim = z.infer<typeof ClaimSchema>;
+export type SourceHealth = z.infer<typeof SourceHealthSchema>;
+export type JobStatus = z.infer<typeof JobStatusSchema>;
 
 type EvidenceInput = Omit<Evidence, "id" | "provenance"> & {
   provenance: Omit<Evidence["provenance"], "contentHash">;

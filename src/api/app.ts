@@ -1,4 +1,4 @@
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { Hono, type Context } from "hono";
 import { z } from "zod";
 
@@ -6,6 +6,7 @@ import { AiProviderError } from "../ai/gemini.js";
 import { synthesizeEvidenceFirst, type EvidenceSynthesisProvider } from "../ai/evidence-synthesis.js";
 import { type Evidence } from "../core/contracts.js";
 import type { LegalResearchService, SearchSource } from "../core/service.js";
+import { observeApiRequest } from "../telemetry.js";
 
 type ApiEnv = { Variables: { traceId: string; userId: string | null } };
 
@@ -49,6 +50,9 @@ const SearchSourceSchema = z.enum([
   "mk-decision",
   "literature",
 ]);
+const DocumentSourceSchema = z.enum(["regulation", "ma-decision"]);
+const DocumentRefSchema = z.string().trim().min(1).max(500);
+const JobIdSchema = z.string().uuid();
 
 const SearchQuerySchema = z.object({
   q: z.string().trim().min(2).max(300),
@@ -71,7 +75,7 @@ const ResearchSchema = z.object({
 });
 const TimelineSchema = z.object({
   article: z.string().trim().max(80).optional(),
-  asOf: z.string().trim().max(40).optional(),
+  asOf: z.string().date().optional(),
 });
 const UploadSchema = z.object({
   fileName: z.string().trim().min(1).max(180).regex(/\.(pdf|docx)$/i),
@@ -85,7 +89,8 @@ const UploadSchema = z.object({
 });
 
 function clientId(c: Context<ApiEnv>): string {
-  return c.req.header("x-user-id")?.slice(0, 100) || c.req.header("x-forwarded-for")?.split(",")[0]?.trim() || "anonymous";
+  const identity = c.get("userId") || c.req.header("x-forwarded-for")?.split(",")[0]?.trim() || "anonymous";
+  return createHash("sha256").update(identity.slice(0, 200)).digest("hex").slice(0, 24);
 }
 
 async function readJson(c: Context<ApiEnv>): Promise<unknown> {
@@ -123,6 +128,12 @@ export function createApiApp({
 }: ApiDependencies) {
   const app = new Hono<ApiEnv>();
   const counters = new Map<string, { count: number; resetAt: number }>();
+  let lastCounterSweep = 0;
+
+  app.use("*", async (c, next) => {
+    const pathname = new URL(c.req.url).pathname;
+    await observeApiRequest(c.req.method, pathname, next, () => c.res.status);
+  });
 
   app.use("*", async (c, next) => {
     const traceId = randomUUID();
@@ -143,6 +154,13 @@ export function createApiApp({
 
     const key = clientId(c);
     const now = Date.now();
+    if (now - lastCounterSweep >= 60_000) {
+      for (const [candidate, value] of counters) {
+        if (value.resetAt <= now) counters.delete(candidate);
+      }
+      lastCounterSweep = now;
+    }
+    if (counters.size >= 10_000) counters.delete(counters.keys().next().value!);
     const current = counters.get(key);
     const bucket = !current || current.resetAt <= now ? { count: 0, resetAt: now + 60_000 } : current;
     bucket.count += 1;
@@ -166,9 +184,13 @@ export function createApiApp({
   app.get("/v1/search", async (c) => {
     const parsed = SearchQuerySchema.safeParse(c.req.query());
     if (!parsed.success) return apiError(c, 422, "VALIDATION_ERROR", "Parameter pencarian tidak sah.", parsed.error.flatten());
-    const sources = parsed.data.sources
-      ? parsed.data.sources.split(",").map((source) => SearchSourceSchema.parse(source.trim()))
-      : undefined;
+    const parsedSources = parsed.data.sources
+      ? z.array(SearchSourceSchema).min(1).max(6).safeParse(parsed.data.sources.split(",").map((source) => source.trim()))
+      : null;
+    if (parsedSources && !parsedSources.success) {
+      return apiError(c, 422, "VALIDATION_ERROR", "Daftar sumber pencarian tidak sah.", parsedSources.error.flatten());
+    }
+    const sources = parsedSources?.data;
     const result = await service.searchLegalSources({
       query: parsed.data.q,
       pageSize: parsed.data.pageSize,
@@ -180,16 +202,22 @@ export function createApiApp({
   });
 
   app.get("/v1/documents/:id", async (c) => {
-    const source = c.req.query("source") === "ma-decision" ? "ma-decision" : "regulation";
-    const data = await service.getLegalDocument({ source, ref: c.req.param("id") });
+    const source = DocumentSourceSchema.safeParse(c.req.query("source") || "regulation");
+    const ref = DocumentRefSchema.safeParse(c.req.param("id"));
+    if (!source.success || !ref.success) {
+      return apiError(c, 422, "VALIDATION_ERROR", "Rujukan dokumen tidak sah.");
+    }
+    const data = await service.getLegalDocument({ source: source.data, ref: ref.data });
     return c.json({ data, meta: { traceId: c.get("traceId") } });
   });
 
   app.get("/v1/documents/:id/timeline", async (c) => {
+    const ref = DocumentRefSchema.safeParse(c.req.param("id"));
+    if (!ref.success) return apiError(c, 422, "VALIDATION_ERROR", "Rujukan dokumen tidak sah.");
     const parsed = TimelineSchema.safeParse(c.req.query());
     if (!parsed.success) return apiError(c, 422, "VALIDATION_ERROR", "Parameter timeline tidak sah.", parsed.error.flatten());
     const data = await service.traceRegulation({
-      regulation: c.req.param("id"),
+      regulation: ref.data,
       ...(parsed.data.article ? { article: parsed.data.article } : {}),
       ...(parsed.data.asOf ? { asOf: parsed.data.asOf } : {}),
     });
@@ -267,6 +295,8 @@ export function createApiApp({
     if (!uploadStore) return apiError(c, 503, "STORAGE_NOT_CONFIGURED", "Penyimpanan unggahan belum dikonfigurasi.");
     const ownerId = c.get("userId");
     if (!ownerId) return apiError(c, 401, "AUTHENTICATION_REQUIRED", "Akun diperlukan untuk mengunggah dokumen.");
+    const uploadId = JobIdSchema.safeParse(c.req.param("id"));
+    if (!uploadId.success) return apiError(c, 422, "VALIDATION_ERROR", "Upload ID tidak sah.");
     const contentType = c.req.header("content-type")?.split(";")[0]?.trim();
     const allowed = [
       "application/pdf",
@@ -281,20 +311,26 @@ export function createApiApp({
     }
     const bytes = new Uint8Array(await c.req.arrayBuffer());
     if (bytes.length !== size) return apiError(c, 400, "CONTENT_LENGTH_MISMATCH", "Ukuran body berbeda dari Content-Length.");
-    const data = await uploadStore.putUpload({
-      id: c.req.param("id"),
-      ownerId,
-      contentType: contentType as (typeof allowed)[number],
-      bytes,
-    });
-    return c.json({ data, meta: { traceId: c.get("traceId") } }, 202);
+    try {
+      const data = await uploadStore.putUpload({
+        id: uploadId.data,
+        ownerId,
+        contentType: contentType as (typeof allowed)[number],
+        bytes,
+      });
+      return c.json({ data, meta: { traceId: c.get("traceId") } }, 202);
+    } finally {
+      bytes.fill(0);
+    }
   });
 
   app.get("/v1/jobs/:id", async (c) => {
     if (!jobStore) return apiError(c, 503, "JOB_STORE_NOT_CONFIGURED", "Penyimpanan job belum dikonfigurasi.");
     const ownerId = c.get("userId");
     if (!ownerId) return apiError(c, 401, "AUTHENTICATION_REQUIRED", "Akun diperlukan untuk melihat job.");
-    const data = await jobStore.getJob(c.req.param("id"), ownerId);
+    const jobId = JobIdSchema.safeParse(c.req.param("id"));
+    if (!jobId.success) return apiError(c, 422, "VALIDATION_ERROR", "Job ID tidak sah.");
+    const data = await jobStore.getJob(jobId.data, ownerId);
     if (!data) return apiError(c, 404, "JOB_NOT_FOUND", "Job tidak ditemukan.");
     return c.json({ data, meta: { traceId: c.get("traceId") } });
   });
@@ -308,6 +344,14 @@ export function createApiApp({
   app.onError((error, c) => {
     if (error.message === "PAYLOAD_TOO_LARGE") return apiError(c, 413, "PAYLOAD_TOO_LARGE", "Payload terlalu besar.");
     if (error.message === "INVALID_JSON") return apiError(c, 400, "INVALID_JSON", "Body harus berupa JSON yang sah.");
+    if (error.message.startsWith("IDEMPOTENCY_KEY_REUSED")) {
+      return apiError(c, 409, "IDEMPOTENCY_KEY_REUSED", "Idempotency key telah dipakai untuk payload berbeda.");
+    }
+    if (error.message === "UPLOAD_NOT_FOUND") return apiError(c, 404, "UPLOAD_NOT_FOUND", "Unggahan tidak ditemukan.");
+    if (error.message === "UPLOAD_SIZE_INVALID") return apiError(c, 413, "UPLOAD_SIZE_INVALID", "Ukuran unggahan tidak sah.");
+    if (error.message.startsWith("FILE_SIGNATURE_MISMATCH") || error.message === "CONTENT_TYPE_MISMATCH") {
+      return apiError(c, 422, "UPLOAD_CONTENT_INVALID", "Isi berkas tidak sesuai dengan metadata unggahan.");
+    }
     return apiError(c, 500, "INTERNAL_ERROR", "Permintaan gagal diproses. Gunakan trace ID untuk pelacakan.");
   });
 

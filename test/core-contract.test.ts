@@ -3,7 +3,9 @@ import test from "node:test";
 
 import {
   EvidenceSchema,
+  JobStatusSchema,
   ResearchResultSchema,
+  SourceHealthSchema,
   createEvidence,
   createResearchResult,
 } from "../src/core/contracts.js";
@@ -58,4 +60,28 @@ test("research results abstain when no claim has evidence", () => {
   assert.equal(result.status, "insufficient_evidence");
   assert.equal(result.claims.length, 0);
   assert.equal(result.confidence, 0);
+});
+
+test("source and job health contracts reject misleading state", () => {
+  const now = "2026-09-05T10:00:00.000Z";
+  const source = SourceHealthSchema.parse({
+    sourceId: "jdih-bpk",
+    status: "degraded",
+    lastSuccessfulAt: now,
+    ageSeconds: 3600,
+    activeIndexVersion: "2026.09.05",
+    lastFailure: "timeout",
+    incomplete: true,
+  });
+  assert.equal(source.incomplete, true);
+  assert.throws(() => JobStatusSchema.parse({
+    id: "job-1",
+    status: "completed",
+    progress: 101,
+    createdAt: now,
+    updatedAt: now,
+    expiresAt: null,
+    warnings: [],
+    errorCode: null,
+  }));
 });

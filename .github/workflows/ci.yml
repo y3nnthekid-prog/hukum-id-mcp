@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: ["**"]
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run verify
+      - run: npm audit --omit=dev --audit-level=high
+      - run: npm pack --dry-run
+      - run: az bicep build --file infra/main.bicep --stdout > /dev/null
+      - run: az bicep build-params --file infra/main.example.bicepparam --stdout > /dev/null
+      - run: docker build --tag hukumid-api:ci .

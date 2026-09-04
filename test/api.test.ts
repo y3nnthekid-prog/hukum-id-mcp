@@ -46,6 +46,20 @@ test("GET /v1/search returns data, trace and security headers", async () => {
   assert.equal(response.headers.get("x-trace-id"), body.meta.traceId);
 });
 
+test("GET /v1/search reports an invalid source as 422, not an internal error", async () => {
+  const app = createApiApp({ service: service as any });
+  const response = await app.request("/v1/search?q=akad&sources=regulation,unknown");
+  const body = await response.json();
+  assert.equal(response.status, 422);
+  assert.equal(body.error.code, "VALIDATION_ERROR");
+});
+
+test("GET /v1/documents rejects an unknown source instead of silently changing authority", async () => {
+  const app = createApiApp({ service: service as any });
+  const response = await app.request("/v1/documents/bpk:123?source=unknown");
+  assert.equal(response.status, 422);
+});
+
 test("POST /v1/citations/verify rejects oversized drafts", async () => {
   const app = createApiApp({ service: service as any });
   const response = await app.request("/v1/citations/verify", {

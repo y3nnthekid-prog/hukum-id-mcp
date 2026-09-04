@@ -139,6 +139,42 @@ test("expiry deletes both the blob and the wrapped-key metadata", async () => {
   const result = await service.sweepExpired(new Date("2026-09-06T01:00:00.000Z"));
 
   assert.equal(result.deleted, 1);
+  assert.equal(result.failed, 0);
   assert.equal(repository.uploads.size, 0);
   assert.equal(deleted.length, 1);
+});
+
+test("expiry erases wrapped keys and continues after one blob deletion fails", async () => {
+  const { service, repository } = fixtures();
+  await service.createUpload(ticket);
+  await service.putUpload({
+    id: "upload-fixed",
+    ownerId: "user-1",
+    contentType: "application/pdf",
+    bytes: Buffer.from("%PDF-1.7 confidential"),
+  });
+  const metadata = [...repository.uploads.values()][0]!;
+  const second = { ...metadata, id: "upload-second", blobName: "second.enc" };
+  await repository.saveUpload(second);
+
+  const failing = createSecureUploadService({
+    repository,
+    blobStore: {
+      upload: async () => undefined,
+      delete: async (name) => {
+        if (name !== "second.enc") throw new Error("temporary storage failure");
+      },
+    },
+    queue: { enqueue: async () => undefined },
+    keyWrapper: { wrap: async (key) => key, unwrap: async (key) => key },
+  });
+
+  await assert.rejects(
+    () => failing.sweepExpired(new Date("2026-09-06T01:00:00.000Z")),
+    /SWEEP_INCOMPLETE/
+  );
+  const retained = [...repository.uploads.values()][0]!;
+  assert.equal(retained.wrappedKey, null);
+  assert.equal(retained.status, "expired");
+  assert.equal(repository.uploads.size, 1);
 });

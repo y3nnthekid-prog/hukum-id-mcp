@@ -67,7 +67,7 @@ export async function konsolidasiPeraturan({
     tahun: r.tahun || "",
     limit: 8,
   });
-  const selection = selectExactCandidate(cari.hasil, { nomor: r.nomor || "", tahun: r.tahun || "" });
+  const selection = selectExactCandidate(cari.hasil, { nomor: r.nomor || "", tahun: r.tahun || "", jenis: r.keywords || "" });
   if (selection.status !== "matched") {
     return {
       ditemukan: false,

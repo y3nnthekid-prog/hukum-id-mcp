@@ -37,7 +37,7 @@ export async function hukumPadaTanggal({ peraturan, tanggal }) {
     tahun: m ? m[3] : "",
     limit: 8,
   });
-  const selection = selectExactCandidate(cari.hasil, { nomor: m?.[2] || "", tahun: m?.[3] || "" });
+  const selection = selectExactCandidate(cari.hasil, { nomor: m?.[2] || "", tahun: m?.[3] || "", jenis: (m?.[1] || "").trim() });
   if (selection.status !== "matched") {
     return {
       ditemukan: false,

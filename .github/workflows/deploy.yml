@@ -1,0 +1,157 @@
+name: Deploy Azure canary
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: GitHub environment containing the Azure variables and secrets
+        required: true
+        default: staging
+        type: choice
+        options: [staging, production]
+      canaryPercent:
+        description: Initial traffic percentage for the new API revision
+        required: true
+        default: '10'
+        type: choice
+        options: ['5', '10', '25']
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: deploy-${{ inputs.environment }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: ${{ inputs.environment }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run verify
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Provision shared infrastructure
+        shell: bash
+        env:
+          RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+          PREFIX: ${{ vars.HUKUM_PREFIX }}
+          DEPLOY_ENVIRONMENT: ${{ inputs.environment }}
+          ENTRA_TENANT: ${{ secrets.ENTRA_TENANT_ID }}
+          ENTRA_CLIENT: ${{ secrets.ENTRA_CLIENT_ID }}
+          STORAGE_ACCOUNT: ${{ vars.AZURE_STORAGE_ACCOUNT_NAME }}
+          STORAGE_RESOURCE_GROUP: ${{ vars.AZURE_STORAGE_RESOURCE_GROUP }}
+        run: >-
+          az deployment group create
+          --name main-bootstrap
+          --resource-group "$RESOURCE_GROUP"
+          --template-file infra/main.bicep
+          --parameters prefix="$PREFIX"
+          environmentName="$DEPLOY_ENVIRONMENT"
+          imageTag="${GITHUB_SHA}"
+          deployRuntime=false
+          entraTenantId="$ENTRA_TENANT"
+          entraClientId="$ENTRA_CLIENT"
+          storageAccountName="$STORAGE_ACCOUNT"
+          storageResourceGroupName="$STORAGE_RESOURCE_GROUP"
+      - name: Build and push immutable API image
+        id: image
+        shell: bash
+        env:
+          RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+        run: |
+          REGISTRY_NAME=$(az deployment group show --resource-group "$RESOURCE_GROUP" --name main-bootstrap --query properties.outputs.registryName.value -o tsv)
+          az acr login --name "$REGISTRY_NAME"
+          REGISTRY_SERVER=$(az acr show --name "$REGISTRY_NAME" --query loginServer -o tsv)
+          docker build --tag "$REGISTRY_SERVER/hukumid-api:${GITHUB_SHA}" .
+          docker push "$REGISTRY_SERVER/hukumid-api:${GITHUB_SHA}"
+          echo "uri=$REGISTRY_SERVER/hukumid-api:${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
+      - name: Deploy runtime revision
+        shell: bash
+        env:
+          RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+          PREFIX: ${{ vars.HUKUM_PREFIX }}
+          DEPLOY_ENVIRONMENT: ${{ inputs.environment }}
+          ENTRA_TENANT: ${{ secrets.ENTRA_TENANT_ID }}
+          ENTRA_CLIENT: ${{ secrets.ENTRA_CLIENT_ID }}
+          STORAGE_ACCOUNT: ${{ vars.AZURE_STORAGE_ACCOUNT_NAME }}
+          STORAGE_RESOURCE_GROUP: ${{ vars.AZURE_STORAGE_RESOURCE_GROUP }}
+        run: |
+          APP_NAME="$PREFIX-$DEPLOY_ENVIRONMENT-api"
+          RG="$RESOURCE_GROUP"
+          if az containerapp show -g "$RG" -n "$APP_NAME" >/dev/null 2>&1; then
+            IDENTITY_CLIENT=$(az deployment group show -g "$RG" -n main-bootstrap --query properties.outputs.managedIdentityClientId.value -o tsv)
+            KEY_ID=$(az deployment group show -g "$RG" -n main-bootstrap --query properties.outputs.uploadKeyId.value -o tsv)
+            INSIGHTS=$(az deployment group show -g "$RG" -n main-bootstrap --query properties.outputs.insightsConnectionString.value -o tsv)
+            WEB_URL=$(az deployment group show -g "$RG" -n main-bootstrap --query properties.outputs.staticWebUrl.value -o tsv)
+            az containerapp update -g "$RG" -n "$APP_NAME" \
+              --image "${{ steps.image.outputs.uri }}" \
+              --revision-suffix "${GITHUB_SHA:0:8}" \
+              --min-replicas 1 --max-replicas 10 \
+              --set-env-vars \
+                NODE_ENV=production PORT=3001 \
+                AZURE_CLIENT_ID="$IDENTITY_CLIENT" \
+                AZURE_STORAGE_ACCOUNT_NAME="$STORAGE_ACCOUNT" \
+                AZURE_KEY_VAULT_KEY_ID="$KEY_ID" \
+                ENTRA_TENANT_ID="$ENTRA_TENANT" ENTRA_CLIENT_ID="$ENTRA_CLIENT" \
+                HUKUM_ALLOWED_ORIGINS="$WEB_URL" GEMINI_MODEL=gemini-2.5-flash \
+                APPLICATIONINSIGHTS_CONNECTION_STRING="$INSIGHTS" \
+                APPLICATIONINSIGHTS_AUTHENTICATION_STRING="Authorization=AAD;ClientId=$IDENTITY_CLIENT" \
+                OTEL_SERVICE_NAME=hukum-id-api OTEL_TRACES_SAMPLER=microsoft.fixed_percentage OTEL_TRACES_SAMPLER_ARG=0.2
+          else
+            az deployment group create \
+              --name main-runtime \
+              --resource-group "$RG" \
+              --template-file infra/main.bicep \
+              --parameters prefix="$PREFIX" \
+              environmentName="$DEPLOY_ENVIRONMENT" \
+              imageTag="${GITHUB_SHA}" \
+              deployRuntime=true \
+              entraTenantId="$ENTRA_TENANT" \
+              entraClientId="$ENTRA_CLIENT" \
+              storageAccountName="$STORAGE_ACCOUNT" \
+              storageResourceGroupName="$STORAGE_RESOURCE_GROUP"
+          fi
+          JOB_NAME="$PREFIX-$DEPLOY_ENVIRONMENT-upload-sweeper"
+          az containerapp job update -g "$RG" -n "$JOB_NAME" --image "${{ steps.image.outputs.uri }}"
+      - name: Route canary traffic and verify health
+        shell: bash
+        env:
+          RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+          PREFIX: ${{ vars.HUKUM_PREFIX }}
+          DEPLOY_ENVIRONMENT: ${{ inputs.environment }}
+          CANARY_PERCENT: ${{ inputs.canaryPercent }}
+        run: |
+          APP_NAME="$PREFIX-$DEPLOY_ENVIRONMENT-api"
+          RG="$RESOURCE_GROUP"
+          NEW_REVISION=$(az containerapp revision list -g "$RG" -n "$APP_NAME" --query "sort_by([?properties.active], &properties.createdTime)[-1].name" -o tsv)
+          OLD_REVISION=$(az containerapp revision list -g "$RG" -n "$APP_NAME" --query "sort_by([?properties.active && name!='${NEW_REVISION}'], &properties.createdTime)[-1].name" -o tsv)
+          FQDN=$(az containerapp show -g "$RG" -n "$APP_NAME" --query properties.configuration.ingress.fqdn -o tsv)
+          az containerapp revision label add -g "$RG" -n "$APP_NAME" --revision "$NEW_REVISION" --label canary --yes
+          curl --fail --retry 8 --retry-all-errors --retry-delay 5 "https://canary---${FQDN}/health"
+          if [ -n "$OLD_REVISION" ]; then
+            az containerapp ingress traffic set -g "$RG" -n "$APP_NAME" --revision-weight "$OLD_REVISION=$((100-CANARY_PERCENT))" "$NEW_REVISION=$CANARY_PERCENT"
+          else
+            az containerapp ingress traffic set -g "$RG" -n "$APP_NAME" --revision-weight "$NEW_REVISION=100"
+          fi
+      - name: Build static research web
+        run: npm run build:web
+        env:
+          NEXT_PUBLIC_HUKUM_API_URL: ${{ vars.HUKUM_API_URL }}
+      - uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          action: upload
+          app_location: web/out
+          skip_app_build: true

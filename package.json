@@ -14,16 +14,12 @@
   "types": "dist/core/contracts.d.ts",
   "files": [
     "dist/",
-    "src/",
-    "scripts/",
-    "test/",
     "README.md",
     "LICENSE",
-    "CHANGELOG.md",
-    "CONTRIBUTING.md"
+    "CHANGELOG.md"
   ],
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "scripts": {
     "start": "tsx src/mcp/stdio.ts",
@@ -31,17 +27,20 @@
     "dev:api": "tsx watch src/api/server.ts",
     "dev:web": "npm run dev --workspace hukum-id-web",
     "start:api": "tsx src/api/server.ts",
+    "start:api:prod": "node --import @azure/monitor-opentelemetry/loader dist/api/bootstrap.js",
     "build:web": "npm run build --workspace hukum-id-web",
+    "lint": "eslint src/**/*.ts test/**/*.ts web/**/*.ts web/**/*.tsx",
+    "lint:api": "redocly lint openapi.yaml --skip-rule no-server-example.com",
     "typecheck": "tsc --noEmit",
     "build": "tsc",
     "test": "npm run test:unit",
-    "test:unit": "node test/trust-foundation.test.js && node test/parser.test.js && node --import tsx --test test/core-contract.test.ts test/core-service.test.ts test/ai-synthesis.test.ts test/api.test.ts test/auth.test.ts test/upload-storage.test.ts test/evidence-store.test.ts test/index-release.test.ts test/web-client.test.ts test/mcp-contract.test.ts test/remote-mcp.test.ts",
+    "test:unit": "node test/trust-foundation.test.js && node test/parser.test.js && node --import tsx --test test/cache.test.ts test/core-contract.test.ts test/core-service.test.ts test/ai-synthesis.test.ts test/api.test.ts test/auth.test.ts test/upload-storage.test.ts test/evidence-store.test.ts test/index-release.test.ts test/web-client.test.ts test/mcp-contract.test.ts test/remote-mcp.test.ts test/telemetry.test.ts",
     "test:parser": "node test/parser.test.js",
     "smoke": "node test/smoke.js",
     "snapshot": "node scripts/bangun-snapshot.js",
     "snapshot:ringkas": "node scripts/bangun-snapshot.js --ringkas",
     "sweep:uploads": "tsx src/workers/sweep-uploads.ts",
-    "verify": "npm test && npm run typecheck && npm run build && npm run build:web",
+    "verify": "npm run lint && npm run lint:api && npm test && npm run typecheck && npm run build && npm run build:web",
     "prepublishOnly": "npm run verify"
   },
   "keywords": [
@@ -64,11 +63,13 @@
     "@azure/data-tables": "^13.3.2",
     "@azure/identity": "^4.13.2",
     "@azure/keyvault-keys": "^4.10.2",
+    "@azure/monitor-opentelemetry": "^1.19.0",
     "@azure/storage-blob": "^12.33.0",
     "@azure/storage-queue": "^12.31.0",
     "@google/genai": "^2.21.0",
     "@hono/node-server": "^2.1.1",
     "@modelcontextprotocol/sdk": "^1.12.0",
+    "@opentelemetry/api": "^1.9.0",
     "hono": "^4.11.4",
     "ipaddr.js": "^1.9.1",
     "jose": "^6.2.11",
@@ -76,8 +77,13 @@
     "zod": "^4.5.4"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@redocly/cli": "^2.51.2",
     "@types/node": "^24.0.0",
+    "eslint": "^10.10.0",
+    "globals": "^16.4.0",
     "tsx": "^4.20.0",
-    "typescript": "^5.9.0"
+    "typescript": "^5.9.0",
+    "typescript-eslint": "^8.69.0"
   }
 }
