@@ -428,4 +428,4 @@ if (khesStatus.tersedia) {
 }
 
 p.kill();
-process.exit(0);
+if (gagal > 0) process.exitCode = 1;

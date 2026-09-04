@@ -6,6 +6,7 @@ import os from "node:os";
 import path from "node:path";
 
 import { ambil, simpan, umurSimpan } from "./cache.js";
+import { assertPublicUrl } from "./trust.js";
 
 const execFileP = promisify(execFile);
 
@@ -85,28 +86,24 @@ function headers(referer) {
 // Pagar ini penting karena tool menerima URL dari argumen: sebuah instruksi yang
 // diselipkan di dalam dokumen yang sedang dibaca bisa saja meminta model
 // mengambil alamat internal. Sumber hukum tidak pernah berada di sana.
-const HOST_TERLARANG =
-  /^(localhost|127\.|0\.0\.0\.0|\[?::1\]?|10\.|192\.168\.|169\.254\.|172\.(1[6-9]|2\d|3[01])\.)/i;
-
-function tolakAlamatInternal(url) {
-  let u;
-  try {
-    u = new URL(url);
-  } catch {
-    throw new Error(`URL tidak sah: ${String(url).slice(0, 80)}`);
-  }
-  if (u.protocol !== "http:" && u.protocol !== "https:") {
-    throw new Error(`Skema ${u.protocol} tidak diizinkan; hanya http dan https.`);
-  }
-  if (HOST_TERLARANG.test(u.hostname)) {
-    throw new Error(
-      `Permintaan ke alamat internal (${u.hostname}) ditolak. Seluruh sumber hukum berada di internet publik, ` +
-        "jadi permintaan semacam ini tidak pernah sah dan bisa jadi berasal dari instruksi yang diselipkan " +
-        "dalam dokumen yang sedang dibaca."
-    );
-  }
-  return u;
-}
+const SOURCE_HOSTS = new Set([
+  "peraturan.bpk.go.id",
+  "putusan3.mahkamahagung.go.id",
+  "www.mkri.id",
+  "mkri.id",
+  "jdih.mahkamahagung.go.id",
+  "perpustakaan.bldk.mahkamahagung.go.id",
+  "dsnmui.or.id",
+  "www.dsnmui.or.id",
+  "drive.google.com",
+  "drive.usercontent.google.com",
+  "*.googleusercontent.com",
+  "api.myquran.com",
+  "api.quran.com",
+  "hadeethenc.com",
+  "api.openalex.org",
+  "api.turath.io",
+]);
 
 const CURL_ONLY = new Set(["putusan3.mahkamahagung.go.id"]);
 
@@ -117,10 +114,24 @@ export function paksaLewatiCache(nyala) {
   lewatiCacheGlobal = Boolean(nyala);
 }
 
-function curlArgs(url, referer, timeout, outFile) {
+function curlArgs(url, referer, timeout, outFile, headerFile, maxBytes) {
   const h = headers(referer);
-  const args = ["-sS", "-L", "--compressed", "--max-time", String(Math.ceil(timeout / 1000)),
-    "-o", outFile, "-w", "%{http_code}"];
+  const args = [
+    "-sS",
+    "--compressed",
+    "--proto",
+    "=http,https",
+    "--max-time",
+    String(Math.ceil(timeout / 1000)),
+    "--max-filesize",
+    String(maxBytes),
+    "--dump-header",
+    headerFile,
+    "-o",
+    outFile,
+    "-w",
+    "%{http_code}",
+  ];
   for (const [k, v] of Object.entries(h)) {
     if (k === "User-Agent") args.push("-A", v);
     else args.push("-H", `${k}: ${v}`);
@@ -134,38 +145,84 @@ function curlArgs(url, referer, timeout, outFile) {
  * menerima curl. Karena itu curl dipakai sebagai transport cadangan — dan
  * transport utama untuk host yang sudah diketahui rewel.
  */
-async function viaCurl(url, referer, timeout) {
+async function viaCurl(url, referer, timeout, maxBytes) {
   const outFile = path.join(os.tmpdir(), `hukum-id-${randomUUID()}.bin`);
+  const headerFile = `${outFile}.headers`;
   try {
-    const { stdout } = await execFileP("curl", curlArgs(url, referer, timeout, outFile), {
+    const { stdout } = await execFileP("curl", curlArgs(url, referer, timeout, outFile, headerFile, maxBytes), {
       timeout: timeout + 5000,
       windowsHide: true,
+      maxBuffer: 1024 * 1024,
     });
     const status = Number(String(stdout).trim().slice(-3));
     const buffer = await readFile(outFile).catch(() => Buffer.alloc(0));
-    return { status, buffer };
+    if (buffer.length > maxBytes) throw new Error(`Respons melebihi batas ${maxBytes} byte.`);
+    const rawHeaders = await readFile(headerFile, "utf8").catch(() => "");
+    const location = [...rawHeaders.matchAll(/^location:\s*(.+)$/gim)].at(-1)?.[1]?.trim() || null;
+    return { status, buffer, location };
   } finally {
     unlink(outFile).catch(() => {});
+    unlink(headerFile).catch(() => {});
   }
 }
 
-async function viaFetch(url, referer, timeout) {
+async function viaFetch(url, referer, timeout, maxBytes) {
   const ac = new AbortController();
   const timer = setTimeout(() => ac.abort(), timeout);
   try {
-    const res = await fetch(url, { headers: headers(referer), signal: ac.signal, redirect: "follow" });
-    return { status: res.status, buffer: Buffer.from(await res.arrayBuffer()) };
+    const res = await fetch(url, { headers: headers(referer), signal: ac.signal, redirect: "manual" });
+    const declared = Number(res.headers.get("content-length") || 0);
+    if (declared > maxBytes) throw new Error(`Respons melebihi batas ${maxBytes} byte.`);
+
+    const chunks = [];
+    let total = 0;
+    if (res.body) {
+      for await (const chunk of res.body) {
+        total += chunk.byteLength;
+        if (total > maxBytes) {
+          ac.abort();
+          throw new Error(`Respons melebihi batas ${maxBytes} byte.`);
+        }
+        chunks.push(Buffer.from(chunk));
+      }
+    }
+    return {
+      status: res.status,
+      buffer: Buffer.concat(chunks),
+      location: res.headers.get("location"),
+    };
   } finally {
     clearTimeout(timer);
   }
 }
 
-async function request(url, { referer, timeout = 45000, retries = 2, lewati_cache = false } = {}) {
-  const host = tolakAlamatInternal(url).host;
+async function lewatRedirect(transport, rawUrl, referer, timeout, maxBytes) {
+  let current = rawUrl;
+  for (let redirects = 0; redirects <= 4; redirects++) {
+    const safe = await assertPublicUrl(current, { allowedHosts: SOURCE_HOSTS });
+    await politeGap(safe.hostname);
+    const response = await transport(safe.toString(), referer, timeout, maxBytes);
+    if (response.status < 300 || response.status >= 400) return response;
+    if (!response.location) throw new Error(`HTTP ${response.status} tanpa header Location.`);
+    if (redirects === 4) throw new Error("Terlalu banyak redirect (maksimum 4). ");
+    current = new URL(response.location, safe).toString();
+  }
+  throw new Error("Redirect tidak dapat diselesaikan.");
+}
+
+async function request(
+  url,
+  { referer, timeout = 45000, retries = 2, lewati_cache = false, maxBytes = 16 * 1024 * 1024 } = {}
+) {
+  const safeUrl = await assertPublicUrl(url, { allowedHosts: SOURCE_HOSTS });
+  const host = safeUrl.hostname;
 
   if (!lewati_cache && !lewatiCacheGlobal) {
     const tersimpan = await ambil(url, umurSimpan(url));
-    if (tersimpan) return { status: 200, buffer: tersimpan, dari_cache: true };
+    if (tersimpan) {
+      if (tersimpan.length > maxBytes) throw new Error(`Cache melebihi batas ${maxBytes} byte.`);
+      return { status: 200, buffer: tersimpan, dari_cache: true };
+    }
   }
 
   periksaPutus(host);
@@ -174,9 +231,8 @@ async function request(url, { referer, timeout = 45000, retries = 2, lewati_cach
   let lastErr;
   for (let attempt = 0; attempt <= retries; attempt++) {
     for (const t of transports) {
-      await politeGap(host);
       try {
-        const r = await t(url, referer, timeout);
+        const r = await lewatRedirect(t, safeUrl.toString(), referer, timeout, maxBytes);
         if (r.status >= 200 && r.status < 300 && r.buffer.length) {
           await simpan(url, r.buffer);
           catatSukses(host);
@@ -208,7 +264,7 @@ export async function getJson(url, opts) {
 }
 
 export async function getBuffer(url, opts) {
-  return (await request(url, opts)).buffer;
+  return (await request(url, { maxBytes: 80 * 1024 * 1024, ...opts })).buffer;
 }
 
 const ENTITIES = {

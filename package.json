@@ -1,6 +1,6 @@
 {
   "name": "hukum-id-mcp",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "MCP server untuk riset hukum Indonesia dan hukum ekonomi syariah: peraturan (JDIH BPK), putusan MA & MK, PERMA/SEMA, fatwa DSN-MUI, ayat, hadis berderajat, kitab turats, dan literatur akademik.",
   "type": "module",
   "license": "MIT",
@@ -22,7 +22,8 @@
   },
   "scripts": {
     "start": "node src/server.js",
-    "test": "node test/parser.test.js && node test/smoke.js",
+    "test": "npm run test:unit",
+    "test:unit": "node test/trust-foundation.test.js && node test/parser.test.js",
     "test:parser": "node test/parser.test.js",
     "smoke": "node test/smoke.js",
     "snapshot": "node scripts/bangun-snapshot.js",
@@ -47,6 +48,8 @@
   ],
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0",
-    "pdfjs-dist": "^4.10.38"
+    "ipaddr.js": "^1.9.1",
+    "pdfjs-dist": "^4.10.38",
+    "zod": "^4.5.4"
   }
 }

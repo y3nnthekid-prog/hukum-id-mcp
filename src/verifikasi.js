@@ -13,6 +13,7 @@ import { cariPeraturan, detailPeraturan } from "./bpk.js";
 import { cariDalamPdf } from "./pdf.js";
 import { cariPutusanMK } from "./mk.js";
 import { indeksFatwa } from "./dsn.js";
+import { selectExactCandidate } from "./trust.js";
 
 const POLA = {
   peraturan:
@@ -78,12 +79,18 @@ async function periksaPeraturan(teks, m, pasalTerkait) {
 
   try {
     const cari = await cariPeraturan({ keywords: jenisTeks, nomor, tahun, limit: 6 });
-    const pilih = cari.hasil.find((h) => h.nomor === nomor && h.tahun === tahun) || cari.hasil[0];
-    if (!pilih) {
+    const selection = selectExactCandidate(cari.hasil, { nomor, tahun });
+    if (selection.status !== "matched") {
       hasil.status_verifikasi = "tidak_ditemukan";
-      hasil.catatan.push("Peraturan dengan nomor dan tahun itu tidak ditemukan di JDIH BPK.");
+      hasil.catatan.push(
+        selection.status === "ambiguous"
+          ? "Lebih dari satu peraturan cocok persis; jenis/otoritas harus diperjelas dan sistem tidak memilih salah satunya."
+          : "Peraturan dengan nomor dan tahun itu tidak ditemukan persis di JDIH BPK."
+      );
+      hasil.kandidat = selection.candidates;
       return hasil;
     }
+    const pilih = selection.value;
 
     const d = await detailPeraturan(pilih.id);
     hasil.judul_resmi = d.judul;

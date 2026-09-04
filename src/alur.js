@@ -9,6 +9,7 @@ import { cariPutusanMK } from "./mk.js";
 import { cariFatwaDsn, teksFatwaDsn } from "./dsn.js";
 import { telusuriPutusan } from "./ma.js";
 import { cariPerma } from "./perma.js";
+import { selectExactCandidate } from "./trust.js";
 
 /** "UU 27/2022", "UU No. 27 Tahun 2022", "27/2022" menjadi {keywords, nomor, tahun}. */
 function uraikanRujukan(teks = "") {
@@ -46,10 +47,24 @@ export async function periksaPasal({
 
   if (LEWAT_JDIH_MA.test(String(peraturan))) {
     const p = await cariPerma({ query: peraturan, limit: 5 });
-    const pilih = p.hasil[0];
-    if (!pilih) {
-      return { ditemukan: false, catatan: "Produk hukum MA tidak ditemukan di JDIH MA.", pencarian: p };
+    const identitas = p.hasil.map((item) => {
+      const match = item.judul?.match(/\b(?:nomor|no\.)\s*0*(\d+)\s+tahun\s+(\d{4})\b/i);
+      return { ...item, nomor: match?.[1] || "", tahun: match?.[2] || "" };
+    });
+    const selection = selectExactCandidate(identitas, { nomor: r.nomor || "", tahun: r.tahun || "" });
+    if (selection.status !== "matched") {
+      return {
+        ditemukan: false,
+        status: selection.status,
+        catatan:
+          selection.status === "ambiguous"
+            ? "Produk hukum MA ambigu. Sistem tidak memilih kandidat pertama; berikan nomor dan tahun yang persis."
+            : "Produk hukum MA dengan identitas persis tidak ditemukan di JDIH MA.",
+        kandidat: selection.candidates,
+        pencarian: p,
+      };
     }
+    const pilih = selection.value;
     const teks =
       pasal && pilih.url_pdf
         ? await teksPeraturan({ url_pdf: pilih.url_pdf, cari: pasal, maks_karakter })
@@ -72,11 +87,20 @@ export async function periksaPasal({
   }
 
   const cari = await cariPeraturan(kueri);
-  const pilih =
-    cari.hasil.find(
-      (h) => (!kueri.nomor || h.nomor === kueri.nomor) && (!kueri.tahun || h.tahun === kueri.tahun)
-    ) || cari.hasil[0];
-  if (!pilih) return { ditemukan: false, catatan: "Peraturan tidak ditemukan.", pencarian: cari };
+  const selection = selectExactCandidate(cari.hasil, { nomor: kueri.nomor, tahun: kueri.tahun });
+  if (selection.status !== "matched") {
+    return {
+      ditemukan: false,
+      status: selection.status,
+      catatan:
+        selection.status === "ambiguous"
+          ? "Rujukan peraturan ambigu. Sistem tidak memilih kandidat pertama; berikan jenis, nomor, dan tahun."
+          : "Peraturan dengan identitas persis tidak ditemukan.",
+      kandidat: selection.candidates,
+      pencarian: cari,
+    };
+  }
+  const pilih = selection.value;
 
   const detail = await detailPeraturan(pilih.id);
   const pdf = detail.berkas.find((f) => f.kategori === "Peraturan");

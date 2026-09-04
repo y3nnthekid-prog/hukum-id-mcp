@@ -7,6 +7,7 @@
 
 import { getBuffer } from "./http.js";
 import { ambilJson, simpanJson, umurSimpan } from "./cache.js";
+import { selectPdfPages } from "./trust.js";
 
 const CATATAN =
   "Sebagian PDF resmi punya lapisan teks yang cacat. Bandingkan dengan PDF sumber sebelum mengutip verbatim.";
@@ -59,12 +60,7 @@ export async function ekstrakTeksPdf({
   const awal = Math.max(1, halaman_awal);
   const dalamRentang = doc.halaman.filter((h) => h.halaman >= awal && h.halaman <= akhir);
 
-  let dipakai = dalamRentang;
-  if (cari) {
-    const needle = cari.toLowerCase();
-    const cocok = dalamRentang.filter((h) => h.teks.toLowerCase().includes(needle));
-    if (cocok.length) dipakai = cocok;
-  }
+  const dipakai = selectPdfPages(dalamRentang, cari);
 
   let total = 0;
   const keluar = [];

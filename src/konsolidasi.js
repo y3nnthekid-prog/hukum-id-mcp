@@ -11,6 +11,7 @@
 
 import { cariPeraturan, detailPeraturan } from "./bpk.js";
 import { cariDalamPdf } from "./pdf.js";
+import { selectExactCandidate } from "./trust.js";
 
 function daftarRelasi(relasi, label) {
   const v = relasi?.[label];
@@ -66,9 +67,20 @@ export async function konsolidasiPeraturan({
     tahun: r.tahun || "",
     limit: 8,
   });
-  const pilih =
-    cari.hasil.find((h) => (!r.nomor || h.nomor === r.nomor) && (!r.tahun || h.tahun === r.tahun)) || cari.hasil[0];
-  if (!pilih) return { ditemukan: false, catatan: "Peraturan tidak ditemukan.", pencarian: cari };
+  const selection = selectExactCandidate(cari.hasil, { nomor: r.nomor || "", tahun: r.tahun || "" });
+  if (selection.status !== "matched") {
+    return {
+      ditemukan: false,
+      status: selection.status,
+      catatan:
+        selection.status === "ambiguous"
+          ? "Rujukan ambigu. Berikan nomor dan tahun; sistem tidak memilih kandidat pertama."
+          : "Peraturan dengan identitas persis tidak ditemukan.",
+      kandidat: selection.candidates,
+      pencarian: cari,
+    };
+  }
+  const pilih = selection.value;
 
   const induk = await detailPeraturan(pilih.id);
   const pdfInduk = induk.berkas.find((f) => f.kategori === "Peraturan");

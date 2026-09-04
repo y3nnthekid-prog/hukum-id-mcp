@@ -23,6 +23,7 @@ import { halamanPdf } from "../src/pdf.js";
 import { indeksFatwa, cariProdukDsn } from "../src/dsn.js";
 import { cariPerma } from "../src/perma.js";
 import { indeksHadisKategori } from "../src/dalil.js";
+import { selectExactCandidate } from "../src/trust.js";
 
 const RINGKAS = process.argv.includes("--ringkas");
 const CACHE = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", ".cache");
@@ -85,8 +86,9 @@ console.log("Peraturan inti:");
 for (const [kata, nomor, tahun] of KORPUS) {
   await langkah(`${nomor}/${tahun} — ${kata.slice(0, 38)}`, async () => {
     const cari = await cariPeraturan({ keywords: kata, nomor, tahun, limit: 4 });
-    const pilih = cari.hasil.find((h) => h.nomor === nomor && h.tahun === tahun) || cari.hasil[0];
-    if (!pilih) throw new Error("tidak ditemukan");
+    const selection = selectExactCandidate(cari.hasil, { nomor, tahun });
+    if (selection.status !== "matched") throw new Error(`dokumen persis ${selection.status}`);
+    const pilih = selection.value;
     const d = await detailPeraturan(pilih.id);
     if (!RINGKAS) {
       const pdf = d.berkas.find((f) => f.kategori === "Peraturan");

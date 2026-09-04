@@ -2,31 +2,11 @@
 
 import { cariPeraturan, detailPeraturan } from "./bpk.js";
 import { cariFatwaDsn, teksFatwaDsn } from "./dsn.js";
-
-const BULAN = {
-  januari: 1, februari: 2, maret: 3, april: 4, mei: 5, juni: 6,
-  juli: 7, agustus: 8, september: 9, oktober: 10, november: 11, desember: 12,
-};
+import { parseLegalDate, selectExactCandidate } from "./trust.js";
 
 /** Terima "17 Oktober 2022", "2026-01-02", atau "02/01/2026". */
 export function uraikanTanggal(teks) {
-  if (!teks) return null;
-  const s = String(teks).trim();
-
-  const iso = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
-  if (iso) return new Date(Date.UTC(+iso[1], +iso[2] - 1, +iso[3]));
-
-  const id = s.match(/^(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})$/);
-  if (id) {
-    const b = BULAN[id[2].toLowerCase()];
-    if (b) return new Date(Date.UTC(+id[3], b - 1, +id[1]));
-  }
-
-  const garis = s.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{4})$/);
-  if (garis) return new Date(Date.UTC(+garis[3], +garis[2] - 1, +garis[1]));
-
-  const d = new Date(s);
-  return Number.isNaN(d.getTime()) ? null : d;
+  return parseLegalDate(teks);
 }
 
 function tglTeks(d) {
@@ -57,8 +37,20 @@ export async function hukumPadaTanggal({ peraturan, tanggal }) {
     tahun: m ? m[3] : "",
     limit: 8,
   });
-  const pilih = cari.hasil.find((h) => (!m || h.nomor === m[2]) && (!m || h.tahun === m[3])) || cari.hasil[0];
-  if (!pilih) return { ditemukan: false, catatan: "Peraturan tidak ditemukan.", pencarian: cari };
+  const selection = selectExactCandidate(cari.hasil, { nomor: m?.[2] || "", tahun: m?.[3] || "" });
+  if (selection.status !== "matched") {
+    return {
+      ditemukan: false,
+      status: selection.status,
+      catatan:
+        selection.status === "ambiguous"
+          ? "Rujukan ambigu. Persempit dengan jenis, nomor, dan tahun; sistem tidak memilih kandidat pertama."
+          : "Peraturan dengan identitas persis tidak ditemukan.",
+      kandidat: selection.candidates,
+      pencarian: cari,
+    };
+  }
+  const pilih = selection.value;
 
   const d = await detailPeraturan(pilih.id);
   const berlaku = uraikanTanggal(d.metadata["Tanggal Berlaku"]);
