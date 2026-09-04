@@ -270,7 +270,10 @@ Hukum ekonomi syariah: `hukum-ekonomi-syariah-id` (jangkar dua perspektif), `ush
 
 ## Lisensi
 
-MIT. Isi dokumen hukum yang diambil tetap milik dan tanggung jawab lembaga penerbitnya.
+Kode: MIT — lihat [LICENSE](LICENSE).
+
+Isi dokumen hukum yang diambil melalui perangkat ini tetap milik dan tanggung jawab lembaga
+penerbitnya, bukan milik proyek ini. Batasnya dijelaskan di [NOTICE.md](NOTICE.md).
 
 ---
 

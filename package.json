@@ -15,6 +15,7 @@
   "files": [
     "dist/",
     "README.md",
+    "NOTICE.md",
     "LICENSE",
     "CHANGELOG.md"
   ],
