@@ -46,6 +46,7 @@
     "test:unit": "node test/trust-foundation.test.js && node test/abstain.test.js && node test/parser.test.js && node --import tsx --test test/cache.test.ts test/core-contract.test.ts test/core-service.test.ts test/ai-synthesis.test.ts test/api.test.ts test/auth.test.ts test/upload-storage.test.ts test/evidence-store.test.ts test/index-release.test.ts test/web-client.test.ts test/mcp-contract.test.ts test/remote-mcp.test.ts test/telemetry.test.ts",
     "test:abstain": "node test/abstain.test.js",
     "test:load": "node --import tsx --test test/load.test.ts",
+    "test:web-vitals": "node scripts/measure-web-vitals.mjs",
     "test:parser": "node test/parser.test.js",
     "smoke": "node test/smoke.js",
     "snapshot": "node scripts/bangun-snapshot.js",

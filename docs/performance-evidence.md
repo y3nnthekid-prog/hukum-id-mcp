@@ -46,5 +46,25 @@ Baseline gagal ini dipertahankan agar optimasi remote MCP berikutnya mempunyai p
 
 ## Web Core Web Vitals
 
-Belum diisi. LCP dan INP hanya akan dicatat setelah build production diukur dengan profil
-seluler menengah dan interaksi nyata.
+Build statis production diukur dengan `npm run test:web-vitals`. Harness menjalankan Microsoft
+Edge headless melalui Chrome DevTools Protocol, mematikan cache, dan menerapkan profil:
+
+- viewport 390 × 844 pada device scale factor 3;
+- perlambatan CPU 4×;
+- latensi 150 ms, unduh 1.600 Kbps, unggah 750 Kbps;
+- dua tap browser-trusted: navigasi ke workspace, lalu menjalankan saran pencarian sampai
+  hasil dari fixture API dirender;
+- PerformanceObserver `largest-contentful-paint` dan Event Timing, dengan seluruh request
+  HTTP(S) diaudit agar hanya menuju `localhost`/`127.0.0.1`.
+
+Tiga proses browser independen menghasilkan:
+
+| Run | LCP | INP | Request eksternal |
+|---|---:|---:|---:|
+| 1 | 1.384 ms | 80 ms | 0 |
+| 2 | 1.348 ms | 80 ms | 0 |
+| 3 | 2.192 ms | 144 ms | 0 |
+
+Nilai terburuk tetap lulus sasaran LCP `<=2.500 ms` dan INP `<=200 ms`. Ini bukti lab lokal,
+bukan Real User Monitoring; distribusi perangkat dan jaringan pengguna produksi tetap perlu
+diamati setelah deployment.

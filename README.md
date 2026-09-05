@@ -122,6 +122,9 @@ Pengujian:
 npm test             # uji fixture, unit, security, API, MCP, storage, dan contract
 npm run verify       # lint + OpenAPI + test + typecheck + build API/Web
 npm run test:parser  # parser saja, tanpa satu pun permintaan jaringan
+npm run test:abstain # exact lookup palsu wajib abstain, tanpa jaringan
+npm run test:load    # 3 × 50 request fixture, p95 dan egress gate
+npm run test:web-vitals # LCP/INP Edge headless pada profil ponsel
 npm run smoke        # canary end-to-end; menyentuh sumber live
 ```
 
@@ -210,12 +213,17 @@ Tiga lapisan membuat pemakaian berulang nyaris seketika:
   bersamaan, dan pengayaan opsional seperti silang-periksa MK diberi batas waktu ketat
   supaya sumber yang sedang lambat tidak menahan seluruh jawaban.
 
-Terukur pada rantai riset satu pasal (cari, status, kutip pasal):
+Pengukuran yang dapat direproduksi tersedia di
+[docs/performance-evidence.md](docs/performance-evidence.md). Ringkasan kandidat 0.7.0:
 
-| | Sebelum | Sesudah |
-|---|---|---|
-| Rantai tiga panggilan terpisah | 3.159 ms | 30 ms |
-| Satu panggilan `periksa_pasal` (hangat) | — | 23-27 ms |
+| Gate lokal | Hasil |
+|---|---:|
+| Search, 3 × 50 request | median p95 65,57 ms |
+| Exact lookup REST, 3 × 50 request | median p95 58,77 ms |
+| Web mobile-medium, 3 browser | LCP terburuk 2.192 ms; INP terburuk 144 ms |
+
+Angka ini memakai fixture dan mengukur overhead platform lokal. Cold start Container Apps,
+Azure Storage, connector live, dan Real User Monitoring tetap wajib diukur di staging/produksi.
 
 Ada pula **pemutus arus**: bila sebuah host menolak dua permintaan beruntun, host itu
 dilewati cepat selama satu menit dengan pesan yang jelas, alih-alih menahan alur lain
