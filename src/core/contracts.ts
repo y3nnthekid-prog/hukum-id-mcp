@@ -115,6 +115,48 @@ export function createEvidence(input: EvidenceInput): Evidence {
   });
 }
 
+const CLAIM_STOP_WORDS = new Set([
+  "adalah",
+  "atau",
+  "dalam",
+  "dan",
+  "dari",
+  "dengan",
+  "ini",
+  "itu",
+  "oleh",
+  "pada",
+  "sebagai",
+  "untuk",
+  "yang",
+]);
+
+function normalizedWords(value: string) {
+  return value
+    .normalize("NFKC")
+    .toLocaleLowerCase("id-ID")
+    .match(/[\p{L}\p{N}]+/gu) ?? [];
+}
+
+export function isClaimSupportedByEvidence(claimText: string, evidence: Evidence[]) {
+  const normalizedClaim = normalizedWords(claimText).join(" ");
+  const normalizedEvidence = normalizedWords(evidence.map((item) => item.text).join(" ")).join(" ");
+  if (!normalizedClaim || !normalizedEvidence) return false;
+  if (normalizedEvidence.includes(normalizedClaim)) return true;
+
+  const claimWords = [
+    ...new Set(
+      normalizedWords(claimText).filter(
+        (word) => (word.length > 2 || /^\d+$/.test(word)) && !CLAIM_STOP_WORDS.has(word)
+      )
+    ),
+  ];
+  if (claimWords.length < 2) return false;
+  const evidenceWords = new Set(normalizedWords(normalizedEvidence));
+  const overlap = claimWords.filter((word) => evidenceWords.has(word)).length / claimWords.length;
+  return overlap >= 0.6 && claimWords.filter((word) => evidenceWords.has(word)).length >= 3;
+}
+
 type ResearchResultInput = {
   query: string;
   summary?: string;
@@ -128,18 +170,24 @@ type ResearchResultInput = {
 export function createResearchResult(input: ResearchResultInput): ResearchResult {
   const evidence = input.evidence ?? [];
   const claims = input.claims ?? [];
-  const knownEvidence = new Set(
+  const knownEvidence = new Map(
     evidence
       .filter((item) => ["verified_live", "verified_snapshot"].includes(item.provenance.verificationStatus))
-      .map((item) => item.id)
+      .map((item) => [item.id, item] as const)
   );
-  const supportedClaims = claims.filter(
-    (claim) => claim.evidenceIds.length > 0 && claim.evidenceIds.every((id) => knownEvidence.has(id))
-  );
+  const supportedClaims = claims.filter((claim) => {
+    if (claim.evidenceIds.length === 0 || !claim.evidenceIds.every((id) => knownEvidence.has(id))) return false;
+    const citedEvidence = claim.evidenceIds.map((id) => knownEvidence.get(id)!);
+    return isClaimSupportedByEvidence(claim.text, citedEvidence);
+  });
   const removed = claims.length - supportedClaims.length;
   const coverage = claims.length === 0 ? 0 : supportedClaims.length / claims.length;
   const warnings = [...(input.warnings ?? [])];
-  if (removed > 0) warnings.push(`${removed} klaim dibuang karena tidak memiliki evidence yang sah.`);
+  if (removed > 0) {
+    warnings.push(
+      `${removed} klaim dibuang karena ID evidence tidak sah atau teks evidence tidak mendukung klaim.`
+    );
+  }
 
   const status =
     supportedClaims.length === 0

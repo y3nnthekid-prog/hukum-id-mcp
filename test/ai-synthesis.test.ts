@@ -62,6 +62,32 @@ test("AI claims survive only when all evidence IDs are known and verified", asyn
   assert.ok(result.warnings.some((warning) => warning.includes("1 klaim")));
 });
 
+test("a fabricated claim is discarded even when it cites a real evidence ID", async () => {
+  const source = evidence();
+  const provider: EvidenceSynthesisProvider = {
+    synthesize: async () => ({
+      summary: "Keuntungan dijamin negara.",
+      claims: [
+        {
+          text: "Bank Indonesia menjamin seluruh keuntungan nasabah tanpa risiko.",
+          evidenceIds: [source.id],
+        },
+      ],
+      conflicts: [],
+    }),
+  };
+
+  const result = await synthesizeEvidenceFirst(
+    { question: "Apakah keuntungan nasabah dijamin?", evidence: [source] },
+    provider
+  );
+
+  assert.equal(result.status, "insufficient_evidence");
+  assert.deepEqual(result.claims, []);
+  assert.equal(result.summary, "Bukti yang tersedia belum cukup untuk menyusun simpulan.");
+  assert.ok(result.warnings.some((warning) => /teks evidence tidak mendukung/i.test(warning)));
+});
+
 test("document text remains an inert evidence payload, never a system instruction", async () => {
   const injected = createEvidence({
     documentId: "bpk:prompt-injection-fixture",
