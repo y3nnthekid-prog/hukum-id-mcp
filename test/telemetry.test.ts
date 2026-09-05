@@ -6,6 +6,10 @@ import { classifyApiRoute, createApiTelemetryAttributes } from "../src/telemetry
 test("telemetry memakai route template tanpa query atau document ID", () => {
   const path = "/v1/documents/UU-21-2008/timeline";
   assert.equal(classifyApiRoute(path), "/v1/documents/:id/timeline");
+  assert.equal(
+    classifyApiRoute("/v1/documents/UU-21-2008/articles/Pasal-1"),
+    "/v1/documents/:id/articles/:article"
+  );
   assert.equal(classifyApiRoute("/v1/search"), "/v1/search");
   assert.equal(classifyApiRoute("/private/question"), "unmatched");
 

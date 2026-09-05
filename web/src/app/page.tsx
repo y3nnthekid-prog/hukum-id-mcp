@@ -54,7 +54,7 @@ export default function HomePage() {
 
       <footer className="site-footer">
         <p>HukumID membantu riset; bukan nasihat hukum dan bukan fatwa.</p>
-        <p>v0.6 · Hukum nasional + ekonomi syariah</p>
+        <p>v0.7 · Hukum nasional + ekonomi syariah</p>
       </footer>
     </div>
   );

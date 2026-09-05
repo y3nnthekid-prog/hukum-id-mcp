@@ -4,6 +4,37 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.1.0/), versi
 [Semantic Versioning](https://semver.org/lang/id/). Peneliti disarankan menyebutkan versi
 alat ini dalam tulisannya demi reproduktibilitas.
 
+## [0.7.0] — 2026-09-06
+
+### Kepercayaan dan keamanan
+
+- Redirect HTTP kini manual dan setiap hop memvalidasi ulang DNS/host; IPv6 privat, metadata
+  cloud, DNS rebinding, respons raksasa, dan redirect implisit curl memiliki uji regresi.
+- Impor KHES dikurung di `HUKUM_IMPORT_ROOT` beserta pemeriksaan realpath/symlink dan tidak lagi
+  membocorkan path lokal pada provenance.
+- Dekripsi unggahan menegakkan pemilik pada batas repository dan selalu menghapus data key dari
+  memori setelah dipakai.
+- Exact lookup menyertakan alasan serta upaya yang dicoba; 41 rujukan palsu dan 10 pasal di luar
+  rentang terbukti abstain tanpa memilih kandidat pertama.
+- Klaim AI kini harus didukung isi tekstual evidence, bukan sekadar membawa evidence ID yang sah.
+
+### Parser, kontrak, dan kinerja
+
+- Ekstraksi PDF membedakan `ok`, `degraded`, dan `no_text_layer`, menjaga nomor halaman fisik,
+  membaca dua kolom, serta memperingatkan teks Arab non-Unicode dan tanggal mustahil.
+- Web client, REST, MCP stdio, dan remote MCP diuji menghasilkan evidence ID identik pada satu
+  corpus release.
+- Endpoint fail-closed `GET /v1/documents/{id}/articles/{article}` ditambahkan untuk exact lookup
+  berlatensi rendah dan didokumentasikan di OpenAPI.
+- Gate lokal 3 × 50 request menghasilkan error 0%, median p95 search 65,57 ms dan exact lookup
+  58,77 ms tanpa egress.
+- Tiga pengukuran Web mobile-medium menghasilkan LCP terburuk 2.192 ms dan INP terburuk 144 ms.
+
+### Diketahui belum terselesaikan
+
+- Status production-ready masih menunggu golden-set yang dinilai ahli, uji PDF decompression
+  bomb dalam worker terisolasi, lifecycle Azure end-to-end, canary/rollback, dan alert staging.
+
 ## [0.6.0] — 2026-09-05
 
 ### Platform evidence-first

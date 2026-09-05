@@ -1,7 +1,8 @@
 import { metrics, SpanStatusCode, trace } from "@opentelemetry/api";
+import { HUKUM_ID_VERSION } from "./version.js";
 
-const tracer = trace.getTracer("hukum-id-api", "0.6.0");
-const meter = metrics.getMeter("hukum-id-api", "0.6.0");
+const tracer = trace.getTracer("hukum-id-api", HUKUM_ID_VERSION);
+const meter = metrics.getMeter("hukum-id-api", HUKUM_ID_VERSION);
 const requestCount = meter.createCounter("hukum.api.requests", {
   description: "Jumlah permintaan API berdasarkan route stabil dan status class.",
 });
@@ -13,6 +14,7 @@ const requestDuration = meter.createHistogram("hukum.api.duration", {
 const SAFE_ROUTES: ReadonlyArray<[RegExp, string]> = [
   [/^\/health$/, "/health"],
   [/^\/v1\/search$/, "/v1/search"],
+  [/^\/v1\/documents\/[^/]+\/articles\/[^/]+$/, "/v1/documents/:id/articles/:article"],
   [/^\/v1\/documents\/[^/]+\/timeline$/, "/v1/documents/:id/timeline"],
   [/^\/v1\/documents\/[^/]+$/, "/v1/documents/:id"],
   [/^\/v1\/citations\/verify$/, "/v1/citations/verify"],

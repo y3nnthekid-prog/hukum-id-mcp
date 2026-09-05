@@ -7,6 +7,7 @@ import { synthesizeEvidenceFirst, type EvidenceSynthesisProvider } from "../ai/e
 import { type Evidence } from "../core/contracts.js";
 import type { LegalResearchService, SearchSource } from "../core/service.js";
 import { observeApiRequest } from "../telemetry.js";
+import { HUKUM_ID_VERSION } from "../version.js";
 
 type ApiEnv = { Variables: { traceId: string; userId: string | null } };
 
@@ -180,7 +181,7 @@ export function createApiApp({
     return c.body(null, 204);
   });
 
-  app.get("/health", (c) => c.json({ status: "ok", service: "hukum-id-api", version: "0.6.0" }));
+  app.get("/health", (c) => c.json({ status: "ok", service: "hukum-id-api", version: HUKUM_ID_VERSION }));
 
   app.get("/v1/search", async (c) => {
     const parsed = SearchQuerySchema.safeParse(c.req.query());

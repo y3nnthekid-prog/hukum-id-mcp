@@ -4,10 +4,10 @@ Platform evidence-first untuk riset hukum Indonesia dan Hukum Ekonomi Syariah (H
 Satu legal core melayani Web, REST API v1, MCP lokal `stdio`, dan remote MCP Streamable HTTP.
 Sistem menolak klaim tanpa evidence dan gagal tertutup ketika rujukan exact ambigu atau tidak ada.
 
-Versi 0.6 adalah fondasi pilot: Web search workspace, 10 MCP tool, REST API, upload terenkripsi,
-AI evidence-first opsional, release indeks atomik, Azure IaC, CI/canary/rollback, dan telemetri
-privacy-first sudah tersedia. Label production-ready tetap menunggu quality gates ahli dan corpus
-yang dirinci di [launch readiness](docs/launch-readiness.md).
+Versi 0.7 adalah kandidat pilot yang menutup gate lokal untuk exact lookup, kutipan AI, parser
+PDF sulit, kontrak empat kanal, beban 50 pengguna, dan Web Vitals. Label production-ready tetap
+menunggu validasi ahli, corpus golden-set, PDF bomb isolation, dan pembuktian staging Azure yang
+dirinci di [launch readiness](docs/launch-readiness.md).
 
 ## Jalankan lokal
 

@@ -3,6 +3,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
 import type { LegalResearchService } from "../core/service.js";
+import { HUKUM_ID_VERSION } from "../version.js";
 
 const OutputShape = {
   data: z.record(z.string(), z.unknown()),
@@ -71,7 +72,7 @@ async function toolResult(operation: () => Promise<unknown>) {
 
 export function createEvidenceFirstMcpServer(service: LegalResearchService) {
   const server = new McpServer(
-    { name: "hukum-id", version: "0.6.0" },
+    { name: "hukum-id", version: HUKUM_ID_VERSION },
     {
       instructions:
         "Gunakan search_legal_sources untuk menemukan kandidat, lalu lookup_article atau get_legal_document " +
