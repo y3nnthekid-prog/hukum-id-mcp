@@ -117,11 +117,13 @@ export function paksaLewatiCache(nyala) {
   lewatiCacheGlobal = Boolean(nyala);
 }
 
-function curlArgs(url, referer, timeout, outFile, headerFile, maxBytes) {
+export function buildCurlArguments(url, referer, timeout, outFile, headerFile, maxBytes) {
   const h = headers(referer);
   const args = [
     "-sS",
     "--compressed",
+    "--max-redirs",
+    "0",
     "--proto",
     "=http,https",
     "--max-time",
@@ -152,7 +154,7 @@ async function viaCurl(url, referer, timeout, maxBytes) {
   const outFile = path.join(os.tmpdir(), `hukum-id-${randomUUID()}.bin`);
   const headerFile = `${outFile}.headers`;
   try {
-    const { stdout } = await execFileP("curl", curlArgs(url, referer, timeout, outFile, headerFile, maxBytes), {
+    const { stdout } = await execFileP("curl", buildCurlArguments(url, referer, timeout, outFile, headerFile, maxBytes), {
       timeout: timeout + 5000,
       windowsHide: true,
       maxBuffer: 1024 * 1024,
@@ -169,11 +171,19 @@ async function viaCurl(url, referer, timeout, maxBytes) {
   }
 }
 
-async function viaFetch(url, referer, timeout, maxBytes) {
+export async function fetchTransport(
+  url,
+  {
+    referer,
+    timeout = 45000,
+    maxBytes = 16 * 1024 * 1024,
+    fetchImpl = globalThis.fetch,
+  } = {}
+) {
   const ac = new AbortController();
   const timer = setTimeout(() => ac.abort(), timeout);
   try {
-    const res = await fetch(url, { headers: headers(referer), signal: ac.signal, redirect: "manual" });
+    const res = await fetchImpl(url, { headers: headers(referer), signal: ac.signal, redirect: "manual" });
     const declared = Number(res.headers.get("content-length") || 0);
     if (declared > maxBytes) throw new Error(`Respons melebihi batas ${maxBytes} byte.`);
 
@@ -199,15 +209,31 @@ async function viaFetch(url, referer, timeout, maxBytes) {
   }
 }
 
-async function lewatRedirect(transport, rawUrl, referer, timeout, maxBytes) {
+async function viaFetch(url, referer, timeout, maxBytes) {
+  return fetchTransport(url, { referer, timeout, maxBytes });
+}
+
+export async function followValidatedRedirects(
+  transport,
+  rawUrl,
+  {
+    referer,
+    timeout = 45000,
+    maxBytes = 16 * 1024 * 1024,
+    maxRedirects = 4,
+    lookup,
+    allowedHosts,
+    beforeRequest = async () => {},
+  } = {}
+) {
   let current = rawUrl;
-  for (let redirects = 0; redirects <= 4; redirects++) {
-    const safe = await assertPublicUrl(current, { allowedHosts: SOURCE_HOSTS });
-    await politeGap(safe.hostname);
+  for (let redirects = 0; redirects <= maxRedirects; redirects++) {
+    const safe = await assertPublicUrl(current, { ...(lookup ? { lookup } : {}), allowedHosts });
+    await beforeRequest(safe.hostname);
     const response = await transport(safe.toString(), referer, timeout, maxBytes);
     if (response.status < 300 || response.status >= 400) return response;
     if (!response.location) throw new Error(`HTTP ${response.status} tanpa header Location.`);
-    if (redirects === 4) throw new Error("Terlalu banyak redirect (maksimum 4). ");
+    if (redirects === maxRedirects) throw new Error(`Terlalu banyak redirect (maksimum ${maxRedirects}).`);
     current = new URL(response.location, safe).toString();
   }
   throw new Error("Redirect tidak dapat diselesaikan.");
@@ -235,7 +261,13 @@ async function request(
   for (let attempt = 0; attempt <= retries; attempt++) {
     for (const t of transports) {
       try {
-        const r = await lewatRedirect(t, safeUrl.toString(), referer, timeout, maxBytes);
+        const r = await followValidatedRedirects(t, safeUrl.toString(), {
+          referer,
+          timeout,
+          maxBytes,
+          allowedHosts: SOURCE_HOSTS,
+          beforeRequest: politeGap,
+        });
         if (r.status >= 200 && r.status < 300 && r.buffer.length) {
           await simpan(url, r.buffer);
           catatSukses(host);

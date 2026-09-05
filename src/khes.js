@@ -14,13 +14,61 @@
 // Prinsipnya tegas: selama naskahnya belum diimpor, jangan pernah menyebut
 // nomor pasal KHES. Tool ini mengembalikan penolakan yang jelas, bukan tebakan.
 
-import { readFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
+import { readFile, realpath } from "node:fs/promises";
+import path from "node:path";
 import { getBuffer } from "./http.js";
 import { halamanPdf, cariDalamPdf } from "./pdf.js";
 import { ambilJson, simpanJson } from "./cache.js";
 
 const KUNCI_INDEKS = "khes::indeks-v1";
 const TTL = 365 * 24 * 60 * 60 * 1000;
+
+function decodeImportPath(value) {
+  let decoded = String(value ?? "").trim();
+  if (!decoded || decoded.includes("\0")) throw new Error("Path berkas impor tidak sah.");
+  for (let attempt = 0; attempt < 4; attempt++) {
+    let next;
+    try {
+      next = decodeURIComponent(decoded);
+    } catch {
+      throw new Error("Path berkas impor tidak sah.");
+    }
+    if (next === decoded) return decoded;
+    decoded = next;
+  }
+  throw new Error("Path berkas impor memiliki encoding berlapis yang tidak diizinkan.");
+}
+
+function isInside(root, candidate) {
+  const relative = path.relative(root, candidate);
+  return relative === "" || (!relative.startsWith(`..${path.sep}`) && relative !== ".." && !path.isAbsolute(relative));
+}
+
+/**
+ * Batasi impor lokal pada satu root yang eksplisit. Pemeriksaan dilakukan pada
+ * path leksikal dan hasil realpath agar traversal maupun symlink keluar root
+ * tidak dapat dipakai untuk membaca berkas lain di komputer pengguna.
+ */
+export async function resolveSafeImportPath(rawPath, { root = process.env.HUKUM_IMPORT_ROOT || process.cwd() } = {}) {
+  const decoded = decodeImportPath(rawPath);
+  const canonicalRoot = await realpath(path.resolve(root));
+  const lexicalCandidate = path.resolve(canonicalRoot, decoded);
+  if (!isInside(canonicalRoot, lexicalCandidate)) {
+    throw new Error("Path berada di luar direktori impor yang diizinkan.");
+  }
+
+  let canonicalCandidate;
+  try {
+    canonicalCandidate = await realpath(lexicalCandidate);
+  } catch {
+    throw new Error("Berkas tidak dapat dibuka dari direktori impor yang diizinkan.");
+  }
+  if (!isInside(canonicalRoot, canonicalCandidate)) {
+    throw new Error("Path berada di luar direktori impor yang diizinkan.");
+  }
+  return canonicalCandidate;
+}
 
 /**
  * Struktur KHES, DIVERIFIKASI ke naskah primer: Kompilasi Hukum Ekonomi
@@ -73,12 +121,16 @@ async function indeksTersimpan() {
 export async function imporKhes({ path_pdf = "", url_pdf = "" }) {
   if (!path_pdf && !url_pdf) throw new Error("Sertakan path_pdf (berkas di komputer) atau url_pdf.");
 
-  const buffer = path_pdf ? await readFile(path_pdf) : await getBuffer(url_pdf, { timeout: 180000 });
+  const safePath = path_pdf ? await resolveSafeImportPath(path_pdf) : "";
+  const buffer = safePath ? await readFile(safePath) : await getBuffer(url_pdf, { timeout: 180000 });
   if (buffer.slice(0, 5).toString("utf8") !== "%PDF-") {
     throw new Error("Berkas yang dimuat bukan PDF. Periksa kembali sumbernya.");
   }
 
-  const doc = await halamanPdf({ url_pdf: url_pdf || `lokal::${path_pdf}`, buffer });
+  const localCacheKey = safePath
+    ? `lokal::sha256:${createHash("sha256").update(buffer).digest("hex")}`
+    : "";
+  const doc = await halamanPdf({ url_pdf: url_pdf || localCacheKey, buffer });
   const seluruh = doc.halaman.map((h) => h.teks).join("\n");
 
   // Petakan tiap "Pasal N" ke nomor halamannya, agar pencarian pasal presisi.
@@ -93,14 +145,14 @@ export async function imporKhes({ path_pdf = "", url_pdf = "" }) {
 
   const nomor = Object.keys(petaPasal).map(Number).sort((a, b) => a - b);
   const indeks = {
-    sumber: path_pdf ? `berkas lokal: ${path_pdf}` : url_pdf,
+    sumber: path_pdf ? "berkas lokal pengguna" : url_pdf,
     diimpor_pada: new Date().toISOString(),
     total_halaman: doc.total_halaman,
     jumlah_pasal_terdeteksi: nomor.length,
     pasal_terendah: nomor[0] ?? null,
     pasal_tertinggi: nomor[nomor.length - 1] ?? null,
     peta_pasal: petaPasal,
-    rujukan_pdf: url_pdf || `lokal::${path_pdf}`,
+    rujukan_pdf: url_pdf || localCacheKey,
   };
   await simpanJson(KUNCI_INDEKS, indeks);
 

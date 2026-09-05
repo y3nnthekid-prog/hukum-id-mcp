@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import path from "node:path";
 
 import {
   assertPublicUrl,
@@ -6,6 +7,8 @@ import {
   selectExactCandidate,
   selectPdfPages,
 } from "../src/trust.js";
+import { resolveSafeImportPath } from "../src/khes.js";
+import { buildCurlArguments, fetchTransport, followValidatedRedirects } from "../src/http.js";
 
 let passed = 0;
 
@@ -112,6 +115,12 @@ await test("SSRF guard rejects private and IPv4-mapped addresses", async () => {
   await assert.rejects(() => assertPublicUrl("http://[::ffff:127.0.0.1]/a"), /internal|privat/i);
 });
 
+await test("SSRF guard rejects IPv6 loopback, unique-local and link-local literals", async () => {
+  for (const address of ["::1", "fc00::1", "fd12:3456:789a::1", "fe80::1"]) {
+    await assert.rejects(() => assertPublicUrl(`http://[${address}]/a`), /internal|privat/i);
+  }
+});
+
 await test("SSRF guard rejects a hostname when any DNS answer is private", async () => {
   const lookup = async () => [
     { address: "93.184.216.34", family: 4 },
@@ -128,6 +137,83 @@ await test("SSRF guard accepts a public IPv4 address exposed through DNS64", asy
   const lookup = async () => [{ address: "64:ff9b::6812:249", family: 6 }];
   const url = await assertPublicUrl("https://example.com/a", { lookup });
   assert.equal(url.hostname, "example.com");
+});
+
+await test("KHES local import rejects traversal and absolute paths outside its root", async () => {
+  const root = process.cwd();
+  await assert.rejects(() => resolveSafeImportPath("../../rahasia.pdf", { root }), /di luar direktori impor/i);
+  await assert.rejects(() => resolveSafeImportPath("%2e%2e%2f%2e%2e%2frahasia.pdf", { root }), /di luar direktori impor/i);
+  await assert.rejects(() => resolveSafeImportPath(path.resolve(root, "..", "rahasia.pdf"), { root }), /di luar direktori impor/i);
+});
+
+await test("DNS is revalidated before every redirected request", async () => {
+  let lookups = 0;
+  let requests = 0;
+  const lookup = async () => {
+    lookups += 1;
+    return [{ address: lookups === 1 ? "93.184.216.34" : "10.0.0.9", family: 4 }];
+  };
+  const transport = async () => {
+    requests += 1;
+    return { status: 302, buffer: Buffer.alloc(0), location: "/next" };
+  };
+
+  await assert.rejects(
+    () => followValidatedRedirects(transport, "https://example.com/start", { lookup }),
+    /internal|privat/i
+  );
+  assert.equal(requests, 1);
+  assert.equal(lookups, 2);
+});
+
+await test("redirect to a cloud metadata address is rejected before transport", async () => {
+  let requests = 0;
+  const transport = async () => {
+    requests += 1;
+    return { status: 302, buffer: Buffer.alloc(0), location: "http://169.254.169.254/latest/meta-data" };
+  };
+
+  await assert.rejects(
+    () =>
+      followValidatedRedirects(transport, "https://example.com/start", {
+        lookup: async () => [{ address: "93.184.216.34", family: 4 }],
+      }),
+    /internal|privat|diizinkan/i
+  );
+  assert.equal(requests, 1);
+});
+
+await test("HTTP transport rejects declared and streamed response bombs", async () => {
+  const declaredBomb = async () =>
+    new Response("kecil", { status: 200, headers: { "content-length": "999999" } });
+  await assert.rejects(
+    () => fetchTransport("https://example.com/a", { maxBytes: 32, fetchImpl: declaredBomb }),
+    /melebihi batas/i
+  );
+
+  const streamedBomb = async () =>
+    new Response(
+      new ReadableStream({
+        start(controller) {
+          controller.enqueue(new Uint8Array(24));
+          controller.enqueue(new Uint8Array(24));
+          controller.close();
+        },
+      }),
+      { status: 200 }
+    );
+  await assert.rejects(
+    () => fetchTransport("https://example.com/a", { maxBytes: 32, fetchImpl: streamedBomb }),
+    /melebihi batas/i
+  );
+});
+
+await test("curl fallback is forbidden from following redirects itself", () => {
+  const args = buildCurlArguments("https://example.com/a", undefined, 1_000, "out", "headers", 1_024);
+  const option = args.indexOf("--max-redirs");
+  assert.notEqual(option, -1);
+  assert.equal(args[option + 1], "0");
+  assert.equal(args.includes("--location"), false);
 });
 
 console.log(`\n${passed} trust-foundation checks passed.`);

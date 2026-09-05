@@ -126,6 +126,24 @@ test("an extension or MIME label cannot disguise a non-PDF upload", async () => 
   );
 });
 
+test("an owner cannot inspect, replace, or decrypt another owner's upload", async () => {
+  const { service } = fixtures();
+  await service.createUpload(ticket);
+
+  assert.equal(await service.getJob("upload-fixed", "user-2"), null);
+  await assert.rejects(
+    () =>
+      service.putUpload({
+        id: "upload-fixed",
+        ownerId: "user-2",
+        contentType: "application/pdf",
+        bytes: Buffer.from("%PDF-1.7 attacker"),
+      }),
+    /UPLOAD_NOT_FOUND/
+  );
+  await assert.rejects(() => service.decryptUpload("upload-fixed", "user-2"), /UPLOAD_NOT_FOUND/);
+});
+
 test("expiry deletes both the blob and the wrapped-key metadata", async () => {
   const { service, repository, deleted } = fixtures();
   await service.createUpload(ticket);

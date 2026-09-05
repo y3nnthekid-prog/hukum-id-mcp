@@ -212,17 +212,23 @@ export function createSecureUploadService({
     return metadata ? publicJob(metadata) : null;
   }
 
-  async function decryptUpload(metadata: UploadMetadata) {
+  async function decryptUpload(id: string, ownerId: string) {
+    const ownerHash = hash(ownerId).slice(0, 32);
+    const metadata = await repository.getUpload(ownerHash, id);
+    if (!metadata) throw new Error("UPLOAD_NOT_FOUND");
     if (!blobStore.download || !metadata.blobName || !metadata.wrappedKey || !metadata.iv || !metadata.authTag) {
       throw new Error("UPLOAD_NOT_READY");
     }
-    const dataKey = Buffer.from(await keyWrapper.unwrap(Buffer.from(metadata.wrappedKey, "base64")));
-    const decipher = createDecipheriv("aes-256-gcm", dataKey, Buffer.from(metadata.iv, "base64"));
-    decipher.setAuthTag(Buffer.from(metadata.authTag, "base64"));
-    const encrypted = await blobStore.download(metadata.blobName);
-    const plaintext = Buffer.concat([decipher.update(encrypted), decipher.final()]);
-    dataKey.fill(0);
-    return plaintext;
+    let dataKey: Buffer | null = null;
+    try {
+      dataKey = Buffer.from(await keyWrapper.unwrap(Buffer.from(metadata.wrappedKey, "base64")));
+      const decipher = createDecipheriv("aes-256-gcm", dataKey, Buffer.from(metadata.iv, "base64"));
+      decipher.setAuthTag(Buffer.from(metadata.authTag, "base64"));
+      const encrypted = await blobStore.download(metadata.blobName);
+      return Buffer.concat([decipher.update(encrypted), decipher.final()]);
+    } finally {
+      dataKey?.fill(0);
+    }
   }
 
   async function sweepExpired(at = now()) {
