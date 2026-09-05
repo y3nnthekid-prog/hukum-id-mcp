@@ -52,6 +52,7 @@ const SearchSourceSchema = z.enum([
 ]);
 const DocumentSourceSchema = z.enum(["regulation", "ma-decision"]);
 const DocumentRefSchema = z.string().trim().min(1).max(500);
+const ArticleRefSchema = z.string().trim().min(3).max(80);
 const JobIdSchema = z.string().uuid();
 
 const SearchQuerySchema = z.object({
@@ -208,6 +209,16 @@ export function createApiApp({
       return apiError(c, 422, "VALIDATION_ERROR", "Rujukan dokumen tidak sah.");
     }
     const data = await service.getLegalDocument({ source: source.data, ref: ref.data });
+    return c.json({ data, meta: { traceId: c.get("traceId") } });
+  });
+
+  app.get("/v1/documents/:id/articles/:article", async (c) => {
+    const regulation = DocumentRefSchema.safeParse(c.req.param("id"));
+    const article = ArticleRefSchema.safeParse(c.req.param("article"));
+    if (!regulation.success || !article.success) {
+      return apiError(c, 422, "VALIDATION_ERROR", "Rujukan peraturan atau pasal tidak sah.");
+    }
+    const data = await service.lookupArticle({ regulation: regulation.data, article: article.data });
     return c.json({ data, meta: { traceId: c.get("traceId") } });
   });
 

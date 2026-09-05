@@ -75,6 +75,30 @@ paths:
       responses:
         "200": { $ref: "#/components/responses/GenericSuccess" }
         "404": { $ref: "#/components/responses/NotFound" }
+  /v1/documents/{id}/articles/{article}:
+    get:
+      summary: Periksa pasal persis secara fail-closed
+      operationId: lookupArticle
+      tags: [Documents]
+      parameters:
+        - $ref: "#/components/parameters/DocumentId"
+        - name: article
+          in: path
+          required: true
+          schema: { type: string, minLength: 3, maxLength: 80 }
+      responses:
+        "200":
+          description: ResearchResult dengan evidence terverifikasi, atau insufficient_evidence bila pasal tidak ditemukan
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data: { $ref: "#/components/schemas/ResearchResult" }
+                  meta: { $ref: "#/components/schemas/Meta" }
+        "422": { $ref: "#/components/responses/ValidationError" }
+        "429": { $ref: "#/components/responses/RateLimited" }
   /v1/documents/{id}/timeline:
     get:
       summary: Telusuri garis waktu regulasi

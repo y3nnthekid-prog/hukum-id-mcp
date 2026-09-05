@@ -60,6 +60,26 @@ test("GET /v1/documents rejects an unknown source instead of silently changing a
   assert.equal(response.status, 422);
 });
 
+test("GET /v1/documents/:id/articles/:article exposes fail-closed exact lookup", async () => {
+  let received: unknown;
+  const app = createApiApp({
+    service: {
+      ...service,
+      lookupArticle: async (input: unknown) => {
+        received = input;
+        return { status: "insufficient_evidence", evidence: [], warnings: ["Pasal tidak ditemukan persis."] };
+      },
+    } as any,
+  });
+  const response = await app.request("/v1/documents/UU%2021%2F2008/articles/Pasal%209999");
+  const body = await response.json();
+
+  assert.equal(response.status, 200);
+  assert.deepEqual(received, { regulation: "UU 21/2008", article: "Pasal 9999" });
+  assert.equal(body.data.status, "insufficient_evidence");
+  assert.deepEqual(body.data.evidence, []);
+});
+
 test("POST /v1/citations/verify rejects oversized drafts", async () => {
   const app = createApiApp({ service: service as any });
   const response = await app.request("/v1/citations/verify", {
