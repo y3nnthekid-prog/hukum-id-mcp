@@ -26,6 +26,8 @@ import { parseDaftar, detailPutusan } from "../src/ma.js";
 import { cariPutusanMK } from "../src/mk.js";
 import { cariPerma } from "../src/perma.js";
 import { simpan } from "../src/cache.js";
+import { ekstrakTeksPdf, halamanPdf } from "../src/pdf.js";
+import { PDF_FIXTURES } from "./fixtures/pdf/index.js";
 
 const DIR = path.dirname(fileURLToPath(import.meta.url));
 let lulus = 0;
@@ -170,6 +172,48 @@ ok(
   "detailPutusan menemukan tautan berkas",
   detailMa.berkas.length > 0,
   detailMa.berkas[0]?.split("/").slice(-2).join("/").slice(0, 40)
+);
+
+// --- 3. Fixture PDF sulit ---------------------------------------------------
+
+const scanPdf = await halamanPdf({ buffer: PDF_FIXTURES.scanTanpaTeks });
+ok(
+  "PDF scan tanpa text layer dinyatakan tidak dapat diekstrak",
+  scanPdf.extraction_health?.status === "no_text_layer" && scanPdf.extraction_health?.text_layer_pages === 0,
+  JSON.stringify(scanPdf.extraction_health)
+);
+
+const duaKolomPdf = await halamanPdf({ buffer: PDF_FIXTURES.duaKolom });
+const teksDuaKolom = duaKolomPdf.halaman[0]?.teks || "";
+ok(
+  "PDF dua kolom dibaca sampai bawah kolom kiri lalu kolom kanan",
+  teksDuaKolom.indexOf("KIRI BARIS SATU") < teksDuaKolom.indexOf("KIRI BARIS DUA") &&
+    teksDuaKolom.indexOf("KIRI BARIS DUA") < teksDuaKolom.indexOf("KANAN BARIS SATU") &&
+    teksDuaKolom.indexOf("KANAN BARIS SATU") < teksDuaKolom.indexOf("KANAN BARIS DUA"),
+  teksDuaKolom
+);
+
+const kosongPdf = await ekstrakTeksPdf({ buffer: PDF_FIXTURES.halamanKosongDiTengah });
+ok(
+  "halaman kosong dilewati tanpa menggeser nomor halaman berikutnya",
+  kosongPdf.total_halaman === 3 &&
+    kosongPdf.extraction_health?.empty_pages?.join(",") === "2" &&
+    kosongPdf.halaman_dikembalikan.join(",") === "1,3",
+  `kosong=${kosongPdf.extraction_health?.empty_pages}; kembali=${kosongPdf.halaman_dikembalikan}`
+);
+
+const arabPdf = await halamanPdf({ buffer: PDF_FIXTURES.arabNonUnicode });
+ok(
+  "teks Arab dengan pemetaan font rusak diberi peringatan tidak tepercaya",
+  arabPdf.extraction_health?.warnings?.some((warning) => /Arab.*tidak dapat dipercaya/i.test(warning)),
+  JSON.stringify(arabPdf.extraction_health)
+);
+
+const tanggalPdf = await halamanPdf({ buffer: PDF_FIXTURES.tanggalMustahil });
+ok(
+  "tanggal mustahil di dalam PDF ditolak tanpa normalisasi kalender",
+  tanggalPdf.extraction_health?.invalid_legal_dates?.includes("31 Februari 2026"),
+  JSON.stringify(tanggalPdf.extraction_health)
 );
 
 // --- ringkasan --------------------------------------------------------------
