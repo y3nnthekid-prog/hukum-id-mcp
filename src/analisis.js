@@ -42,6 +42,8 @@ export async function hukumPadaTanggal({ peraturan, tanggal }) {
     return {
       ditemukan: false,
       status: selection.status,
+      reason: selection.reason,
+      attempted: selection.attempted,
       catatan:
         selection.status === "ambiguous"
           ? "Rujukan ambigu. Persempit dengan jenis, nomor, dan tahun; sistem tidak memilih kandidat pertama."

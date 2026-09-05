@@ -56,12 +56,32 @@ export function selectExactCandidate(candidates = [], { nomor = "", tahun = "", 
   });
 
   const expectedType = jenisNormal(jenis);
+  const attempted = [
+    `nomor=${expectedNumber || "(tidak dibatasi)"}`,
+    `tahun=${expectedYear || "(tidak dibatasi)"}`,
+    `jenis=${expectedType || "(tidak dibatasi)"}`,
+    `${exact.length} kandidat cocok nomor/tahun dari ${candidates.length} kandidat yang diperiksa`,
+  ];
+  const result = (status, value, selectedCandidates, reason, extraAttempted = []) => ({
+    status,
+    value,
+    candidates: selectedCandidates,
+    reason,
+    attempted: [...attempted, ...extraAttempted],
+  });
+
   if (exact.length === 1) {
     const only = exact[0];
     if (!expectedType || jenisNormal(only.jenis) === expectedType) {
-      return { status: "matched", value: only, candidates: exact };
+      return result("matched", only, exact, "Satu kandidat cocok persis dengan identitas yang diminta.");
     }
-    return { status: "ambiguous", value: null, candidates: exact };
+    return result(
+      "ambiguous",
+      null,
+      exact,
+      "Rujukan ambigu: nomor dan tahun cocok, tetapi jenis dokumen berbeda; sistem abstain agar tidak menyatakan not_found yang keliru.",
+      [`0 kandidat cocok jenis ${expectedType}`]
+    );
   }
 
   // Nomor dan tahun saja tidak cukup memilah: UU 27/2022 dan Perbup Kabupaten
@@ -74,12 +94,42 @@ export function selectExactCandidate(candidates = [], { nomor = "", tahun = "", 
   // ambigu menjadi tidak-ditemukan — sifat fail-closed tetap dipertahankan.
   if (exact.length > 1 && expectedType) {
     const seJenis = exact.filter((candidate) => jenisNormal(candidate.jenis) === expectedType);
-    if (seJenis.length === 1) return { status: "matched", value: seJenis[0], candidates: seJenis };
-    if (seJenis.length > 1) return { status: "ambiguous", value: null, candidates: seJenis };
+    const typeAttempt = [`${seJenis.length} kandidat cocok jenis ${expectedType}`];
+    if (seJenis.length === 1) {
+      return result("matched", seJenis[0], seJenis, "Jenis dokumen mempersempit konflik menjadi satu kandidat persis.", typeAttempt);
+    }
+    if (seJenis.length > 1) {
+      return result(
+        "ambiguous",
+        null,
+        seJenis,
+      "Rujukan ambigu: lebih dari satu kandidat tetap cocok setelah filter jenis; sistem tidak memilih hasil pertama.",
+        typeAttempt
+      );
+    }
+    return result(
+      "ambiguous",
+      null,
+      exact,
+      "Rujukan ambigu: nomor dan tahun memiliki beberapa kandidat, tetapi jenis yang diminta tidak memecahkan konflik; sistem abstain.",
+      typeAttempt
+    );
   }
 
-  if (exact.length > 1) return { status: "ambiguous", value: null, candidates: exact };
-  return { status: "not_found", value: null, candidates };
+  if (exact.length > 1) {
+    return result(
+      "ambiguous",
+      null,
+      exact,
+      "Rujukan ambigu: lebih dari satu kandidat cocok persis; jenis atau otoritas harus diperjelas dan sistem tidak memilih hasil pertama."
+    );
+  }
+  return result(
+    "not_found",
+    null,
+    candidates,
+    "Identitas persis tidak ditemukan setelah filter nomor, tahun, dan jenis yang tersedia diperiksa."
+  );
 }
 
 /** Filter halaman PDF secara fail-closed saat kata kunci diberikan. */

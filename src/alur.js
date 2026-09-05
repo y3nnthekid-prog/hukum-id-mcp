@@ -22,6 +22,25 @@ function uraikanRujukan(teks = "") {
 
 const LEWAT_JDIH_MA = /^(perma|sema|kma)\b/i;
 
+function articleLookupResult(teks, pasal, hasPdf) {
+  const pages = teks?.halaman_dikembalikan ?? [];
+  const excerpts = teks?.isi ?? [];
+  const found = pages.length > 0 && excerpts.length > 0;
+  return {
+    ditemukan: found,
+    dicari: pasal,
+    total_halaman: teks?.total_halaman ?? null,
+    halaman: pages,
+    kutipan: excerpts,
+    extraction_health: teks?.extraction_health ?? null,
+    attempted: [
+      `frasa persis=${pasal}`,
+      hasPdf ? `halaman PDF diperiksa=${teks?.total_halaman ?? 0}` : "PDF peraturan tidak tersedia",
+      `halaman cocok=${pages.length}`,
+    ],
+  };
+}
+
 /**
  * Satu panggilan untuk menjawab "apa bunyi pasal X, dan apakah masih berlaku".
  * Menggabungkan pencarian, status, relasi antarperaturan, kutipan verbatim dari
@@ -56,6 +75,8 @@ export async function periksaPasal({
       return {
         ditemukan: false,
         status: selection.status,
+        reason: selection.reason,
+        attempted: selection.attempted,
         catatan:
           selection.status === "ambiguous"
             ? "Produk hukum MA ambigu. Sistem tidak memilih kandidat pertama; berikan nomor dan tahun yang persis."
@@ -69,17 +90,12 @@ export async function periksaPasal({
       pasal && pilih.url_pdf
         ? await teksPeraturan({ url_pdf: pilih.url_pdf, cari: pasal, maks_karakter })
         : null;
+    const hasilPasal = pasal ? articleLookupResult(teks, pasal, Boolean(pilih.url_pdf)) : null;
     return {
+      ...(hasilPasal && !hasilPasal.ditemukan ? { status: "insufficient_evidence" } : {}),
       sumber: "JDIH Mahkamah Agung RI",
       peraturan: pilih,
-      pasal: teks
-        ? {
-            dicari: pasal,
-            total_halaman: teks.total_halaman,
-            halaman: teks.halaman_dikembalikan,
-            kutipan: teks.isi,
-          }
-        : null,
+      pasal: hasilPasal,
       peringatan: [
         "Produk hukum MA tidak terindeks di JDIH BPK, sehingga status dan relasi antarperaturannya tidak tersedia seperti pada peraturan pusat.",
       ],
@@ -92,6 +108,8 @@ export async function periksaPasal({
     return {
       ditemukan: false,
       status: selection.status,
+      reason: selection.reason,
+      attempted: selection.attempted,
       catatan:
         selection.status === "ambiguous"
           ? "Rujukan peraturan ambigu. Sistem tidak memilih kandidat pertama; berikan jenis, nomor, dan tahun."
@@ -145,8 +163,14 @@ export async function periksaPasal({
   if (pasal && teks && !teks.halaman_dikembalikan?.length) {
     peringatan.push(`Kata kunci "${pasal}" tidak ditemukan dalam PDF. Periksa penulisannya atau telusuri manual.`);
   }
+  if (pasal && !pdf) {
+    peringatan.push(`PDF peraturan tidak tersedia, sehingga "${pasal}" tidak dapat diperiksa dan sistem abstain.`);
+  }
+
+  const hasilPasal = pasal ? articleLookupResult(teks, pasal, Boolean(pdf)) : null;
 
   return {
+    ...(hasilPasal && !hasilPasal.ditemukan ? { status: "insufficient_evidence" } : {}),
     sumber: "JDIH BPK RI",
     peraturan: {
       id: pilih.id,
@@ -164,9 +188,7 @@ export async function periksaPasal({
     },
     relasi_status: detail.relasi_status,
     uji_materi_menurut_bpk: detail.uji_materi,
-    pasal: teks
-      ? { dicari: pasal, total_halaman: teks.total_halaman, halaman: teks.halaman_dikembalikan, kutipan: teks.isi }
-      : null,
+    pasal: hasilPasal,
     putusan_mk_terkait: mk?.hasil ?? null,
     abstrak: detail.abstrak,
     catatan: detail.catatan,

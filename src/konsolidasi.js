@@ -72,6 +72,8 @@ export async function konsolidasiPeraturan({
     return {
       ditemukan: false,
       status: selection.status,
+      reason: selection.reason,
+      attempted: selection.attempted,
       catatan:
         selection.status === "ambiguous"
           ? "Rujukan ambigu. Berikan nomor dan tahun; sistem tidak memilih kandidat pertama."

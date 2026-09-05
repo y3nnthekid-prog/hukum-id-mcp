@@ -82,6 +82,8 @@ async function periksaPeraturan(teks, m, pasalTerkait) {
     const selection = selectExactCandidate(cari.hasil, { nomor, tahun, jenis: jenisTeks });
     if (selection.status !== "matched") {
       hasil.status_verifikasi = "tidak_ditemukan";
+      hasil.reason = selection.reason;
+      hasil.yang_dicoba = selection.attempted;
       hasil.catatan.push(
         selection.status === "ambiguous"
           ? "Lebih dari satu peraturan cocok persis; jenis/otoritas harus diperjelas dan sistem tidak memilih salah satunya."

@@ -61,4 +61,7 @@ export const PDF_FIXTURES = {
   tanggalMustahil: buildPdf([
     [{ x: 55, y: 730, text: "Ditetapkan pada 31 Februari 2026" }],
   ]),
+  peraturanPasalSatu: buildPdf([
+    [{ x: 55, y: 730, text: "Pasal 1 Ketentuan umum mengenai Perbankan Syariah." }],
+  ]),
 };
