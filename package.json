@@ -4,6 +4,14 @@
   "description": "MCP server untuk riset hukum Indonesia dan hukum ekonomi syariah: peraturan (JDIH BPK), putusan MA & MK, PERMA/SEMA, fatwa DSN-MUI, ayat, hadis berderajat, kitab turats, dan literatur akademik.",
   "type": "module",
   "license": "MIT",
+  "homepage": "https://github.com/y3nnthekid-prog/hukum-id-mcp#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/y3nnthekid-prog/hukum-id-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/y3nnthekid-prog/hukum-id-mcp/issues"
+  },
   "workspaces": [
     "web"
   ],

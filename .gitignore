@@ -9,3 +9,4 @@ web/tsconfig.tsbuildinfo
 .env.*.local
 *.pem
 *.key
+*.tgz
