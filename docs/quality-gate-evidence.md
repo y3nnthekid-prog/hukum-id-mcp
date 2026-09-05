@@ -7,7 +7,7 @@ pemerintah.
 | Gate | Bukti | Hasil |
 |---|---|---|
 | Exact lookup fail-closed | `npm run test:abstain` | 41 rujukan palsu lintas jenis dan 10 pasal di luar rentang seluruhnya abstain, dengan alasan dan langkah yang dicoba. |
-| Klaim AI berbukti | `test/ai-synthesis.test.ts` | Klaim fiktif yang menunjuk evidence ID nyata tetapi teksnya tidak mendukung tetap dibuang; hasil `insufficient_evidence`. |
+| Klaim AI berbukti | `test/ai-synthesis.test.ts` | Klaim fiktif, nomor pasal yang diubah, dan negasi yang disisipkan tetap dibuang walau menunjuk evidence ID nyata; hasil `insufficient_evidence`. |
 | PDF sulit | `npm run test:parser` | 25 pemeriksaan termasuk scan tanpa text layer, dua kolom, halaman kosong, Arab non-Unicode, dan 31 Februari. |
 | Kontrak lintas kanal | `test/mcp-contract.test.ts` | Web client, REST, MCP stdio, dan remote Streamable HTTP mempertahankan evidence ID yang sama pada `fixture-release-2026-09-06`. |
 | Beban API | `npm run test:load` | Tiga gelombang × 50 request per jalur; error 0%; median p95 search 65,57 ms, exact 58,77 ms; egress 0. |
@@ -25,7 +25,8 @@ pemerintah.
 - Exact lookup tidak selalu membawa alasan serta daftar upaya, dan lookup pasal yang tidak
   ditemukan belum konsisten berakhir sebagai `insufficient_evidence`.
 - Validator klaim hanya memeriksa keberadaan evidence ID, bukan apakah teks evidence benar-benar
-  mendukung proposisi.
+  mendukung proposisi; overlap longgar juga sempat menerima nomor pasal dan negasi yang berubah.
+- Plaintext data key belum di-zero-kan bila proses pembungkusan kunci gagal sebelum upload.
 - Empat kanal belum pernah dibandingkan pada satu rilis korpus yang sama.
 - Target p95 exact tidak realistis bila dipaksakan lewat pembuatan server MCP stateless untuk
   setiap request. Endpoint REST exact yang tipis kini memanggil legal core yang sama; baseline

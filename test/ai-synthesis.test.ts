@@ -88,6 +88,39 @@ test("a fabricated claim is discarded even when it cites a real evidence ID", as
   assert.ok(result.warnings.some((warning) => /teks evidence tidak mendukung/i.test(warning)));
 });
 
+test("text overlap cannot hide a changed article number or inserted negation", async () => {
+  const source = createEvidence({
+    documentId: "bpk:uu-fixture",
+    text: "Pasal 5 menyatakan Bank Syariah wajib menjalankan kegiatan usaha berdasarkan Prinsip Syariah.",
+    locator: { article: "Pasal 5", page: 3 },
+    provenance: {
+      sourceName: "Fixture",
+      sourceUrl: "https://example.com/uu-fixture.pdf",
+      authority: "Republik Indonesia",
+      retrievedAt: "2026-09-05T00:00:00.000Z",
+      indexVersion: "test-1",
+      verificationStatus: "verified_snapshot",
+    },
+  });
+  const provider: EvidenceSynthesisProvider = {
+    synthesize: async () => ({
+      summary: "Nomor dan modalitas diubah.",
+      claims: [
+        {
+          text: "Pasal 6 menyatakan Bank Syariah tidak wajib menjalankan kegiatan usaha berdasarkan Prinsip Syariah.",
+          evidenceIds: [source.id],
+        },
+      ],
+      conflicts: [],
+    }),
+  };
+
+  const result = await synthesizeEvidenceFirst({ question: "Apa kewajibannya?", evidence: [source] }, provider);
+
+  assert.equal(result.status, "insufficient_evidence");
+  assert.deepEqual(result.claims, []);
+});
+
 test("document text remains an inert evidence payload, never a system instruction", async () => {
   const injected = createEvidence({
     documentId: "bpk:prompt-injection-fixture",

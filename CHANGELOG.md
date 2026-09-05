@@ -16,7 +16,9 @@ alat ini dalam tulisannya demi reproduktibilitas.
   memori setelah dipakai.
 - Exact lookup menyertakan alasan serta upaya yang dicoba; 41 rujukan palsu dan 10 pasal di luar
   rentang terbukti abstain tanpa memilih kandidat pertama.
-- Klaim AI kini harus didukung isi tekstual evidence, bukan sekadar membawa evidence ID yang sah.
+- Klaim AI kini harus didukung isi tekstual evidence, bukan sekadar membawa evidence ID yang sah;
+  perubahan nomor pasal atau penyisipan negasi/modalitas membuat validator abstain.
+- Plaintext data key upload selalu di-zero-kan, termasuk bila Key Vault gagal membungkus kunci.
 
 ### Parser, kontrak, dan kinerja
 

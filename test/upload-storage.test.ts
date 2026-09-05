@@ -111,6 +111,39 @@ test("PDF content is magic-byte checked, encrypted, queued and redacted from job
   assert.equal("blobName" in result, false);
 });
 
+test("plaintext data key is zeroed even when key wrapping fails", async () => {
+  const repository = new MemoryRepository();
+  let capturedKey: Uint8Array | undefined;
+  const service = createSecureUploadService({
+    repository,
+    blobStore: { upload: async () => undefined, delete: async () => undefined },
+    queue: { enqueue: async () => undefined },
+    keyWrapper: {
+      wrap: async (key) => {
+        capturedKey = key;
+        throw new Error("KEY_WRAP_FAILED");
+      },
+      unwrap: async (key) => key,
+    },
+    now: () => new Date("2026-09-05T00:00:00.000Z"),
+    idFactory: () => "upload-fixed",
+  });
+  await service.createUpload(ticket);
+
+  await assert.rejects(
+    () =>
+      service.putUpload({
+        id: "upload-fixed",
+        ownerId: "user-1",
+        contentType: "application/pdf",
+        bytes: Buffer.from("%PDF-1.7 confidential"),
+      }),
+    /KEY_WRAP_FAILED/
+  );
+  assert.ok(capturedKey);
+  assert.ok([...capturedKey].every((value) => value === 0));
+});
+
 test("an extension or MIME label cannot disguise a non-PDF upload", async () => {
   const { service } = fixtures();
   await service.createUpload(ticket);

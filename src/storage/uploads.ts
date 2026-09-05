@@ -173,13 +173,19 @@ export function createSecureUploadService({
     }
     assertFileSignature(input.contentType, input.bytes);
 
-    const dataKey = randomBytes(32);
-    const iv = randomBytes(12);
-    const cipher = createCipheriv("aes-256-gcm", dataKey, iv);
-    const encrypted = Buffer.concat([cipher.update(input.bytes), cipher.final()]);
-    const authTag = cipher.getAuthTag();
-    const wrappedKey = Buffer.from(await keyWrapper.wrap(dataKey));
-    dataKey.fill(0);
+    const { iv, encrypted, authTag, wrappedKey } = await (async () => {
+      const dataKey = randomBytes(32);
+      try {
+        const iv = randomBytes(12);
+        const cipher = createCipheriv("aes-256-gcm", dataKey, iv);
+        const encrypted = Buffer.concat([cipher.update(input.bytes), cipher.final()]);
+        const authTag = cipher.getAuthTag();
+        const wrappedKey = Buffer.from(await keyWrapper.wrap(dataKey));
+        return { iv, encrypted, authTag, wrappedKey };
+      } finally {
+        dataKey.fill(0);
+      }
+    })();
 
     const blobName = `${ownerHash}/${metadata.id}.enc`;
     await blobStore.upload(blobName, encrypted, {

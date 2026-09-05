@@ -131,6 +131,24 @@ const CLAIM_STOP_WORDS = new Set([
   "yang",
 ]);
 
+const CLAIM_MODALITY_GROUPS = [
+  new Set(["diwajibkan", "harus", "mewajibkan", "wajib"]),
+  new Set(["dilarang", "larangan", "melarang"]),
+  new Set(["boleh", "dibolehkan", "diperbolehkan"]),
+  new Set(["berhak", "hak"]),
+  new Set(["berlaku", "diberlakukan"]),
+  new Set(["dicabut", "mencabut"]),
+  new Set(["batal", "dibatalkan"]),
+  new Set(["keabsahan", "sah"]),
+];
+
+const CLAIM_NEGATION_WORDS = new Set(["belum", "bukan", "jangan", "tidak", "tanpa"]);
+
+function canonicalClaimWord(word: string) {
+  const modality = CLAIM_MODALITY_GROUPS.findIndex((group) => group.has(word));
+  return modality >= 0 ? `modalitas-${modality}` : word;
+}
+
 function normalizedWords(value: string) {
   return value
     .normalize("NFKC")
@@ -144,17 +162,46 @@ export function isClaimSupportedByEvidence(claimText: string, evidence: Evidence
   if (!normalizedClaim || !normalizedEvidence) return false;
   if (normalizedEvidence.includes(normalizedClaim)) return true;
 
+  const rawClaimWords = normalizedWords(claimText);
+  const rawEvidenceWords = normalizedWords(normalizedEvidence);
+  const evidenceWords = new Set(rawEvidenceWords);
+  const evidenceIdentityWords = new Set(
+    normalizedWords(
+      evidence
+        .map((item) => `${item.documentId} ${JSON.stringify(item.locator)} ${item.provenance.sourceUrl}`)
+        .join(" ")
+    )
+  );
+  const claimNegated = rawClaimWords.some((word) => CLAIM_NEGATION_WORDS.has(word));
+  const evidenceNegated = rawEvidenceWords.some((word) => CLAIM_NEGATION_WORDS.has(word));
+  if (claimNegated !== evidenceNegated) return false;
+  if (
+    CLAIM_MODALITY_GROUPS.some(
+      (group) => rawClaimWords.some((word) => group.has(word)) && !rawEvidenceWords.some((word) => group.has(word))
+    )
+  ) {
+    return false;
+  }
+  if (
+    rawClaimWords.some(
+      (word) => /^\d+$/.test(word) && !evidenceWords.has(word) && !evidenceIdentityWords.has(word)
+    )
+  ) {
+    return false;
+  }
+
   const claimWords = [
     ...new Set(
-      normalizedWords(claimText).filter(
+      rawClaimWords.filter(
         (word) => (word.length > 2 || /^\d+$/.test(word)) && !CLAIM_STOP_WORDS.has(word)
-      )
+      ).map(canonicalClaimWord)
     ),
   ];
   if (claimWords.length < 2) return false;
-  const evidenceWords = new Set(normalizedWords(normalizedEvidence));
-  const overlap = claimWords.filter((word) => evidenceWords.has(word)).length / claimWords.length;
-  return overlap >= 0.6 && claimWords.filter((word) => evidenceWords.has(word)).length >= 3;
+  const comparableEvidenceWords = new Set(rawEvidenceWords.map(canonicalClaimWord));
+  const matchingWords = claimWords.filter((word) => comparableEvidenceWords.has(word)).length;
+  const overlap = matchingWords / claimWords.length;
+  return overlap >= 0.75 && matchingWords >= 3;
 }
 
 type ResearchResultInput = {
