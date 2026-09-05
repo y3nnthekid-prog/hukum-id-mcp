@@ -1,4 +1,4 @@
-import type { SearchResponse, SearchSource } from "./types";
+import type { ResearchResponse, SearchResponse, SearchSource } from "./types";
 
 export class ApiClientError extends Error {
   constructor(
@@ -33,4 +33,26 @@ export async function searchLegalSources(input: SearchInput, options: ClientOpti
     throw new ApiClientError(error?.message ?? "Pencarian gagal diproses.", error?.code ?? "API_ERROR", error?.traceId);
   }
   return body as SearchResponse;
+}
+
+export async function researchLegalProblem(
+  input: { question: string },
+  options: ClientOptions = {}
+): Promise<ResearchResponse> {
+  const baseUrl = (options.baseUrl ?? process.env.NEXT_PUBLIC_HUKUM_API_URL ?? "http://localhost:3001").replace(/\/$/, "");
+  const fetcher = options.fetch ?? fetch;
+  const response = await fetcher(`${baseUrl}/v1/research`, {
+    method: "POST",
+    headers: { accept: "application/json", "content-type": "application/json" },
+    body: JSON.stringify({ question: input.question, useAi: false }),
+    signal: AbortSignal.timeout(12_000),
+  });
+  const body = (await response.json()) as ResearchResponse | {
+    error?: { code?: string; message?: string; traceId?: string };
+  };
+  if (!response.ok) {
+    const error = "error" in body ? body.error : undefined;
+    throw new ApiClientError(error?.message ?? "Riset gagal diproses.", error?.code ?? "API_ERROR", error?.traceId);
+  }
+  return body as ResearchResponse;
 }
