@@ -160,13 +160,14 @@ test("kegagalan AI tidak menghapus kutipan resmi yang sudah didapat", async () =
 });
 
 test("rujukan yang tidak ditemukan dilaporkan apa adanya, tanpa kutipan pengganti", async () => {
+  const searched: string[] = [];
   const ask = createAsk({
     adapters: {
       inspectArticle: async () => ({ ditemukan: false, status: "not_found", catatan: "Peraturan dengan identitas persis tidak ditemukan." }),
       researchSharia: noSharia,
     },
     service: {
-      searchLegalSources: (async ({ query }: { query: string }) => ({
+      searchLegalSources: (async ({ query }: { query: string }) => (searched.push(query), {
         ...(await emptySearch({ query })),
         documents: [
           {
@@ -186,11 +187,27 @@ test("rujukan yang tidak ditemukan dilaporkan apa adanya, tanpa kutipan penggant
       })) as any,
     },
   });
-  const data = await ask({ question: "Bagaimana UU 999/2020 Pasal 1 mengatur upah?" });
-  assert.equal(data.result.evidence.length, 0);
-  assert.equal(data.result.status, "insufficient_evidence");
-  assert.ok(data.attempted.some((line) => /tidak ditemukan persis/.test(line)));
-  assert.equal(data.candidates[0]?.title, "Ketenagakerjaan");
+  const pribadi = "Saya Budi Santoso, gaji saya di PT Maju Jaya ditahan. Bagaimana UU 999/2020 Pasal 1 mengatur upah?";
+
+  // Tanpa AI: rujukan dicoba, tetapi pertanyaan mentah tidak pernah dikirim ke pencarian.
+  const tanpaAi = await ask({ question: pribadi });
+  assert.equal(tanpaAi.result.evidence.length, 0);
+  assert.equal(tanpaAi.result.status, "insufficient_evidence");
+  assert.ok(tanpaAi.attempted.some((line) => /tidak ditemukan persis/.test(line)));
+  assert.equal(searched.length, 0, "pertanyaan mentah tidak boleh sampai ke situs sumber");
+  assert.equal(tanpaAi.candidates.length, 0);
+
+  // Dengan AI: yang dikirim hanya kata kunci umum dari perencana, dibatasi enam kata.
+  const model = fakeModel(() => ({
+    references: [],
+    searchQuery: "upah pekerja ditahan tanpa alasan yang sah menurut undang undang",
+    shariaTopic: "",
+  }));
+  const denganAi = await ask({ question: pribadi, model });
+  assert.equal(searched.length, 1);
+  assert.equal(searched[0], "upah pekerja ditahan tanpa alasan yang");
+  assert.ok(!searched[0]!.includes("Budi") && !searched[0]!.includes("Maju"));
+  assert.equal(denganAi.candidates[0]?.title, "Ketenagakerjaan");
 });
 
 test("peraturan yang sudah dicabut diberi peringatan, bukan disajikan sebagai hukum berlaku", async () => {

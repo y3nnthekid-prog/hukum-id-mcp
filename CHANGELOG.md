@@ -42,6 +42,14 @@ akun, tanpa unggahan.
   bukan fatwa yang mengatur akadnya. Kini fatwa berjudul akad itu sendiri ("Akad Jual Beli
   Murabahah", 111/DSN-MUI/IX/2017) didahulukan.
 
+### Privasi
+
+- `/v1/ask` tidak pernah mengirim pertanyaan mentah ke situs sumber. Tanpa AI tidak ada
+  pencarian teks bebas sama sekali; dengan AI hanya kata kunci umum dari perencana (paling
+  banyak enam kata, diperintahkan bebas data pribadi). Ditemukan sebelum rilis: versi awal
+  mengirim pertanyaan utuh sebagai kata kunci JDIH BPK, dan halaman hasilnya yang memantulkan
+  kata kunci itu tersimpan sehari di cache.
+
 ### Batas yang diketahui
 
 - Dari server pusat data di Indonesia, situs MK dan JDIH MA menolak permintaan, dan

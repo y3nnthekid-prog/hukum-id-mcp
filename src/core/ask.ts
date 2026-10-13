@@ -211,8 +211,12 @@ export function createAsk(deps: {
       }
     }
 
+    // Pencarian teks bebas hanya memakai kata kunci yang disusun perencana AI.
+    // Tanpa AI, pertanyaan mentah tidak pernah dikirim ke situs sumber: isinya
+    // bisa memuat hal pribadi, dan halaman hasil pencarian memantulkan kata
+    // kuncinya lalu tersimpan di cache.
     let candidates: AskCandidate[] = [];
-    if (evidence.length === 0 && plan.searchQuery && !input.signal?.aborted) {
+    if (evidence.length === 0 && plan.mode === "ai" && plan.searchQuery && !input.signal?.aborted) {
       try {
         const search = await deps.service.searchLegalSources({
           query: plan.searchQuery,
