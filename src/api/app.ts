@@ -4,6 +4,8 @@ import { z } from "zod";
 
 import { AiProviderError } from "../ai/gemini.js";
 import { synthesizeEvidenceFirst, type EvidenceSynthesisProvider } from "../ai/evidence-synthesis.js";
+import { AiModelNameSchema, AiProviderIdSchema, type AiProviderId, type JsonModel } from "../ai/json-model.js";
+import type { AskFunction } from "../core/ask.js";
 import { type Evidence } from "../core/contracts.js";
 import type { LegalResearchService, SearchSource } from "../core/service.js";
 import { observeApiRequest } from "../telemetry.js";
@@ -41,7 +43,33 @@ type ApiDependencies = {
   authenticate?: (authorization: string | undefined) => Promise<string | null>;
   makeAiProvider?: (ephemeralApiKey: string | undefined) => EvidenceSynthesisProvider | null;
   resolveEvidence?: (evidenceIds: string[], ownerId: string) => Promise<Evidence[]>;
+  ask?: AskFunction;
+  resolveAiModel?: (selection: AiModelSelection) => ResolvedAiModel;
+  /** Batas pertanyaan per hari per klien yang memakai kunci AI platform. */
+  platformAiDailyLimit?: number;
+  /** Batas konkurensi /v1/ask agar lonjakan pengguna tidak menumpuk beban ke situs sumber. */
+  askConcurrency?: { active: number; queued: number };
+  /** Percayai header CF-Connecting-IP; aktifkan hanya bila server di belakang Cloudflare Tunnel. */
+  trustCloudflareIp?: boolean;
 };
+
+export type AiModelSelection = {
+  provider?: AiProviderId | undefined;
+  model?: string | undefined;
+  apiKey?: string | undefined;
+};
+
+export type ResolvedAiModel =
+  | { model: JsonModel | null; platform: boolean }
+  | { error: "PROVIDER_REQUIRED" | "MODEL_REQUIRED" | "PROVIDER_UNSUPPORTED" };
+
+const AskSchema = z.object({
+  question: z.string().trim().min(4).max(2_000),
+  useAi: z.boolean().default(true),
+});
+
+// Kunci BYOK: karakter ASCII terlihat saja, tanpa spasi. Nilainya tidak pernah dipantulkan.
+const ByokKeySchema = z.string().regex(/^[\x21-\x7e]{8,512}$/);
 
 const SearchSourceSchema = z.enum([
   "regulation",
@@ -90,8 +118,12 @@ const UploadSchema = z.object({
   aiConsent: z.boolean().default(false),
 });
 
-function clientId(c: Context<ApiEnv>): string {
-  const identity = c.get("userId") || c.req.header("x-forwarded-for")?.split(",")[0]?.trim() || "anonymous";
+function clientId(c: Context<ApiEnv>, trustCloudflareIp = false): string {
+  const identity =
+    c.get("userId") ||
+    (trustCloudflareIp ? c.req.header("cf-connecting-ip")?.trim() : undefined) ||
+    c.req.header("x-forwarded-for")?.split(",")[0]?.trim() ||
+    "anonymous";
   return createHash("sha256").update(identity.slice(0, 200)).digest("hex").slice(0, 24);
 }
 
@@ -127,10 +159,36 @@ export function createApiApp({
   authenticate,
   makeAiProvider,
   resolveEvidence,
+  ask,
+  resolveAiModel,
+  platformAiDailyLimit = 15,
+  askConcurrency = { active: 2, queued: 6 },
+  trustCloudflareIp = false,
 }: ApiDependencies) {
   const app = new Hono<ApiEnv>();
   const counters = new Map<string, { count: number; resetAt: number }>();
+  const platformAiUsage = new Map<string, { count: number; resetAt: number }>();
   let lastCounterSweep = 0;
+
+  // Gerbang konkurensi untuk /v1/ask. Satu pertanyaan bisa membuka beberapa
+  // dokumen resmi, jadi antrean dibatasi: lebih baik menjawab "sedang ramai"
+  // daripada menumpuk permintaan ke situs yang dibiayai anggaran publik.
+  let askActive = 0;
+  const askWaiting: Array<() => void> = [];
+  async function acquireAskSlot(): Promise<boolean> {
+    if (askActive < askConcurrency.active) {
+      askActive += 1;
+      return true;
+    }
+    if (askWaiting.length >= askConcurrency.queued) return false;
+    await new Promise<void>((resolve) => askWaiting.push(resolve));
+    askActive += 1;
+    return true;
+  }
+  function releaseAskSlot() {
+    askActive -= 1;
+    askWaiting.shift()?.();
+  }
 
   app.use("*", async (c, next) => {
     const pathname = new URL(c.req.url).pathname;
@@ -154,11 +212,14 @@ export function createApiApp({
       c.header("vary", "Origin");
     }
 
-    const key = clientId(c);
+    const key = clientId(c, trustCloudflareIp);
     const now = Date.now();
     if (now - lastCounterSweep >= 60_000) {
       for (const [candidate, value] of counters) {
         if (value.resetAt <= now) counters.delete(candidate);
+      }
+      for (const [candidate, value] of platformAiUsage) {
+        if (value.resetAt <= now) platformAiUsage.delete(candidate);
       }
       lastCounterSweep = now;
     }
@@ -177,7 +238,10 @@ export function createApiApp({
 
   app.options("*", (c) => {
     c.header("access-control-allow-methods", "GET,POST,PUT,OPTIONS");
-    c.header("access-control-allow-headers", "authorization,content-type,idempotency-key,x-gemini-api-key");
+    c.header(
+      "access-control-allow-headers",
+      "authorization,content-type,idempotency-key,x-gemini-api-key,x-pasla-ai-provider,x-pasla-ai-model,x-pasla-ai-key"
+    );
     return c.body(null, 204);
   });
 
@@ -289,6 +353,74 @@ export function createApiApp({
       throw error;
     }
     return c.json({ data, meta: { traceId: c.get("traceId") } });
+  });
+
+  app.post("/v1/ask", async (c) => {
+    if (!ask) return apiError(c, 503, "ASK_NOT_CONFIGURED", "Layanan tanya belum dikonfigurasi pada server ini.");
+    const parsed = AskSchema.safeParse(await readJson(c));
+    if (!parsed.success) return apiError(c, 422, "VALIDATION_ERROR", "Pertanyaan tidak sah.", parsed.error.flatten());
+
+    const notes: string[] = [];
+    let model: JsonModel | null = null;
+    if (parsed.data.useAi && resolveAiModel) {
+      const legacyGeminiKey = c.req.header("x-gemini-api-key")?.trim();
+      const rawKey = c.req.header("x-pasla-ai-key")?.trim() || legacyGeminiKey || undefined;
+      const rawProvider = c.req.header("x-pasla-ai-provider")?.trim() || (legacyGeminiKey ? "gemini" : undefined);
+      const rawModel = c.req.header("x-pasla-ai-model")?.trim() || undefined;
+
+      const provider = rawProvider === undefined ? undefined : AiProviderIdSchema.safeParse(rawProvider);
+      if (provider && !provider.success) return apiError(c, 422, "AI_PROVIDER_INVALID", "Penyedia AI tidak dikenal.");
+      if (rawKey !== undefined && !ByokKeySchema.safeParse(rawKey).success) {
+        return apiError(c, 422, "BYOK_INVALID", "Format kunci API tidak sah.");
+      }
+      if (rawModel !== undefined && !AiModelNameSchema.safeParse(rawModel).success) {
+        return apiError(c, 422, "AI_MODEL_INVALID", "Nama model tidak sah.");
+      }
+
+      const resolved = resolveAiModel({
+        ...(provider?.success ? { provider: provider.data } : {}),
+        ...(rawModel ? { model: rawModel } : {}),
+        ...(rawKey ? { apiKey: rawKey } : {}),
+      });
+      if ("error" in resolved) {
+        const message = {
+          PROVIDER_REQUIRED: "Pilih penyedia AI untuk kunci yang kamu isi.",
+          MODEL_REQUIRED: "Penyedia ini membutuhkan nama model.",
+          PROVIDER_UNSUPPORTED: "Penyedia AI tidak didukung.",
+        }[resolved.error];
+        return apiError(c, 422, resolved.error, message);
+      }
+      if (resolved.platform && resolved.model) {
+        const key = clientId(c, trustCloudflareIp);
+        const now = Date.now();
+        const current = platformAiUsage.get(key);
+        const usage = !current || current.resetAt <= now ? { count: 0, resetAt: now + 24 * 60 * 60_000 } : current;
+        if (usage.count >= platformAiDailyLimit) {
+          notes.push("Kuota penjelasan AI gratis hari ini sudah habis. Isi kunci AI milikmu sendiri untuk lanjut tanpa batas.");
+        } else {
+          usage.count += 1;
+          platformAiUsage.set(key, usage);
+          model = resolved.model;
+          c.header("x-ai-quota-remaining", String(Math.max(0, platformAiDailyLimit - usage.count)));
+        }
+      } else {
+        model = resolved.model;
+      }
+      if (!model && !resolved.platform && !notes.length && !rawKey) {
+        notes.push("AI platform belum tersedia. Isi kunci AI milikmu sendiri untuk mendapat penjelasan.");
+      }
+    }
+
+    if (!(await acquireAskSlot())) {
+      c.header("retry-after", "20");
+      return apiError(c, 503, "BUSY", "Pasla sedang ramai. Coba lagi sebentar lagi.");
+    }
+    try {
+      const data = await ask({ question: parsed.data.question, model, signal: c.req.raw.signal });
+      return c.json({ data, meta: { traceId: c.get("traceId"), notes } });
+    } finally {
+      releaseAskSlot();
+    }
   });
 
   app.post("/v1/uploads", async (c) => {

@@ -22,6 +22,30 @@ function uraikanRujukan(teks = "") {
 
 const LEWAT_JDIH_MA = /^(perma|sema|kma)\b/i;
 
+// Pencarian JDIH BPK mencocokkan kata kunci dengan judul, bukan dengan bentuk
+// singkat jenisnya. "Permenkominfo 5/2020" mengembalikan nol hasil, padahal
+// peraturannya ada. Singkatan diterjemahkan ke nama kementerian untuk mencari;
+// singkatannya tetap dipakai sebagai jenis untuk memilih kandidat yang persis.
+const KATA_KUNCI_JENIS = {
+  PERMENKOMINFO: "Komunikasi dan Informatika",
+  PERMENKOMDIGI: "Komunikasi dan Digital",
+  PERMENAKER: "Ketenagakerjaan",
+  PERMENKUMHAM: "Hukum dan Hak Asasi Manusia",
+  PERMENDAGRI: "Dalam Negeri",
+  PERMENDIKBUD: "Pendidikan dan Kebudayaan",
+  PERMENKES: "Kesehatan",
+  PERMENAG: "Agama",
+  PERMENDAG: "Perdagangan",
+  PERMENPERIN: "Perindustrian",
+  PERMENHUB: "Perhubungan",
+  PERMENSOS: "Sosial",
+  PERMENKOPUKM: "Koperasi dan Usaha Kecil dan Menengah",
+};
+
+export function kataKunciUntukJenis(singkatan = "") {
+  return KATA_KUNCI_JENIS[String(singkatan).replace(/[\s.]/g, "").toUpperCase()] || null;
+}
+
 function articleLookupResult(teks, pasal, hasPdf) {
   const pages = teks?.halaman_dikembalikan ?? [];
   const excerpts = teks?.isi ?? [];
@@ -57,7 +81,7 @@ export async function periksaPasal({
 }) {
   const r = uraikanRujukan(peraturan);
   const kueri = {
-    keywords: r.keywords || peraturan,
+    keywords: kataKunciUntukJenis(r.keywords) || r.keywords || peraturan,
     nomor: nomor || r.nomor || "",
     tahun: tahun || r.tahun || "",
     jenis,
@@ -252,6 +276,27 @@ export async function sisirPutusanMK({ nomor_perkara = [], kata_kunci = [], kuer
 }
 
 /**
+ * Pilih fatwa yang mengatur akad itu sendiri, bukan sekadar fatwa terbaru yang
+ * menyebutnya. Untuk "murabahah", hasil teratas dulu adalah 153/DSN-MUI/VI/2022
+ * tentang pelunasan dipercepat, padahal yang mengatur akadnya adalah fatwa
+ * berjudul "Akad Jual Beli Murabahah". Urutan asli dipertahankan bila skornya sama.
+ */
+export function pilihFatwaUtama(hasil = [], akad = "") {
+  if (!Array.isArray(hasil) || !hasil.length) return undefined;
+  const bersih = (s) => String(s || "").toLowerCase().replace(/[^a-z0-9 ]+/g, " ").replace(/\s+/g, " ").trim();
+  const nama = bersih(akad);
+  if (!nama) return hasil[0];
+  const inti = new Set([nama, `akad ${nama}`, `akad jual beli ${nama}`, `pembiayaan ${nama}`, `akad ${nama} di lembaga keuangan syariah`]);
+  const skor = (f) => {
+    const judul = bersih(f?.judul);
+    if (inti.has(judul)) return 3;
+    if (new RegExp(`\\b${nama}\\b`).test(judul) && judul.split(" ").length <= 5) return 2;
+    return 1;
+  };
+  return hasil.reduce((terbaik, f) => (skor(f) > skor(terbaik) ? f : terbaik), hasil[0]);
+}
+
+/**
  * Titik masuk analisis dua perspektif untuk satu akad syariah: fatwa DSN-MUI,
  * peraturan positif terkait, dan praktik peradilan agama, dalam satu panggilan.
  */
@@ -263,7 +308,7 @@ export async function risetAkadSyariah({ akad, sertakan_teks_fatwa = true, maks_
   ]);
 
   let ketentuan = null;
-  const utama = fatwa?.hasil?.[0];
+  const utama = pilihFatwaUtama(fatwa?.hasil, akad);
   if (sertakan_teks_fatwa && utama?.nomor) {
     ketentuan = await teksFatwaDsn({ rujukan: utama.nomor, cari: "Menetapkan", maks_karakter }).catch((e) => ({
       galat: e.message,

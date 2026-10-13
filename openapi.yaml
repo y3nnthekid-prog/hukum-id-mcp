@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: HukumID Evidence-First API
-  version: 0.7.0
+  version: 0.8.0
   description: API riset hukum Indonesia. Metadata pencarian bukan evidence isi.
   license:
     name: MIT
@@ -173,6 +173,63 @@ paths:
                   data: { $ref: "#/components/schemas/ResearchResult" }
                   meta: { $ref: "#/components/schemas/Meta" }
         "401": { $ref: "#/components/responses/Unauthorized" }
+        "422": { $ref: "#/components/responses/ValidationError" }
+        "503": { $ref: "#/components/responses/Unavailable" }
+  /v1/ask:
+    post:
+      summary: Jawab pertanyaan bahasa sehari-hari dari kutipan resmi
+      operationId: ask
+      tags: [Research]
+      description: >-
+        AI hanya merencanakan rujukan dan menyusun sintesis dari evidence yang sudah dibuka server.
+        Rujukan yang diusulkan AI dibuka lewat exact lookup yang gagal tertutup, sehingga rujukan karangan
+        berakhir sebagai "tidak ditemukan". Kunci BYOK dikirim per permintaan lewat header dan tidak disimpan.
+        Tanpa kunci, server memakai kunci platform bila tersedia dengan kuota harian per klien.
+      parameters:
+        - name: X-Pasla-AI-Provider
+          in: header
+          required: false
+          schema: { type: string, enum: [claude, gemini, openai, openrouter, groq, deepseek, mistral] }
+        - name: X-Pasla-AI-Model
+          in: header
+          required: false
+          description: Wajib untuk penyedia kompatibel OpenAI. Bawaan Claude adalah claude-opus-5-5.
+          schema: { type: string, pattern: "^[A-Za-z0-9._:/@-]{1,100}$" }
+        - name: X-Pasla-AI-Key
+          in: header
+          required: false
+          description: Kunci BYOK. Tidak pernah disimpan, dicatat, atau dipantulkan dalam respons.
+          schema: { type: string, minLength: 8, maxLength: 512 }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [question]
+              properties:
+                question: { type: string, minLength: 4, maxLength: 2000 }
+                useAi: { type: boolean, default: true }
+      responses:
+        "200":
+          description: Kutipan resmi, kartu sumber dengan status, langkah yang dicoba, dan sintesis bila AI aktif
+          headers:
+            X-AI-Quota-Remaining:
+              description: Sisa kuota AI platform hari ini; hanya ada bila kunci platform dipakai.
+              schema: { type: integer }
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data: { $ref: "#/components/schemas/AskResponse" }
+                  meta:
+                    allOf:
+                      - { $ref: "#/components/schemas/Meta" }
+                      - type: object
+                        properties:
+                          notes: { type: array, items: { type: string } }
         "422": { $ref: "#/components/responses/ValidationError" }
         "503": { $ref: "#/components/responses/Unavailable" }
   /v1/uploads:
@@ -351,6 +408,63 @@ components:
             message: { type: string }
             details: {}
             traceId: { type: string, format: uuid }
+    AskSource:
+      type: object
+      required: [kind, reference, title, authority, status, url, pdfUrl, amendedBy, revokedBy, warnings, evidenceIds]
+      properties:
+        kind: { type: string, enum: [regulation, ma-product, fatwa] }
+        reference: { type: string }
+        title: { type: string }
+        authority: { type: string }
+        status: { type: [string, "null"] }
+        effectiveFrom: { type: [string, "null"] }
+        url: { type: [string, "null"] }
+        pdfUrl: { type: [string, "null"] }
+        amendedBy: { type: array, items: { type: string } }
+        revokedBy: { type: array, items: { type: string } }
+        warnings: { type: array, items: { type: string } }
+        evidenceIds: { type: array, items: { type: string } }
+    AskResponse:
+      type: object
+      required: [result, sources, candidates, plan, attempted, ai, limits]
+      properties:
+        result: { $ref: "#/components/schemas/ResearchResult" }
+        sources: { type: array, items: { $ref: "#/components/schemas/AskSource" } }
+        candidates:
+          type: array
+          description: Hasil pencarian yang belum dibuka. Bukan evidence.
+          items:
+            type: object
+            properties:
+              title: { type: string }
+              documentType: { type: string }
+              number: { type: [string, "null"] }
+              year: { type: [string, "null"] }
+              status: { type: [string, "null"] }
+              url: { type: string }
+        plan:
+          type: object
+          properties:
+            references:
+              type: array
+              items:
+                type: object
+                properties:
+                  regulation: { type: string }
+                  article: { type: string }
+            searchQuery: { type: string }
+            shariaTopic: { type: [string, "null"] }
+            mode: { type: string, enum: [ai, heuristic] }
+        attempted: { type: array, items: { type: string } }
+        ai:
+          oneOf:
+            - type: "null"
+            - type: object
+              properties:
+                provider: { type: string }
+                model: { type: string }
+                used: { type: boolean }
+        limits: { type: array, items: { type: string } }
   responses:
     GenericSuccess:
       description: Successful response

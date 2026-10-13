@@ -13,9 +13,21 @@ const execFileP = promisify(execFile);
 // Lapisan HTTP bersama: header ala browser (beberapa situs JDIH/pengadilan
 // menolak permintaan tanpa header navigasi), jeda sopan per host, dan retry.
 
+// Server yang melayani publik sebaiknya mengenalkan dirinya dengan jujur lewat
+// HUKUM_USER_AGENT (mis. "PaslaBot/0.1 (+https://pasla.tech)"). Bawaan meniru
+// peramban karena dipakai peneliti di komputernya sendiri.
 const UA =
+  process.env.HUKUM_USER_AGENT?.trim() ||
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
-  "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36";
+    "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36";
+
+// Halaman tantangan Cloudflare ("Just a moment...") adalah pembatasan akses
+// yang disengaja, setara CAPTCHA. Tidak dicoba ulang dan tidak ditembus.
+export function tantanganCloudflare(r) {
+  if (r.status !== 403 && r.status !== 503) return false;
+  const awal = r.buffer?.toString("utf8", 0, 6000) || "";
+  return /Just a moment\.\.\.|challenges\.cloudflare\.com|cf-chl-|cf_chl_/i.test(awal);
+}
 
 const MIN_GAP_MS = 900;
 // Direktori Putusan MA membatasi permintaan beruntun lebih ketat.
@@ -273,8 +285,16 @@ async function request(
           catatSukses(host);
           return r;
         }
+        if (tantanganCloudflare(r)) {
+          catatGagal(host);
+          throw new Error(
+            `${host} memasang tantangan Cloudflare untuk klien otomatis. ` +
+              `Pasla tidak menembus pembatasan ini; buka ${url} langsung di peramban.`
+          );
+        }
         lastErr = new Error(`HTTP ${r.status} dari ${host}`);
       } catch (e) {
+        if (e instanceof Error && e.message.includes("tantangan Cloudflare")) throw e;
         lastErr = e;
       }
     }
@@ -286,7 +306,7 @@ async function request(
   catatGagal(host);
   throw new Error(
     `Gagal mengambil ${url}: ${lastErr?.message || "tidak diketahui"}. ` +
-      `Situs sumber kadang membatasi akses otomatis — coba lagi sebentar, atau buka URL-nya langsung.`
+      `Situs sumber kadang membatasi akses otomatis. Coba lagi sebentar, atau buka URL-nya langsung.`
   );
 }
 

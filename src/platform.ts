@@ -6,7 +6,8 @@ import {
 } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import type { Transport } from "@modelcontextprotocol/sdk/shared/transport.js";
 
-import { createApiApp, type JobStore, type UploadStore } from "./api/app.js";
+import { createApiApp, type AiModelSelection, type JobStore, type ResolvedAiModel, type UploadStore } from "./api/app.js";
+import type { AskFunction } from "./core/ask.js";
 import type { EvidenceSynthesisProvider } from "./ai/evidence-synthesis.js";
 import type { Evidence } from "./core/contracts.js";
 import type { LegalResearchService } from "./core/service.js";
@@ -21,6 +22,13 @@ type PlatformOptions = {
   authorizeMcp?: (request: IncomingMessage) => boolean | Promise<boolean>;
   makeAiProvider?: (ephemeralApiKey: string | undefined) => EvidenceSynthesisProvider | null;
   resolveEvidence?: (evidenceIds: string[], ownerId: string) => Promise<Evidence[]>;
+  ask?: AskFunction;
+  resolveAiModel?: (selection: AiModelSelection) => ResolvedAiModel;
+  platformAiDailyLimit?: number;
+  askConcurrency?: { active: number; queued: number };
+  trustCloudflareIp?: boolean;
+  /** Matikan endpoint MCP remote sepenuhnya. */
+  disableMcp?: boolean;
 };
 
 async function jsonBody(request: IncomingMessage, maxBytes = 1024 * 1024): Promise<unknown> {
@@ -57,6 +65,11 @@ export function createPlatformServer(options: PlatformOptions) {
     ...(options.authenticate ? { authenticate: options.authenticate } : {}),
     ...(options.makeAiProvider ? { makeAiProvider: options.makeAiProvider } : {}),
     ...(options.resolveEvidence ? { resolveEvidence: options.resolveEvidence } : {}),
+    ...(options.ask ? { ask: options.ask } : {}),
+    ...(options.resolveAiModel ? { resolveAiModel: options.resolveAiModel } : {}),
+    ...(options.platformAiDailyLimit !== undefined ? { platformAiDailyLimit: options.platformAiDailyLimit } : {}),
+    ...(options.askConcurrency ? { askConcurrency: options.askConcurrency } : {}),
+    ...(options.trustCloudflareIp ? { trustCloudflareIp: true } : {}),
   });
   const apiListener = getRequestListener(app.fetch);
   const allowedOrigins = new Set(options.allowedOrigins ?? []);
@@ -65,6 +78,9 @@ export function createPlatformServer(options: PlatformOptions) {
     const url = new URL(request.url || "/", `http://${request.headers.host || "localhost"}`);
     if (url.pathname !== "/mcp") {
       return apiListener(request, response);
+    }
+    if (options.disableMcp) {
+      return jsonRpcError(response, 404, "MCP remote tidak dibuka pada server ini.");
     }
 
     response.setHeader("x-content-type-options", "nosniff");

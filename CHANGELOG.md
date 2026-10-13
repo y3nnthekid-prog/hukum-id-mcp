@@ -4,6 +4,50 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.1.0/), versi
 [Semantic Versioning](https://semver.org/lang/id/). Peneliti disarankan menyebutkan versi
 alat ini dalam tulisannya demi reproduktibilitas.
 
+## [0.8.0] - 2026-10-14
+
+Dibuat untuk pilot Pasla (pasla.tech): satu server di belakang Cloudflare Tunnel, tanpa
+akun, tanpa unggahan.
+
+### Ditambahkan
+
+- `POST /v1/ask`: menjawab pertanyaan bahasa sehari-hari dari kutipan resmi. AI hanya
+  merencanakan rujukan yang perlu diperiksa, lalu server membukanya sendiri lewat exact
+  lookup yang gagal tertutup. Rujukan karangan AI berakhir sebagai "tidak ditemukan", bukan
+  bukti palsu. Respons memuat kartu sumber berikut status berlaku, relasi perubahan dan
+  pencabutan, langkah yang dicoba, serta kandidat yang belum dibuka.
+- AI multi-penyedia dengan BYOK per permintaan: Claude (`@anthropic-ai/sdk`, keluaran
+  terstruktur, fallback server-side untuk model yang mendukungnya, bawaan `claude-opus-5-5`),
+  Gemini, dan penyedia kompatibel OpenAI dari daftar tetap (OpenAI, OpenRouter, Groq,
+  DeepSeek, Mistral). Alamat penyedia kustom sengaja tidak diterima.
+- Kuota harian untuk kunci AI platform per klien; BYOK tidak dikenai kuota AI.
+- Gerbang konkurensi `/v1/ask` yang menjawab "sedang ramai" alih-alih menumpuk permintaan ke
+  situs sumber.
+- Mode `HUKUM_MODE=pilot-vm`: bind ke localhost, tanpa Entra dan Azure Storage, MCP remote
+  dimatikan kecuali token bearer disetel, IP klien dibaca dari `CF-Connecting-IP`.
+- `HUKUM_USER_AGENT` untuk server yang ingin mengenalkan dirinya dengan jujur.
+
+### Diperbaiki
+
+- Rujukan berbentuk singkatan kementerian (mis. "Permenkominfo 5/2020") selalu berakhir
+  "tidak ditemukan" karena pencarian JDIH BPK mencocokkan judul, bukan bentuk singkat.
+  Singkatan kini diterjemahkan ke nama kementerian untuk mencari, dan tetap dipakai sebagai
+  jenis untuk memilih kandidat yang persis. Luput karena seluruh uji memakai rujukan UU.
+- Direktori Putusan MA kini memasang tantangan Cloudflare untuk semua klien otomatis.
+  Sebelumnya permintaan dicoba ulang beberapa kali dan berakhir dengan saran "coba lagi
+  sebentar" yang menyesatkan. Kini dikenali dalam satu permintaan, tidak dicoba ulang, dan
+  dinyatakan apa adanya: Pasla tidak menembus pembatasan ini.
+- `riset_akad_syariah` memilih fatwa terbaru yang sekadar menyebut nama akad sebagai fatwa
+  utama. Untuk "murabahah" yang terpilih 153/DSN-MUI/VI/2022 tentang pelunasan dipercepat,
+  bukan fatwa yang mengatur akadnya. Kini fatwa berjudul akad itu sendiri ("Akad Jual Beli
+  Murabahah", 111/DSN-MUI/IX/2017) didahulukan.
+
+### Batas yang diketahui
+
+- Dari server pusat data di Indonesia, situs MK dan JDIH MA menolak permintaan, dan
+  Direktori Putusan MA memasang tantangan Cloudflare. Dari Azure Korea, JDIH BPK pun menolak.
+  Ketiganya ditampilkan sebagai sumber yang belum tersedia di layanan web.
+
 ## [0.7.0] — 2026-09-06
 
 ### Kepercayaan dan keamanan
