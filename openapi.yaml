@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: HukumID Evidence-First API
-  version: 0.8.0
+  version: 0.8.1
   description: API riset hukum Indonesia. Metadata pencarian bukan evidence isi.
   license:
     name: MIT

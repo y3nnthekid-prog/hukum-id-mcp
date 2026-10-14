@@ -4,6 +4,19 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.1.0/), versi
 [Semantic Versioning](https://semver.org/lang/id/). Peneliti disarankan menyebutkan versi
 alat ini dalam tulisannya demi reproduktibilitas.
 
+## [0.8.1] - 2026-10-14
+
+### Keamanan
+
+- CI menolak rilis 0.8.0 karena advisori yang terbit sesudah 0.7.0: Next.js (critical, antara
+  lain RCE di `next/og` dan SSRF di optimasi gambar), `proxy-addr` (critical, lewat Express di
+  SDK MCP), serta `@grpc/grpc-js`, `@modelcontextprotocol/sdk`, `sharp`, dan `source-map-js`
+  (high). Web dinaikkan ke Next.js 16.4.0 dan dependensi lain diperbarui tanpa versi mayor.
+  `npm audit` kini nol, termasuk dependensi dev.
+- Catatan proses: `npm audit fix --omit=dev` ikut mencopot devDependencies dari `node_modules`
+  sehingga `npm run verify` gagal dengan "eslint is not recognized". Pasang ulang penuh sebelum
+  verify.
+
 ## [0.8.0] - 2026-10-14
 
 Dibuat untuk pilot Pasla (pasla.tech): satu server di belakang Cloudflare Tunnel, tanpa
