@@ -33,7 +33,10 @@ export type Passage = {
   contentHash: string;
 };
 
-const ARTICLE_HEADING = /^[ \t]*Pasal[ \t]+(\d{1,4}[A-Z]?)[ \t]*$/gm;
+// Judul pasal berdiri sendiri pada satu baris. Toleran terhadap salah baca OCR yang sudah terlihat
+// di naskah resmi ("Pasai 624", "Pasal 1O"), dan menerima pasal Romawi undang-undang perubahan
+// ("Pasal I" memuat perubahan, "Pasal II" ketentuan penutup).
+const ARTICLE_HEADING = /^[ \t]*Pasa[li][ \t]+(\d[\dOl]{0,3}[A-Z]?|[IVX]{1,6})[ \t]*$/gm;
 const EXPLANATION_HEADING = /^[ \t]*PENJELASAN[ \t]*$/m;
 const ATTACHMENT_HEADING = /^[ \t]*LAMPIRAN\b/m;
 
@@ -106,6 +109,10 @@ export function segmentPages(documentId: string, pages: Page[]): Passage[] {
     });
   }
   for (const match of text.matchAll(CONTEXT_RESET)) contexts.push({ offset: match.index, target: null });
+  // Pasal Romawi undang-undang perubahan ("Pasal II") menutup blok perubahan sebelumnya.
+  for (const match of text.matchAll(ARTICLE_HEADING)) {
+    if (/^[IVX]+$/.test(match[1]!)) contexts.push({ offset: match.index, target: null });
+  }
   contexts.sort((a, b) => a.offset - b.offset);
   const amendedAt = (offset: number) => {
     let target: string | null = null;
@@ -118,11 +125,12 @@ export function segmentPages(documentId: string, pages: Page[]): Passage[] {
 
   const marks: Mark[] = [{ offset: 0, bagian: "pembukaan" }];
   for (const match of text.matchAll(ARTICLE_HEADING)) {
+    const roman = /^[IVX]+$/.test(match[1]!);
     const bagian = sectionAt(match.index);
-    const target = bagian === "batang-tubuh" ? amendedAt(match.index) : null;
+    const target = bagian === "batang-tubuh" && !roman ? amendedAt(match.index) : null;
     marks.push({
       offset: match.index,
-      pasal: `Pasal ${match[1]!.toUpperCase()}`,
+      pasal: `Pasal ${roman ? match[1]! : ocrDigits(match[1]!).toUpperCase()}`,
       bagian,
       ...(target ? { mengubah: target } : {}),
     });

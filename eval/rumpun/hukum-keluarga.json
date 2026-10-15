@@ -1,0 +1,458 @@
+{
+  "versi": 1,
+  "butir": [
+    {
+      "id": "hukum-keluarga-001",
+      "rumpun": "hukum-keluarga",
+      "pertanyaan": "Berapa batas usia minimal untuk melangsungkan perkawinan di Indonesia saat ini bagi pria dan wanita, dan apa yang berubah dibanding rumusan awal Undang-Undang Perkawinan?",
+      "topik": "batas usia perkawinan",
+      "asal": "topik baku mata kuliah Hukum Perkawinan Islam di Indonesia",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "peraturan", "rujukan": "UU 1/1974", "pasal": "Pasal 7", "status": "Berlaku", "bpk_id": "47406", "diubah_dengan": ["UU 16/2019"] },
+        { "jenis": "peraturan", "rujukan": "UU 16/2019", "status": "Berlaku", "bpk_id": "122740", "diubah_dengan": [] }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["periksa_pasal", "teks_peraturan"],
+        "catatan": "Pasal 7 ayat (1) asli UU 1/1974 (hlm. 4): pria 19, wanita 16 tahun. Diubah Pasal I angka 1 UU 16/2019 (hlm. 2): pria dan wanita 19 tahun. Pasal dalam UU 16/2019 bernomor Romawi (Pasal I) sehingga tidak ditulis di kolom pasal."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hukum-keluarga-002",
+      "rumpun": "hukum-keluarga",
+      "pertanyaan": "Bila calon mempelai belum mencapai batas usia perkawinan, siapa yang dapat mengajukan dispensasi kawin, ke pengadilan mana, dengan alasan dan bukti apa, dan apa kewajiban hakim sebelum memberikan dispensasi?",
+      "topik": "dispensasi kawin",
+      "asal": "topik baku mata kuliah Hukum Perkawinan Islam di Indonesia",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "peraturan", "rujukan": "UU 1/1974", "pasal": "Pasal 7", "status": "Berlaku", "bpk_id": "47406", "diubah_dengan": ["UU 16/2019"] },
+        { "jenis": "peraturan", "rujukan": "UU 16/2019", "status": "Berlaku", "bpk_id": "122740", "diubah_dengan": [] }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["periksa_pasal", "teks_peraturan"],
+        "catatan": "Pasal 7 ayat (2) sampai (4) sebagaimana diubah UU 16/2019 (hlm. 3): orang tua meminta dispensasi dengan alasan sangat mendesak dan bukti pendukung, pengadilan wajib mendengar kedua calon mempelai. Penjelasan (hlm. 7): Pengadilan Agama bagi yang beragama Islam, arti alasan sangat mendesak dan bukti pendukung. PERMA 5/2019 tidak dijadikan rujukan wajib karena JDIH MA memblokir klien otomatis."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hukum-keluarga-003",
+      "rumpun": "hukum-keluarga",
+      "pertanyaan": "Apa kedudukan pencatatan perkawinan dalam hukum perkawinan Indonesia, apakah pencatatan menentukan sahnya perkawinan, dan siapa pegawai pencatat bagi perkawinan orang Islam?",
+      "topik": "pencatatan perkawinan",
+      "asal": "topik baku mata kuliah Hukum Perkawinan Islam di Indonesia",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "peraturan", "rujukan": "UU 1/1974", "pasal": "Pasal 2", "status": "Berlaku", "bpk_id": "47406", "diubah_dengan": ["UU 16/2019"] },
+        { "jenis": "peraturan", "rujukan": "PP 9/1975", "pasal": "Pasal 2", "status": "Berlaku", "bpk_id": "67678", "diubah_dengan": [] }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["periksa_pasal", "teks_peraturan"],
+        "catatan": "Pasal 2 ayat (1) dan (2) UU 1/1974 (hlm. 2), tidak diubah UU 16/2019. PP 9/1975 Pasal 2 ayat (1) (hlm. 2): pencatatan perkawinan orang Islam oleh Pegawai Pencatat menurut UU 32/1954. PP 9/1975 tanpa relasi perubahan di JDIH BPK."
+      },
+      "tertahan": true
+    },
+    {
+      "id": "hukum-keluarga-004",
+      "rumpun": "hukum-keluarga",
+      "pertanyaan": "Bagaimana pasangan muslim yang perkawinannya tidak tercatat dapat memperoleh pengakuan hukum melalui isbat nikah, untuk keperluan apa isbat nikah dapat diajukan, dan pengadilan mana yang berwenang?",
+      "topik": "isbat nikah",
+      "asal": "topik baku mata kuliah Hukum Perkawinan Islam di Indonesia",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "khi", "pasal": "Pasal 7" },
+        { "jenis": "peraturan", "rujukan": "UU 3/2006", "pasal": "Pasal 49", "status": "Berlaku", "bpk_id": "40154", "diubah_dengan": [] },
+        { "jenis": "peraturan", "rujukan": "UU 1/1974", "pasal": "Pasal 2", "status": "Berlaku", "bpk_id": "47406", "diubah_dengan": ["UU 16/2019"] }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["periksa_pasal", "cari_dalam_pdf"],
+        "catatan": "KHI belum diverifikasi ke naskah (Pasal 7 KHI tidak tersedia di perkakas). Penjelasan Pasal 49 huruf a angka 22 UU 3/2006 (hlm. 27): pernyataan sahnya perkawinan sebelum UU 1/1974 menjadi kewenangan PA. Pasal 2 UU 1/1974 (hlm. 2) terverifikasi."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hukum-keluarga-005",
+      "rumpun": "hukum-keluarga",
+      "pertanyaan": "Apa syarat alternatif dan syarat kumulatif bagi suami yang ingin beristri lebih dari seorang menurut hukum perkawinan Indonesia, dan apa yang diperiksa pengadilan dalam permohonan izin poligami?",
+      "topik": "izin poligami",
+      "asal": "topik baku mata kuliah Hukum Perkawinan Islam di Indonesia",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "peraturan", "rujukan": "UU 1/1974", "pasal": "Pasal 4", "status": "Berlaku", "bpk_id": "47406", "diubah_dengan": ["UU 16/2019"] },
+        { "jenis": "peraturan", "rujukan": "UU 1/1974", "pasal": "Pasal 5", "status": "Berlaku", "bpk_id": "47406", "diubah_dengan": ["UU 16/2019"] },
+        { "jenis": "peraturan", "rujukan": "PP 9/1975", "pasal": "Pasal 41", "status": "Berlaku", "bpk_id": "67678", "diubah_dengan": [] }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["periksa_pasal", "teks_peraturan"],
+        "catatan": "Pasal 4 ayat (2) (alasan alternatif) dan Pasal 5 ayat (1) (syarat kumulatif) UU 1/1974 (hlm. 2 sampai 3), tidak diubah UU 16/2019. PP 9/1975 Pasal 41 (hlm. 19 sampai 20): hal yang diperiksa pengadilan termasuk bukti kemampuan suami."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hukum-keluarga-006",
+      "rumpun": "hukum-keluarga",
+      "pertanyaan": "Apa saja alasan perceraian yang diakui dalam hukum perkawinan Indonesia, dan alasan tambahan apa yang berlaku khusus bagi orang Islam di Pengadilan Agama?",
+      "topik": "alasan perceraian",
+      "asal": "topik baku mata kuliah Hukum Perkawinan Islam di Indonesia",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "peraturan", "rujukan": "PP 9/1975", "pasal": "Pasal 19", "status": "Berlaku", "bpk_id": "67678", "diubah_dengan": [] },
+        { "jenis": "khi", "pasal": "Pasal 116" }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["periksa_pasal"],
+        "catatan": "PP 9/1975 Pasal 19 huruf a sampai f (hlm. 10 sampai 11) terverifikasi. KHI belum diverifikasi ke naskah (Pasal 116 KHI, yang menambah pelanggaran taklik talak dan peralihan agama, tidak tersedia di perkakas)."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hukum-keluarga-007",
+      "rumpun": "hukum-keluarga",
+      "pertanyaan": "Apakah talak yang diucapkan suami di luar sidang pengadilan memutus perkawinan menurut hukum positif Indonesia, dan apa syarat yang harus dipenuhi sebelum pengadilan memutus perceraian?",
+      "topik": "perceraian di depan sidang pengadilan",
+      "asal": "topik baku mata kuliah Hukum Perkawinan Islam di Indonesia",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "peraturan", "rujukan": "UU 1/1974", "pasal": "Pasal 39", "status": "Berlaku", "bpk_id": "47406", "diubah_dengan": ["UU 16/2019"] },
+        { "jenis": "peraturan", "rujukan": "UU 7/1989", "pasal": "Pasal 65", "status": "Berlaku", "bpk_id": "46804", "diubah_dengan": ["UU 3/2006", "UU 50/2009"] }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["teks_peraturan", "detail_peraturan", "konsolidasi_peraturan"],
+        "catatan": "Pasal 39 UU 1/1974 (hlm. 15) dan Pasal 65 UU 7/1989 (hlm. 16): perceraian hanya di depan sidang setelah upaya damai gagal. konsolidasi_peraturan menandai UU 50/2009 'menyentuh' Pasal 65, tetapi temuannya hanya penyisipan Pasal 64A sebelum Pasal 65 (hlm. 18), bukan perubahan Pasal 65; UU 3/2006 tidak menyentuhnya."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hukum-keluarga-008",
+      "rumpun": "hukum-keluarga",
+      "pertanyaan": "Dalam perkara cerai talak di Pengadilan Agama, kapan perkawinan dinyatakan putus, dan apa akibatnya bila suami tidak datang mengucapkan ikrar talak dalam waktu enam bulan setelah hari sidang penyaksian ditetapkan?",
+      "topik": "cerai talak dan ikrar talak",
+      "asal": "topik baku mata kuliah Hukum Acara Peradilan Agama",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "peraturan", "rujukan": "UU 7/1989", "pasal": "Pasal 70", "status": "Berlaku", "bpk_id": "46804", "diubah_dengan": ["UU 3/2006", "UU 50/2009"] },
+        { "jenis": "peraturan", "rujukan": "UU 7/1989", "pasal": "Pasal 71", "status": "Berlaku", "bpk_id": "46804", "diubah_dengan": ["UU 3/2006", "UU 50/2009"] }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["teks_peraturan", "konsolidasi_peraturan"],
+        "catatan": "Pasal 70 ayat (6) dan Pasal 71 ayat (2) UU 7/1989 (hlm. 17): gugurnya penetapan bila suami tidak hadir enam bulan, perkawinan putus sejak ikrar talak diucapkan. konsolidasi_peraturan: UU 3/2006 dan UU 50/2009 tidak menyentuh Pasal 70."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hukum-keluarga-009",
+      "rumpun": "hukum-keluarga",
+      "pertanyaan": "Ke Pengadilan Agama mana seorang istri mengajukan gugatan cerai, dan mengapa ketentuannya berbeda dari aturan umum gugatan perceraian dalam peraturan pelaksanaan Undang-Undang Perkawinan?",
+      "topik": "kompetensi relatif cerai gugat",
+      "asal": "topik baku mata kuliah Hukum Acara Peradilan Agama",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "peraturan", "rujukan": "UU 7/1989", "pasal": "Pasal 73", "status": "Berlaku", "bpk_id": "46804", "diubah_dengan": ["UU 3/2006", "UU 50/2009"] },
+        { "jenis": "peraturan", "rujukan": "PP 9/1975", "pasal": "Pasal 20", "status": "Berlaku", "bpk_id": "67678", "diubah_dengan": [] }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["teks_peraturan", "konsolidasi_peraturan", "periksa_pasal"],
+        "catatan": "Pasal 73 ayat (1) UU 7/1989 (hlm. 18): tempat kediaman penggugat; Penjelasan (hlm. 41) menyebutnya untuk melindungi istri. PP 9/1975 Pasal 20 ayat (1) (hlm. 11): aturan umum tempat kediaman tergugat. konsolidasi_peraturan: Pasal 73 tidak diubah UU 3/2006 maupun UU 50/2009."
+      },
+      "tertahan": true
+    },
+    {
+      "id": "hukum-keluarga-010",
+      "rumpun": "hukum-keluarga",
+      "pertanyaan": "Harta apa saja yang termasuk harta bersama dan harta bawaan dalam perkawinan, dan bagaimana harta bersama dibagi bila perkawinan orang Islam putus karena perceraian?",
+      "topik": "harta bersama",
+      "asal": "topik baku mata kuliah Hukum Perkawinan Islam di Indonesia",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "peraturan", "rujukan": "UU 1/1974", "pasal": "Pasal 35", "status": "Berlaku", "bpk_id": "47406", "diubah_dengan": ["UU 16/2019"] },
+        { "jenis": "peraturan", "rujukan": "UU 1/1974", "pasal": "Pasal 37", "status": "Berlaku", "bpk_id": "47406", "diubah_dengan": ["UU 16/2019"] },
+        { "jenis": "khi", "pasal": "Pasal 97" }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["teks_peraturan"],
+        "catatan": "Pasal 35 dan Pasal 37 UU 1/1974 (hlm. 14) terverifikasi, tidak diubah UU 16/2019. KHI belum diverifikasi ke naskah (Pasal 97 KHI tentang pembagian seperdua tidak tersedia di perkakas)."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hukum-keluarga-011",
+      "rumpun": "hukum-keluarga",
+      "pertanyaan": "Setelah perceraian, siapa yang berhak atas pemeliharaan (hadhanah) anak yang belum mumayyiz, kapan anak dapat memilih, dan siapa yang menanggung biaya pemeliharaannya?",
+      "topik": "hak asuh anak (hadhanah)",
+      "asal": "topik baku mata kuliah Hukum Perkawinan Islam di Indonesia",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "peraturan", "rujukan": "UU 1/1974", "pasal": "Pasal 41", "status": "Berlaku", "bpk_id": "47406", "diubah_dengan": ["UU 16/2019"] },
+        { "jenis": "khi", "pasal": "Pasal 105" }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["teks_peraturan"],
+        "catatan": "Pasal 41 huruf a dan b UU 1/1974 (hlm. 15 sampai 16) terverifikasi. KHI belum diverifikasi ke naskah (Pasal 105 KHI tentang anak belum mumayyiz dan usia 12 tahun tidak tersedia di perkakas)."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hukum-keluarga-012",
+      "rumpun": "hukum-keluarga",
+      "pertanyaan": "Berapa lama waktu tunggu (iddah) bagi janda menurut peraturan pelaksanaan Undang-Undang Perkawinan, baik karena kematian, perceraian, maupun dalam keadaan hamil, dan sejak kapan waktu tunggu itu dihitung?",
+      "topik": "waktu tunggu (iddah)",
+      "asal": "topik baku mata kuliah Hukum Perkawinan Islam di Indonesia",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "peraturan", "rujukan": "PP 9/1975", "pasal": "Pasal 39", "status": "Berlaku", "bpk_id": "67678", "diubah_dengan": [] },
+        { "jenis": "peraturan", "rujukan": "UU 1/1974", "pasal": "Pasal 11", "status": "Berlaku", "bpk_id": "47406", "diubah_dengan": ["UU 16/2019"] }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["teks_peraturan"],
+        "catatan": "PP 9/1975 Pasal 39 (hlm. 18 sampai 19): 130 hari karena kematian, tiga kali suci sekurang-kurangnya 90 hari karena perceraian, sampai melahirkan bila hamil, dihitung sejak putusan berkekuatan hukum tetap atau sejak kematian. UU 1/1974 Pasal 11 (hlm. 6)."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hukum-keluarga-013",
+      "rumpun": "hukum-keluarga",
+      "pertanyaan": "Apakah anak angkat berhak atas harta peninggalan orang tua angkatnya yang muslim, melalui lembaga hukum apa, berapa batasnya, dan apakah pengangkatan anak memutus hubungan darah dengan orang tua kandung?",
+      "topik": "kewarisan anak angkat (wasiat wajibah)",
+      "asal": "topik baku mata kuliah Hukum Kewarisan Islam",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "khi", "pasal": "Pasal 209" },
+        { "jenis": "peraturan", "rujukan": "UU 23/2002", "pasal": "Pasal 39", "status": "Berlaku", "bpk_id": "44473", "diubah_dengan": ["UU 35/2014"] }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["periksa_pasal", "teks_peraturan"],
+        "catatan": "KHI belum diverifikasi ke naskah (Pasal 209 KHI tentang wasiat wajibah sepertiga tidak tersedia di perkakas). Pasal 39 ayat (2) UU 23/2002 (hlm. 13) dan rumusan barunya dalam UU 35/2014 angka 20 (hlm. 15): pengangkatan anak tidak memutus hubungan darah."
+      },
+      "tertahan": true
+    },
+    {
+      "id": "hukum-keluarga-014",
+      "rumpun": "hukum-keluarga",
+      "pertanyaan": "Apa syarat pengangkatan anak menurut Undang-Undang Perlindungan Anak setelah perubahannya, termasuk soal agama calon orang tua angkat dan pencatatan dalam akta kelahiran, dan pengadilan mana yang berwenang menetapkan pengangkatan anak berdasarkan hukum Islam?",
+      "topik": "pengangkatan anak",
+      "asal": "topik baku mata kuliah Hukum Perkawinan Islam di Indonesia",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "peraturan", "rujukan": "UU 23/2002", "pasal": "Pasal 39", "status": "Berlaku", "bpk_id": "44473", "diubah_dengan": ["UU 35/2014"] },
+        { "jenis": "peraturan", "rujukan": "UU 35/2014", "status": "Berlaku", "bpk_id": "38723", "diubah_dengan": [] },
+        { "jenis": "peraturan", "rujukan": "UU 3/2006", "pasal": "Pasal 49", "status": "Berlaku", "bpk_id": "40154", "diubah_dengan": [] }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["periksa_pasal", "teks_peraturan", "cari_dalam_pdf"],
+        "catatan": "UU 35/2014 Pasal I angka 20 (hlm. 14 sampai 15) mengubah Pasal 39 UU 23/2002 dan menyisipkan ayat (2a) pencatatan dalam akta kelahiran; ayat (3) calon orang tua angkat seagama. Pasal dalam UU 35/2014 bernomor Romawi sehingga kolom pasal dikosongkan. Penjelasan Pasal 49 huruf a angka 20 UU 3/2006 (hlm. 26): penetapan pengangkatan anak berdasarkan hukum Islam. JDIH BPK hanya mencatat UU 35/2014 pada relasi 'Diubah dengan' UU 23/2002."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hukum-keluarga-015",
+      "rumpun": "hukum-keluarga",
+      "pertanyaan": "Dalam keadaan apa suatu perkawinan dapat dibatalkan, siapa yang berwenang memutus pembatalan itu, dan bagaimana akibat pembatalan terhadap anak yang lahir dari perkawinan tersebut?",
+      "topik": "pembatalan perkawinan",
+      "asal": "topik baku mata kuliah Hukum Perkawinan Islam di Indonesia",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "peraturan", "rujukan": "UU 1/1974", "pasal": "Pasal 22", "status": "Berlaku", "bpk_id": "47406", "diubah_dengan": ["UU 16/2019"] },
+        { "jenis": "peraturan", "rujukan": "UU 1/1974", "pasal": "Pasal 28", "status": "Berlaku", "bpk_id": "47406", "diubah_dengan": ["UU 16/2019"] },
+        { "jenis": "peraturan", "rujukan": "PP 9/1975", "pasal": "Pasal 37", "status": "Berlaku", "bpk_id": "67678", "diubah_dengan": [] }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["teks_peraturan"],
+        "catatan": "UU 1/1974 Pasal 22 (hlm. 9) dan Pasal 28 (hlm. 11 sampai 12): keputusan tidak berlaku surut terhadap anak. PP 9/1975 Pasal 37 (hlm. 18): batalnya perkawinan hanya dapat diputuskan pengadilan."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hukum-keluarga-016",
+      "rumpun": "hukum-keluarga",
+      "pertanyaan": "Hubungan apa saja yang menyebabkan dua orang dilarang melangsungkan perkawinan menurut Undang-Undang Perkawinan, termasuk hubungan semenda dan susuan?",
+      "topik": "larangan perkawinan",
+      "asal": "topik baku mata kuliah Hukum Perkawinan Islam di Indonesia",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "peraturan", "rujukan": "UU 1/1974", "pasal": "Pasal 8", "status": "Berlaku", "bpk_id": "47406", "diubah_dengan": ["UU 16/2019"] }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["teks_peraturan"],
+        "catatan": "Pasal 8 huruf a sampai f UU 1/1974 (hlm. 5), tidak diubah UU 16/2019 (UU 16/2019 hanya mengubah Pasal 7 dan menyisipkan Pasal 65A)."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hukum-keluarga-017",
+      "rumpun": "hukum-keluarga",
+      "pertanyaan": "Apakah calon mempelai yang sudah berusia 19 tahun tetapi belum 21 tahun masih memerlukan izin orang tua untuk menikah, dan bagaimana bila orang tua telah meninggal atau berbeda pendapat?",
+      "topik": "izin orang tua dan persetujuan calon mempelai",
+      "asal": "topik baku mata kuliah Hukum Perkawinan Islam di Indonesia",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "peraturan", "rujukan": "UU 1/1974", "pasal": "Pasal 6", "status": "Berlaku", "bpk_id": "47406", "diubah_dengan": ["UU 16/2019"] }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["teks_peraturan"],
+        "catatan": "Pasal 6 ayat (1) sampai (6) UU 1/1974 (hlm. 3 sampai 4): izin kedua orang tua bagi yang belum 21 tahun, peralihan kepada orang tua yang masih hidup, wali, atau keluarga, dan izin pengadilan bila berbeda pendapat. Tidak diubah UU 16/2019."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hukum-keluarga-018",
+      "rumpun": "hukum-keluarga",
+      "pertanyaan": "Bagaimana kewajiban hakim mendamaikan suami istri dalam pemeriksaan perkara perceraian di Pengadilan Agama, apakah para pihak wajib hadir sendiri, dan apa akibatnya bila perdamaian tercapai?",
+      "topik": "upaya perdamaian dalam perceraian",
+      "asal": "topik baku mata kuliah Hukum Acara Peradilan Agama",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "peraturan", "rujukan": "UU 7/1989", "pasal": "Pasal 82", "status": "Berlaku", "bpk_id": "46804", "diubah_dengan": ["UU 3/2006", "UU 50/2009"] },
+        { "jenis": "peraturan", "rujukan": "PP 9/1975", "pasal": "Pasal 31", "status": "Berlaku", "bpk_id": "67678", "diubah_dengan": [] }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["teks_peraturan", "konsolidasi_peraturan"],
+        "catatan": "UU 7/1989 Pasal 82 dan Pasal 83 (hlm. 19): upaya damai pada sidang pertama, kehadiran pribadi, larangan gugatan baru dengan alasan yang sama. PP 9/1975 Pasal 31 dan 32 (hlm. 15). Penelusuran perubahan dengan frasa 'mendamaikan kedua pihak' tidak menemukan perubahan dalam UU 3/2006 maupun UU 50/2009. PERMA mediasi tidak dijadikan rujukan wajib."
+      },
+      "tertahan": true
+    },
+    {
+      "id": "hukum-keluarga-019",
+      "rumpun": "hukum-keluarga",
+      "pertanyaan": "Apa kewajiban orang tua menurut Undang-Undang Perlindungan Anak terkait perkawinan pada usia anak, dan bagaimana ketentuan itu bersinggungan dengan batas usia perkawinan dalam Undang-Undang Perkawinan?",
+      "topik": "pencegahan perkawinan anak",
+      "asal": "topik baku mata kuliah Hukum Perkawinan Islam di Indonesia",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "peraturan", "rujukan": "UU 23/2002", "pasal": "Pasal 26", "status": "Berlaku", "bpk_id": "44473", "diubah_dengan": ["UU 35/2014"] },
+        { "jenis": "peraturan", "rujukan": "UU 35/2014", "status": "Berlaku", "bpk_id": "38723", "diubah_dengan": [] },
+        { "jenis": "peraturan", "rujukan": "UU 1/1974", "pasal": "Pasal 7", "status": "Berlaku", "bpk_id": "47406", "diubah_dengan": ["UU 16/2019"] }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["periksa_pasal", "teks_peraturan"],
+        "catatan": "UU 35/2014 Pasal I angka 15 (hlm. 11 sampai 12) mengubah Pasal 26 UU 23/2002: orang tua wajib mencegah terjadinya perkawinan pada usia anak. Pasal 7 UU 1/1974 sebagaimana diubah UU 16/2019 (19 tahun) dan konsiderans UU 16/2019 merujuk definisi anak di bawah 18 tahun."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hukum-keluarga-020",
+      "rumpun": "hukum-keluarga",
+      "pertanyaan": "Apakah memaksa anak untuk menikah dapat dipidana menurut Undang-Undang Tindak Pidana Kekerasan Seksual, dan bentuk pemaksaan perkawinan apa saja yang tercakup beserta ancaman pidananya?",
+      "topik": "pemaksaan perkawinan",
+      "asal": "topik baku mata kuliah Hukum Perkawinan Islam di Indonesia",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "peraturan", "rujukan": "UU 12/2022", "pasal": "Pasal 10", "status": "Berlaku", "bpk_id": "207944", "diubah_dengan": [] }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["periksa_pasal", "cari_dalam_pdf"],
+        "catatan": "Pasal 10 ayat (1) dan (2) UU 12/2022 (hlm. 10): pidana penjara paling lama 9 tahun dan/atau denda paling banyak Rp200 juta; termasuk perkawinan anak, praktik budaya, dan perkawinan korban dengan pelaku perkosaan. Lapisan teks PDF membaca nomor pasal sebagai 'Pasal 1O' sehingga periksa_pasal hanya menemukan penjelasannya; batang tubuh ditemukan lewat cari_dalam_pdf."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hukum-keluarga-021",
+      "rumpun": "hukum-keluarga",
+      "pertanyaan": "Bagaimana Undang-Undang Administrasi Kependudukan mengatur pencatatan perkawinan yang ditetapkan oleh pengadilan, dan apa yang dimaksud dengan perkawinan semacam itu menurut penjelasannya?",
+      "topik": "pencatatan perkawinan beda agama",
+      "asal": "topik baku mata kuliah Hukum Perkawinan Islam di Indonesia",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "peraturan", "rujukan": "UU 23/2006", "pasal": "Pasal 35", "status": "Berlaku", "bpk_id": "40202", "diubah_dengan": ["UU 24/2013"] },
+        { "jenis": "peraturan", "rujukan": "UU 1/1974", "pasal": "Pasal 2", "status": "Berlaku", "bpk_id": "47406", "diubah_dengan": ["UU 16/2019"] }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["periksa_pasal", "cari_dalam_pdf", "konsolidasi_peraturan"],
+        "catatan": "Pasal 35 huruf a UU 23/2006 (hlm. 20) dan Penjelasannya (hlm. 66): perkawinan antar-umat yang berbeda agama. konsolidasi_peraturan: UU 24/2013 tidak menyentuh Pasal 35. SEMA terkait tidak dijadikan rujukan wajib karena JDIH MA memblokir klien otomatis."
+      },
+      "tertahan": true
+    },
+    {
+      "id": "hukum-keluarga-022",
+      "rumpun": "hukum-keluarga",
+      "pertanyaan": "Berapa bagian waris anak perempuan dalam hukum kewarisan Islam, baik ketika ia mewaris sendirian, bersama saudara perempuannya, maupun bersama anak laki-laki, dan apa dasar ayatnya?",
+      "topik": "bagian waris anak perempuan",
+      "asal": "topik baku mata kuliah Hukum Kewarisan Islam",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "ayat", "surah": 4, "ayat": 11 },
+        { "jenis": "khi", "pasal": "Pasal 176" }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["ambil_ayat"],
+        "catatan": "QS 4:11 diambil lewat ambil_ayat (terjemahan Kemenag): setengah bila seorang, dua pertiga bila dua orang atau lebih, dua banding satu bersama anak laki-laki. KHI belum diverifikasi ke naskah (Pasal 176 KHI tidak tersedia di perkakas)."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hukum-keluarga-023",
+      "rumpun": "hukum-keluarga",
+      "pertanyaan": "Apakah perbedaan agama menjadi penghalang saling mewarisi dalam hukum kewarisan Islam yang berlaku di Pengadilan Agama, dan apa dalil hadis yang menjadi dasarnya?",
+      "topik": "perbedaan agama sebagai penghalang waris",
+      "asal": "topik baku mata kuliah Hukum Kewarisan Islam",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "hadis", "id": "64716", "derajat": "Hadis sahih" },
+        { "jenis": "khi", "pasal": "Pasal 171" }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["cari_hadis_berderajat", "hadis_berderajat"],
+        "catatan": "Hadis id 64716 (hadeethenc) dari Usamah bin Zaid, muslim tidak mewarisi kafir dan sebaliknya, derajat sahih, muttafaq 'alaih. KHI belum diverifikasi ke naskah (Pasal 171 huruf b dan c KHI tentang pewaris dan ahli waris beragama Islam tidak tersedia di perkakas)."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hukum-keluarga-024",
+      "rumpun": "hukum-keluarga",
+      "pertanyaan": "Kewajiban apa yang dapat dibebankan pengadilan kepada bekas suami setelah perceraian karena talak, seperti mut'ah, nafkah iddah, dan biaya anak, dan apa dasar hukumnya?",
+      "topik": "akibat cerai talak (mut'ah dan nafkah iddah)",
+      "asal": "topik baku mata kuliah Hukum Perkawinan Islam di Indonesia",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "peraturan", "rujukan": "UU 1/1974", "pasal": "Pasal 41", "status": "Berlaku", "bpk_id": "47406", "diubah_dengan": ["UU 16/2019"] },
+        { "jenis": "khi", "pasal": "Pasal 149" }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["teks_peraturan"],
+        "catatan": "Pasal 41 huruf b dan c UU 1/1974 (hlm. 16): biaya pemeliharaan anak dan kewajiban bekas suami memberi biaya penghidupan bagi bekas istri. KHI belum diverifikasi ke naskah (Pasal 149 KHI tentang mut'ah, nafkah iddah, mahar terutang, dan biaya hadhanah tidak tersedia di perkakas)."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hukum-keluarga-025",
+      "rumpun": "hukum-keluarga",
+      "pertanyaan": "Dalam keadaan apa kekuasaan orang tua terhadap anak dapat dicabut, siapa yang dapat memintanya, apakah orang tua tetap wajib membiayai anak, dan kapan anak berada di bawah perwalian?",
+      "topik": "pencabutan kekuasaan orang tua dan perwalian",
+      "asal": "topik baku mata kuliah Hukum Perkawinan Islam di Indonesia",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "peraturan", "rujukan": "UU 1/1974", "pasal": "Pasal 49", "status": "Berlaku", "bpk_id": "47406", "diubah_dengan": ["UU 16/2019"] },
+        { "jenis": "peraturan", "rujukan": "UU 1/1974", "pasal": "Pasal 50", "status": "Berlaku", "bpk_id": "47406", "diubah_dengan": ["UU 16/2019"] }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["teks_peraturan"],
+        "catatan": "Pasal 49 ayat (1) dan (2) UU 1/1974 (hlm. 18): pencabutan karena sangat melalaikan kewajiban atau berkelakuan buruk sekali, kewajiban biaya tetap. Pasal 50 (hlm. 19): anak di bawah 18 tahun yang tidak di bawah kekuasaan orang tua berada di bawah perwalian."
+      },
+      "tertahan": false
+    }
+  ]
+}

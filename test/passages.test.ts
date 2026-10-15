@@ -56,3 +56,16 @@ test("passage ids are stable and content addressed", () => {
   assert.ok(first.every((id) => /^ps_[a-f0-9]{24}$/.test(id)));
   assert.equal(new Set(first).size, first.length);
 });
+
+test("amending laws with Roman articles, and OCR-misread headings, are segmented correctly", () => {
+  const pages = [
+    { halaman: 2, teks: "Pasal I\nBeberapa ketentuan dalam Undang-Undang Nomor 1 Tahun 1974 tentang Perkawinan diubah sebagai berikut:\n1. Ketentuan Pasal 7 diubah sehingga berbunyi sebagai berikut:\nPasal 7\n(1) Perkawinan hanya diizinkan apabila pria dan wanita sudah mencapai umur 19 tahun." },
+    { halaman: 3, teks: "Pasal II\nUndang-Undang ini mulai berlaku pada tanggal diundangkan.\nPasai 1O\nTeks pasal sepuluh yang terbaca salah." },
+  ];
+  const passages = segmentPages("bpk:122740", pages);
+  assert.equal(findArticle(passages, "Pasal I").norma.length, 1);
+  assert.equal(findArticle(passages, "Pasal II").norma.length, 1);
+  assert.equal(findArticle(passages, "Pasal 7", "UU 1/1974").norma.length, 1);
+  assert.equal(findArticle(passages, "Pasal 7").norma.length, 0);
+  assert.equal(findArticle(passages, "Pasal 10").norma.length, 1);
+});

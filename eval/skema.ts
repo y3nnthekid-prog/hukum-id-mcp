@@ -17,7 +17,8 @@ export const RumpunSchema = z.enum([
 ]);
 
 const RegulationRef = z.string().regex(/^[A-Za-z][A-Za-z ]{0,30} \d{1,4}\/\d{4}$/, "bentuk 'UU 1/1974'");
-const ArticleRef = z.string().regex(/^Pasal \d{1,4}[A-Z]?$/, "bentuk 'Pasal 7'");
+// "Pasal I" dan "Pasal II" dipakai undang-undang perubahan (mis. UU 16/2019).
+const ArticleRef = z.string().regex(/^Pasal (?:\d{1,4}[A-Z]?|[IVX]{1,6})$/, "bentuk 'Pasal 7' atau 'Pasal I'");
 
 export const RujukanSchema = z.discriminatedUnion("jenis", [
   z.object({
