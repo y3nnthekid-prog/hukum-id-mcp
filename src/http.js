@@ -268,6 +268,12 @@ async function request(
     }
   }
 
+  // Mode luring (evaluasi atas snapshot beku): permintaan yang tidak ada di cache gagal
+  // tertutup alih-alih diam-diam mengambil versi terbaru dari situs sumber.
+  if (process.env.HUKUM_LURING === "1") {
+    throw new Error(`LURING: ${url} tidak ada di snapshot.`);
+  }
+
   periksaPutus(host);
 
   const transports = CURL_ONLY.has(host) ? [viaCurl] : [viaFetch, viaCurl];

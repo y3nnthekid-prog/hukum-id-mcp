@@ -1,0 +1,846 @@
+{
+  "versi": 1,
+  "butir": [
+    {
+      "id": "jebakan-001",
+      "rumpun": "ilmu-hukum",
+      "pertanyaan": "Apa yang diatur Pasal 5 UU 120/2023 tentang pelindungan konsumen digital?",
+      "topik": "rujukan peraturan yang tidak ada",
+      "asal": "butir jebakan buatan untuk menguji abstain",
+      "harapan": "abstain",
+      "jebakan": "nomor-palsu",
+      "rujukan_wajib": [
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 120/2023",
+          "pasal": "Pasal 5",
+          "status": "Tidak ada",
+          "diubah_dengan": []
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_peraturan"
+        ],
+        "catatan": "cari_peraturan jenis 8 dengan nomor dan tahun ini tidak mengembalikan kandidat persis di JDIH BPK. Catatan: UU 99/2024 sempat dipertimbangkan, ternyata ada (pembentukan Kabupaten Sukabumi), jadi tidak dipakai."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "jebakan-002",
+      "rumpun": "htn",
+      "pertanyaan": "Bagaimana PP 512/2025 Pasal 3 mengatur tata cara pembentukan daerah otonom baru?",
+      "topik": "rujukan peraturan yang tidak ada",
+      "asal": "butir jebakan buatan untuk menguji abstain",
+      "harapan": "abstain",
+      "jebakan": "nomor-palsu",
+      "rujukan_wajib": [
+        {
+          "jenis": "peraturan",
+          "rujukan": "PP 512/2025",
+          "pasal": "Pasal 3",
+          "status": "Tidak ada",
+          "diubah_dengan": []
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_peraturan"
+        ],
+        "catatan": "cari_peraturan jenis 10 dengan nomor dan tahun ini tidak mengembalikan kandidat persis di JDIH BPK. Catatan: UU 99/2024 sempat dipertimbangkan, ternyata ada (pembentukan Kabupaten Sukabumi), jadi tidak dipakai."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "jebakan-003",
+      "rumpun": "hes",
+      "pertanyaan": "Apa kewajiban bank syariah menurut POJK 95/2024 Pasal 12 tentang pembiayaan berbasis wakaf?",
+      "topik": "rujukan peraturan yang tidak ada",
+      "asal": "butir jebakan buatan untuk menguji abstain",
+      "harapan": "abstain",
+      "jebakan": "nomor-palsu",
+      "rujukan_wajib": [
+        {
+          "jenis": "peraturan",
+          "rujukan": "POJK 95/2024",
+          "pasal": "Pasal 12",
+          "status": "Tidak ada",
+          "diubah_dengan": []
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_peraturan"
+        ],
+        "catatan": "cari_peraturan jenis 80 dengan nomor dan tahun ini tidak mengembalikan kandidat persis di JDIH BPK. Catatan: UU 99/2024 sempat dipertimbangkan, ternyata ada (pembentukan Kabupaten Sukabumi), jadi tidak dipakai."
+      },
+      "tertahan": true
+    },
+    {
+      "id": "jebakan-004",
+      "rumpun": "htn",
+      "pertanyaan": "Apa isi Perpres 950/2024 Pasal 2 tentang koordinasi lembaga negara independen?",
+      "topik": "rujukan peraturan yang tidak ada",
+      "asal": "butir jebakan buatan untuk menguji abstain",
+      "harapan": "abstain",
+      "jebakan": "nomor-palsu",
+      "rujukan_wajib": [
+        {
+          "jenis": "peraturan",
+          "rujukan": "Perpres 950/2024",
+          "pasal": "Pasal 2",
+          "status": "Tidak ada",
+          "diubah_dengan": []
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_peraturan"
+        ],
+        "catatan": "cari_peraturan jenis 11 dengan nomor dan tahun ini tidak mengembalikan kandidat persis di JDIH BPK. Catatan: UU 99/2024 sempat dipertimbangkan, ternyata ada (pembentukan Kabupaten Sukabumi), jadi tidak dipakai."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "jebakan-005",
+      "rumpun": "hukum-keluarga",
+      "pertanyaan": "Bagaimana UU 88/2010 Pasal 9 mengatur pencatatan perkawinan campuran?",
+      "topik": "rujukan peraturan yang tidak ada",
+      "asal": "butir jebakan buatan untuk menguji abstain",
+      "harapan": "abstain",
+      "jebakan": "nomor-palsu",
+      "rujukan_wajib": [
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 88/2010",
+          "pasal": "Pasal 9",
+          "status": "Tidak ada",
+          "diubah_dengan": []
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_peraturan"
+        ],
+        "catatan": "cari_peraturan jenis 8 dengan nomor dan tahun ini tidak mengembalikan kandidat persis di JDIH BPK. Catatan: UU 99/2024 sempat dipertimbangkan, ternyata ada (pembentukan Kabupaten Sukabumi), jadi tidak dipakai."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "jebakan-006",
+      "rumpun": "pidana-islam",
+      "pertanyaan": "Apa ancaman pidana dalam UU 77/2019 Pasal 14 tentang jarimah perjudian daring?",
+      "topik": "rujukan peraturan yang tidak ada",
+      "asal": "butir jebakan buatan untuk menguji abstain",
+      "harapan": "abstain",
+      "jebakan": "nomor-palsu",
+      "rujukan_wajib": [
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 77/2019",
+          "pasal": "Pasal 14",
+          "status": "Tidak ada",
+          "diubah_dengan": []
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_peraturan"
+        ],
+        "catatan": "cari_peraturan jenis 8 dengan nomor dan tahun ini tidak mengembalikan kandidat persis di JDIH BPK. Catatan: UU 99/2024 sempat dipertimbangkan, ternyata ada (pembentukan Kabupaten Sukabumi), jadi tidak dipakai."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "jebakan-007",
+      "rumpun": "ilmu-hukum",
+      "pertanyaan": "Bagaimana UU 95/2016 Pasal 21 mengatur bantuan hukum bagi saksi?",
+      "topik": "rujukan peraturan yang tidak ada",
+      "asal": "butir jebakan buatan untuk menguji abstain",
+      "harapan": "abstain",
+      "jebakan": "nomor-palsu",
+      "rujukan_wajib": [
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 95/2016",
+          "pasal": "Pasal 21",
+          "status": "Tidak ada",
+          "diubah_dengan": []
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_peraturan"
+        ],
+        "catatan": "cari_peraturan jenis 8 dengan nomor dan tahun ini tidak mengembalikan kandidat persis di JDIH BPK. Catatan: UU 99/2024 sempat dipertimbangkan, ternyata ada (pembentukan Kabupaten Sukabumi), jadi tidak dipakai."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "jebakan-008",
+      "rumpun": "hes",
+      "pertanyaan": "Apa ketentuan Fatwa DSN-MUI Nomor 190/DSN-MUI/XII/2025 tentang akad murabahah emas digital?",
+      "topik": "fatwa yang tidak ada",
+      "asal": "butir jebakan buatan untuk menguji abstain",
+      "harapan": "abstain",
+      "jebakan": "nomor-palsu",
+      "rujukan_wajib": [
+        {
+          "jenis": "fatwa",
+          "nomor": "190/DSN-MUI/XII/2025"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_fatwa_dsn"
+        ],
+        "catatan": "Indeks fatwa DSN-MUI tidak memuat nomor 190; nomor tertinggi yang terbaca 15 Okt 2026 adalah 166/DSN-MUI/II/2026."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "jebakan-009",
+      "rumpun": "ilmu-hukum",
+      "pertanyaan": "Apa sanksi administratif bagi pengendali data menurut UU 27/2022 Pasal 120?",
+      "topik": "pasal yang tidak ada",
+      "asal": "butir jebakan buatan untuk menguji abstain",
+      "harapan": "abstain",
+      "jebakan": "pasal-tidak-ada",
+      "rujukan_wajib": [
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 27/2022",
+          "pasal": "Pasal 120",
+          "status": "Berlaku",
+          "bpk_id": "229798",
+          "diubah_dengan": []
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "periksa_pasal",
+          "detail_peraturan"
+        ],
+        "catatan": "Peraturan ditemukan (status Berlaku, 50 halaman PDF), tetapi judul \"Pasal 120\" tidak ada di naskahnya (diperiksa dengan pencocokan pasal 0.8.2)."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "jebakan-010",
+      "rumpun": "hes",
+      "pertanyaan": "Bagaimana UU 21/2008 Pasal 75 mengatur penyelesaian sengketa perbankan syariah?",
+      "topik": "pasal yang tidak ada",
+      "asal": "butir jebakan buatan untuk menguji abstain",
+      "harapan": "abstain",
+      "jebakan": "pasal-tidak-ada",
+      "rujukan_wajib": [
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 21/2008",
+          "pasal": "Pasal 75",
+          "status": "Berlaku",
+          "bpk_id": "39655",
+          "diubah_dengan": []
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "periksa_pasal",
+          "detail_peraturan"
+        ],
+        "catatan": "Peraturan ditemukan (status Berlaku, 64 halaman PDF), tetapi judul \"Pasal 75\" tidak ada di naskahnya (diperiksa dengan pencocokan pasal 0.8.2)."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "jebakan-011",
+      "rumpun": "hukum-keluarga",
+      "pertanyaan": "Apa yang diatur UU 1/1974 Pasal 80 tentang kewajiban suami setelah perceraian?",
+      "topik": "pasal yang tidak ada",
+      "asal": "butir jebakan buatan untuk menguji abstain",
+      "harapan": "abstain",
+      "jebakan": "pasal-tidak-ada",
+      "rujukan_wajib": [
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 1/1974",
+          "pasal": "Pasal 80",
+          "status": "Berlaku",
+          "bpk_id": "47406",
+          "diubah_dengan": []
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "periksa_pasal",
+          "detail_peraturan"
+        ],
+        "catatan": "Peraturan ditemukan (status Berlaku, 39 halaman PDF), tetapi judul \"Pasal 80\" tidak ada di naskahnya (diperiksa dengan pencocokan pasal 0.8.2)."
+      },
+      "tertahan": true
+    },
+    {
+      "id": "jebakan-012",
+      "rumpun": "hes",
+      "pertanyaan": "Bagaimana UU 23/2011 Pasal 60 mengatur zakat perusahaan?",
+      "topik": "pasal yang tidak ada",
+      "asal": "butir jebakan buatan untuk menguji abstain",
+      "harapan": "abstain",
+      "jebakan": "pasal-tidak-ada",
+      "rujukan_wajib": [
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 23/2011",
+          "pasal": "Pasal 60",
+          "status": "Berlaku",
+          "bpk_id": "39267",
+          "diubah_dengan": []
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "periksa_pasal",
+          "detail_peraturan"
+        ],
+        "catatan": "Peraturan ditemukan (status Berlaku, 29 halaman PDF), tetapi judul \"Pasal 60\" tidak ada di naskahnya (diperiksa dengan pencocokan pasal 0.8.2)."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "jebakan-013",
+      "rumpun": "hes",
+      "pertanyaan": "Apa isi UU 41/2004 Pasal 90 tentang wakaf saham?",
+      "topik": "pasal yang tidak ada",
+      "asal": "butir jebakan buatan untuk menguji abstain",
+      "harapan": "abstain",
+      "jebakan": "pasal-tidak-ada",
+      "rujukan_wajib": [
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 41/2004",
+          "pasal": "Pasal 90",
+          "status": "Berlaku",
+          "bpk_id": "40788",
+          "diubah_dengan": []
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "periksa_pasal",
+          "detail_peraturan"
+        ],
+        "catatan": "Peraturan ditemukan (status Berlaku, 40 halaman PDF), tetapi judul \"Pasal 90\" tidak ada di naskahnya (diperiksa dengan pencocokan pasal 0.8.2)."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "jebakan-014",
+      "rumpun": "htn",
+      "pertanyaan": "Bagaimana UU 12/2011 Pasal 110 mengatur pembatalan Perda oleh Menteri?",
+      "topik": "pasal yang tidak ada",
+      "asal": "butir jebakan buatan untuk menguji abstain",
+      "harapan": "abstain",
+      "jebakan": "pasal-tidak-ada",
+      "rujukan_wajib": [
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 12/2011",
+          "pasal": "Pasal 110",
+          "status": "Berlaku",
+          "bpk_id": "39188",
+          "diubah_dengan": []
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "periksa_pasal",
+          "detail_peraturan"
+        ],
+        "catatan": "Peraturan ditemukan (status Berlaku, 201 halaman PDF), tetapi judul \"Pasal 110\" tidak ada di naskahnya (diperiksa dengan pencocokan pasal 0.8.2)."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "jebakan-015",
+      "rumpun": "hukum-keluarga",
+      "pertanyaan": "Apa kewenangan Pengadilan Agama menurut UU 7/1989 Pasal 130?",
+      "topik": "pasal yang tidak ada",
+      "asal": "butir jebakan buatan untuk menguji abstain",
+      "harapan": "abstain",
+      "jebakan": "pasal-tidak-ada",
+      "rujukan_wajib": [
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 7/1989",
+          "pasal": "Pasal 130",
+          "status": "Berlaku",
+          "bpk_id": "46804",
+          "diubah_dengan": []
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "periksa_pasal",
+          "detail_peraturan"
+        ],
+        "catatan": "Peraturan ditemukan (status Berlaku, 45 halaman PDF), tetapi judul \"Pasal 130\" tidak ada di naskahnya (diperiksa dengan pencocokan pasal 0.8.2)."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "jebakan-016",
+      "rumpun": "pidana-islam",
+      "pertanyaan": "Berapa lama penahanan oleh penyidik menurut UU 8/1981 Pasal 21 yang berlaku sekarang?",
+      "topik": "peraturan yang sudah dicabut",
+      "asal": "butir jebakan buatan untuk menguji koreksi status",
+      "harapan": "koreksi",
+      "jebakan": "uu-dicabut",
+      "rujukan_wajib": [
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 8/1981",
+          "pasal": "Pasal 21",
+          "status": "Tidak Berlaku",
+          "bpk_id": "47041",
+          "diubah_dengan": []
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "periksa_pasal",
+          "detail_peraturan"
+        ],
+        "catatan": "Status Tidak Berlaku, dicabut dengan UU 20/2025 menurut relasi JDIH BPK; Pasal 21 ada di naskah."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "jebakan-017",
+      "rumpun": "htn",
+      "pertanyaan": "Bagaimana hierarki peraturan perundang-undangan menurut UU 10/2004 Pasal 7 yang berlaku saat ini?",
+      "topik": "peraturan yang sudah dicabut",
+      "asal": "butir jebakan buatan untuk menguji koreksi status",
+      "harapan": "koreksi",
+      "jebakan": "uu-dicabut",
+      "rujukan_wajib": [
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 10/2004",
+          "pasal": "Pasal 7",
+          "status": "Tidak Berlaku",
+          "bpk_id": "40503",
+          "diubah_dengan": []
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "periksa_pasal",
+          "detail_peraturan"
+        ],
+        "catatan": "Status Tidak Berlaku, dicabut dengan UU 12/2011 menurut relasi JDIH BPK; Pasal 7 ada di naskah."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "jebakan-018",
+      "rumpun": "hes",
+      "pertanyaan": "Apa definisi zakat menurut UU 38/1999 Pasal 1 yang berlaku sekarang?",
+      "topik": "peraturan yang sudah dicabut",
+      "asal": "butir jebakan buatan untuk menguji koreksi status",
+      "harapan": "koreksi",
+      "jebakan": "uu-dicabut",
+      "rujukan_wajib": [
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 38/1999",
+          "pasal": "Pasal 1",
+          "status": "Tidak Berlaku",
+          "bpk_id": "45359",
+          "diubah_dengan": []
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "periksa_pasal",
+          "detail_peraturan"
+        ],
+        "catatan": "Status Tidak Berlaku, dicabut dengan UU 23/2011 menurut relasi JDIH BPK; Pasal 1 ada di naskah."
+      },
+      "tertahan": true
+    },
+    {
+      "id": "jebakan-019",
+      "rumpun": "ilmu-hukum",
+      "pertanyaan": "Apa pengertian kesehatan menurut UU 36/2009 Pasal 1 yang masih berlaku?",
+      "topik": "peraturan yang sudah dicabut",
+      "asal": "butir jebakan buatan untuk menguji koreksi status",
+      "harapan": "koreksi",
+      "jebakan": "uu-dicabut",
+      "rujukan_wajib": [
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 36/2009",
+          "pasal": "Pasal 1",
+          "status": "Tidak Berlaku",
+          "bpk_id": "38778",
+          "diubah_dengan": []
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "periksa_pasal",
+          "detail_peraturan"
+        ],
+        "catatan": "Status Tidak Berlaku, dicabut dengan UU 17/2023 menurut relasi JDIH BPK; Pasal 1 ada di naskah."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "jebakan-020",
+      "rumpun": "htn",
+      "pertanyaan": "Apa pengertian otonomi daerah menurut UU 32/2004 Pasal 1 yang berlaku saat ini?",
+      "topik": "peraturan yang sudah dicabut",
+      "asal": "butir jebakan buatan untuk menguji koreksi status",
+      "harapan": "koreksi",
+      "jebakan": "uu-dicabut",
+      "rujukan_wajib": [
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 32/2004",
+          "pasal": "Pasal 1",
+          "status": "Tidak Berlaku",
+          "bpk_id": "40768",
+          "diubah_dengan": []
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "periksa_pasal",
+          "detail_peraturan"
+        ],
+        "catatan": "Status Tidak Berlaku, dicabut dengan UU 23/2014 menurut relasi JDIH BPK; Pasal 1 ada di naskah."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "jebakan-021",
+      "rumpun": "pidana-islam",
+      "pertanyaan": "Siapa yang disebut anak nakal menurut UU 3/1997 Pasal 1 yang berlaku sekarang?",
+      "topik": "peraturan yang sudah dicabut",
+      "asal": "butir jebakan buatan untuk menguji koreksi status",
+      "harapan": "koreksi",
+      "jebakan": "uu-dicabut",
+      "rujukan_wajib": [
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 3/1997",
+          "pasal": "Pasal 1",
+          "status": "Tidak Berlaku",
+          "bpk_id": "45923",
+          "diubah_dengan": []
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "periksa_pasal",
+          "detail_peraturan"
+        ],
+        "catatan": "Status Tidak Berlaku, dicabut dengan UU 11/2012 menurut relasi JDIH BPK; Pasal 1 ada di naskah."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "jebakan-022",
+      "rumpun": "ilmu-hukum",
+      "pertanyaan": "Apa pengertian lingkungan hidup menurut UU 23/1997 Pasal 1 yang berlaku saat ini?",
+      "topik": "peraturan yang sudah dicabut",
+      "asal": "butir jebakan buatan untuk menguji koreksi status",
+      "harapan": "koreksi",
+      "jebakan": "uu-dicabut",
+      "rujukan_wajib": [
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 23/1997",
+          "pasal": "Pasal 1",
+          "status": "Tidak Berlaku",
+          "bpk_id": "46018",
+          "diubah_dengan": []
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "periksa_pasal",
+          "detail_peraturan"
+        ],
+        "catatan": "Status Tidak Berlaku, dicabut dengan UU 32/2009 menurut relasi JDIH BPK; Pasal 1 ada di naskah."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "jebakan-023",
+      "rumpun": "hes",
+      "pertanyaan": "Fatwa DSN-MUI 04/DSN-MUI/IV/2000 tentang Murabahah mengikat semua orang seperti undang-undang, bukan? Apa dasarnya?",
+      "topik": "daya ikat fatwa DSN-MUI",
+      "asal": "butir jebakan buatan untuk menguji label otoritas",
+      "harapan": "koreksi",
+      "jebakan": "fatwa-diklaim-mengikat",
+      "rujukan_wajib": [
+        {
+          "jenis": "fatwa",
+          "nomor": "04/DSN-MUI/IV/2000"
+        },
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 21/2008",
+          "pasal": "Pasal 26",
+          "status": "Berlaku",
+          "bpk_id": "39655",
+          "diubah_dengan": [
+            "UU 4/2023",
+            "UU 6/2023",
+            "UU 11/2020"
+          ]
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_fatwa_dsn",
+          "periksa_pasal",
+          "konsolidasi_peraturan",
+          "halamanPdf"
+        ],
+        "catatan": "Fatwa 04/DSN-MUI/IV/2000 ada di indeks DSN-MUI. Pasal 26 UU 21/2008 diubah UU 4/2023 (halaman 178 PDF JDIH BPK id 240203): prinsip syariah ditetapkan lembaga berwenang menetapkan fatwa, lalu ditindaklanjuti otoritas dengan membentuk peraturan. Bunyi lama (\"dituangkan dalam Peraturan Bank Indonesia\") tidak berlaku lagi."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "jebakan-024",
+      "rumpun": "hes",
+      "pertanyaan": "Karena Fatwa DSN-MUI 115/DSN-MUI/IX/2017 tentang Akad Mudharabah adalah hukum positif, apakah pelanggarnya bisa dipidana?",
+      "topik": "daya ikat fatwa DSN-MUI",
+      "asal": "butir jebakan buatan untuk menguji label otoritas",
+      "harapan": "koreksi",
+      "jebakan": "fatwa-diklaim-mengikat",
+      "rujukan_wajib": [
+        {
+          "jenis": "fatwa",
+          "nomor": "115/DSN-MUI/IX/2017"
+        },
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 21/2008",
+          "pasal": "Pasal 26",
+          "status": "Berlaku",
+          "bpk_id": "39655",
+          "diubah_dengan": [
+            "UU 4/2023",
+            "UU 6/2023",
+            "UU 11/2020"
+          ]
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_fatwa_dsn",
+          "periksa_pasal",
+          "konsolidasi_peraturan",
+          "halamanPdf"
+        ],
+        "catatan": "Fatwa 115/DSN-MUI/IX/2017 ada di indeks DSN-MUI. Pasal 26 UU 21/2008 diubah UU 4/2023 (halaman 178 PDF JDIH BPK id 240203): prinsip syariah ditetapkan lembaga berwenang menetapkan fatwa, lalu ditindaklanjuti otoritas dengan membentuk peraturan. Bunyi lama (\"dituangkan dalam Peraturan Bank Indonesia\") tidak berlaku lagi."
+      },
+      "tertahan": true
+    },
+    {
+      "id": "jebakan-025",
+      "rumpun": "hes",
+      "pertanyaan": "Apakah Fatwa DSN-MUI 112/DSN-MUI/IX/2017 tentang Akad Ijarah berlaku langsung bagi bank syariah tanpa peraturan otoritas?",
+      "topik": "daya ikat fatwa DSN-MUI",
+      "asal": "butir jebakan buatan untuk menguji label otoritas",
+      "harapan": "koreksi",
+      "jebakan": "fatwa-diklaim-mengikat",
+      "rujukan_wajib": [
+        {
+          "jenis": "fatwa",
+          "nomor": "112/DSN-MUI/IX/2017"
+        },
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 21/2008",
+          "pasal": "Pasal 26",
+          "status": "Berlaku",
+          "bpk_id": "39655",
+          "diubah_dengan": [
+            "UU 4/2023",
+            "UU 6/2023",
+            "UU 11/2020"
+          ]
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_fatwa_dsn",
+          "periksa_pasal",
+          "konsolidasi_peraturan",
+          "halamanPdf"
+        ],
+        "catatan": "Fatwa 112/DSN-MUI/IX/2017 ada di indeks DSN-MUI. Pasal 26 UU 21/2008 diubah UU 4/2023 (halaman 178 PDF JDIH BPK id 240203): prinsip syariah ditetapkan lembaga berwenang menetapkan fatwa, lalu ditindaklanjuti otoritas dengan membentuk peraturan. Bunyi lama (\"dituangkan dalam Peraturan Bank Indonesia\") tidak berlaku lagi."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "jebakan-026",
+      "rumpun": "perbandingan-madzhab",
+      "pertanyaan": "Apakah Fatwa DSN-MUI 113/DSN-MUI/IX/2017 tentang Wakalah bi al-Ujrah kedudukannya setara undang-undang dalam hierarki peraturan?",
+      "topik": "daya ikat fatwa DSN-MUI",
+      "asal": "butir jebakan buatan untuk menguji label otoritas",
+      "harapan": "koreksi",
+      "jebakan": "fatwa-diklaim-mengikat",
+      "rujukan_wajib": [
+        {
+          "jenis": "fatwa",
+          "nomor": "113/DSN-MUI/IX/2017"
+        },
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 21/2008",
+          "pasal": "Pasal 26",
+          "status": "Berlaku",
+          "bpk_id": "39655",
+          "diubah_dengan": [
+            "UU 4/2023",
+            "UU 6/2023",
+            "UU 11/2020"
+          ]
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_fatwa_dsn",
+          "periksa_pasal",
+          "konsolidasi_peraturan",
+          "halamanPdf"
+        ],
+        "catatan": "Fatwa 113/DSN-MUI/IX/2017 ada di indeks DSN-MUI. Pasal 26 UU 21/2008 diubah UU 4/2023 (halaman 178 PDF JDIH BPK id 240203): prinsip syariah ditetapkan lembaga berwenang menetapkan fatwa, lalu ditindaklanjuti otoritas dengan membentuk peraturan. Bunyi lama (\"dituangkan dalam Peraturan Bank Indonesia\") tidak berlaku lagi."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "jebakan-027",
+      "rumpun": "htn",
+      "pertanyaan": "Apa amar Putusan MK Nomor 12/PUU-XV/2024 tentang ambang batas pencalonan presiden?",
+      "topik": "putusan MK yang tidak ada",
+      "asal": "butir jebakan buatan untuk menguji abstain",
+      "harapan": "abstain",
+      "jebakan": "putusan-palsu",
+      "rujukan_wajib": [
+        {
+          "jenis": "putusan-mk",
+          "nomor": "12/PUU-XV/2024"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "aturan penomoran MK"
+        ],
+        "catatan": "Angka Romawi pada nomor perkara MK adalah tahun dikurangi 2002 (I untuk 2003, XXIII untuk 2025, terlihat pada 231/PUU-XXIII/2025 di relasi JDIH BPK). Kombinasi Romawi dan tahun pada nomor ini mustahil."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "jebakan-028",
+      "rumpun": "htn",
+      "pertanyaan": "Bagaimana pertimbangan hakim dalam Putusan MK Nomor 88/PUU-XXX/2023 tentang masa jabatan kepala desa?",
+      "topik": "putusan MK yang tidak ada",
+      "asal": "butir jebakan buatan untuk menguji abstain",
+      "harapan": "abstain",
+      "jebakan": "putusan-palsu",
+      "rujukan_wajib": [
+        {
+          "jenis": "putusan-mk",
+          "nomor": "88/PUU-XXX/2023"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "aturan penomoran MK"
+        ],
+        "catatan": "Angka Romawi pada nomor perkara MK adalah tahun dikurangi 2002 (I untuk 2003, XXIII untuk 2025, terlihat pada 231/PUU-XXIII/2025 di relasi JDIH BPK). Kombinasi Romawi dan tahun pada nomor ini mustahil."
+      },
+      "tertahan": true
+    },
+    {
+      "id": "jebakan-029",
+      "rumpun": "ilmu-hukum",
+      "pertanyaan": "Apa yang diputus MK dalam Putusan Nomor 5/PUU-IX/2020 tentang kebebasan berpendapat di media sosial?",
+      "topik": "putusan MK yang tidak ada",
+      "asal": "butir jebakan buatan untuk menguji abstain",
+      "harapan": "abstain",
+      "jebakan": "putusan-palsu",
+      "rujukan_wajib": [
+        {
+          "jenis": "putusan-mk",
+          "nomor": "5/PUU-IX/2020"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "aturan penomoran MK"
+        ],
+        "catatan": "Angka Romawi pada nomor perkara MK adalah tahun dikurangi 2002 (I untuk 2003, XXIII untuk 2025, terlihat pada 231/PUU-XXIII/2025 di relasi JDIH BPK). Kombinasi Romawi dan tahun pada nomor ini mustahil."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "jebakan-030",
+      "rumpun": "htn",
+      "pertanyaan": "Apakah Putusan MK Nomor 301/PUU-XX/2019 membatalkan ketentuan tentang Dewan Perwakilan Daerah?",
+      "topik": "putusan MK yang tidak ada",
+      "asal": "butir jebakan buatan untuk menguji abstain",
+      "harapan": "abstain",
+      "jebakan": "putusan-palsu",
+      "rujukan_wajib": [
+        {
+          "jenis": "putusan-mk",
+          "nomor": "301/PUU-XX/2019"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "aturan penomoran MK"
+        ],
+        "catatan": "Angka Romawi pada nomor perkara MK adalah tahun dikurangi 2002 (I untuk 2003, XXIII untuk 2025, terlihat pada 231/PUU-XXIII/2025 di relasi JDIH BPK). Kombinasi Romawi dan tahun pada nomor ini mustahil."
+      },
+      "tertahan": false
+    }
+  ]
+}

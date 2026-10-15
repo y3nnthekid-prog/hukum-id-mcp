@@ -19,6 +19,12 @@ const DIR = cacheDirectory();
 
 const HARI = 24 * 60 * 60 * 1000;
 
+// Mode snapshot beku untuk evaluasi yang bisa diulang: entri cache dipakai berapa pun umurnya,
+// sehingga dua putaran evaluasi membaca salinan sumber yang persis sama.
+function cacheBeku() {
+  return process.env.HUKUM_CACHE_BEKU === "1";
+}
+
 /** Umur simpan ditentukan seberapa mungkin isinya berubah. */
 export function umurSimpan(url) {
   if (/\.pdf(\?|$)/i.test(url) || /\/Download\//i.test(url) || /putusan\/download\//i.test(url))
@@ -38,7 +44,7 @@ export async function ambil(kunci, ttlMs) {
   const p = berkas(kunci, ".bin");
   try {
     const st = await stat(p);
-    if (Date.now() - st.mtimeMs > ttlMs) return null;
+    if (!cacheBeku() && Date.now() - st.mtimeMs > ttlMs) return null;
     return await readFile(p);
   } catch {
     return null;
@@ -67,7 +73,7 @@ export async function ambilJson(kunci, ttlMs) {
   const p = berkas(kunci, ".json");
   try {
     const st = await stat(p);
-    if (Date.now() - st.mtimeMs > ttlMs) return null;
+    if (!cacheBeku() && Date.now() - st.mtimeMs > ttlMs) return null;
     return JSON.parse(await readFile(p, "utf8"));
   } catch {
     return null;

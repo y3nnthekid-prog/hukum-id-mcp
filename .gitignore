@@ -10,3 +10,5 @@ web/tsconfig.tsbuildinfo
 *.pem
 *.key
 *.tgz
+eval/hasil/
+eval/snapshot*/
