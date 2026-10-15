@@ -90,35 +90,38 @@
     {
       "id": "htn-006",
       "rumpun": "htn",
-      "pertanyaan": "Bagaimana kedudukan dan kekuatan mengikat peraturan yang ditetapkan lembaga seperti MA, MK, BPK, Bank Indonesia, atau menteri, yang tidak tercantum dalam hierarki peraturan perundang-undangan?",
-      "topik": "jenis peraturan perundang-undangan di luar hierarki",
-      "asal": "topik baku mata kuliah Ilmu Perundang-undangan",
+      "pertanyaan": "Apakah Menteri Dalam Negeri dan gubernur masih berwenang membatalkan Peraturan Daerah melalui executive review sebagaimana diatur undang-undang pemerintahan daerah, dan bagaimana kedudukan pembatalan peraturan kepala daerah?",
+      "topik": "otonomi daerah, pembatalan Perda",
+      "asal": "topik baku mata kuliah Hukum Pemerintahan Daerah",
       "harapan": "jawab",
       "rujukan_wajib": [
-        {"jenis": "peraturan", "rujukan": "UU 12/2011", "pasal": "Pasal 8", "status": "Berlaku", "bpk_id": "39188", "diubah_dengan": ["UU 1/2026", "UU 13/2022", "UU 15/2019"]}
+        {"jenis": "peraturan", "rujukan": "UU 23/2014", "pasal": "Pasal 251", "status": "Berlaku", "bpk_id": "38685", "diubah_dengan": ["UU 1/2026", "UU 6/2023", "UU 11/2020", "PERPU 1/2020", "UU 9/2015", "UU 2/2015"]},
+        {"jenis": "putusan-mk", "nomor": "137/PUU-XIII/2015"},
+        {"jenis": "putusan-mk", "nomor": "56/PUU-XIV/2016"}
       ],
       "verifikasi": {
-        "tanggal": "2026-10-15",
-        "alat": ["periksa_pasal"],
-        "catatan": "Pasal 8 ayat (1) dan (2) terbaca hlm. 7: diakui dan mengikat sepanjang diperintahkan peraturan lebih tinggi atau dibentuk berdasarkan kewenangan."
+        "tanggal": "2026-10-16",
+        "alat": ["periksa_pasal", "detail_peraturan", "cari_dalam_pdf", "teks_peraturan"],
+        "catatan": "Pasal 251 ayat (1) dan (2) terbaca di PDF UU 23/2014 hlm. 134. Nomor putusan dari daftar uji materi JDIH BPK untuk UU 23/2014 (sumber JDIH BPK, bukan JDIHN). 137/PUU-XIII/2015 (https://peraturan.bpk.go.id/DownloadUjiMateri/29/137_PUU-XIII_2015.pdf): konklusi hlm. 210 menyatakan dalil atas Pasal 251 sepanjang pembatalan Perda Kabupaten/Kota beralasan, sedangkan pembatalan peraturan bupati/wali kota tetap konstitusional (hlm. 208). 56/PUU-XIV/2016 (https://peraturan.bpk.go.id/DownloadUjiMateri/12/56_PUU-XIV_2016.pdf): hlm. 99 sampai 101, pembatalan Perda Provinsi juga inkonstitusional, pembatalan peraturan gubernur tidak beralasan, dikabulkan sebagian."
       },
       "tertahan": false
     },
     {
       "id": "htn-007",
       "rumpun": "htn",
-      "pertanyaan": "Bagaimana pengaturan partisipasi masyarakat yang bermakna dalam pembentukan peraturan perundang-undangan setelah perubahan kedua undang-undang pembentukan peraturan perundang-undangan, termasuk siapa yang dimaksud masyarakat dan cara pemberian masukan?",
+      "pertanyaan": "Bagaimana pengaturan partisipasi masyarakat yang bermakna dalam pembentukan peraturan perundang-undangan setelah perubahan kedua undang-undang pembentukan peraturan perundang-undangan, termasuk siapa yang dimaksud masyarakat, dan dari putusan Mahkamah Konstitusi mana konsep tiga hak dalam partisipasi bermakna berasal?",
       "topik": "pembentukan UU dan partisipasi bermakna",
       "asal": "topik baku mata kuliah Ilmu Perundang-undangan",
       "harapan": "jawab",
       "rujukan_wajib": [
         {"jenis": "peraturan", "rujukan": "UU 12/2011", "pasal": "Pasal 96", "status": "Berlaku", "bpk_id": "39188", "diubah_dengan": ["UU 1/2026", "UU 13/2022", "UU 15/2019"]},
-        {"jenis": "peraturan", "rujukan": "UU 13/2022", "status": "Berlaku", "bpk_id": "212810", "diubah_dengan": ["UU 1/2026"]}
+        {"jenis": "peraturan", "rujukan": "UU 13/2022", "status": "Berlaku", "bpk_id": "212810", "diubah_dengan": ["UU 1/2026"]},
+        {"jenis": "putusan-mk", "nomor": "91/PUU-XVIII/2020"}
       ],
       "verifikasi": {
-        "tanggal": "2026-10-15",
-        "alat": ["konsolidasi_peraturan", "detail_peraturan"],
-        "catatan": "Pasal 96 diubah UU 13/2022 angka 14 (hlm. 8 sampai 9): masukan dalam setiap tahapan, daring dan/atau luring, masyarakat terdampak langsung dan/atau berkepentingan, naskah akademik mudah diakses. Teks asli 2011 tidak lagi berlaku untuk pasal ini."
+        "tanggal": "2026-10-16",
+        "alat": ["konsolidasi_peraturan", "detail_peraturan", "cari_dalam_pdf"],
+        "catatan": "Pasal 96 diubah UU 13/2022 angka 14 (hlm. 8 sampai 9): masukan dalam setiap tahapan, daring dan/atau luring, masyarakat terdampak langsung dan/atau berkepentingan, naskah akademik mudah diakses. Teks asli 2011 tidak lagi berlaku untuk pasal ini. Putusan 91/PUU-XVIII/2020 tercantum dalam daftar uji materi JDIH BPK untuk UU 11/2020 (berstatus Tidak Berlaku); PDF https://peraturan.bpk.go.id/DownloadUjiMateri/160/putusan_mkri_8240.pdf hlm. 393 memuat tiga prasyarat: hak untuk didengar, dipertimbangkan, dan mendapat penjelasan."
       },
       "tertahan": false
     },
@@ -194,17 +197,18 @@
     {
       "id": "htn-012",
       "rumpun": "htn",
-      "pertanyaan": "Apa saja wewenang Komisi Yudisial menurut undang-undang yang berlaku sekarang, termasuk perannya terkait hakim ad hoc dan Kode Etik dan Pedoman Perilaku Hakim?",
+      "pertanyaan": "Apa saja wewenang Komisi Yudisial menurut undang-undang yang berlaku sekarang, dan apakah pengawasan perilaku hakim oleh Komisi Yudisial mencakup hakim agung dan hakim konstitusi?",
       "topik": "lembaga negara, Komisi Yudisial",
       "asal": "topik baku mata kuliah Hukum Tata Negara",
       "harapan": "jawab",
       "rujukan_wajib": [
-        {"jenis": "peraturan", "rujukan": "UU 22/2004", "pasal": "Pasal 13", "status": "Berlaku", "bpk_id": "40523", "diubah_dengan": ["UU 18/2011"]}
+        {"jenis": "peraturan", "rujukan": "UU 22/2004", "pasal": "Pasal 13", "status": "Berlaku", "bpk_id": "40523", "diubah_dengan": ["UU 18/2011"]},
+        {"jenis": "putusan-mk", "nomor": "005/PUU-IV/2006"}
       ],
       "verifikasi": {
         "tanggal": "2026-10-16",
-        "alat": ["periksa_pasal", "konsolidasi_peraturan"],
-        "catatan": "Pasal 13 asli hanya dua huruf; UU 18/2011 angka 6 mengubahnya menjadi empat huruf (usul hakim agung dan hakim ad hoc di MA, menjaga dan menegakkan kehormatan, menetapkan KEPPH bersama MA, menegakkan KEPPH)."
+        "alat": ["periksa_pasal", "konsolidasi_peraturan", "detail_peraturan", "teks_peraturan"],
+        "catatan": "Pasal 13 asli hanya dua huruf; UU 18/2011 angka 6 mengubahnya menjadi empat huruf (usul hakim agung dan hakim ad hoc di MA, menjaga dan menegakkan kehormatan, menetapkan KEPPH bersama MA, menegakkan KEPPH). Putusan 005/PUU-IV/2006 dari daftar uji materi JDIH BPK untuk UU 22/2004; PDF https://peraturan.bpk.go.id/DownloadUjiMateri/119/putusan_sidang_Putusan005PUUIV06MA%20KY.pdf hlm. 199: hakim konstitusi tidak termasuk hakim yang diawasi KY, sedangkan dalil mengenai hakim agung tidak beralasan."
       },
       "tertahan": false
     },
@@ -403,35 +407,36 @@
     {
       "id": "htn-024",
       "rumpun": "htn",
-      "pertanyaan": "Berapa lama tenggat bagi peserta Pemilu anggota DPR, DPD, dan DPRD untuk mengajukan permohonan perselisihan hasil ke Mahkamah Konstitusi, dan apakah permohonan yang kurang lengkap masih dapat diperbaiki?",
-      "topik": "pemilu dan sengketa hasil",
+      "pertanyaan": "Apakah ketentuan ambang batas pencalonan presiden dan wakil presiden (presidential threshold) dalam undang-undang pemilu masih berlaku sebagai syarat pengusulan pasangan calon oleh partai politik?",
+      "topik": "pemilu, ambang batas pencalonan presiden",
       "asal": "topik baku mata kuliah Hukum Pemilu",
       "harapan": "jawab",
       "rujukan_wajib": [
-        {"jenis": "peraturan", "rujukan": "UU 7/2017", "pasal": "Pasal 474", "status": "Berlaku", "bpk_id": "37644", "diubah_dengan": ["UU 7/2023", "PERPU 1/2022"]}
+        {"jenis": "peraturan", "rujukan": "UU 7/2017", "pasal": "Pasal 222", "status": "Berlaku", "bpk_id": "37644", "diubah_dengan": ["UU 7/2023", "PERPU 1/2022"]},
+        {"jenis": "putusan-mk", "nomor": "62/PUU-XXII/2024"}
       ],
       "verifikasi": {
         "tanggal": "2026-10-16",
-        "alat": ["detail_peraturan", "cari_dalam_pdf"],
-        "catatan": "Pasal 474 ayat (2) sampai (4) terbaca hlm. 283 PDF bagian kedua: 3 x 24 jam sejak pengumuman penetapan nasional, perbaikan 3 x 24 jam. Ayat (1) tidak terbaca utuh."
+        "alat": ["detail_peraturan", "cari_dalam_pdf", "teks_peraturan"],
+        "catatan": "Pasal 222 (20 persen kursi atau 25 persen suara sah) terbaca di PDF batang tubuh hlm. 1 sampai 150, hlm. 147 (lapisan teks menulis Pasal222). Nomor putusan dari daftar uji materi JDIH BPK untuk UU 7/2017; PDF https://peraturan.bpk.go.id/DownloadUjiMateri/181/62-PUU-XXII-2024.pdf hlm. 277: amar menyatakan norma Pasal 222 bertentangan dengan UUD 1945 dan tidak mempunyai kekuatan hukum mengikat."
       },
       "tertahan": false
     },
     {
       "id": "htn-025",
       "rumpun": "htn",
-      "pertanyaan": "Asas apa saja yang harus dipenuhi dalam membentuk peraturan perundang-undangan yang baik, dan asas apa yang harus tercermin dalam materi muatannya?",
-      "topik": "asas pembentukan peraturan perundang-undangan",
-      "asal": "topik baku mata kuliah Ilmu Perundang-undangan",
+      "pertanyaan": "Apakah pemilu anggota DPRD serta pemilihan kepala daerah masih harus digelar serentak dalam satu waktu dengan pemilu DPR, DPD, dan Presiden, atau kini dipisahkan, dan berapa jarak waktunya?",
+      "topik": "pemilu, keserentakan pemilu nasional dan daerah",
+      "asal": "topik baku mata kuliah Hukum Pemilu",
       "harapan": "jawab",
       "rujukan_wajib": [
-        {"jenis": "peraturan", "rujukan": "UU 12/2011", "pasal": "Pasal 6", "status": "Berlaku", "bpk_id": "39188", "diubah_dengan": ["UU 1/2026", "UU 13/2022", "UU 15/2019"]},
-        {"jenis": "peraturan", "rujukan": "UU 12/2011", "pasal": "Pasal 5", "status": "Berlaku", "bpk_id": "39188", "diubah_dengan": ["UU 1/2026", "UU 13/2022", "UU 15/2019"]}
+        {"jenis": "peraturan", "rujukan": "UU 7/2017", "pasal": "Pasal 167", "status": "Berlaku", "bpk_id": "37644", "diubah_dengan": ["UU 7/2023", "PERPU 1/2022"]},
+        {"jenis": "putusan-mk", "nomor": "135/PUU-XXII/2024"}
       ],
       "verifikasi": {
         "tanggal": "2026-10-16",
-        "alat": ["periksa_pasal", "cari_dalam_pdf"],
-        "catatan": "Pasal 5 huruf a sampai g (hlm. 5) dan Pasal 6 ayat (1) huruf a sampai j serta ayat (2) (hlm. 6) terbaca. UU 13/2022 angka 1 mengubah Penjelasan Pasal 5 huruf g (keterbukaan), bukan batang tubuhnya. Penanda UU 1/2026 dan UU 15/2019 menyentuh Pasal 5 adalah positif palsu (konsiderans dan Pasal 54)."
+        "alat": ["detail_peraturan", "cari_dalam_pdf", "teks_peraturan"],
+        "catatan": "Pasal 167 ayat (3) terbaca hlm. 116 PDF batang tubuh bagian pertama. Nomor putusan dari daftar uji materi JDIH BPK untuk UU 7/2017; PDF https://peraturan.bpk.go.id/DownloadUjiMateri/196/putusan_mkri_%20135_PUU-XXII_2024.pdf hlm. 145: Pasal 167 ayat (3) inkonstitusional bersyarat; pemungutan suara daerah paling singkat 2 tahun atau paling lama 2 tahun 6 bulan sejak pelantikan DPR/DPD atau Presiden. Pertimbangan hlm. 144 juga menyentuh Pasal 1 ayat (1) dan Pasal 347 ayat (1) UU 7/2017 serta Pasal 3 ayat (1) UU 8/2015."
       },
       "tertahan": false
     }
