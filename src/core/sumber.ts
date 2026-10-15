@@ -160,7 +160,7 @@ export function createSumberService(adapters: SumberAdapters, signer: Signer) {
     const dicabutDengan = relationLabels(raw, "Dicabut dengan");
     const peringatan: string[] = Array.isArray(raw.peringatan) ? raw.peringatan.map(String) : [];
     const ujiMateri = (Array.isArray(raw.uji_materi_menurut_bpk) ? raw.uji_materi_menurut_bpk : [])
-      .map((item: Legacy) => ({ nomor: String(item.nomor ?? "").replace(/s+/g, ""), url: String(item.url ?? "") }))
+      .map((item: Legacy) => ({ nomor: String(item.nomor ?? "").replace(/\s+/g, ""), url: String(item.url ?? "") }))
       .filter((item: { nomor: string; url: string }) => item.nomor && item.url);
     const sumber = {
       ujiMateri,
