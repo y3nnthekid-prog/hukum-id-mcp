@@ -230,3 +230,28 @@ test("AI research accepts ephemeral BYOK and drops unsupported provider claims",
   assert.equal(body.data.claims.length, 1);
   assert.doesNotMatch(JSON.stringify(body), /ephemeral-key/);
 });
+
+test("source status probes run at most once per window for all callers", async () => {
+  let calls = 0;
+  const app = createApiApp({
+    service: {
+      ...service,
+      getSourceStatus: async () => {
+        calls += 1;
+        return { hasil: [] };
+      },
+    } as any,
+  });
+
+  const responses = await Promise.all([
+    app.request("/v1/sources/status"),
+    app.request("/v1/sources/status"),
+    app.request("/v1/sources/status"),
+  ]);
+  await app.request("/v1/sources/status");
+
+  assert.equal(calls, 1);
+  assert.ok(responses.every((response) => response.status === 200));
+  const body = await responses[0]!.json();
+  assert.equal(typeof body.meta.checkedAt, "string");
+});

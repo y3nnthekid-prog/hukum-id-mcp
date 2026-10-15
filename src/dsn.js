@@ -132,8 +132,8 @@ export async function teksFatwaDsn({ rujukan, cari = "", halaman_awal = 1, halam
     ? `https://drive.google.com/uc?export=download&id=${id}${kunci ? `&resourcekey=${kunci}` : ""}`
     : url;
 
-  const { getBuffer } = await import("./http.js");
-  const buffer = await getBuffer(urlUnduh, { timeout: 120000 });
+  const { getBufferBersumber } = await import("./http.js");
+  const { buffer, dari_cache, diambil_pada } = await getBufferBersumber(urlUnduh, { timeout: 120000 });
   if (buffer.slice(0, 5).toString("utf8") !== "%PDF-") {
     throw new Error(
       `Google Drive tidak mengembalikan PDF untuk fatwa ini (kemungkinan tautan lama yang menuntut " +
@@ -142,7 +142,15 @@ export async function teksFatwaDsn({ rujukan, cari = "", halaman_awal = 1, halam
   }
 
   const { ekstrakTeksPdf } = await import("./pdf.js");
-  const hasil = await ekstrakTeksPdf({ buffer, url_pdf: urlUnduh, cari, halaman_awal, halaman_akhir, maks_karakter });
+  const hasil = await ekstrakTeksPdf({
+    buffer,
+    url_pdf: urlUnduh,
+    cari,
+    halaman_awal,
+    halaman_akhir,
+    maks_karakter,
+    asal: { dari_cache, diambil_pada },
+  });
   return { sumber: "DSN-MUI", url_tampilan: url, ...hasil };
 }
 

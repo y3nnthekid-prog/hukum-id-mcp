@@ -204,6 +204,22 @@ export function isClaimSupportedByEvidence(claimText: string, evidence: Evidence
   return overlap >= 0.75 && matchingWords >= 3;
 }
 
+/**
+ * Pecah teks menjadi kalimat tanpa memotong singkatan hukum yang lazim ("No.", "huruf a.",
+ * "jo.") dan nomor bertitik.
+ */
+const SENTENCE_DOT = ""; // karakter area pribadi Unicode, tidak muncul di teks hukum
+
+export function splitSentences(text: string) {
+  const protectedText = String(text)
+    .replace(/\b(No|Nomor|jo|Jo|hlm|cet|dkk|dll|dsb|Tbk|Ps|ayat|huruf)\./g, `$1${SENTENCE_DOT}`)
+    .replace(/(\d)\.(\d)/g, `$1${SENTENCE_DOT}$2`);
+  return protectedText
+    .split(/(?<=[.!?])\s+(?=[A-Z0-9"“(])/u)
+    .map((sentence) => sentence.split(SENTENCE_DOT).join(".").trim())
+    .filter(Boolean);
+}
+
 type ResearchResultInput = {
   query: string;
   summary?: string;
@@ -243,17 +259,48 @@ export function createResearchResult(input: ResearchResultInput): ResearchResult
         ? "complete"
         : "partial";
 
+  // Ringkasan dan catatan konflik dari AI diperlakukan seperti klaim: setiap kalimatnya harus
+  // didukung bukti yang dikutip klaim yang lolos. Kalimat yang tidak didukung dibuang, bukan
+  // ditampilkan sebagai teks bebas di samping klaim yang sudah divalidasi.
+  const citedEvidence = [
+    ...new Map(
+      supportedClaims.flatMap((claim) => claim.evidenceIds).map((id) => [id, knownEvidence.get(id)!] as const)
+    ).values(),
+  ];
+  const supportedSentences = (text: string) =>
+    splitSentences(text).filter((sentence) => isClaimSupportedByEvidence(sentence, citedEvidence));
+
+  let summary = "Bukti yang tersedia belum cukup untuk menyusun simpulan.";
+  if (status !== "insufficient_evidence") {
+    const fallback = supportedClaims.map((claim) => claim.text).join(" ");
+    const proposed = splitSentences(input.summary ?? "");
+    const kept = supportedSentences(input.summary ?? "");
+    if (proposed.length > kept.length) {
+      warnings.push(
+        `${proposed.length - kept.length} kalimat ringkasan AI dibuang karena tidak didukung bukti yang dikutip.`
+      );
+    }
+    summary = kept.length ? kept.join(" ") : fallback;
+  }
+
+  const conflicts =
+    status === "insufficient_evidence"
+      ? []
+      : (input.conflicts ?? []).filter((item) => supportedSentences(item).length === splitSentences(item).length);
+  if ((input.conflicts ?? []).length > conflicts.length) {
+    warnings.push(
+      `${(input.conflicts ?? []).length - conflicts.length} catatan konflik AI dibuang karena tidak didukung bukti yang dikutip.`
+    );
+  }
+
   return ResearchResultSchema.parse({
     traceId: input.traceId ?? randomUUID(),
     query: input.query,
     status,
-    summary:
-      status === "insufficient_evidence"
-        ? "Bukti yang tersedia belum cukup untuk menyusun simpulan."
-        : input.summary ?? supportedClaims.map((claim) => claim.text).join(" "),
+    summary,
     claims: supportedClaims,
     evidence,
-    conflicts: input.conflicts ?? [],
+    conflicts,
     warnings,
     coverage,
     confidence: status === "insufficient_evidence" ? 0 : Math.round(coverage * 100) / 100,

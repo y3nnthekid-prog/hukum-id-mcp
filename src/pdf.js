@@ -5,8 +5,8 @@
 // ekstraksinya disimpan per dokumen, lalu penyaringan halaman dan kata kunci
 // dilakukan di atas hasil simpanan itu.
 
-import { getBuffer } from "./http.js";
-import { ambilJson, simpanJson, umurSimpan } from "./cache.js";
+import { getBufferBersumber } from "./http.js";
+import { ambilJson, simpanJson, umurSimpan, waktuSimpan } from "./cache.js";
 import { parseLegalDate, selectPdfPages } from "./trust.js";
 
 const CATATAN =
@@ -117,15 +117,21 @@ function withExtractionHealth(document) {
 }
 
 /** Ambil seluruh halaman sebagai teks, dari cache bila ada. */
-export async function halamanPdf({ url_pdf, buffer, referer, lewati_cache = false }) {
+export async function halamanPdf({ url_pdf, buffer, referer, lewati_cache = false, asal = null }) {
   const kunci = "pdf-teks::" + (url_pdf || "buffer");
   if (url_pdf && !lewati_cache) {
     const tersimpan = await ambilJson(kunci, umurSimpan(url_pdf));
-    if (tersimpan?.halaman?.length) return withExtractionHealth(tersimpan);
+    if (tersimpan?.halaman?.length) {
+      // Entri lama belum mencatat waktu ambil; waktu tulis berkas cache adalah batas atasnya.
+      const diambil_pada = tersimpan.diambil_pada || (await waktuSimpan(kunci, ".json"));
+      return withExtractionHealth({ ...tersimpan, diambil_pada, dari_cache: true });
+    }
   }
 
   const { getDocument } = await import("pdfjs-dist/legacy/build/pdf.mjs");
-  const data = new Uint8Array(buffer || (await getBuffer(url_pdf, { referer, timeout: 120000 })));
+  // `asal` membawa waktu ambil untuk buffer yang sudah diunduh pemanggil (mis. fatwa dari Drive).
+  const unduhan = buffer ? asal : await getBufferBersumber(url_pdf, { referer, timeout: 120000 });
+  const data = new Uint8Array(buffer || unduhan.buffer);
   const doc = await getDocument({ data, useSystemFonts: true, isEvalSupported: false }).promise;
 
   const halaman = [];
@@ -138,9 +144,10 @@ export async function halamanPdf({ url_pdf, buffer, referer, lewati_cache = fals
     });
   }
 
-  const hasil = withExtractionHealth({ total_halaman: doc.numPages, halaman });
+  const diambil_pada = unduhan?.diambil_pada || new Date().toISOString();
+  const hasil = withExtractionHealth({ total_halaman: doc.numPages, halaman, diambil_pada });
   if (url_pdf) await simpanJson(kunci, hasil);
-  return hasil;
+  return { ...hasil, dari_cache: Boolean(unduhan?.dari_cache) };
 }
 
 export async function ekstrakTeksPdf({
@@ -152,8 +159,9 @@ export async function ekstrakTeksPdf({
   maks_karakter = 20000,
   referer,
   lewati_cache = false,
+  asal = null,
 }) {
-  const doc = await halamanPdf({ url_pdf, buffer, referer, lewati_cache });
+  const doc = await halamanPdf({ url_pdf, buffer, referer, lewati_cache, asal });
 
   const akhir = halaman_akhir > 0 ? Math.min(halaman_akhir, doc.total_halaman) : doc.total_halaman;
   const awal = Math.max(1, halaman_awal);
@@ -184,6 +192,8 @@ export async function ekstrakTeksPdf({
     kata_kunci: cari || null,
     halaman_dikembalikan: keluar.map((h) => h.halaman),
     extraction_health: doc.extraction_health,
+    diambil_pada: doc.diambil_pada || null,
+    dari_cache: Boolean(doc.dari_cache),
     catatan: CATATAN,
     isi: keluar,
   };

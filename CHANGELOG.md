@@ -4,6 +4,32 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.1.0/), versi
 [Semantic Versioning](https://semver.org/lang/id/). Peneliti disarankan menyebutkan versi
 alat ini dalam tulisannya demi reproduktibilitas.
 
+## [0.8.2] - 2026-10-15
+
+Fondasi untuk ruang riset enam rumpun Pasla. Lihat [ADR-003](docs/decisions/003-ruang-riset-enam-rumpun.md).
+
+### Diperbaiki
+
+- Pencarian pasal dalam PDF kini berbatas kata. Sebelumnya "Pasal 4" ikut mengenai "Pasal 46",
+  "Pasal 4A", dan rujukan silang, sehingga kutipan bisa menunjuk halaman yang salah. Halaman yang
+  memuat judul pasal didahulukan; rujukan silang hanya dipakai bila judulnya tidak terbaca.
+- Ringkasan dan catatan konflik dari AI kini divalidasi per kalimat terhadap bukti yang dikutip
+  klaim yang lolos. Sebelumnya ringkasan AI tampil tanpa pemeriksaan selama satu klaim saja lolos.
+- `POST /v1/research` tanpa AI tidak lagi mengirim pertanyaan mentah ke situs sumber (dan tidak
+  menyimpannya di cache). Yang ditelusuri hanya rujukan yang ditulis eksplisit.
+- `GET /v1/sources/status` dijalankan paling sering sekali per lima menit untuk semua pemanggil,
+  dan tidak lagi mematikan cache seluruh proses selama pemeriksaan berlangsung. Pelewatan cache
+  kini terbatas pada konteks pemeriksaan (AsyncLocalStorage).
+- Status bukti jujur: `verified_live` hanya untuk teks yang baru diambil dari situs resmi; teks
+  dari cache selalu `verified_snapshot` dengan waktu ambil aslinya, bukan waktu permintaan.
+
+### Ditambahkan
+
+- Planner dan pengenal rujukan mengenali Qanun (termasuk "Qanun Aceh"), Inpres, Keppres, dan
+  SEOJK.
+- ADR-003: mesin tanpa status, BYOK hanya melintas, potongan bertanda tangan, dan batas akses
+  sumber yang dihormati.
+
 ## [0.8.1] - 2026-10-14
 
 ### Keamanan

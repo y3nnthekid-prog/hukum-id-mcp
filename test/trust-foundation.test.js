@@ -103,6 +103,29 @@ await test("PDF keyword filtering fails closed when the phrase is absent", () =>
   assert.deepEqual(selectPdfPages(pages, "Pasal 1").map((page) => page.halaman), [2]);
 });
 
+await test("article lookup does not match longer article numbers or cross-references", () => {
+  const pages = [
+    { halaman: 3, teks: "Pasal 46\n(1) Dalam hal terjadi kegagalan" },
+    { halaman: 4, teks: "Pasal 4A\nKetentuan sisipan" },
+    { halaman: 5, teks: "sebagaimana dimaksud dalam Pasal 4 ayat (2)" },
+    { halaman: 6, teks: "BAB II\nPasal 4\n(1) Setiap orang berhak" },
+    { halaman: 7, teks: "Pasal\n40 mengatur hal lain" },
+  ];
+
+  assert.deepEqual(selectPdfPages(pages, "Pasal 4").map((page) => page.halaman), [6]);
+  assert.deepEqual(selectPdfPages(pages, "pasal 4a").map((page) => page.halaman), [4]);
+  assert.deepEqual(selectPdfPages(pages, "Pasal 40").map((page) => page.halaman), [7]);
+});
+
+await test("article lookup falls back to cross-references only when no heading is readable", () => {
+  const pages = [
+    { halaman: 2, teks: "sebagaimana dimaksud dalam Pasal 12 huruf a" },
+    { halaman: 9, teks: "Pasal 120\nKetentuan peralihan" },
+  ];
+
+  assert.deepEqual(selectPdfPages(pages, "Pasal 12").map((page) => page.halaman), [2]);
+});
+
 await test("legal dates reject impossible calendar dates", () => {
   assert.equal(parseLegalDate("31/02/2026"), null);
   assert.equal(parseLegalDate("31 Februari 2026"), null);

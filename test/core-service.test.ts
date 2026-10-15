@@ -99,3 +99,24 @@ test("document IDs returned by search are reversible at the adapter boundary", a
   await service.getLegalDocument({ source: "regulation", ref: "bpk:229798" });
   assert.equal(received, "229798");
 });
+
+test("problem analysis without AI never sends the raw question to source sites", async () => {
+  const queries: string[] = [];
+  const record = async (input: Record<string, any>) => {
+    queries.push(String(input.keywords ?? input.query ?? input.q ?? ""));
+    return { hasil: [] };
+  };
+  const service = createLegalResearchService(
+    fakeAdapters({ searchRegulations: record, searchMaProducts: record, searchFatwas: record })
+  );
+
+  const free = await service.analyzeLegalProblem({
+    question: "Budi Santoso di Bekasi digugat cerai istrinya, apa haknya atas harta bersama?",
+  });
+  assert.deepEqual(queries, []);
+  assert.equal(free.status, "insufficient_evidence");
+
+  await service.analyzeLegalProblem({ question: "Budi Santoso bertanya tentang UU 1/1974 Pasal 35" });
+  assert.ok(queries.length > 0);
+  assert.ok(queries.every((query) => !/budi|santoso/i.test(query)));
+});

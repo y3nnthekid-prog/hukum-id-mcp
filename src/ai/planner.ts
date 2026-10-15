@@ -21,7 +21,7 @@ const MAX_REFERENCES = 3;
 
 // Bentuk rujukan yang diterima: jenis singkat lalu nomor/tahun.
 const REGULATION_PATTERN =
-  /^(UU|UUD|Perppu|Perpu|PP|Perpres|Keppres|Inpres|Permen[A-Za-z]{0,20}|POJK|SEOJK|PBI|PERMA|SEMA|Perda)\s*(?:No\.?\s*|Nomor\s*)?(\d{1,4})\s*\/\s*(\d{4})$/i;
+  /^(UU|UUD|Perppu|Perpu|PP|Perpres|Keppres|Inpres|Permen[A-Za-z]{0,20}|POJK|SEOJK|PBI|PERMA|SEMA|Perda|Qanun(?: Aceh)?)\s*(?:No\.?\s*|Nomor\s*)?(\d{1,4})\s*\/\s*(\d{4})$/i;
 const ARTICLE_PATTERN = /^Pasal\s+(\d{1,4}[A-Z]?)$/i;
 
 export function normalizeRegulation(value: string): string | null {
@@ -51,9 +51,9 @@ function dedupe(references: Array<{ regulation: string; article: string }>) {
 export function heuristicPlan(question: string): AskPlan {
   const references: Array<{ regulation: string; article: string }> = [];
   const regRe =
-    /\b(UU|Perppu|Perpu|PP|Perpres|Permen[A-Za-z]{0,20}|POJK|PBI|PERMA|SEMA)\s*(?:No\.?\s*|Nomor\s*)?(\d{1,4})\s*(?:\/|\s+Tahun\s+)\s*(\d{4})\b/gi;
+    /\b(UU|Perppu|Perpu|PP|Perpres|Keppres|Inpres|Permen[A-Za-z]{0,20}|POJK|SEOJK|PBI|PERMA|SEMA|Qanun(?:\s+Aceh)?)\s*(?:No\.?\s*|Nomor\s*)?(\d{1,4})\s*(?:\/|\s+Tahun\s+)\s*(\d{4})\b/gi;
   for (const match of question.matchAll(regRe)) {
-    const regulation = normalizeRegulation(`${match[1]} ${match[2]}/${match[3]}`);
+    const regulation = normalizeRegulation(`${match[1]!.replace(/\s+/g, " ")} ${match[2]}/${match[3]}`);
     if (!regulation) continue;
     const window = question.slice(Math.max(0, match.index - 60), match.index + match[0].length + 60);
     const article = window.match(/\bPasal\s+(\d{1,4}[A-Z]?)\b/i);

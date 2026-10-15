@@ -45,6 +45,15 @@ export async function ambil(kunci, ttlMs) {
   }
 }
 
+/** Waktu sebuah entri cache ditulis, yaitu waktu sumbernya benar-benar diambil. */
+export async function waktuSimpan(kunci, ext = ".bin") {
+  try {
+    return (await stat(berkas(kunci, ext))).mtime.toISOString();
+  } catch {
+    return null;
+  }
+}
+
 export async function simpan(kunci, buffer) {
   try {
     await mkdir(DIR, { recursive: true });

@@ -50,6 +50,35 @@ test("research results remove unsupported claims instead of presenting them", ()
   assert.doesNotThrow(() => ResearchResultSchema.parse(result));
 });
 
+test("AI summary and conflict notes cannot smuggle claims past validation", () => {
+  const evidence = createEvidence(input);
+  const result = createResearchResult({
+    query: "Apa kewajiban notifikasi kebocoran data?",
+    evidence: [evidence],
+    claims: [{ text: "Pasal 46 mewajibkan pemberitahuan paling lambat 3 x 24 jam.", evidenceIds: [evidence.id] }],
+    summary:
+      "Pasal 46 mewajibkan pemberitahuan paling lambat 3 x 24 jam. Pelanggarnya dipidana penjara lima tahun.",
+    conflicts: ["Ketentuan ini bertentangan dengan Pasal 99 UU Telekomunikasi."],
+  });
+
+  assert.equal(result.summary, "Pasal 46 mewajibkan pemberitahuan paling lambat 3 x 24 jam.");
+  assert.deepEqual(result.conflicts, []);
+  assert.ok(result.warnings.some((warning) => warning.includes("1 kalimat ringkasan AI dibuang")));
+  assert.ok(result.warnings.some((warning) => warning.includes("1 catatan konflik AI dibuang")));
+});
+
+test("summary falls back to validated claims when no AI sentence survives", () => {
+  const evidence = createEvidence(input);
+  const result = createResearchResult({
+    query: "Apa kewajiban notifikasi kebocoran data?",
+    evidence: [evidence],
+    claims: [{ text: "Pasal 46 mewajibkan pemberitahuan paling lambat 3 x 24 jam.", evidenceIds: [evidence.id] }],
+    summary: "Semua pengendali data dibebaskan dari kewajiban apa pun.",
+  });
+
+  assert.equal(result.summary, "Pasal 46 mewajibkan pemberitahuan paling lambat 3 x 24 jam.");
+});
+
 test("research results abstain when no claim has evidence", () => {
   const result = createResearchResult({
     query: "Pertanyaan tanpa sumber",
@@ -84,4 +113,20 @@ test("source and job health contracts reject misleading state", () => {
     warnings: [],
     errorCode: null,
   }));
+});
+
+test("evidence timing is live only when freshly fetched, otherwise the real snapshot age", async () => {
+  const { provenanceTiming } = await import("../src/core/provenance.js");
+  const now = new Date("2026-10-15T12:00:00.000Z");
+
+  assert.deepEqual(provenanceTiming({ diambil_pada: "2026-10-15T11:59:58.000Z", dari_cache: false }, now), {
+    retrievedAt: "2026-10-15T11:59:58.000Z",
+    verificationStatus: "verified_live",
+  });
+  assert.deepEqual(provenanceTiming({ diambil_pada: "2026-08-20T08:00:00.000Z", dari_cache: true }, now), {
+    retrievedAt: "2026-08-20T08:00:00.000Z",
+    verificationStatus: "verified_snapshot",
+  });
+  assert.equal(provenanceTiming({}, now).verificationStatus, "verified_snapshot");
+  assert.equal(provenanceTiming({ diambil_pada: "bukan tanggal", dari_cache: false }, now).verificationStatus, "verified_snapshot");
 });

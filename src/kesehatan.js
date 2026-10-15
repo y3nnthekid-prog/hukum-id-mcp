@@ -10,7 +10,7 @@
 // keluarannya diperiksa. Permintaan yang berhasil tetapi hasilnya kosong
 // dilaporkan sebagai berubah_struktur — dan itulah sinyal yang penting.
 
-import { paksaLewatiCache, getText } from "./http.js";
+import { jalankanTanpaCache, getText } from "./http.js";
 import { cariPeraturan, detailPeraturan } from "./bpk.js";
 import { telusuriPutusan } from "./ma.js";
 import { cariPutusanMK } from "./mk.js";
@@ -144,9 +144,8 @@ function golongkanGalat(pesan) {
 export async function periksaKesehatanSumber({ pakai_cache = false, hanya_penting = false } = {}) {
   const daftar = hanya_penting ? PROBA.filter((p) => p.penting) : PROBA;
 
-  if (!pakai_cache) paksaLewatiCache(true);
   const hasil = [];
-  try {
+  const periksa = async () => {
     for (const p of daftar) {
       const mulai = Date.now();
       try {
@@ -179,9 +178,8 @@ export async function periksaKesehatanSumber({ pakai_cache = false, hanya_pentin
         });
       }
     }
-  } finally {
-    if (!pakai_cache) paksaLewatiCache(false);
-  }
+  };
+  await (pakai_cache ? periksa() : jalankanTanpaCache(periksa));
 
   const hitung = hasil.reduce((a, h) => ((a[h.status] = (a[h.status] || 0) + 1), a), {});
   const berubah = hasil.filter((h) => h.status === "berubah_struktur");

@@ -63,6 +63,8 @@ export type ResolvedAiModel =
   | { model: JsonModel | null; platform: boolean }
   | { error: "PROVIDER_REQUIRED" | "MODEL_REQUIRED" | "PROVIDER_UNSUPPORTED" };
 
+const SOURCE_STATUS_TTL_MS = 5 * 60_000;
+
 const AskSchema = z.object({
   question: z.string().trim().min(4).max(2_000),
   useAi: z.boolean().default(true),
@@ -168,6 +170,7 @@ export function createApiApp({
   const app = new Hono<ApiEnv>();
   const counters = new Map<string, { count: number; resetAt: number }>();
   const platformAiUsage = new Map<string, { count: number; resetAt: number }>();
+  const sourceStatusMemo = new Map<string, { expiresAt: number; checkedAt: string; data: Promise<unknown> }>();
   let lastCounterSweep = 0;
 
   // Gerbang konkurensi untuk /v1/ask. Satu pertanyaan bisa membuka beberapa
@@ -480,8 +483,21 @@ export function createApiApp({
   });
 
   app.get("/v1/sources/status", async (c) => {
-    const data = await service.getSourceStatus({ importantOnly: c.req.query("importantOnly") === "true" });
-    return c.json({ data, meta: { traceId: c.get("traceId") } });
+    const importantOnly = c.req.query("importantOnly") === "true";
+    const key = importantOnly ? "important" : "all";
+    const now = Date.now();
+    let entry = sourceStatusMemo.get(key);
+    if (!entry || entry.expiresAt <= now) {
+      // Satu pemeriksaan untuk semua pemanggil, paling sering sekali per jendela: setiap
+      // pemeriksaan menembak sekitar sepuluh situs lembaga negara secara langsung.
+      const pending = service.getSourceStatus({ importantOnly });
+      entry = { expiresAt: now + SOURCE_STATUS_TTL_MS, checkedAt: new Date(now).toISOString(), data: pending };
+      sourceStatusMemo.set(key, entry);
+      pending.catch(() => sourceStatusMemo.delete(key));
+    }
+    const data = await entry.data;
+    c.header("cache-control", `public, max-age=${Math.floor(SOURCE_STATUS_TTL_MS / 1000)}`);
+    return c.json({ data, meta: { traceId: c.get("traceId"), checkedAt: entry.checkedAt } });
   });
 
   app.notFound((c) => apiError(c, 404, "NOT_FOUND", "Endpoint tidak ditemukan."));

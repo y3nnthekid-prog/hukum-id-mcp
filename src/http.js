@@ -1,3 +1,4 @@
+import { AsyncLocalStorage } from "node:async_hooks";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { readFile, unlink } from "node:fs/promises";
@@ -5,7 +6,7 @@ import { randomUUID } from "node:crypto";
 import os from "node:os";
 import path from "node:path";
 
-import { ambil, simpan, umurSimpan } from "./cache.js";
+import { ambil, simpan, umurSimpan, waktuSimpan } from "./cache.js";
 import { assertPublicUrl } from "./trust.js";
 
 const execFileP = promisify(execFile);
@@ -123,10 +124,11 @@ const SOURCE_HOSTS = new Set([
 const CURL_ONLY = new Set(["putusan3.mahkamahagung.go.id"]);
 
 // Pemeriksaan kesehatan harus menembak sumber sungguhan, bukan dilayani cache.
-// Tanpa saklar ini, hasilnya selalu terlihat sehat meski situsnya sudah berubah.
-let lewatiCacheGlobal = false;
-export function paksaLewatiCache(nyala) {
-  lewatiCacheGlobal = Boolean(nyala);
+// Saklarnya berlaku hanya di dalam konteks pemanggil (AsyncLocalStorage): dulu ia berupa
+// variabel global, sehingga permintaan pengguna yang berjalan bersamaan ikut melewati cache.
+const konteksTanpaCache = new AsyncLocalStorage();
+export function jalankanTanpaCache(fn) {
+  return konteksTanpaCache.run(true, fn);
 }
 
 export function buildCurlArguments(url, referer, timeout, outFile, headerFile, maxBytes) {
@@ -258,11 +260,11 @@ async function request(
   const safeUrl = await assertPublicUrl(url, { allowedHosts: SOURCE_HOSTS });
   const host = safeUrl.hostname;
 
-  if (!lewati_cache && !lewatiCacheGlobal) {
+  if (!lewati_cache && !konteksTanpaCache.getStore()) {
     const tersimpan = await ambil(url, umurSimpan(url));
     if (tersimpan) {
       if (tersimpan.length > maxBytes) throw new Error(`Cache melebihi batas ${maxBytes} byte.`);
-      return { status: 200, buffer: tersimpan, dari_cache: true };
+      return { status: 200, buffer: tersimpan, dari_cache: true, diambil_pada: await waktuSimpan(url) };
     }
   }
 
@@ -320,6 +322,16 @@ export async function getJson(url, opts) {
 
 export async function getBuffer(url, opts) {
   return (await request(url, { maxBytes: 80 * 1024 * 1024, ...opts })).buffer;
+}
+
+/** Seperti getBuffer, tetapi juga melaporkan apakah isinya dari cache dan kapan diambil. */
+export async function getBufferBersumber(url, opts) {
+  const respons = await request(url, { maxBytes: 80 * 1024 * 1024, ...opts });
+  return {
+    buffer: respons.buffer,
+    dari_cache: Boolean(respons.dari_cache),
+    diambil_pada: respons.diambil_pada || new Date().toISOString(),
+  };
 }
 
 const ENTITIES = {

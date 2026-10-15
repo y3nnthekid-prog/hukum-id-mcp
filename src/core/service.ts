@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 
+import { heuristicPlan } from "../ai/planner.js";
 import {
   LegalDocumentSchema,
   createEvidence,
@@ -7,6 +8,7 @@ import {
   type Evidence,
   type ResearchResult,
 } from "./contracts.js";
+import { provenanceTiming } from "./provenance.js";
 
 export type SearchSource =
   | "regulation"
@@ -146,7 +148,7 @@ export function createLegalResearchService(adapters: LegalAdapters) {
       });
     }
 
-    const retrievedAt = new Date().toISOString();
+    const timing = provenanceTiming(raw.pasal);
     const evidence: Evidence[] = excerpts
       .filter((excerpt: LegacyRecord) => asText(excerpt.teks))
       .map((excerpt: LegacyRecord) =>
@@ -158,9 +160,8 @@ export function createLegalResearchService(adapters: LegalAdapters) {
             sourceName: asText(raw.sumber) || "Sumber hukum resmi",
             sourceUrl,
             authority: asText(raw.sumber) || "Otoritas penerbit",
-            retrievedAt,
             indexVersion: process.env.HUKUM_INDEX_VERSION || "legacy-live",
-            verificationStatus: "verified_snapshot",
+            ...timing,
           },
         })
       );
@@ -204,14 +205,21 @@ export function createLegalResearchService(adapters: LegalAdapters) {
       return adapters.researchSharia({ akad: input.topic });
     },
     async analyzeLegalProblem(input: { question: string }) {
-      const search = await searchLegalSources({ query: input.question });
+      // Pertanyaan mentah tidak pernah dikirim ke situs sumber: ia bisa memuat nama, perkara,
+      // atau data pribadi lain. Yang dicari hanya rujukan yang ditulis eksplisit.
+      const identifiers = [...new Set(heuristicPlan(input.question).references.map((ref) => ref.regulation))];
+      const searches = await Promise.all(
+        identifiers.map((identifier) => searchLegalSources({ query: identifier, sources: ["regulation", "ma-product"] }))
+      );
       return createResearchResult({
         query: input.question,
         evidence: [],
         claims: [],
         warnings: [
-          ...search.warnings,
-          "Metadata pencarian bukan evidence isi. Buka dokumen atau pasal sebelum menyusun simpulan.",
+          ...searches.flatMap((search) => search.warnings),
+          identifiers.length
+            ? "Metadata pencarian bukan evidence isi. Buka dokumen atau pasal sebelum menyusun simpulan."
+            : "Tanpa AI, hanya rujukan yang ditulis eksplisit (mis. \"UU 27/2022 Pasal 46\") yang ditelusuri; pertanyaan bebas tidak dikirim ke situs sumber.",
         ],
       });
     },

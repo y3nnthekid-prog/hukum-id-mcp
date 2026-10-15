@@ -57,6 +57,8 @@ function articleLookupResult(teks, pasal, hasPdf) {
     halaman: pages,
     kutipan: excerpts,
     extraction_health: teks?.extraction_health ?? null,
+    diambil_pada: teks?.diambil_pada ?? null,
+    dari_cache: Boolean(teks?.dari_cache),
     attempted: [
       `frasa persis=${pasal}`,
       hasPdf ? `halaman PDF diperiksa=${teks?.total_halaman ?? 0}` : "PDF peraturan tidak tersedia",

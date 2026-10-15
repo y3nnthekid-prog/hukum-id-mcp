@@ -132,11 +132,40 @@ export function selectExactCandidate(candidates = [], { nomor = "", tahun = "", 
   );
 }
 
-/** Filter halaman PDF secara fail-closed saat kata kunci diberikan. */
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/**
+ * Pola frasa berbatas kata: "Pasal 4" tidak boleh mengenai "Pasal 46", "Pasal 4A",
+ * atau "Pasal 40". Spasi di dalam frasa boleh berupa spasi atau pindah baris apa pun,
+ * karena lapisan teks PDF sering memecahnya.
+ */
+function phrasePattern(needle) {
+  const body = needle.split(/\s+/).map(escapeRegExp).join("\\s+");
+  return `(?<![\\p{L}\\p{N}])${body}(?![\\p{L}\\p{N}])`;
+}
+
+const ARTICLE_KEYWORD = /^pasal\s+(\d+[a-z]?)$/i;
+
+/**
+ * Filter halaman PDF secara fail-closed saat kata kunci diberikan.
+ *
+ * Untuk kata kunci "Pasal N", halaman yang memuat judul pasal itu (baris yang hanya berisi
+ * "Pasal N") didahulukan; rujukan silang seperti "sebagaimana dimaksud dalam Pasal N" hanya
+ * dipakai bila judulnya tidak terbaca sama sekali.
+ */
 export function selectPdfPages(pages = [], keyword = "") {
-  const needle = String(keyword).trim().toLocaleLowerCase("id-ID");
+  const needle = String(keyword).trim().replace(/\s+/g, " ");
   if (!needle) return pages;
-  return pages.filter((page) => String(page.teks ?? "").toLocaleLowerCase("id-ID").includes(needle));
+  const anywhere = new RegExp(phrasePattern(needle), "iu");
+  const matching = pages.filter((page) => anywhere.test(String(page.teks ?? "")));
+
+  const article = needle.match(ARTICLE_KEYWORD);
+  if (!article) return matching;
+  const heading = new RegExp(`^[ \\t]*pasal\\s+${escapeRegExp(article[1])}[ \\t]*$`, "imu");
+  const headed = matching.filter((page) => heading.test(String(page.teks ?? "")));
+  return headed.length ? headed : matching;
 }
 
 function strictUtcDate(year, month, day) {

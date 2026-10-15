@@ -2,6 +2,7 @@ import { synthesizeEvidenceFirst } from "../ai/evidence-synthesis.js";
 import { AiProviderError, evidenceProviderFromModel, type JsonModel } from "../ai/json-model.js";
 import { heuristicPlan, planWithModel, type AskPlan } from "../ai/planner.js";
 import { createEvidence, createResearchResult, type Evidence, type ResearchResult } from "./contracts.js";
+import { provenanceTiming } from "./provenance.js";
 import type { LegalAdapters, LegalResearchService } from "./service.js";
 
 type LegacyRecord = Record<string, any>;
@@ -114,7 +115,7 @@ export function createAsk(deps: {
         attempted.push(`${label}: tidak ditemukan persis. ${text(raw.catatan)}`.trim());
         continue;
       }
-      const retrievedAt = new Date().toISOString();
+      const timing = provenanceTiming(raw.pasal);
       const authority = text(raw.sumber) || "Sumber hukum resmi";
       const opened = excerpts
         .filter((excerpt) => text(excerpt.teks) && sourceUrl)
@@ -127,9 +128,8 @@ export function createAsk(deps: {
               sourceName: authority,
               sourceUrl,
               authority,
-              retrievedAt,
               indexVersion: process.env.HUKUM_INDEX_VERSION || "legacy-live",
-              verificationStatus: "verified_snapshot",
+              ...timing,
             },
           })
         );
@@ -163,7 +163,7 @@ export function createAsk(deps: {
         const pdfUrl = text(raw.ketentuan_fatwa_utama?.url_pdf) || text(main?.url_pdf);
         const viewUrl = text(raw.ketentuan_fatwa_utama?.url_tampilan) || text(main?.url_pdf);
         if (main && text(main.nomor)) {
-          const retrievedAt = new Date().toISOString();
+          const timing = provenanceTiming(raw.ketentuan_fatwa_utama);
           const opened = pages
             .filter((page) => text(page.teks) && pdfUrl)
             .map((page) =>
@@ -175,9 +175,8 @@ export function createAsk(deps: {
                   sourceName: "DSN-MUI",
                   sourceUrl: pdfUrl,
                   authority: "Dewan Syariah Nasional MUI",
-                  retrievedAt,
                   indexVersion: process.env.HUKUM_INDEX_VERSION || "legacy-live",
-                  verificationStatus: "verified_snapshot",
+                  ...timing,
                 },
               })
             );
