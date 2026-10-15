@@ -1,0 +1,445 @@
+{
+  "versi": 1,
+  "butir": [
+    {
+      "id": "ilmu-hukum-001",
+      "rumpun": "ilmu-hukum",
+      "pertanyaan": "Bagaimana asas lex superior derogat legi inferiori diwujudkan dalam hukum positif Indonesia, dan lembaga mana yang menguji bila undang-undang atau peraturan di bawah undang-undang diduga bertentangan dengan peraturan yang lebih tinggi?",
+      "topik": "asas lex superior derogat legi inferiori",
+      "asal": "topik baku mata kuliah Pengantar Ilmu Hukum",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 12/2011", "pasal": "Pasal 7", "status": "Berlaku", "bpk_id": "39188", "diubah_dengan": ["UU 1/2026", "UU 13/2022", "UU 15/2019"]},
+        {"jenis": "peraturan", "rujukan": "UU 12/2011", "pasal": "Pasal 9", "status": "Berlaku", "bpk_id": "39188", "diubah_dengan": ["UU 1/2026", "UU 13/2022", "UU 15/2019"]}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-16",
+        "alat": ["periksa_pasal", "konsolidasi_peraturan"],
+        "catatan": "Pasal 7 ayat (2) kekuatan hukum sesuai hierarki (hlm. 7). Pasal 9 diubah UU 13/2022 angka 2 (hlm. 3): UU diuji MK, peraturan di bawah UU diuji MA; ayat (2) terpotong di keluaran alat."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "ilmu-hukum-002",
+      "rumpun": "ilmu-hukum",
+      "pertanyaan": "Bagaimana KUHP nasional mengatur penerapan asas lex specialis derogat legi generali ketika satu perbuatan diatur sekaligus dalam aturan pidana umum dan aturan pidana khusus?",
+      "topik": "asas lex specialis derogat legi generali",
+      "asal": "topik baku mata kuliah Hukum Pidana",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 1/2023", "pasal": "Pasal 125", "status": "Berlaku", "bpk_id": "234935", "diubah_dengan": ["UU 1/2026"]}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-16",
+        "alat": ["cari_dalam_pdf", "periksa_pasal"],
+        "catatan": "Pasal 125 ayat (2) terbaca hlm. 45: hanya dijatuhi aturan pidana khusus kecuali UU menentukan lain. Frasa aturan pidana khusus tidak muncul dalam UU 1/2026."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "ilmu-hukum-003",
+      "rumpun": "ilmu-hukum",
+      "pertanyaan": "Bagaimana KUHAP yang berlaku sejak 2 Januari 2026 menentukan nasib ketentuan acara pidana dalam undang-undang lain yang bertentangan dengannya, dan bagaimana hal itu mencerminkan asas lex posterior dan lex specialis?",
+      "topik": "asas lex posterior dan lex specialis, KUHAP baru",
+      "asal": "topik baku mata kuliah Hukum Acara Pidana",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 20/2025", "pasal": "Pasal 367", "status": "Berlaku", "bpk_id": "337302", "diubah_dengan": []}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["detail_peraturan", "teks_peraturan"],
+        "catatan": "Pasal 367 terbaca hlm. 183: ketentuan acara pidana yang bertentangan dinyatakan tidak berlaku, kecuali diatur dalam Undang-Undang. Pasal 363 dan 364 mempertahankan kewenangan PPNS dan Upaya Paksa di UU lain sepanjang tidak bertentangan."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "ilmu-hukum-004",
+      "rumpun": "ilmu-hukum",
+      "pertanyaan": "Kapan suatu peraturan perundang-undangan mulai berlaku dan mengikat menurut undang-undang pembentukan peraturan, dan bagaimana KUHP nasional memakai pengecualian itu sehingga baru berlaku bertahun-tahun setelah diundangkan?",
+      "topik": "keberlakuan undang-undang dan vacatio legis",
+      "asal": "topik baku mata kuliah Ilmu Perundang-undangan",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 12/2011", "pasal": "Pasal 87", "status": "Berlaku", "bpk_id": "39188", "diubah_dengan": ["UU 1/2026", "UU 13/2022", "UU 15/2019"]},
+        {"jenis": "peraturan", "rujukan": "UU 1/2023", "pasal": "Pasal 624", "status": "Berlaku", "bpk_id": "234935", "diubah_dengan": ["UU 1/2026"]}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["konsolidasi_peraturan", "periksa_pasal", "cari_dalam_pdf"],
+        "catatan": "Pasal 87 terbaca hlm. 44, tidak disentuh UU perubahan. Pasal 624 UU 1/2023 (berlaku setelah 3 tahun sejak diundangkan) terbaca hlm. 228; lapisan teks menulisnya 'Pasai 624' sehingga periksa_pasal gagal menemukannya. Diundangkan 2 Januari 2023, berlaku 2 Januari 2026 menurut BPK."
+      },
+      "tertahan": true
+    },
+    {
+      "id": "ilmu-hukum-005",
+      "rumpun": "ilmu-hukum",
+      "pertanyaan": "Apa dasar hukum positif bagi fiksi hukum bahwa setiap orang dianggap mengetahui undang-undang, dan di mana saja peraturan perundang-undangan harus diundangkan?",
+      "topik": "pengundangan dan fiksi hukum",
+      "asal": "topik baku mata kuliah Pengantar Ilmu Hukum",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 12/2011", "pasal": "Pasal 81", "status": "Berlaku", "bpk_id": "39188", "diubah_dengan": ["UU 1/2026", "UU 13/2022", "UU 15/2019"]}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["cari_dalam_pdf"],
+        "catatan": "Pasal 81 terbaca hlm. 42: agar setiap orang mengetahuinya, diundangkan dalam LN, TLN, BN, TBN, Lembaran Daerah, TLD, atau Berita Daerah. Perubahan atas Pasal 81 tidak diperiksa tersendiri."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "ilmu-hukum-006",
+      "rumpun": "ilmu-hukum",
+      "pertanyaan": "Bagaimana KUHP nasional mengatur perubahan peraturan sesudah perbuatan terjadi (lex mitior), termasuk bagi terpidana yang putusannya sudah berkekuatan hukum tetap, dan apa yang diubah oleh undang-undang penyesuaian pidana pada ketentuan itu?",
+      "topik": "KUHP baru dan masa transisi, asas lex mitior",
+      "asal": "topik baku mata kuliah Hukum Pidana",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 1/2023", "pasal": "Pasal 3", "status": "Berlaku", "bpk_id": "234935", "diubah_dengan": ["UU 1/2026"]},
+        {"jenis": "peraturan", "rujukan": "UU 1/2026", "status": "Berlaku", "bpk_id": "337869", "diubah_dengan": []}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["teks_peraturan", "detail_peraturan"],
+        "catatan": "Pasal 3 asli terbaca hlm. 3 sampai 4. UU 1/2026 Pasal VII angka 1 (hlm. 9 sampai 10) mengubah ayat (3) dan ayat (5): kini kepala lembaga pemasyarakatan segera mengeluarkan terpidana. Kedua UU berlaku 2 Januari 2026."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "ilmu-hukum-007",
+      "rumpun": "ilmu-hukum",
+      "pertanyaan": "Untuk perkara pidana yang penyidikannya sudah berjalan sebelum 2 Januari 2026, hukum acara mana yang dipakai, dan bagaimana bila perkara sudah dilimpahkan ke pengadilan atau baru akan diajukan peninjauan kembali?",
+      "topik": "KUHAP baru (UU 20/2025) dan ketentuan peralihan",
+      "asal": "topik baku mata kuliah Hukum Acara Pidana",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 20/2025", "pasal": "Pasal 361", "status": "Berlaku", "bpk_id": "337302", "diubah_dengan": []},
+        {"jenis": "peraturan", "rujukan": "UU 8/1981", "status": "Tidak Berlaku", "bpk_id": "47041", "diubah_dengan": []}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["detail_peraturan", "periksa_pasal", "cari_dalam_pdf"],
+        "catatan": "Pasal 361 huruf a sampai d terbaca hlm. 182: penyidikan atau penuntutan yang sedang berjalan diselesaikan dengan UU 8/1981; perkara yang sudah diperiksa di pengadilan tetap dengan UU 8/1981 kecuali peninjauan kembali. UU 8/1981 berstatus Tidak Berlaku, dicabut UU 20/2025 yang berlaku 2 Januari 2026."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "ilmu-hukum-008",
+      "rumpun": "ilmu-hukum",
+      "pertanyaan": "Setelah KUHAP lama dicabut, apakah peraturan pelaksanaannya masih dapat dipakai, dan berapa lama batas waktu penetapan peraturan pelaksanaan KUHAP yang baru?",
+      "topik": "keberlakuan dan pencabutan UU, KUHAP baru",
+      "asal": "topik baku mata kuliah Hukum Acara Pidana",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 20/2025", "pasal": "Pasal 365", "status": "Berlaku", "bpk_id": "337302", "diubah_dengan": []},
+        {"jenis": "peraturan", "rujukan": "UU 8/1981", "status": "Tidak Berlaku", "bpk_id": "47041", "diubah_dengan": []}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["teks_peraturan", "detail_peraturan", "periksa_pasal"],
+        "catatan": "Pasal 365 (tetap berlaku sepanjang tidak bertentangan) dan Pasal 366 (paling lama 1 tahun sejak diundangkan, yaitu 17 Desember 2025) terbaca hlm. 183."
+      },
+      "tertahan": true
+    },
+    {
+      "id": "ilmu-hukum-009",
+      "rumpun": "ilmu-hukum",
+      "pertanyaan": "Apa saja yang dapat diperiksa dan diputus melalui praperadilan menurut KUHAP yang berlaku sejak 2 Januari 2026, dan apakah penetapan tersangka termasuk di dalamnya?",
+      "topik": "KUHAP baru, praperadilan",
+      "asal": "topik baku mata kuliah Hukum Acara Pidana",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 20/2025", "pasal": "Pasal 158", "status": "Berlaku", "bpk_id": "337302", "diubah_dengan": []},
+        {"jenis": "peraturan", "rujukan": "UU 20/2025", "pasal": "Pasal 1", "status": "Berlaku", "bpk_id": "337302", "diubah_dengan": []}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["cari_dalam_pdf"],
+        "catatan": "Pasal 158 huruf a sampai f terbaca hlm. 86 sampai 87; Pasal 1 angka 14 memasukkan penetapan tersangka ke dalam Upaya Paksa dan angka 15 mendefinisikan Praperadilan (hlm. 4). Pasal 160 ayat (4) melarang permohonan bila tersangka melarikan diri atau DPO."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "ilmu-hukum-010",
+      "rumpun": "ilmu-hukum",
+      "pertanyaan": "Tindak pidana seperti apa yang dapat diselesaikan melalui mekanisme keadilan restoratif menurut KUHAP baru, dan pada tahap pemeriksaan mana saja mekanisme itu dapat dilakukan?",
+      "topik": "KUHAP baru, keadilan restoratif",
+      "asal": "topik baku mata kuliah Hukum Acara Pidana",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 20/2025", "pasal": "Pasal 80", "status": "Berlaku", "bpk_id": "337302", "diubah_dengan": []},
+        {"jenis": "peraturan", "rujukan": "UU 20/2025", "pasal": "Pasal 79", "status": "Berlaku", "bpk_id": "337302", "diubah_dengan": []}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["cari_dalam_pdf"],
+        "catatan": "Pasal 79 ayat (8) tahap penyelidikan sampai pemeriksaan sidang; Pasal 80 ayat (1) denda paling banyak kategori III atau penjara paling lama 5 tahun, pertama kali, bukan pengulangan (hlm. 43 sampai 44)."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "ilmu-hukum-011",
+      "rumpun": "ilmu-hukum",
+      "pertanyaan": "Apakah ancaman pidana minimum khusus dalam undang-undang di luar KUHP masih berlaku setelah 2 Januari 2026, dan tindak pidana apa saja yang dikecualikan?",
+      "topik": "KUHP baru dan masa transisi, penyesuaian pidana",
+      "asal": "topik baku mata kuliah Hukum Pidana",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 1/2026", "status": "Berlaku", "bpk_id": "337869", "diubah_dengan": []},
+        {"jenis": "peraturan", "rujukan": "UU 1/2023", "pasal": "Pasal 613", "status": "Berlaku", "bpk_id": "234935", "diubah_dengan": ["UU 1/2026"]}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["detail_peraturan", "teks_peraturan", "cari_dalam_pdf"],
+        "catatan": "UU 1/2026 Pasal I (hlm. 2 sampai 3): minimum khusus dihapus, kecuali UU tentang pelanggaran HAM berat, terorisme, korupsi, dan pencucian uang. Pasal 613 UU 1/2023 (hlm. 214) mewajibkan penyesuaian dengan Buku Kesatu melalui UU."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "ilmu-hukum-012",
+      "rumpun": "ilmu-hukum",
+      "pertanyaan": "Jenis peraturan perundang-undangan apa saja yang boleh memuat ketentuan pidana, dan apakah Peraturan Daerah masih boleh mengancamkan pidana kurungan setelah berlakunya undang-undang penyesuaian pidana?",
+      "topik": "materi muatan ketentuan pidana, KUHP baru dan masa transisi",
+      "asal": "topik baku mata kuliah Ilmu Perundang-undangan",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 12/2011", "pasal": "Pasal 15", "status": "Berlaku", "bpk_id": "39188", "diubah_dengan": ["UU 1/2026", "UU 13/2022", "UU 15/2019"]},
+        {"jenis": "peraturan", "rujukan": "UU 1/2026", "status": "Berlaku", "bpk_id": "337869", "diubah_dengan": []}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["periksa_pasal", "detail_peraturan", "cari_dalam_pdf", "teks_peraturan"],
+        "catatan": "UU 1/2026 Pasal V (hlm. 7 sampai 8) mengubah Pasal 15: pidana hanya dalam UU, Perda Provinsi, atau Perda Kabupaten/Kota; Perda hanya denda paling banyak kategori III. Pasal IV mengonversi kurungan dalam Perda menjadi denda."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "ilmu-hukum-013",
+      "rumpun": "ilmu-hukum",
+      "pertanyaan": "Bagaimana KUHP nasional mengakui hukum yang hidup dalam masyarakat sebagai dasar pemidanaan, dan apa batas-batas keberlakuannya terhadap asas legalitas?",
+      "topik": "asas legalitas dan hukum yang hidup dalam masyarakat",
+      "asal": "topik baku mata kuliah Pengantar Ilmu Hukum",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 1/2023", "pasal": "Pasal 2", "status": "Berlaku", "bpk_id": "234935", "diubah_dengan": ["UU 1/2026"]}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-16",
+        "alat": ["teks_peraturan", "cari_dalam_pdf"],
+        "catatan": "Pasal 2 ayat (1) sampai (3) terbaca hlm. 3. Frasa hukum yang hidup dalam masyarakat di UU 1/2026 hanya muncul pada perubahan Pasal 597 (pidana pemenuhan kewajiban adat), bukan Pasal 2."
+      },
+      "tertahan": true
+    },
+    {
+      "id": "ilmu-hukum-014",
+      "rumpun": "ilmu-hukum",
+      "pertanyaan": "Bagaimana rumusan asas legalitas dalam KUHP nasional, dan apakah hakim boleh memakai analogi untuk menetapkan adanya tindak pidana?",
+      "topik": "asas legalitas dan larangan analogi",
+      "asal": "topik baku mata kuliah Hukum Pidana",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 1/2023", "pasal": "Pasal 1", "status": "Berlaku", "bpk_id": "234935", "diubah_dengan": ["UU 1/2026"]}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["teks_peraturan"],
+        "catatan": "Pasal 1 ayat (1) dan ayat (2) terbaca hlm. 2: sanksi hanya atas kekuatan peraturan yang telah ada sebelum perbuatan; analogi dilarang."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "ilmu-hukum-015",
+      "rumpun": "ilmu-hukum",
+      "pertanyaan": "Bagaimana pengaturan pidana mati dengan masa percobaan dalam KUHP nasional setelah diubah oleh undang-undang penyesuaian pidana, dan apa yang terjadi jika terpidana berkelakuan terpuji selama masa percobaan?",
+      "topik": "KUHP baru dan masa transisi, pidana mati",
+      "asal": "topik baku mata kuliah Hukum Pidana",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 1/2023", "pasal": "Pasal 100", "status": "Berlaku", "bpk_id": "234935", "diubah_dengan": ["UU 1/2026"]},
+        {"jenis": "peraturan", "rujukan": "UU 1/2026", "status": "Berlaku", "bpk_id": "337869", "diubah_dengan": []}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-16",
+        "alat": ["cari_dalam_pdf", "teks_peraturan"],
+        "catatan": "Pasal 100 asli (hlm. 38) memakai syarat penyesalan atau peran terdakwa dan kata dapat diubah. UU 1/2026 Pasal VII angka 17 (hlm. 18 sampai 19) menghapus ayat (2) dan (5), mengubah ayat (1), (4), dan (6): masa percobaan 10 tahun tanpa syarat itu, pidana mati diubah menjadi seumur hidup dengan Keppres setelah pertimbangan MA, dan tidak dapat dilaksanakan selama masa percobaan. Pasal 101 juga diubah."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "ilmu-hukum-016",
+      "rumpun": "ilmu-hukum",
+      "pertanyaan": "Setelah KUHP nasional berlaku, apakah ketentuan pencemaran nama baik dalam UU ITE (Pasal 27A) masih menjadi dasar pemidanaan, atau dasar hukumnya beralih ke KUHP?",
+      "topik": "ITE dan KUHP baru, masa transisi",
+      "asal": "topik baku mata kuliah Hukum Pidana",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 1/2024", "status": "Berlaku", "bpk_id": "274494", "diubah_dengan": []},
+        {"jenis": "peraturan", "rujukan": "UU 1/2023", "pasal": "Pasal 433", "status": "Berlaku", "bpk_id": "234935", "diubah_dengan": ["UU 1/2026"]},
+        {"jenis": "peraturan", "rujukan": "UU 11/2008", "status": "Berlaku", "bpk_id": "37589", "diubah_dengan": ["UU 1/2024", "UU 19/2016"]}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-16",
+        "alat": ["periksa_pasal", "cari_dalam_pdf"],
+        "catatan": "UU 1/2024 Pasal II angka 1 (hlm. 20): Pasal 27A, 45 ayat (4), dan lainnya berlaku sampai diberlakukannya UU 1/2023. Pasal 433 UU 1/2023 (pencemaran dan pencemaran tertulis) terbaca hlm. 148. BPK mencatat UU 11/2008 dicabut sebagian oleh UU 1/2023 (antara lain Pasal 27 ayat (3)). Perubahan atas Pasal 433 oleh UU 1/2026 belum diperiksa."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "ilmu-hukum-017",
+      "rumpun": "ilmu-hukum",
+      "pertanyaan": "Berapa lama masa penyesuaian yang diberikan undang-undang pelindungan data pribadi kepada pengendali dan prosesor data, dan bagaimana kedudukan peraturan lama tentang pelindungan data pribadi?",
+      "topik": "pelindungan data pribadi, masa transisi",
+      "asal": "topik baku mata kuliah Hukum Telematika",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 27/2022", "pasal": "Pasal 74", "status": "Berlaku", "bpk_id": "229798", "diubah_dengan": []}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-16",
+        "alat": ["periksa_pasal"],
+        "catatan": "Pasal 74 (paling lama 2 tahun sejak diundangkan 17 Oktober 2022) dan Pasal 75 (peraturan lama tetap berlaku sepanjang tidak bertentangan) terbaca hlm. 33."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "ilmu-hukum-018",
+      "rumpun": "ilmu-hukum",
+      "pertanyaan": "Apakah teks peraturan perundang-undangan dan putusan pengadilan dilindungi hak cipta, sehingga bebas dikutip dan diterbitkan ulang oleh siapa pun?",
+      "topik": "hak cipta atas peraturan dan putusan",
+      "asal": "topik baku mata kuliah Hukum Kekayaan Intelektual",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 28/2014", "pasal": "Pasal 42", "status": "Berlaku", "bpk_id": "38690", "diubah_dengan": []}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-16",
+        "alat": ["periksa_pasal"],
+        "catatan": "Pasal 42 huruf a sampai e terbaca hlm. 20 (penomoran cetak -19-): tidak ada hak cipta atas hasil rapat terbuka lembaga negara, peraturan perundang-undangan, pidato kenegaraan, putusan pengadilan atau penetapan hakim, dan kitab suci."
+      },
+      "tertahan": true
+    },
+    {
+      "id": "ilmu-hukum-019",
+      "rumpun": "ilmu-hukum",
+      "pertanyaan": "Apakah advokat wajib memberikan bantuan hukum secara cuma-cuma, kepada siapa kewajiban itu ditujukan, dan di mana tata caranya diatur lebih lanjut?",
+      "topik": "advokat dan bantuan hukum cuma-cuma",
+      "asal": "topik baku mata kuliah Etika Profesi Hukum",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 18/2003", "pasal": "Pasal 22", "status": "Berlaku", "bpk_id": "43018", "diubah_dengan": []}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-16",
+        "alat": ["periksa_pasal"],
+        "catatan": "Pasal 22 ayat (1) dan (2) terbaca hlm. 11; relasi BPK tidak mencatat UU perubahan."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "ilmu-hukum-020",
+      "rumpun": "ilmu-hukum",
+      "pertanyaan": "Siapa yang berhak menjadi penerima bantuan hukum yang dibiayai negara, dan perkara apa saja yang dicakup bantuan hukum itu?",
+      "topik": "bantuan hukum",
+      "asal": "topik baku mata kuliah Etika Profesi Hukum",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 16/2011", "pasal": "Pasal 5", "status": "Berlaku", "bpk_id": "39234", "diubah_dengan": []},
+        {"jenis": "peraturan", "rujukan": "UU 16/2011", "pasal": "Pasal 4", "status": "Berlaku", "bpk_id": "39234", "diubah_dengan": []}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-16",
+        "alat": ["periksa_pasal"],
+        "catatan": "Pasal 4 (keperdataan, pidana, TUN, litigasi dan nonlitigasi) dan Pasal 5 (orang atau kelompok orang miskin, hak dasar) terbaca hlm. 3."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "ilmu-hukum-021",
+      "rumpun": "ilmu-hukum",
+      "pertanyaan": "Klausula baku seperti apa yang dilarang dicantumkan pelaku usaha dalam dokumen atau perjanjian dengan konsumen, misalnya klausula pengalihan tanggung jawab?",
+      "topik": "perjanjian baku dan perlindungan konsumen",
+      "asal": "topik baku mata kuliah Hukum Perlindungan Konsumen",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 8/1999", "pasal": "Pasal 18", "status": "Berlaku", "bpk_id": "45288", "diubah_dengan": []}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-16",
+        "alat": ["periksa_pasal"],
+        "catatan": "Pasal 18 ayat (1) huruf a sampai f terbaca hlm. 13; sisa ayat terpotong di keluaran alat. Relasi BPK tidak mencatat UU perubahan."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "ilmu-hukum-022",
+      "rumpun": "ilmu-hukum",
+      "pertanyaan": "Apakah Pengadilan Negeri berwenang mengadili sengketa wanprestasi antara para pihak yang perjanjiannya memuat klausula arbitrase?",
+      "topik": "perjanjian dan penyelesaian sengketa, arbitrase",
+      "asal": "topik baku mata kuliah Hukum Acara Perdata",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 30/1999", "pasal": "Pasal 3", "status": "Berlaku", "bpk_id": "45348", "diubah_dengan": []}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-16",
+        "alat": ["periksa_pasal", "cari_dalam_pdf"],
+        "catatan": "Pasal 3 terbaca hlm. 2: Pengadilan Negeri tidak berwenang mengadili sengketa para pihak yang terikat perjanjian arbitrase. periksa_pasal mengembalikan kutipan Pasal 1, sehingga teks dicari ulang dengan frasa."
+      },
+      "tertahan": true
+    },
+    {
+      "id": "ilmu-hukum-023",
+      "rumpun": "ilmu-hukum",
+      "pertanyaan": "Apakah hakim boleh menolak memeriksa perkara dengan alasan hukumnya tidak ada atau kurang jelas, dan apa kewajiban hakim yang menjadi dasar penemuan hukum?",
+      "topik": "penemuan hukum oleh hakim",
+      "asal": "topik baku mata kuliah Pengantar Ilmu Hukum",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 48/2009", "pasal": "Pasal 10", "status": "Berlaku", "bpk_id": "38793", "diubah_dengan": []},
+        {"jenis": "peraturan", "rujukan": "UU 48/2009", "pasal": "Pasal 5", "status": "Berlaku", "bpk_id": "38793", "diubah_dengan": []}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-16",
+        "alat": ["cari_dalam_pdf", "periksa_pasal"],
+        "catatan": "Pasal 10 ayat (1) dan (2) terbaca hlm. 5; Pasal 5 ayat (1) kewajiban menggali nilai hukum dan rasa keadilan terbaca hlm. 4."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "ilmu-hukum-024",
+      "rumpun": "ilmu-hukum",
+      "pertanyaan": "Bagaimana nasib ancaman pidana kurungan dalam undang-undang di luar KUHP setelah 2 Januari 2026, dan bagaimana ancaman penjara di atas 15 tahun tanpa alternatif seumur hidup disesuaikan?",
+      "topik": "KUHP baru dan masa transisi, penyesuaian pidana",
+      "asal": "topik baku mata kuliah Hukum Pidana",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 1/2026", "status": "Berlaku", "bpk_id": "337869", "diubah_dengan": []}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["detail_peraturan", "teks_peraturan"],
+        "catatan": "UU 1/2026 Pasal II ayat (1) dan (3) (hlm. 3 sampai 4): kurungan tunggal menjadi denda kategori I atau II, kurungan kumulatif dihapus. Pasal III (hlm. 6): penjara di atas 15 tahun tanpa alternatif menjadi paling lama 15 tahun. Pasal bernomor Romawi tidak dapat dicatat di kolom pasal."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "ilmu-hukum-025",
+      "rumpun": "ilmu-hukum",
+      "pertanyaan": "Bagaimana asas nasional aktif dalam KUHP nasional berlaku bagi warga negara Indonesia yang melakukan tindak pidana di luar negeri, dan ketentuan apa yang dihapus oleh undang-undang penyesuaian pidana?",
+      "topik": "KUHP baru, ruang berlaku menurut tempat",
+      "asal": "topik baku mata kuliah Hukum Pidana",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 1/2023", "pasal": "Pasal 8", "status": "Berlaku", "bpk_id": "234935", "diubah_dengan": ["UU 1/2026"]},
+        {"jenis": "peraturan", "rujukan": "UU 1/2026", "status": "Berlaku", "bpk_id": "337869", "diubah_dengan": []}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-16",
+        "alat": ["teks_peraturan", "detail_peraturan", "cari_dalam_pdf"],
+        "catatan": "Pasal 8 asli (hlm. 6): ayat (3) mengecualikan tindak pidana yang diancam denda paling banyak kategori III; ayat (4) dan (5) tentang penuntutan dan larangan pidana mati. UU 1/2026 Pasal VII angka 2 (hlm. 10) menghapus ayat (3); ayat (1) dan (2) tetap."
+      },
+      "tertahan": false
+    }
+  ]
+}
