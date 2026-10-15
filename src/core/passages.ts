@@ -35,10 +35,21 @@ export type Passage = {
 
 // Judul pasal berdiri sendiri pada satu baris. Toleran terhadap salah baca OCR yang sudah terlihat
 // di naskah resmi ("Pasai 624", "Pasal 1O"), dan menerima pasal Romawi undang-undang perubahan
-// ("Pasal I" memuat perubahan, "Pasal II" ketentuan penutup).
-const ARTICLE_HEADING = /^[ \t]*Pasa[li][ \t]+(\d[\dOl]{0,3}[A-Z]?|[IVX]{1,6})[ \t]*$/gm;
-const EXPLANATION_HEADING = /^[ \t]*PENJELASAN[ \t]*$/m;
-const ATTACHMENT_HEADING = /^[ \t]*LAMPIRAN\b/m;
+// ("Pasal I" memuat perubahan, "Pasal II" ketentuan penutup). Lapisan teks resmi kadang menghapus
+// spasinya ("Pasal222" pada UU 7/2017).
+const ARTICLE_HEADING = /^[ \t]*Pasa[li][ \t]*(\d[\dOl]{0,3}[A-Z]?|[IVX]{1,6})[ \t]*$/gm;
+const EXPLANATION_HEADING = /^[ \t]*PENJELASAN[ \t]*$/gm;
+const ATTACHMENT_HEADING = /^[ \t]*LAMPIRAN\b/gm;
+
+/**
+ * Posisi judul bagian yang baru dihitung SESUDAH pasal pertama. Naskah yang memang berupa lampiran
+ * (KHES dan KHI dibuka dengan "LAMPIRAN") atau yang punya daftar isi berjudul "PENJELASAN" tidak
+ * boleh membuat seluruh pasalnya terbaca sebagai lampiran atau penjelasan.
+ */
+function headingAfter(text: string, pattern: RegExp, from: number) {
+  for (const match of text.matchAll(pattern)) if (match.index > from) return match.index;
+  return -1;
+}
 
 export function contentHash(text: string) {
   return createHash("sha256").update(text.normalize("NFC")).digest("hex");
@@ -91,8 +102,9 @@ export function segmentPages(documentId: string, pages: Page[]): Passage[] {
   }
   if (!text.trim()) return [];
 
-  const explanationAt = text.search(EXPLANATION_HEADING);
-  const attachmentAt = text.search(ATTACHMENT_HEADING);
+  const firstArticle = text.search(new RegExp(ARTICLE_HEADING.source, "m"));
+  const explanationAt = firstArticle === -1 ? -1 : headingAfter(text, EXPLANATION_HEADING, firstArticle);
+  const attachmentAt = firstArticle === -1 ? -1 : headingAfter(text, ATTACHMENT_HEADING, firstArticle);
   const sectionAt = (offset: number): PassageLocator["bagian"] => {
     if (attachmentAt !== -1 && offset >= attachmentAt && (explanationAt === -1 || attachmentAt > explanationAt || offset < explanationAt)) {
       return "lampiran";

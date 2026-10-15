@@ -170,6 +170,12 @@ export async function imporKhes({ path_pdf = "", url_pdf = "" }) {
   return { berhasil: true, indeks: { ...indeks, peta_pasal: undefined }, peringatan };
 }
 
+/** Lokasi naskah KHES yang sudah diimpor (kunci PDF di cache), atau null bila belum diimpor. */
+export async function lokasiNaskahKhes() {
+  const indeks = await indeksTersimpan();
+  return indeks ? { rujukan_pdf: indeks.rujukan_pdf, sumber: indeks.sumber, diimpor_pada: indeks.diimpor_pada } : null;
+}
+
 /** Cari pasal atau frasa di dalam naskah KHES yang sudah diimpor. */
 export async function cariPasalKhes({ pasal = "", query = "", maks_temuan = 8 }) {
   const indeks = await indeksTersimpan();
