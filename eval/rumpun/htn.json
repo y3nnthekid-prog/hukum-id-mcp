@@ -1,0 +1,439 @@
+{
+  "versi": 1,
+  "butir": [
+    {
+      "id": "htn-001",
+      "rumpun": "htn",
+      "pertanyaan": "Apa saja kewenangan Mahkamah Konstitusi menurut undang-undang tentang Mahkamah Konstitusi, dan kewajiban apa yang dibebankan kepadanya terkait pendapat DPR mengenai dugaan pelanggaran oleh Presiden dan/atau Wakil Presiden?",
+      "topik": "kewenangan Mahkamah Konstitusi",
+      "asal": "topik baku mata kuliah Hukum Tata Negara",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 24/2003", "pasal": "Pasal 10", "status": "Berlaku", "bpk_id": "44069", "diubah_dengan": ["UU 7/2020", "UU 4/2014", "UU 8/2011"]}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["periksa_pasal"],
+        "catatan": "Pasal 10 ayat (1) huruf a sampai d dan ayat (2) terbaca pada PDF resmi JDIH BPK hlm. 5; status Berlaku dan tiga UU perubahan dari relasi BPK."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "htn-002",
+      "rumpun": "htn",
+      "pertanyaan": "Siapa saja yang dapat menjadi pemohon dalam pengujian undang-undang terhadap UUD 1945 di Mahkamah Konstitusi, dan apa yang wajib diuraikan pemohon dalam permohonannya?",
+      "topik": "pengujian undang-undang, kedudukan hukum pemohon",
+      "asal": "topik baku mata kuliah Hukum Acara Mahkamah Konstitusi",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 24/2003", "pasal": "Pasal 51", "status": "Berlaku", "bpk_id": "44069", "diubah_dengan": ["UU 7/2020", "UU 4/2014", "UU 8/2011"]}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["konsolidasi_peraturan"],
+        "catatan": "Pasal 51 ayat (1) sampai (3) terbaca di naskah asli hlm. 20; UU 8/2011 tidak mengubah Pasal 51 tetapi menyisipkan Pasal 51A tentang isi permohonan (kedudukan hukum dan alasan)."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "htn-003",
+      "rumpun": "htn",
+      "pertanyaan": "Apakah materi muatan ayat, pasal, atau bagian undang-undang yang sudah pernah diuji Mahkamah Konstitusi dapat dimohonkan pengujian kembali, dan dalam keadaan apa hal itu dikecualikan?",
+      "topik": "pengujian undang-undang, ne bis in idem",
+      "asal": "topik baku mata kuliah Hukum Acara Mahkamah Konstitusi",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 24/2003", "pasal": "Pasal 60", "status": "Berlaku", "bpk_id": "44069", "diubah_dengan": ["UU 7/2020", "UU 4/2014", "UU 8/2011"]}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["cari_dalam_pdf", "periksa_pasal"],
+        "catatan": "Pasal 60 asli (hlm. 23) hanya satu ayat; UU 8/2011 angka 28 (hlm. 24) mengubahnya menjadi dua ayat, ayat (2) mengecualikan bila materi muatan UUD 1945 yang dijadikan dasar pengujian berbeda."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "htn-004",
+      "rumpun": "htn",
+      "pertanyaan": "Apakah undang-undang yang diundangkan sebelum perubahan UUD 1945 masih dapat diuji oleh Mahkamah Konstitusi, mengingat undang-undang tentang Mahkamah Konstitusi semula membatasi objek pengujian?",
+      "topik": "pengujian undang-undang, objek pengujian",
+      "asal": "topik baku mata kuliah Hukum Tata Negara",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 24/2003", "pasal": "Pasal 50", "status": "Berlaku", "bpk_id": "44069", "diubah_dengan": ["UU 7/2020", "UU 4/2014", "UU 8/2011"]},
+        {"jenis": "peraturan", "rujukan": "UU 8/2011", "status": "Berlaku", "bpk_id": "39183", "diubah_dengan": ["UU 7/2020", "UU 4/2014"]}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["konsolidasi_peraturan", "cari_dalam_pdf", "detail_peraturan"],
+        "catatan": "Pasal 50 asli (hlm. 20) membatasi pada UU yang diundangkan setelah perubahan UUD 1945; UU 8/2011 angka 23 menyatakan Pasal 50 dihapus (hlm. 20 naskah perubahan). Status dan relasi UU 8/2011 dari detail BPK."
+      },
+      "tertahan": true
+    },
+    {
+      "id": "htn-005",
+      "rumpun": "htn",
+      "pertanyaan": "Bagaimana jenis dan hierarki peraturan perundang-undangan menurut undang-undang pembentukan peraturan perundang-undangan, dan di mana kedudukan Ketetapan MPR dalam hierarki itu?",
+      "topik": "hierarki peraturan perundang-undangan, TAP MPR",
+      "asal": "topik baku mata kuliah Ilmu Perundang-undangan",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 12/2011", "pasal": "Pasal 7", "status": "Berlaku", "bpk_id": "39188", "diubah_dengan": ["UU 1/2026", "UU 13/2022", "UU 15/2019"]}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["periksa_pasal"],
+        "catatan": "Pasal 7 ayat (1) huruf a sampai g dan ayat (2) terbaca hlm. 6 sampai 7; TAP MPR di bawah UUD 1945. Relasi BPK mencatat UU 1/2026 hanya mengubah Pasal 15."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "htn-006",
+      "rumpun": "htn",
+      "pertanyaan": "Bagaimana kedudukan dan kekuatan mengikat peraturan yang ditetapkan lembaga seperti MA, MK, BPK, Bank Indonesia, atau menteri, yang tidak tercantum dalam hierarki peraturan perundang-undangan?",
+      "topik": "jenis peraturan perundang-undangan di luar hierarki",
+      "asal": "topik baku mata kuliah Ilmu Perundang-undangan",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 12/2011", "pasal": "Pasal 8", "status": "Berlaku", "bpk_id": "39188", "diubah_dengan": ["UU 1/2026", "UU 13/2022", "UU 15/2019"]}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["periksa_pasal"],
+        "catatan": "Pasal 8 ayat (1) dan (2) terbaca hlm. 7: diakui dan mengikat sepanjang diperintahkan peraturan lebih tinggi atau dibentuk berdasarkan kewenangan."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "htn-007",
+      "rumpun": "htn",
+      "pertanyaan": "Bagaimana pengaturan partisipasi masyarakat yang bermakna dalam pembentukan peraturan perundang-undangan setelah perubahan kedua undang-undang pembentukan peraturan perundang-undangan, termasuk siapa yang dimaksud masyarakat dan cara pemberian masukan?",
+      "topik": "pembentukan UU dan partisipasi bermakna",
+      "asal": "topik baku mata kuliah Ilmu Perundang-undangan",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 12/2011", "pasal": "Pasal 96", "status": "Berlaku", "bpk_id": "39188", "diubah_dengan": ["UU 1/2026", "UU 13/2022", "UU 15/2019"]},
+        {"jenis": "peraturan", "rujukan": "UU 13/2022", "status": "Berlaku", "bpk_id": "212810", "diubah_dengan": ["UU 1/2026"]}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["konsolidasi_peraturan", "detail_peraturan"],
+        "catatan": "Pasal 96 diubah UU 13/2022 angka 14 (hlm. 8 sampai 9): masukan dalam setiap tahapan, daring dan/atau luring, masyarakat terdampak langsung dan/atau berkepentingan, naskah akademik mudah diakses. Teks asli 2011 tidak lagi berlaku untuk pasal ini."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "htn-008",
+      "rumpun": "htn",
+      "pertanyaan": "Bagaimana mekanisme persetujuan DPR terhadap Peraturan Pemerintah Pengganti Undang-Undang, kapan harus diajukan, dan apa akibatnya bila DPR tidak memberikan persetujuan?",
+      "topik": "Perppu",
+      "asal": "topik baku mata kuliah Hukum Tata Negara",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 12/2011", "pasal": "Pasal 52", "status": "Berlaku", "bpk_id": "39188", "diubah_dengan": ["UU 1/2026", "UU 13/2022", "UU 15/2019"]}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["konsolidasi_peraturan"],
+        "catatan": "Pasal 52 ayat (1) sampai (6) dan penjelasan ayat (1) (persidangan yang berikut = masa sidang pertama DPR setelah Perppu ditetapkan) terbaca. Penanda UU 1/2026 menyentuh pasal ini adalah positif palsu (cocok pada Pasal 521 KUHP); pasal tidak diubah."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "htn-009",
+      "rumpun": "htn",
+      "pertanyaan": "Dalam proses pemakzulan, siapa pemohon perkara pendapat DPR di Mahkamah Konstitusi, apa saja kemungkinan amar putusannya, dan berapa lama batas waktu Mahkamah Konstitusi untuk memutus?",
+      "topik": "impeachment",
+      "asal": "topik baku mata kuliah Hukum Tata Negara",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 24/2003", "pasal": "Pasal 83", "status": "Berlaku", "bpk_id": "44069", "diubah_dengan": ["UU 7/2020", "UU 4/2014", "UU 8/2011"]},
+        {"jenis": "peraturan", "rujukan": "UU 24/2003", "pasal": "Pasal 80", "status": "Berlaku", "bpk_id": "44069", "diubah_dengan": ["UU 7/2020", "UU 4/2014", "UU 8/2011"]}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["cari_dalam_pdf", "konsolidasi_peraturan"],
+        "catatan": "Pasal 80 (pemohon DPR), Pasal 83 (tidak dapat diterima, membenarkan pendapat DPR, ditolak), dan Pasal 84 (90 hari) terbaca hlm. 28 sampai 29; tidak ada UU perubahan yang memuat Pasal 83."
+      },
+      "tertahan": true
+    },
+    {
+      "id": "htn-010",
+      "rumpun": "htn",
+      "pertanyaan": "Siapa yang berwenang mengajukan permohonan pembubaran partai politik ke Mahkamah Konstitusi dan apa yang harus diuraikan dalam permohonannya?",
+      "topik": "pembubaran partai politik",
+      "asal": "topik baku mata kuliah Hukum Tata Negara",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 24/2003", "pasal": "Pasal 68", "status": "Berlaku", "bpk_id": "44069", "diubah_dengan": ["UU 7/2020", "UU 4/2014", "UU 8/2011"]}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["cari_dalam_pdf"],
+        "catatan": "Pasal 68 ayat (1) pemohon adalah Pemerintah, ayat (2) ideologi, asas, tujuan, program, dan kegiatan; Pasal 71 batas 60 hari kerja. Terbaca hlm. 25."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "htn-011",
+      "rumpun": "htn",
+      "pertanyaan": "Lembaga negara seperti apa yang dapat menjadi pemohon dalam sengketa kewenangan lembaga negara di Mahkamah Konstitusi, dan syarat kepentingan apa yang harus dipenuhi?",
+      "topik": "sengketa kewenangan lembaga negara",
+      "asal": "topik baku mata kuliah Hukum Acara Mahkamah Konstitusi",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 24/2003", "pasal": "Pasal 61", "status": "Berlaku", "bpk_id": "44069", "diubah_dengan": ["UU 7/2020", "UU 4/2014", "UU 8/2011"]}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["cari_dalam_pdf"],
+        "catatan": "Pasal 61 ayat (1) dan (2) terbaca hlm. 23: lembaga negara yang kewenangannya diberikan UUD 1945 dan berkepentingan langsung."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "htn-012",
+      "rumpun": "htn",
+      "pertanyaan": "Apa saja wewenang Komisi Yudisial menurut undang-undang yang berlaku sekarang, termasuk perannya terkait hakim ad hoc dan Kode Etik dan Pedoman Perilaku Hakim?",
+      "topik": "lembaga negara, Komisi Yudisial",
+      "asal": "topik baku mata kuliah Hukum Tata Negara",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 22/2004", "pasal": "Pasal 13", "status": "Berlaku", "bpk_id": "40523", "diubah_dengan": ["UU 18/2011"]}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-16",
+        "alat": ["periksa_pasal", "konsolidasi_peraturan"],
+        "catatan": "Pasal 13 asli hanya dua huruf; UU 18/2011 angka 6 mengubahnya menjadi empat huruf (usul hakim agung dan hakim ad hoc di MA, menjaga dan menegakkan kehormatan, menetapkan KEPPH bersama MA, menegakkan KEPPH)."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "htn-013",
+      "rumpun": "htn",
+      "pertanyaan": "Apakah Badan Pemeriksa Keuangan berwenang menilai dan menetapkan jumlah kerugian negara, dan terhadap pihak siapa saja kewenangan itu berlaku?",
+      "topik": "lembaga negara, BPK",
+      "asal": "topik baku mata kuliah Hukum Tata Negara",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 15/2006", "pasal": "Pasal 10", "status": "Berlaku", "bpk_id": "40184", "diubah_dengan": []}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-16",
+        "alat": ["periksa_pasal"],
+        "catatan": "Pasal 10 ayat (1) terbaca hlm. 8 (kutipan terpotong setelah bendahara); relasi BPK tidak mencatat UU perubahan."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "htn-014",
+      "rumpun": "htn",
+      "pertanyaan": "Apa saja wewenang dan tugas Dewan Perwakilan Daerah di bidang legislasi dan pengawasan menurut undang-undang MD3 yang berlaku, termasuk tugas yang ditambahkan pada perubahan kedua?",
+      "topik": "lembaga negara, DPD",
+      "asal": "topik baku mata kuliah Hukum Tata Negara",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 17/2014", "pasal": "Pasal 249", "status": "Berlaku", "bpk_id": "38643", "diubah_dengan": ["PERPU 1/2020", "UU 13/2019", "UU 2/2018", "UU 42/2014", "UU 23/2014"]}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-16",
+        "alat": ["periksa_pasal", "konsolidasi_peraturan"],
+        "catatan": "Pasal 249 ayat (1) terbaca hlm. 122; UU 2/2018 angka 18 menambah huruf j pada ayat (1). Penanda UU 23/2014 menyentuh pasal ini adalah positif palsu (Pasal 249 UU Pemda sendiri). Isi huruf j tidak terbaca utuh."
+      },
+      "tertahan": true
+    },
+    {
+      "id": "htn-015",
+      "rumpun": "htn",
+      "pertanyaan": "Dalam perselisihan hasil Pemilu Presiden dan Wakil Presiden, berapa lama tenggat pengajuan keberatan ke Mahkamah Konstitusi, hasil apa yang dapat dipersoalkan, dan berapa lama Mahkamah Konstitusi harus memutus?",
+      "topik": "pemilu dan sengketa hasil",
+      "asal": "topik baku mata kuliah Hukum Pemilu",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 7/2017", "pasal": "Pasal 475", "status": "Berlaku", "bpk_id": "37644", "diubah_dengan": ["UU 7/2023", "PERPU 1/2022"]}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-16",
+        "alat": ["periksa_pasal", "detail_peraturan", "cari_dalam_pdf"],
+        "catatan": "periksa_pasal gagal karena naskah dipecah dua PDF; Pasal 475 ayat (1) sampai (5) terbaca di PDF batang tubuh hlm. 151 sampai 317 (hlm. 283): 3 hari, hasil yang memengaruhi terpilihnya pasangan calon, 14 hari."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "htn-016",
+      "rumpun": "htn",
+      "pertanyaan": "Urusan pemerintahan apa saja yang tergolong urusan pemerintahan absolut sehingga tidak diserahkan kepada daerah, dan bagaimana Pemerintah Pusat menyelenggarakannya di daerah?",
+      "topik": "otonomi daerah, pembagian urusan pemerintahan",
+      "asal": "topik baku mata kuliah Hukum Pemerintahan Daerah",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 23/2014", "pasal": "Pasal 10", "status": "Berlaku", "bpk_id": "38685", "diubah_dengan": ["UU 1/2026", "UU 6/2023", "UU 11/2020", "PERPU 1/2020", "UU 9/2015", "UU 2/2015"]}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-16",
+        "alat": ["periksa_pasal"],
+        "catatan": "Pasal 9 dan Pasal 10 ayat (1) dan (2) terbaca hlm. 10. BPK juga mencatat UU ini dicabut sebagian oleh UU 1/2022 dan UU 17/2019 pada pasal lain."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "htn-017",
+      "rumpun": "htn",
+      "pertanyaan": "Sejak berlakunya undang-undang penyesuaian pidana, ancaman pidana apa yang masih boleh dimuat dalam Peraturan Daerah, dan sanksi lain apa yang dapat dimuat Perda?",
+      "topik": "otonomi daerah, materi muatan Perda",
+      "asal": "topik baku mata kuliah Hukum Pemerintahan Daerah",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 23/2014", "pasal": "Pasal 238", "status": "Berlaku", "bpk_id": "38685", "diubah_dengan": ["UU 1/2026", "UU 6/2023", "UU 11/2020", "PERPU 1/2020", "UU 9/2015", "UU 2/2015"]},
+        {"jenis": "peraturan", "rujukan": "UU 1/2026", "status": "Berlaku", "bpk_id": "337869", "diubah_dengan": []}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-16",
+        "alat": ["detail_peraturan", "teks_peraturan", "periksa_pasal"],
+        "catatan": "UU 1/2026 Pasal VI (hlm. 8 sampai 9) mengubah Pasal 238: Perda hanya dapat memuat ancaman pidana denda paling banyak kategori III, plus biaya paksaan, pemulihan keadaan semula, dan sanksi administratif. Pasal IV mengonversi pidana kurungan dalam Perda menjadi denda. Berlaku 2 Januari 2026."
+      },
+      "tertahan": true
+    },
+    {
+      "id": "htn-018",
+      "rumpun": "htn",
+      "pertanyaan": "Siapa saja pelaku kekuasaan kehakiman di Indonesia, dan apa saja wewenang Mahkamah Agung termasuk dalam menguji peraturan perundang-undangan di bawah undang-undang?",
+      "topik": "kekuasaan kehakiman",
+      "asal": "topik baku mata kuliah Hukum Tata Negara",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 48/2009", "pasal": "Pasal 20", "status": "Berlaku", "bpk_id": "38793", "diubah_dengan": []},
+        {"jenis": "peraturan", "rujukan": "UU 48/2009", "pasal": "Pasal 18", "status": "Berlaku", "bpk_id": "38793", "diubah_dengan": []}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-16",
+        "alat": ["periksa_pasal"],
+        "catatan": "Pasal 18 dan Pasal 20 ayat (1) dan (2) terbaca hlm. 8; relasi BPK tidak mencatat UU perubahan."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "htn-019",
+      "rumpun": "htn",
+      "pertanyaan": "Apa perbedaan hak interpelasi, hak angket, dan hak menyatakan pendapat yang dimiliki DPR menurut undang-undang MD3?",
+      "topik": "lembaga negara, hak DPR",
+      "asal": "topik baku mata kuliah Hukum Tata Negara",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 17/2014", "pasal": "Pasal 79", "status": "Berlaku", "bpk_id": "38643", "diubah_dengan": ["PERPU 1/2020", "UU 13/2019", "UU 2/2018", "UU 42/2014", "UU 23/2014"]}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-16",
+        "alat": ["periksa_pasal"],
+        "catatan": "Pasal 79 ayat (1) dan (2) terbaca hlm. 37; ayat (3) dan (4) terpotong di keluaran alat. Belum diperiksa apakah UU perubahan menyentuh Pasal 79."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "htn-020",
+      "rumpun": "htn",
+      "pertanyaan": "Apakah undang-undang kementerian negara yang berlaku sekarang masih membatasi jumlah kementerian paling banyak 34, atau jumlahnya kini ditentukan dengan cara lain?",
+      "topik": "lembaga negara, kementerian negara",
+      "asal": "topik baku mata kuliah Hukum Tata Negara",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 39/2008", "pasal": "Pasal 15", "status": "Berlaku", "bpk_id": "39719", "diubah_dengan": ["UU 61/2024"]},
+        {"jenis": "peraturan", "rujukan": "UU 61/2024", "status": "Berlaku", "bpk_id": "304396", "diubah_dengan": []}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-16",
+        "alat": ["konsolidasi_peraturan", "detail_peraturan"],
+        "catatan": "Pasal 15 asli membatasi 34 kementerian; UU 61/2024 angka 4 (hlm. 3) mengubahnya menjadi sesuai kebutuhan penyelenggaraan pemerintahan oleh Presiden. Berlaku 15 Oktober 2024."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "htn-021",
+      "rumpun": "htn",
+      "pertanyaan": "Dalam keadaan apa saja seorang Warga Negara Indonesia kehilangan kewarganegaraannya, misalnya karena masuk dinas tentara asing atau lama bertempat tinggal di luar negeri?",
+      "topik": "kewarganegaraan",
+      "asal": "topik baku mata kuliah Hukum Tata Negara",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 12/2006", "pasal": "Pasal 23", "status": "Berlaku", "bpk_id": "40176", "diubah_dengan": []}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-16",
+        "alat": ["periksa_pasal", "teks_peraturan"],
+        "catatan": "Pasal 23 huruf a sampai i terbaca hlm. 10 sampai 11; Pasal 24 mengecualikan huruf d bagi program pendidikan yang mewajibkan wajib militer. Relasi BPK tidak mencatat UU perubahan."
+      },
+      "tertahan": true
+    },
+    {
+      "id": "htn-022",
+      "rumpun": "htn",
+      "pertanyaan": "Apakah hakim konstitusi masih menjabat untuk masa lima tahun yang dapat dipilih kembali, atau kini diberhentikan dengan hormat berdasarkan batas usia tertentu?",
+      "topik": "lembaga negara, hakim konstitusi",
+      "asal": "topik baku mata kuliah Hukum Tata Negara",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 24/2003", "pasal": "Pasal 23", "status": "Berlaku", "bpk_id": "44069", "diubah_dengan": ["UU 7/2020", "UU 4/2014", "UU 8/2011"]},
+        {"jenis": "peraturan", "rujukan": "UU 7/2020", "status": "Berlaku", "bpk_id": "147335", "diubah_dengan": []}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-16",
+        "alat": ["cari_dalam_pdf", "detail_peraturan"],
+        "catatan": "UU 7/2020 angka 8 (hlm. 7) menghapus Pasal 23 ayat (1) huruf d (berakhir masa jabatan) dan mempertahankan huruf c (berusia 70 tahun); Judul Bagian Kedua Bab IV dan Pasal 22 dihapus. Ketentuan peralihan Pasal 87 sengaja tidak ditanyakan."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "htn-023",
+      "rumpun": "htn",
+      "pertanyaan": "Sejak kapan putusan Mahkamah Konstitusi memperoleh kekuatan hukum tetap, dan apakah undang-undang yang sedang diuji tetap berlaku selama proses pengujian?",
+      "topik": "putusan MK final dan mengikat",
+      "asal": "topik baku mata kuliah Hukum Acara Mahkamah Konstitusi",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 24/2003", "pasal": "Pasal 47", "status": "Berlaku", "bpk_id": "44069", "diubah_dengan": ["UU 7/2020", "UU 4/2014", "UU 8/2011"]},
+        {"jenis": "peraturan", "rujukan": "UU 24/2003", "pasal": "Pasal 58", "status": "Berlaku", "bpk_id": "44069", "diubah_dengan": ["UU 7/2020", "UU 4/2014", "UU 8/2011"]}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-16",
+        "alat": ["konsolidasi_peraturan", "cari_dalam_pdf"],
+        "catatan": "Pasal 47 (hlm. 19) dan Pasal 58 (hlm. 23) terbaca di naskah asli; tidak ada UU perubahan yang memuat Pasal 47. Perubahan atas Pasal 58 belum diperiksa tersendiri."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "htn-024",
+      "rumpun": "htn",
+      "pertanyaan": "Berapa lama tenggat bagi peserta Pemilu anggota DPR, DPD, dan DPRD untuk mengajukan permohonan perselisihan hasil ke Mahkamah Konstitusi, dan apakah permohonan yang kurang lengkap masih dapat diperbaiki?",
+      "topik": "pemilu dan sengketa hasil",
+      "asal": "topik baku mata kuliah Hukum Pemilu",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 7/2017", "pasal": "Pasal 474", "status": "Berlaku", "bpk_id": "37644", "diubah_dengan": ["UU 7/2023", "PERPU 1/2022"]}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-16",
+        "alat": ["detail_peraturan", "cari_dalam_pdf"],
+        "catatan": "Pasal 474 ayat (2) sampai (4) terbaca hlm. 283 PDF bagian kedua: 3 x 24 jam sejak pengumuman penetapan nasional, perbaikan 3 x 24 jam. Ayat (1) tidak terbaca utuh."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "htn-025",
+      "rumpun": "htn",
+      "pertanyaan": "Asas apa saja yang harus dipenuhi dalam membentuk peraturan perundang-undangan yang baik, dan asas apa yang harus tercermin dalam materi muatannya?",
+      "topik": "asas pembentukan peraturan perundang-undangan",
+      "asal": "topik baku mata kuliah Ilmu Perundang-undangan",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {"jenis": "peraturan", "rujukan": "UU 12/2011", "pasal": "Pasal 6", "status": "Berlaku", "bpk_id": "39188", "diubah_dengan": ["UU 1/2026", "UU 13/2022", "UU 15/2019"]},
+        {"jenis": "peraturan", "rujukan": "UU 12/2011", "pasal": "Pasal 5", "status": "Berlaku", "bpk_id": "39188", "diubah_dengan": ["UU 1/2026", "UU 13/2022", "UU 15/2019"]}
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-16",
+        "alat": ["periksa_pasal", "cari_dalam_pdf"],
+        "catatan": "Pasal 5 huruf a sampai g (hlm. 5) dan Pasal 6 ayat (1) huruf a sampai j serta ayat (2) (hlm. 6) terbaca. UU 13/2022 angka 1 mengubah Penjelasan Pasal 5 huruf g (keterbukaan), bukan batang tubuhnya. Penanda UU 1/2026 dan UU 15/2019 menyentuh Pasal 5 adalah positif palsu (konsiderans dan Pasal 54)."
+      },
+      "tertahan": false
+    }
+  ]
+}

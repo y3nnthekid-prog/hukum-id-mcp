@@ -1,3 +1,4 @@
+import "./isolasi-cache.js";
 import assert from "node:assert/strict";
 
 import { periksaPasal } from "../src/alur.js";

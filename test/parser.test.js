@@ -16,6 +16,7 @@
 //      fungsi sungguhan. Fixture adalah tangkapan asli dari URL yang sama, jadi
 //      menyemainya tidak mencemari cache dengan isi palsu.
 
+import "./isolasi-cache.js";
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";

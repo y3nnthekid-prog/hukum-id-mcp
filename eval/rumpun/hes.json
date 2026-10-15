@@ -1,0 +1,451 @@
+{
+  "versi": 1,
+  "butir": [
+    {
+      "id": "hes-001",
+      "rumpun": "hes",
+      "pertanyaan": "Dalam pembiayaan murabahah, bank sering mewakilkan pembelian barang kepada nasabah. Kapan akad jual beli murabahah antara bank dan nasabah boleh ditandatangani dalam skema seperti itu, dan apa akibatnya bila akad ditandatangani sebelum barang dibeli?",
+      "topik": "akad murabahah dengan wakalah",
+      "asal": "topik baku mata kuliah Fikih Muamalah",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "fatwa", "nomor": "04/DSN-MUI/IV/2000" },
+        { "jenis": "khes", "pasal": "Pasal 119" }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["cari_fatwa_dsn", "teks_fatwa_dsn", "cari_pasal_khes"],
+        "catatan": "Fatwa 04/DSN-MUI/IV/2000 ketentuan Pertama angka 9 (hlm. 4 PDF): akad murabahah dilakukan setelah barang secara prinsip menjadi milik bank. KHES Pasal 119 (hlm. 58 naskah impor) memuat kaidah yang sama."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hes-002",
+      "rumpun": "hes",
+      "pertanyaan": "Apakah lembaga keuangan syariah wajib memberikan potongan bila nasabah melunasi utang pembiayaan murabahah sebelum jatuh tempo, dan bagaimana sisa harga yang harus dibayar nasabah dihitung?",
+      "topik": "pelunasan murabahah dipercepat",
+      "asal": "topik baku mata kuliah Hukum Perbankan Syariah",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "fatwa", "nomor": "153/DSN-MUI/VI/2022" },
+        { "jenis": "fatwa", "nomor": "23/DSN-MUI/III/2002" }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["cari_fatwa_dsn", "teks_fatwa_dsn"],
+        "catatan": "Fatwa 153/DSN-MUI/VI/2022 ketentuan Ketiga angka 3 dan 4 (hlm. 11): LKS wajib memberi potongan dari qimah ismiyyah, sisa harga adalah qimah haliyyah dikurangi angsuran. Konsideransnya (hlm. 10) menyatakan ketentuan Fatwa 23/DSN-MUI/III/2002 yang semula membolehkan potongan diubah menjadi wajib; jawaban yang baik menjelaskan pergeseran itu."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hes-003",
+      "rumpun": "hes",
+      "pertanyaan": "Dalam akad mudharabah, siapa yang menanggung kerugian usaha, dan dalam keadaan apa pengelola dana (mudharib) wajib ikut menanggungnya?",
+      "topik": "akad mudharabah",
+      "asal": "topik baku mata kuliah Fikih Muamalah",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "fatwa", "nomor": "115/DSN-MUI/IX/2017" },
+        { "jenis": "khes", "pasal": "Pasal 249" }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["cari_fatwa_dsn", "teks_fatwa_dsn", "cari_pasal_khes"],
+        "catatan": "Fatwa 115/DSN-MUI/IX/2017 ketentuan Kedelapan angka 4 (hlm. 6): kerugian ditanggung shahib al-mal kecuali karena ta'addi, taqshir, atau mukhalafat asy-syuruth. KHES Pasal 249 (hlm. 85): mudharib bertanggung jawab atas kerugian akibat usaha yang melampaui batas atau menyalahi akad."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hes-004",
+      "rumpun": "hes",
+      "pertanyaan": "Bagaimana konstruksi akad musyarakah mutanaqishah dalam pembiayaan rumah di bank syariah, termasuk bagaimana porsi kepemilikan bank beralih kepada nasabah dan bagaimana keuntungan serta kerugian dibagi?",
+      "topik": "musyarakah mutanaqishah",
+      "asal": "topik baku mata kuliah Hukum Perbankan Syariah",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "fatwa", "nomor": "73/DSN-MUI/XI/2008" }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["cari_fatwa_dsn", "teks_fatwa_dsn"],
+        "catatan": "Fatwa 73/DSN-MUI/XI/2008 ketentuan Ketiga dan Keempat (hlm. 5): gabungan syirkah dan bai', LKS wajib berjanji menjual hishshah secara bertahap, aset boleh di-ijarah-kan, keuntungan sesuai nisbah dan kerugian sesuai proporsi kepemilikan."
+      },
+      "tertahan": true
+    },
+    {
+      "id": "hes-005",
+      "rumpun": "hes",
+      "pertanyaan": "Dalam ijarah muntahiyah bit tamlik, apakah janji pemindahan kepemilikan yang disepakati di awal mengikat, kapan akad pemindahan kepemilikan dilakukan, dan dengan akad apa pemindahan itu dapat terjadi?",
+      "topik": "ijarah muntahiyah bit tamlik",
+      "asal": "topik baku mata kuliah Fikih Muamalah",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "fatwa", "nomor": "27/DSN-MUI/III/2002" },
+        { "jenis": "khes", "pasal": "Pasal 323" }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["cari_fatwa_dsn", "teks_fatwa_dsn", "cari_pasal_khes"],
+        "catatan": "Fatwa 27/DSN-MUI/III/2002 ketentuan Kedua (hlm. 3): akad pemindahan kepemilikan hanya setelah masa ijarah selesai, janji di awal adalah wa'd yang tidak mengikat. KHES Pasal 323 ayat (2) (hlm. 103): pemindahan kepemilikan dapat dengan akad bai' atau hibah."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hes-006",
+      "rumpun": "hes",
+      "pertanyaan": "Dalam gadai syariah (rahn), siapa yang menanggung biaya pemeliharaan barang gadai, bolehkah besarnya dikaitkan dengan jumlah pinjaman, dan bagaimana penyelesaiannya bila pemberi gadai tidak melunasi utang saat jatuh tempo?",
+      "topik": "rahn (gadai syariah)",
+      "asal": "topik baku mata kuliah Fikih Muamalah",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "fatwa", "nomor": "25/DSN-MUI/III/2002" },
+        { "jenis": "khes", "pasal": "Pasal 403" }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["cari_fatwa_dsn", "teks_fatwa_dsn", "cari_pasal_khes"],
+        "catatan": "Fatwa 25/DSN-MUI/III/2002 ketentuan Kedua angka 3 sampai 5 (hlm. 3): biaya pemeliharaan kewajiban rahin, tidak boleh ditentukan berdasarkan jumlah pinjaman, marhun dijual paksa melalui lelang syariah. KHES Pasal 403 (hlm. 122) sejalan. Fatwa 26/DSN-MUI/III/2002 (Rahn Emas) tercatat di indeks DSN 'dalam penyempurnaan' tanpa PDF, sehingga tidak dijadikan rujukan wajib."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hes-007",
+      "rumpun": "hes",
+      "pertanyaan": "Apa perbedaan denda (ta'zir) dan ganti rugi (ta'widh) yang dapat dikenakan lembaga keuangan syariah kepada nasabah yang terlambat membayar, termasuk siapa yang boleh dikenai, ke mana dananya disalurkan, dan bagaimana besarnya ditentukan?",
+      "topik": "denda dan ta'widh",
+      "asal": "topik baku mata kuliah Hukum Perbankan Syariah",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "fatwa", "nomor": "17/DSN-MUI/IX/2000" },
+        { "jenis": "fatwa", "nomor": "43/DSN-MUI/VIII/2004" }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["cari_fatwa_dsn", "teks_fatwa_dsn"],
+        "catatan": "Fatwa 17/DSN-MUI/IX/2000 (hlm. 3): sanksi hanya untuk nasabah mampu yang menunda, berdasarkan ta'zir, dana denda untuk dana sosial. Fatwa 43/DSN-MUI/VIII/2004 (hlm. 6): ta'widh sebesar kerugian riil, bukan potential loss, hanya pada akad yang menimbulkan dain, besarnya tidak boleh dicantumkan dalam akad."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hes-008",
+      "rumpun": "hes",
+      "pertanyaan": "Pengadilan mana yang berwenang secara absolut memeriksa sengketa ekonomi syariah di Indonesia, apakah kewenangan itu terbatas pada perbankan syariah, dan bagaimana dengan pihak nonmuslim yang menundukkan diri pada akad syariah?",
+      "topik": "kewenangan Peradilan Agama atas sengketa ekonomi syariah",
+      "asal": "topik baku mata kuliah Hukum Acara Peradilan Agama dan Penyelesaian Sengketa Ekonomi Syariah",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "peraturan", "rujukan": "UU 7/1989", "pasal": "Pasal 49", "status": "Berlaku", "bpk_id": "46804", "diubah_dengan": ["UU 3/2006", "UU 50/2009"] },
+        { "jenis": "peraturan", "rujukan": "UU 3/2006", "pasal": "Pasal 49", "status": "Berlaku", "bpk_id": "40154", "diubah_dengan": [] }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["periksa_pasal", "detail_peraturan", "konsolidasi_peraturan"],
+        "catatan": "Pasal 49 UU 7/1989 diubah oleh angka 37 UU 3/2006 (hlm. 15 sampai 16) dengan menambah huruf i ekonomi syari'ah; Penjelasan (hlm. 25 dan 28) memuat 'tidak hanya dibatasi di bidang perbankan syari'ah' dan penundukan diri sukarela. UU 50/2009 tidak menyentuh Pasal 49 menurut konsolidasi_peraturan."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hes-009",
+      "rumpun": "hes",
+      "pertanyaan": "Menurut Undang-Undang Perbankan Syariah, bagaimana penyelesaian sengketa perbankan syariah dilakukan, dan sejauh mana para pihak boleh memperjanjikan forum penyelesaian lain di dalam akad?",
+      "topik": "penyelesaian sengketa perbankan syariah",
+      "asal": "topik baku mata kuliah Hukum Perbankan Syariah",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "peraturan", "rujukan": "UU 21/2008", "pasal": "Pasal 55", "status": "Berlaku", "bpk_id": "39655", "diubah_dengan": ["UU 6/2023", "UU 4/2023", "PERPU 2/2022", "UU 11/2020"] }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["detail_peraturan", "teks_peraturan", "konsolidasi_peraturan", "cari_dalam_pdf", "periksa_pasal"],
+        "catatan": "Pasal 55 ayat (1) sampai (3) dan Penjelasan ayat (2) dibaca pada PDF resmi (hlm. 28 dan 61). UU 4/2023 hanya menyisipkan Pasal 54A dan 54B sebelum Pasal 55, tidak mengubah Pasal 55. Diperiksa ulang dengan periksa_pasal setelah cache fixture UU 21/2008 dibersihkan (PDF resmi Download/29223, 64 hlm.); semua rujukan UU 21/2008 di berkas ini sejak awal dibaca dari PDF resmi itu. Penjelasan ayat (2) pernah diuji MK; putusan tidak dijadikan rujukan wajib karena situs MK memblokir klien otomatis."
+      },
+      "tertahan": true
+    },
+    {
+      "id": "hes-010",
+      "rumpun": "hes",
+      "pertanyaan": "Apa dasar hukum kewajiban membentuk Dewan Pengawas Syariah pada bank syariah dan perseroan yang menjalankan usaha berdasarkan prinsip syariah, siapa yang mengangkatnya, dan apa tugasnya?",
+      "topik": "Dewan Pengawas Syariah",
+      "asal": "topik baku mata kuliah Hukum Perbankan Syariah",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "peraturan", "rujukan": "UU 21/2008", "pasal": "Pasal 32", "status": "Berlaku", "bpk_id": "39655", "diubah_dengan": ["UU 6/2023", "UU 4/2023", "PERPU 2/2022", "UU 11/2020"] },
+        { "jenis": "peraturan", "rujukan": "UU 40/2007", "pasal": "Pasal 109", "status": "Berlaku", "bpk_id": "39965", "diubah_dengan": ["UU 6/2023", "PERPU 2/2022", "UU 11/2020"] }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["detail_peraturan", "teks_peraturan", "periksa_pasal", "cari_dalam_pdf"],
+        "catatan": "Pasal 32 UU 21/2008 (hlm. 20 PDF resmi): DPS wajib di Bank Syariah dan BUK yang memiliki UUS, diangkat RUPS atas rekomendasi MUI. Daftar perubahan Pasal 15 UU 4/2023 (hlm. 178 sampai 179) mengubah Pasal 26, 27, 34 dan menghapus Pasal 28 sampai 31, tidak menyentuh Pasal 32. Pasal 109 UU 40/2007 (hlm. 57)."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hes-011",
+      "rumpun": "hes",
+      "pertanyaan": "Setelah berlakunya UU Pengembangan dan Penguatan Sektor Keuangan, siapa yang menetapkan prinsip syariah bagi kegiatan usaha bank syariah dan bagaimana fatwa itu menjadi aturan yang mengikat bank?",
+      "topik": "kedudukan fatwa dalam perbankan syariah",
+      "asal": "topik baku mata kuliah Hukum Perbankan Syariah",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "peraturan", "rujukan": "UU 21/2008", "pasal": "Pasal 26", "status": "Berlaku", "bpk_id": "39655", "diubah_dengan": ["UU 6/2023", "UU 4/2023", "PERPU 2/2022", "UU 11/2020"] },
+        { "jenis": "peraturan", "rujukan": "UU 4/2023", "pasal": "Pasal 15", "status": "Berlaku", "bpk_id": "240203", "diubah_dengan": ["UU 4/2026"] }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["detail_peraturan", "teks_peraturan", "cari_dalam_pdf"],
+        "catatan": "Pasal 26 asli (hlm. 18): prinsip syariah difatwakan MUI dan dituangkan dalam PBI. Diubah angka 18 Pasal 15 UU 4/2023 (hlm. 178): ditetapkan oleh lembaga yang memiliki kewenangan dalam penetapan fatwa di bidang syariah dan ditindaklanjuti otoritas terkait dengan membentuk peraturan; komite perbankan syariah dibentuk otoritas. UU 4/2026 mengubah UU 4/2023 tetapi tidak menyentuh angka 18 Pasal 15 (diperiksa lewat cari_dalam_pdf)."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hes-012",
+      "rumpun": "hes",
+      "pertanyaan": "Kapan bank umum konvensional yang memiliki unit usaha syariah wajib memisahkan (spin-off) unit itu menjadi bank umum syariah menurut ketentuan yang berlaku sekarang, dan apa yang berubah dibanding rumusan awal UU Perbankan Syariah?",
+      "topik": "pemisahan unit usaha syariah",
+      "asal": "topik baku mata kuliah Hukum Perbankan Syariah",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "peraturan", "rujukan": "UU 21/2008", "pasal": "Pasal 68", "status": "Berlaku", "bpk_id": "39655", "diubah_dengan": ["UU 6/2023", "UU 4/2023", "PERPU 2/2022", "UU 11/2020"] },
+        { "jenis": "peraturan", "rujukan": "UU 4/2023", "pasal": "Pasal 15", "status": "Berlaku", "bpk_id": "240203", "diubah_dengan": ["UU 4/2026"] },
+        { "jenis": "peraturan", "rujukan": "POJK 12/2023", "pasal": "Pasal 59", "status": "Berlaku", "bpk_id": "302720", "diubah_dengan": [] }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["detail_peraturan", "cari_dalam_pdf", "cari_peraturan"],
+        "catatan": "Pasal 68 diubah angka 56 Pasal 15 UU 4/2023 (hlm. 207): pemisahan wajib setelah memenuhi persyaratan yang ditetapkan OJK. POJK 12/2023 Pasal 59 ayat (1) (hlm. 25): aset UUS 50% dari aset BUK induk dan/atau paling sedikit Rp50 triliun. POJK 12/2023 mencabut POJK 59/POJK.03/2020 (detail BPK: Tidak Berlaku). UU 4/2026 menghapus Pasal 67A tetapi tidak menyentuh Pasal 68."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hes-013",
+      "rumpun": "hes",
+      "pertanyaan": "Akad apa saja yang dapat menjadi dasar penerbitan Surat Berharga Syariah Negara menurut undang-undang, dan apa dasar syariah bagi SBSN ijarah dengan skema sale and lease back?",
+      "topik": "sukuk negara (SBSN)",
+      "asal": "topik baku mata kuliah Hukum Pasar Modal Syariah",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "peraturan", "rujukan": "UU 19/2008", "pasal": "Pasal 3", "status": "Berlaku", "bpk_id": "39650", "diubah_dengan": [] },
+        { "jenis": "fatwa", "nomor": "72/DSN-MUI/VI/2008" }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["periksa_pasal", "cari_fatwa_dsn", "teks_fatwa_dsn"],
+        "catatan": "Pasal 3 UU 19/2008 (hlm. 5): SBSN ijarah, mudarabah, musyarakah, istishna', akad lain, dan kombinasi. JDIH BPK tidak mencatat relasi perubahan. Fatwa 72/DSN-MUI/VI/2008 tentang SBSN Ijarah Sale and Lease Back terbaca (hlm. 1 sampai 3)."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hes-014",
+      "rumpun": "hes",
+      "pertanyaan": "Bagaimana prosedur wakaf uang menurut Undang-Undang Wakaf, melalui lembaga apa uang itu diwakafkan, dan bukti apa yang diterbitkan bagi wakif dan nazhir?",
+      "topik": "wakaf uang",
+      "asal": "topik baku mata kuliah Hukum Wakaf dan Zakat",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "peraturan", "rujukan": "UU 41/2004", "pasal": "Pasal 28", "status": "Berlaku", "bpk_id": "40788", "diubah_dengan": [] },
+        { "jenis": "peraturan", "rujukan": "UU 41/2004", "pasal": "Pasal 29", "status": "Berlaku", "bpk_id": "40788", "diubah_dengan": [] }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["periksa_pasal"],
+        "catatan": "Pasal 28 sampai 30 UU 41/2004 (hlm. 11 sampai 12): wakaf uang melalui LKS yang ditunjuk Menteri, pernyataan kehendak tertulis, sertifikat wakaf uang diterbitkan LKS. Tidak ada relasi perubahan di JDIH BPK."
+      },
+      "tertahan": true
+    },
+    {
+      "id": "hes-015",
+      "rumpun": "hes",
+      "pertanyaan": "Apakah harta benda wakaf boleh ditukar atau dialihkan, misalnya karena tanah wakaf terkena proyek kepentingan umum, dan apa syarat serta izin yang diperlukan?",
+      "topik": "perubahan status harta benda wakaf",
+      "asal": "topik baku mata kuliah Hukum Wakaf dan Zakat",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "peraturan", "rujukan": "UU 41/2004", "pasal": "Pasal 40", "status": "Berlaku", "bpk_id": "40788", "diubah_dengan": [] },
+        { "jenis": "peraturan", "rujukan": "UU 41/2004", "pasal": "Pasal 41", "status": "Berlaku", "bpk_id": "40788", "diubah_dengan": [] }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["periksa_pasal", "teks_peraturan"],
+        "catatan": "Pasal 40 (larangan menjaminkan, menyita, menjual, menukar, dan seterusnya) dan Pasal 41 (pengecualian untuk kepentingan umum sesuai RUTR, izin tertulis Menteri atas persetujuan BWI, wajib ditukar dengan manfaat dan nilai sekurang-kurangnya sama) dibaca pada hlm. 14."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hes-016",
+      "rumpun": "hes",
+      "pertanyaan": "Apakah zakat yang dibayarkan seorang muzaki dapat mengurangi kewajiban pajaknya, dan dengan syarat apa menurut Undang-Undang Pengelolaan Zakat?",
+      "topik": "zakat sebagai pengurang penghasilan kena pajak",
+      "asal": "topik baku mata kuliah Hukum Wakaf dan Zakat",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "peraturan", "rujukan": "UU 23/2011", "pasal": "Pasal 22", "status": "Berlaku", "bpk_id": "39267", "diubah_dengan": [] }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["periksa_pasal"],
+        "catatan": "Pasal 22 UU 23/2011 (hlm. 11): zakat yang dibayarkan kepada BAZNAS atau LAZ dikurangkan dari penghasilan kena pajak. JDIH BPK tidak mencatat relasi 'Diubah dengan'."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hes-017",
+      "rumpun": "hes",
+      "pertanyaan": "Dalam asuransi syariah, apa perbedaan akad tijarah dan akad tabarru', bagaimana kedudukan perusahaan terhadap dana tabarru', dan bolehkah akad tabarru' diubah menjadi akad tijarah?",
+      "topik": "asuransi syariah dan akad tabarru'",
+      "asal": "topik baku mata kuliah Hukum Asuransi Syariah",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "fatwa", "nomor": "21/DSN-MUI/X/2001" },
+        { "jenis": "fatwa", "nomor": "53/DSN-MUI/III/2006" }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["cari_fatwa_dsn", "teks_fatwa_dsn"],
+        "catatan": "Fatwa 21/DSN-MUI/X/2001 ketentuan Kedua sampai Keempat (hlm. 5 sampai 6): tijarah (mudharabah) dan tabarru' (hibah), tabarru' tidak dapat diubah menjadi tijarah. Fatwa 53/DSN-MUI/III/2006 ketentuan Pertama sampai Ketiga (hlm. 5 sampai 6): akad tabarru' melekat pada semua produk asuransi, hibah antarpeserta."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hes-018",
+      "rumpun": "hes",
+      "pertanyaan": "Akad apa saja yang boleh dipakai dalam layanan pembiayaan berbasis teknologi informasi (fintech lending) berdasarkan prinsip syariah, dan apa kedudukan penyelenggara platform terhadap pemberi dan penerima pembiayaan?",
+      "topik": "fintech syariah",
+      "asal": "topik baku mata kuliah Hukum Ekonomi Syariah Kontemporer",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "fatwa", "nomor": "117/DSN-MUI/II/2018" }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["cari_fatwa_dsn", "teks_fatwa_dsn"],
+        "catatan": "Fatwa 117/DSN-MUI/II/2018 ketentuan Keempat angka 3 dan 5 (hlm. 9): akad al-bai', ijarah, mudharabah, musyarakah, wakalah bi al-ujrah, qardh, penyelenggara boleh mengenakan ujrah; ketentuan Keenam (hlm. 10): penyelenggara sebagai wakil dengan akad wakalah bi al-ujrah."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hes-019",
+      "rumpun": "hes",
+      "pertanyaan": "Apa kriteria saham emiten yang tidak menyatakan diri sebagai emiten syariah agar dapat dimuat dalam Daftar Efek Syariah, termasuk batas rasio keuangannya, menurut peraturan OJK yang berlaku sekarang?",
+      "topik": "saham syariah dan Daftar Efek Syariah",
+      "asal": "topik baku mata kuliah Hukum Pasar Modal Syariah",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "peraturan", "rujukan": "POJK 8/2025", "pasal": "Pasal 2", "status": "Berlaku", "bpk_id": "322893", "diubah_dengan": [] }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["cari_peraturan", "detail_peraturan", "cari_dalam_pdf"],
+        "catatan": "POJK 8/2025 Pasal 2 ayat (1) huruf b (hlm. 4): utang berbasis bunga tidak melebihi 45% total aset, pendapatan bunga dan tidak halal tidak melebihi 5%. Catatan BPK menyatakan POJK ini mencabut POJK 35/POJK.04/2017, tetapi detail POJK 35/POJK.04/2017 di JDIH BPK masih berstatus Berlaku tanpa relasi pencabutan; jawaban yang baik memakai POJK 8/2025."
+      },
+      "tertahan": true
+    },
+    {
+      "id": "hes-020",
+      "rumpun": "hes",
+      "pertanyaan": "Apa perbedaan pokok jual beli salam dan istishna' dalam hal waktu pembayaran harga dan penyerahan barang, dan apa dalil hadis yang menjadi dasar syarat kejelasan takaran dan waktu dalam salam?",
+      "topik": "akad salam dan istishna'",
+      "asal": "topik baku mata kuliah Fikih Muamalah",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "fatwa", "nomor": "05/DSN-MUI/IV/2000" },
+        { "jenis": "fatwa", "nomor": "06/DSN-MUI/IV/2000" },
+        { "jenis": "hadis", "id": "6079", "derajat": "Hadis sahih" }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["teks_fatwa_dsn", "cari_hadis_berderajat"],
+        "catatan": "Fatwa 05/DSN-MUI/IV/2000 ketentuan Pertama angka 2 (hlm. 3): pembayaran salam pada saat kontrak disepakati. Fatwa 06/DSN-MUI/IV/2000 ketentuan Pertama angka 2 (hlm. 2): pembayaran istishna' sesuai kesepakatan. Hadis id 6079 (hadeethenc, kategori 144) dari Ibnu Abbas tentang takaran, timbangan, dan masa yang diketahui, derajat sahih, muttafaq 'alaih."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hes-021",
+      "rumpun": "hes",
+      "pertanyaan": "Dalam akad qardh di lembaga keuangan syariah, bolehkah lembaga mengenakan biaya administrasi atau menerima tambahan dari nasabah, dan apa yang dapat dilakukan bila nasabah tidak mampu mengembalikan pinjaman?",
+      "topik": "akad qardh",
+      "asal": "topik baku mata kuliah Fikih Muamalah",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "fatwa", "nomor": "19/DSN-MUI/IV/2001" }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["teks_fatwa_dsn"],
+        "catatan": "Fatwa 19/DSN-MUI/IV/2001 ketentuan Pertama (hlm. 2 sampai 3): wajib kembalikan pokok, biaya administrasi dibebankan kepada nasabah, tambahan sukarela boleh selama tidak diperjanjikan, LKS dapat memperpanjang jangka waktu atau menghapus kewajiban bagi nasabah tidak mampu."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hes-022",
+      "rumpun": "hes",
+      "pertanyaan": "Apakah semua produk yang beredar di Indonesia wajib bersertifikat halal, dan bagaimana kedudukan pelaku usaha yang memproduksi produk dari bahan yang diharamkan menurut Undang-Undang Jaminan Produk Halal?",
+      "topik": "sertifikasi halal",
+      "asal": "topik baku mata kuliah Hukum Ekonomi Syariah Kontemporer",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "peraturan", "rujukan": "UU 33/2014", "pasal": "Pasal 4", "status": "Berlaku", "bpk_id": "38709", "diubah_dengan": ["UU 6/2023", "PERPU 2/2022", "UU 11/2020"] },
+        { "jenis": "peraturan", "rujukan": "UU 33/2014", "pasal": "Pasal 26", "status": "Berlaku", "bpk_id": "38709", "diubah_dengan": ["UU 6/2023", "PERPU 2/2022", "UU 11/2020"] }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["periksa_pasal", "teks_peraturan", "cari_dalam_pdf"],
+        "catatan": "Pasal 4 (hlm. 4) dan Pasal 26 (hlm. 12 sampai 13) UU 33/2014. Perpu 2/2022 (hlm. 306) mengubah Pasal 25 dan Pasal 27 (sanksi), tidak mengubah Pasal 4 dan Pasal 26 menurut pencarian frasa; PDF UU 6/2023 gagal diunduh sehingga pemeriksaan memakai naskah Perpu yang ditetapkannya."
+      },
+      "tertahan": true
+    },
+    {
+      "id": "hes-023",
+      "rumpun": "hes",
+      "pertanyaan": "Apa yang dimaksud dengan riba dalam hukum positif perbankan syariah Indonesia, apa saja unsur lain yang dilarang, dan ayat Al-Qur'an mana yang menjadi dasar utama larangan riba dan kebolehan jual beli?",
+      "topik": "larangan riba dalam perbankan syariah",
+      "asal": "topik baku mata kuliah Fikih Muamalah",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "peraturan", "rujukan": "UU 21/2008", "pasal": "Pasal 2", "status": "Berlaku", "bpk_id": "39655", "diubah_dengan": ["UU 6/2023", "UU 4/2023", "PERPU 2/2022", "UU 11/2020"] },
+        { "jenis": "ayat", "surah": 2, "ayat": 275 }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["teks_peraturan", "ambil_ayat", "cari_dalam_pdf"],
+        "catatan": "Penjelasan Pasal 2 UU 21/2008 (hlm. 39): riba fadhl dan nasi'ah, maisir, gharar, haram, zalim. UU 4/2023 hanya menyisipkan Pasal 2A (hlm. 164), Pasal 2 tidak diubah. QS 2:275 diambil lewat ambil_ayat (terjemahan Kemenag)."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hes-024",
+      "rumpun": "hes",
+      "pertanyaan": "Bila nasabah pembiayaan murabahah tidak mampu membayar sesuai jadwal, bolehkah lembaga keuangan syariah menjadwal ulang tagihan dengan menambah jumlah kewajiban, dan biaya apa yang boleh dibebankan?",
+      "topik": "penjadwalan kembali tagihan murabahah",
+      "asal": "topik baku mata kuliah Hukum Perbankan Syariah",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "fatwa", "nomor": "48/DSN-MUI/II/2005" },
+        { "jenis": "khes", "pasal": "Pasal 126" }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["cari_fatwa_dsn", "teks_fatwa_dsn", "cari_pasal_khes"],
+        "catatan": "Fatwa 48/DSN-MUI/II/2005 ketentuan Pertama (hlm. 3): tidak menambah jumlah tagihan, biaya riil, perpanjangan atas kesepakatan. KHES Pasal 126 (hlm. 60) memuat tiga syarat yang sama."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "hes-025",
+      "rumpun": "hes",
+      "pertanyaan": "Bolehkah seseorang mewakafkan hartanya melalui wasiat, berapa batas harta yang dapat diwakafkan dengan cara itu, dan siapa yang melaksanakannya setelah pewasiat meninggal?",
+      "topik": "wakaf dengan wasiat",
+      "asal": "topik baku mata kuliah Hukum Wakaf dan Zakat",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        { "jenis": "peraturan", "rujukan": "UU 41/2004", "pasal": "Pasal 25", "status": "Berlaku", "bpk_id": "40788", "diubah_dengan": [] },
+        { "jenis": "peraturan", "rujukan": "UU 41/2004", "pasal": "Pasal 26", "status": "Berlaku", "bpk_id": "40788", "diubah_dengan": [] }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": ["periksa_pasal"],
+        "catatan": "Pasal 25 (paling banyak sepertiga harta warisan setelah dikurangi utang, kecuali disetujui seluruh ahli waris) dan Pasal 26 (dilaksanakan penerima wasiat sebagai kuasa wakif) dibaca pada hlm. 11 PDF resmi."
+      },
+      "tertahan": false
+    }
+  ]
+}
