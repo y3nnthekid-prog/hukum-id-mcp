@@ -1,0 +1,936 @@
+{
+  "versi": 1,
+  "butir": [
+    {
+      "id": "perbandingan-madzhab-001",
+      "rumpun": "perbandingan-madzhab",
+      "pertanyaan": "Apakah perempuan dewasa yang berakal boleh menikahkan dirinya sendiri tanpa wali menurut madzhab Hanafi, dan bagaimana pendapat Syafi'iyah dan Malikiyah yang menjadikan wali sebagai syarat sah nikah?",
+      "topik": "wali nikah",
+      "asal": "Fikih Munakahat Perbandingan",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "turats",
+          "book_id": 11820,
+          "kitab": "الهداية في شرح بداية المبتدي",
+          "madzhab": "hanafi"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 13783,
+          "kitab": "النجم الوهاج في شرح المنهاج",
+          "madzhab": "syafii"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 6196,
+          "kitab": "جامع الأمهات",
+          "madzhab": "maliki"
+        },
+        {
+          "jenis": "hadis",
+          "id": "58067",
+          "derajat": "Sahih"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_turats",
+          "penulis_turats",
+          "cari_hadis_berderajat",
+          "hadis_berderajat"
+        ],
+        "catatan": "al-Hidayah karya al-Marghinani (jilid 1 hlm 191, bab al-auliya' wa al-akfa'): nikah perempuan merdeka, berakal, dan balig sah dengan kerelaannya walaupun tidak diakadkan wali; Hanafi (penulis_turats id 1454). al-Najm al-Wahhaj karya al-Damiri (jilid 7 hlm 64): perempuan tidak punya 'ibarah dalam akad nikah, tidak boleh menikahkan dirinya maupun orang lain; Syafi'i (id 1790). Jami' al-Ummahat karya Ibnu al-Hajib (jilid 1 hlm 258): perempuan tidak menikahkan dirinya; Maliki (id 1685). Hadis 58067 (sahih; Abu Daud, Tirmidzi, Ibnu Majah, Ahmad): nikah tanpa izin wali batal. author id dari metadata buku api.turath.io, madzhab dicek lewat penulis_turats."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "perbandingan-madzhab-002",
+      "rumpun": "perbandingan-madzhab",
+      "pertanyaan": "Apakah ayah sebagai wali mujbir boleh menikahkan anak perempuannya yang masih gadis dan sudah dewasa tanpa persetujuannya, dan bagaimana perbedaan pendapat Malikiyah dan Syafi'iyah dengan Hanafiyah dalam masalah ini?",
+      "topik": "wali nikah",
+      "asal": "Fikih Munakahat Perbandingan",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "turats",
+          "book_id": 14245,
+          "kitab": "الإشراف على نكت مسائل الخلاف",
+          "madzhab": "maliki"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 6337,
+          "kitab": "تقويم النظر في مسائل خلافية ذائعة",
+          "madzhab": "muqaran"
+        },
+        {
+          "jenis": "hadis",
+          "id": "58070",
+          "derajat": "Hadis sahih"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_turats",
+          "penulis_turats",
+          "cari_hadis_berderajat",
+          "hadis_berderajat"
+        ],
+        "catatan": "al-Isyraf 'ala Nukat Masa'il al-Khilaf karya al-Qadhi Abdul Wahhab (jilid 2 hlm 687, masalah 1225): ayah boleh memaksa gadis balig menikah, berbeda dengan Abu Hanifah; Maliki (penulis_turats id 1047). Taqwim al-Nazhar karya Ibnu al-Dahhan (jilid 4 hlm 31, masalah 217): madzhab penulis membolehkan ijbar ayah dan kakek, pihak lawan tidak; penulis_turats (id 1699) menyebut kitab ini tentang fikih empat madzhab sehingga diberi muqaran. Hadis 58070 (sahih; Ibnu Majah, Abu Daud, Ahmad): gadis yang dinikahkan ayahnya dalam keadaan tidak suka diberi hak memilih."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "perbandingan-madzhab-003",
+      "rumpun": "perbandingan-madzhab",
+      "pertanyaan": "Apakah kehadiran dua orang saksi merupakan syarat sah pada saat akad nikah, atau cukup dilakukan sebelum dukhul sebagaimana pendapat Malikiyah, dan apa akibat hukumnya bila persaksian itu tidak ada?",
+      "topik": "saksi nikah",
+      "asal": "Fikih Munakahat Perbandingan",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "turats",
+          "book_id": 11820,
+          "kitab": "الهداية في شرح بداية المبتدي",
+          "madzhab": "hanafi"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 21735,
+          "kitab": "المقدمات الممهدات",
+          "madzhab": "maliki"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_turats",
+          "penulis_turats"
+        ],
+        "catatan": "al-Hidayah (jilid 1 hlm 185): nikah orang Islam tidak sah kecuali dengan kehadiran dua saksi; Hanafi. al-Muqaddimat al-Mumahhidat karya Ibnu Rusyd al-Jadd (jilid 2 hlm 279, Kitab al-Syahadat): menurut madzhab Malik persaksian baru wajib ketika dukhul; penulis Maliki (penulis_turats id 1105). author id dari metadata buku api.turath.io, madzhab dicek lewat penulis_turats."
+      },
+      "tertahan": true
+    },
+    {
+      "id": "perbandingan-madzhab-004",
+      "rumpun": "perbandingan-madzhab",
+      "pertanyaan": "Adakah batas minimal mahar dalam fikih, dan bagaimana perbedaan pendapat madzhab Hanafi, Maliki, dan Syafi'i tentang kadar mahar paling sedikit?",
+      "topik": "mahar",
+      "asal": "Fikih Munakahat Perbandingan",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "turats",
+          "book_id": 11820,
+          "kitab": "الهداية في شرح بداية المبتدي",
+          "madzhab": "hanafi"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 14555,
+          "kitab": "شرح ابن ناجي التنوخي على متن الرسالة",
+          "madzhab": "maliki"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 384,
+          "kitab": "الفقه الإسلامي وأدلته للزحيلي",
+          "madzhab": "muqaran"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_turats",
+          "penulis_turats"
+        ],
+        "catatan": "al-Hidayah (jilid 1 hlm 198): mahar paling sedikit sepuluh dirham, sedangkan menurut al-Syafi'i apa saja yang sah menjadi harga dalam jual beli sah menjadi mahar. Syarh Ibnu Naji atas al-Risalah (jilid 2 hlm 5): mahar paling sedikit seperempat dinar atau tiga dirham menurut pendapat masyhur madzhab; penulis hakim Qairawan pensyarah al-Mudawwanah dan al-Risalah (penulis_turats id 2689, biografi tidak menyebut madzhab secara eksplisit). al-Fiqh al-Islami wa Adillatuh (jilid 9 hlm 6764) merangkum tiga pendapat; penulis kontemporer, diberi muqaran."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "perbandingan-madzhab-005",
+      "rumpun": "perbandingan-madzhab",
+      "pertanyaan": "Bolehkah jasa, seperti mengajarkan Al-Qur'an, dijadikan mahar, dan bagaimana perbedaan pendapat madzhab Hanafi, Syafi'i, dan Hanbali tentang hal ini?",
+      "topik": "mahar",
+      "asal": "Fikih Munakahat Perbandingan",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "hadis",
+          "id": "6045",
+          "derajat": "Hadis sahih"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 11820,
+          "kitab": "الهداية في شرح بداية المبتدي",
+          "madzhab": "hanafi"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 6157,
+          "kitab": "الحاوي الكبير",
+          "madzhab": "syafii"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 14207,
+          "kitab": "عمدة الحازم في الزوائد على مختصر أبي القاسم",
+          "madzhab": "hanbali"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_turats",
+          "penulis_turats",
+          "cari_hadis_berderajat",
+          "hadis_berderajat"
+        ],
+        "catatan": "Hadis 6045 (sahih, muttafaq 'alaih): Nabi menikahkan seorang sahabat dengan mahar hafalan Al-Qur'an yang ia miliki. al-Hidayah (jilid 1 hlm 201): orang merdeka yang menikah dengan mahar mengajarkan Al-Qur'an, istrinya berhak mahar mitsl; Hanafi. al-Hawi al-Kabir karya al-Mawardi (jilid 9 hlm 406) membahas syarat sah mahar mengajarkan surah; Syafi'i (id 109). 'Umdat al-Hazim karya Ibnu Qudamah (jilid 1 hlm 434): bila memaharkan pengajaran satu surah, tidak sah; Hanbali (id 474)."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "perbandingan-madzhab-006",
+      "rumpun": "perbandingan-madzhab",
+      "pertanyaan": "Apakah perhiasan emas yang dipakai perempuan wajib dizakati bila telah mencapai nisab, dan bagaimana perbedaan pendapat madzhab Hanafi dengan Syafi'i dan Hanbali?",
+      "topik": "nisab zakat",
+      "asal": "Fikih Ibadah Perbandingan",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "turats",
+          "book_id": 11820,
+          "kitab": "الهداية في شرح بداية المبتدي",
+          "madzhab": "hanafi"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 21553,
+          "kitab": "التذكرة في الفقه الشافعي",
+          "madzhab": "syafii"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 21619,
+          "kitab": "المبدع في شرح المقنع - ط العلمية",
+          "madzhab": "hanbali"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_turats",
+          "penulis_turats"
+        ],
+        "catatan": "al-Hidayah (jilid 1 hlm 103): pada emas dan perak, perhiasan, dan bejananya ada zakat, sedangkan al-Syafi'i berpendapat perhiasan perempuan tidak wajib zakat; Hanafi. al-Tadzkirah karya Ibnu al-Mulaqqin (jilid 1 hlm 47, fasal zakat al-naqdain): tidak ada zakat pada perhiasan mubah; Syafi'i (penulis_turats id 709). al-Mubdi' karya Ibnu Muflih (jilid 2 hlm 361): tidak ada zakat pada perhiasan mubah yang disiapkan untuk dipakai menurut zahir madzhab; Hanbali (id 900)."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "perbandingan-madzhab-007",
+      "rumpun": "perbandingan-madzhab",
+      "pertanyaan": "Apakah emas dan perak boleh digabungkan untuk menyempurnakan nisab zakat bila masing-masing belum mencapai nisab, dan bagaimana pendapat madzhab Hanafi, Syafi'i, dan Hanbali?",
+      "topik": "nisab zakat",
+      "asal": "Fikih Ibadah Perbandingan",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "turats",
+          "book_id": 124336,
+          "kitab": "مختصر القدوري",
+          "madzhab": "hanafi"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 11444,
+          "kitab": "مغني المحتاج إلى معرفة معاني ألفاظ المنهاج",
+          "madzhab": "syafii"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 8463,
+          "kitab": "المغني لابن قدامة - ط مكتبة القاهرة",
+          "madzhab": "hanbali"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_turats",
+          "penulis_turats"
+        ],
+        "catatan": "Mukhtashar al-Qaduri (jilid 1 hlm 57, bab zakat al-'urudh): emas digabung dengan perak berdasarkan nilai sampai sempurna nisab menurut Abu Hanifah, sedangkan Abu Yusuf dan Muhammad menggabungkan berdasarkan bagian; Hanafi (id 2667). Mughni al-Muhtaj karya al-Khathib al-Syarbini (jilid 2 hlm 93): nisab salah satunya tidak disempurnakan dengan yang lain karena berbeda jenis; Syafi'i (id 136). al-Mughni karya Ibnu Qudamah (jilid 3 hlm 37, bab zakat emas dan perak) membahas penggabungan berdasarkan nilai; Hanbali (id 474)."
+      },
+      "tertahan": true
+    },
+    {
+      "id": "perbandingan-madzhab-008",
+      "rumpun": "perbandingan-madzhab",
+      "pertanyaan": "Bagaimana hukum membaca qunut pada shalat subuh menurut madzhab Syafi'i dibandingkan madzhab Hanafi, dan dalil apa yang dijadikan pegangan masing-masing?",
+      "topik": "qunut subuh",
+      "asal": "Fikih Ibadah Perbandingan",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "turats",
+          "book_id": 12096,
+          "kitab": "منهاج الطالبين وعمدة المفتين في الفقه",
+          "madzhab": "syafii"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 11820,
+          "kitab": "الهداية في شرح بداية المبتدي",
+          "madzhab": "hanafi"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_turats",
+          "penulis_turats"
+        ],
+        "catatan": "Minhaj al-Thalibin karya al-Nawawi (jilid 1 hlm 27): qunut disunnahkan pada i'tidal rakaat kedua subuh; penulis_turats (id 44) menyebut karyanya dalam fikih Syafi'iyah. al-Hidayah (jilid 1 hlm 66, bab witir): tidak berqunut pada shalat selain witir, berbeda dengan al-Syafi'i pada shalat fajar, dengan riwayat Ibnu Mas'ud bahwa Nabi berqunut sebulan; Hanafi. author id dari metadata buku api.turath.io, madzhab dicek lewat penulis_turats."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "perbandingan-madzhab-009",
+      "rumpun": "perbandingan-madzhab",
+      "pertanyaan": "Apakah basmalah termasuk ayat Al-Fatihah sehingga wajib dibaca dalam shalat fardhu, dan bagaimana perbedaan pendapat madzhab Syafi'i, Maliki, dan Hanafi?",
+      "topik": "basmalah dalam Al-Fatihah",
+      "asal": "Fikih Ibadah Perbandingan",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "turats",
+          "book_id": 12096,
+          "kitab": "منهاج الطالبين وعمدة المفتين في الفقه",
+          "madzhab": "syafii"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 14442,
+          "kitab": "التوضيح في شرح مختصر ابن الحاجب",
+          "madzhab": "maliki"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 124336,
+          "kitab": "مختصر القدوري",
+          "madzhab": "hanafi"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_turats",
+          "penulis_turats"
+        ],
+        "catatan": "Minhaj al-Thalibin (jilid 1 hlm 26): al-Fatihah wajib tiap rakaat dan basmalah termasuk bagiannya; Syafi'i. al-Taudhih karya Khalil (jilid 1 hlm 336) mencatat empat pendapat tentang basmalah dalam shalat fardhu, antara lain makruh menurut al-Mudawwanah; Maliki (penulis_turats id 568). Mukhtashar al-Qaduri (jilid 1 hlm 27, bab sifat al-shalat): membaca basmalah dan merendahkan suara; Hanafi (id 2667)."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "perbandingan-madzhab-010",
+      "rumpun": "perbandingan-madzhab",
+      "pertanyaan": "Apakah basmalah dibaca nyaring dalam shalat jahriyah, dan bagaimana perbedaan praktik madzhab Hanafi yang membacanya pelan dengan madzhab Syafi'i yang menyaringkannya?",
+      "topik": "basmalah dalam Al-Fatihah",
+      "asal": "Fikih Ibadah Perbandingan",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "turats",
+          "book_id": 124336,
+          "kitab": "مختصر القدوري",
+          "madzhab": "hanafi"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 384,
+          "kitab": "الفقه الإسلامي وأدلته للزحيلي",
+          "madzhab": "muqaran"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_turats",
+          "penulis_turats"
+        ],
+        "catatan": "Mukhtashar al-Qaduri (jilid 1 hlm 27): membaca ta'awwudz dan basmalah lalu merendahkan suara keduanya; Hanafi. al-Fiqh al-Islami wa Adillatuh (jilid 2 hlm 831 dan 835, bab shalat) memuat riwayat yang tidak mendengar para khalifah membaca basmalah dan menjelaskan bahwa menurut Syafi'iyah sunnahnya dinyaringkan seperti bagian al-Fatihah lainnya; penulis kontemporer (id 1052), diberi muqaran. Tool tidak memunculkan kitab Syafi'i klasik yang menyebut jahr basmalah secara eksplisit dalam pencarian ini."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "perbandingan-madzhab-011",
+      "rumpun": "perbandingan-madzhab",
+      "pertanyaan": "Apakah bersentuhan kulit antara laki-laki dan perempuan yang bukan mahram membatalkan wudhu, dan bagaimana perbedaan pendapat madzhab Syafi'i, Maliki, dan Hanafi dalam memahami lafaz 'atau kamu menyentuh perempuan'?",
+      "topik": "batal wudhu karena menyentuh lawan jenis",
+      "asal": "Fikih Ibadah Perbandingan",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "ayat",
+          "surah": 4,
+          "ayat": 43
+        },
+        {
+          "jenis": "turats",
+          "book_id": 13783,
+          "kitab": "النجم الوهاج في شرح المنهاج",
+          "madzhab": "syafii"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 11355,
+          "kitab": "مختصر خليل",
+          "madzhab": "maliki"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 21640,
+          "kitab": "الفتاوى العالمكيرية = الفتاوى الهندية",
+          "madzhab": "hanafi"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_turats",
+          "penulis_turats",
+          "ambil_ayat"
+        ],
+        "catatan": "QS 4:43 (lafaz au lamastum al-nisa'). al-Najm al-Wahhaj (jilid 1 hlm 272): pembatal ketiga adalah bertemunya kulit laki-laki dan perempuan kecuali mahram menurut pendapat al-azhhar; Syafi'i. Mukhtashar Khalil (jilid 1 hlm 21, bab thaharah): sentuhan yang biasanya menimbulkan kenikmatan, walau pada kuku, rambut, atau penghalang; Maliki (id 568). al-Fatawa al-Hindiyyah (jilid 1 hlm 13): sentuhan laki-laki kepada perempuan dan sebaliknya tidak membatalkan wudhu; disusun ulama Hanafi atas perintah Aurangzeb (penulis_turats id 3118)."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "perbandingan-madzhab-012",
+      "rumpun": "perbandingan-madzhab",
+      "pertanyaan": "Apakah menyentuh mahram atau menyentuh perempuan dengan penghalang tipis membatalkan wudhu menurut madzhab Syafi'i dan Maliki, dan apa peran unsur kenikmatan dalam pendapat Malikiyah?",
+      "topik": "batal wudhu karena menyentuh lawan jenis",
+      "asal": "Fikih Ibadah Perbandingan",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "turats",
+          "book_id": 13783,
+          "kitab": "النجم الوهاج في شرح المنهاج",
+          "madzhab": "syafii"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 11355,
+          "kitab": "مختصر خليل",
+          "madzhab": "maliki"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_turats",
+          "penulis_turats"
+        ],
+        "catatan": "al-Najm al-Wahhaj (jilid 1 hlm 272): sentuhan kulit membatalkan kecuali dengan mahram menurut al-azhhar; Syafi'i (id 1790). Mukhtashar Khalil (jilid 1 hlm 21): sentuhan yang biasanya dinikmati membatalkan walau dengan penghalang, dan ditakwil dengan penghalang tipis atau mutlak bila bermaksud atau mendapatkan kenikmatan; Maliki (id 568)."
+      },
+      "tertahan": true
+    },
+    {
+      "id": "perbandingan-madzhab-013",
+      "rumpun": "perbandingan-madzhab",
+      "pertanyaan": "Apa 'illat keharaman riba fadhl pada enam jenis barang ribawi menurut madzhab Hanafi, Maliki, dan Hanbali, dan bagaimana perbedaan itu memengaruhi barang lain di luar enam jenis tersebut?",
+      "topik": "riba fadhl dan illat",
+      "asal": "Fikih Muamalah Perbandingan",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "hadis",
+          "id": "66385",
+          "derajat": "Sahih"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 17768,
+          "kitab": "التجريد للقدوري",
+          "madzhab": "hanafi"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 149697,
+          "kitab": "لوامع الدرر في هتك استار المختصر",
+          "madzhab": "maliki"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 21619,
+          "kitab": "المبدع في شرح المقنع - ط العلمية",
+          "madzhab": "hanbali"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_turats",
+          "penulis_turats",
+          "cari_hadis_berderajat",
+          "hadis_berderajat"
+        ],
+        "catatan": "Hadis 66385 (sahih, HR Muslim, kategori riba): enam barang ribawi dipertukarkan sama ukuran dan tunai. al-Tajrid karya al-Qaduri (jilid 5 hlm 2287, masalah 576): 'illat adalah takaran beserta jenis atau timbangan beserta jenis; Hanafi. Lawami' al-Durar karya Muhammad bin Salim al-Majlisi (jilid 8 hlm 225), syarah Mukhtashar Khalil: 'illat riba makanan adalah iqtiyat; dikategorikan Maliki karena mensyarah Mukhtashar Khalil (penulis_turats id 3015). al-Mubdi' (jilid 4 hlm 126): 'illat riba pada naqdain adalah ditimbang sejenis menurut riwayat yang dipilih umumnya ashab; Hanbali. Kitab Syafi'i yang menyebut 'illat thu'm dan tsamaniyyah secara langsung tidak muncul; pendapat itu hanya tampak dikutip dalam kitab Hanafi (al-Mabsuth, al-Binayah)."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "perbandingan-madzhab-014",
+      "rumpun": "perbandingan-madzhab",
+      "pertanyaan": "Bolehkah jual beli emas secara tidak tunai atau cicilan, dan bagaimana fatwa DSN-MUI menyikapi syarat tunai dalam hadis barang ribawi yang dipahami berbeda oleh para fuqaha?",
+      "topik": "riba fadhl dan illat",
+      "asal": "Fikih Muamalah Perbandingan",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "fatwa",
+          "nomor": "77/DSN-MUI/VI/2010"
+        },
+        {
+          "jenis": "hadis",
+          "id": "66385",
+          "derajat": "Sahih"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 17768,
+          "kitab": "التجريد للقدوري",
+          "madzhab": "hanafi"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_fatwa_dsn",
+          "teks_fatwa_dsn",
+          "hadis_berderajat",
+          "cari_turats",
+          "penulis_turats"
+        ],
+        "catatan": "Fatwa 77/DSN-MUI/VI/2010 (hlm 11 PDF): jual beli emas tidak tunai boleh selama emas tidak menjadi alat tukar resmi; harga tidak boleh bertambah selama perjanjian; konsiderans menyatakan syarat pertukaran emas dan perak dalam hadis tidak berlaku lagi untuk pertukaran emas dengan uang saat ini. Hadis 66385 (sahih, HR Muslim) mensyaratkan tunai. al-Tajrid (jilid 5 hlm 2287): 'illat menurut Hanafiyah adalah takaran atau timbangan beserta jenis."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "perbandingan-madzhab-015",
+      "rumpun": "perbandingan-madzhab",
+      "pertanyaan": "Apakah penjual dan pembeli memiliki hak khiyar majelis selama belum berpisah, dan bagaimana perbedaan pendapat madzhab Syafi'i dengan madzhab Hanafi tentang kapan jual beli menjadi mengikat?",
+      "topik": "khiyar majelis",
+      "asal": "Fikih Muamalah Perbandingan",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "turats",
+          "book_id": 12096,
+          "kitab": "منهاج الطالبين وعمدة المفتين في الفقه",
+          "madzhab": "syafii"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 124336,
+          "kitab": "مختصر القدوري",
+          "madzhab": "hanafi"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_turats",
+          "penulis_turats"
+        ],
+        "catatan": "Minhaj al-Thalibin (jilid 1 hlm 99, bab al-khiyar): khiyar majelis berlaku pada semua jenis jual beli seperti sharf dan pertukaran makanan; Syafi'i. Mukhtashar al-Qaduri (jilid 1 hlm 78, kitab al-buyu'): bila ijab dan kabul terjadi, jual beli mengikat dan tidak ada khiyar kecuali karena cacat atau belum melihat; Hanafi. Hadis al-bayyi'an bil khiyar tidak ditemukan lewat cari_hadis_berderajat dengan beberapa padanan kata."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "perbandingan-madzhab-016",
+      "rumpun": "perbandingan-madzhab",
+      "pertanyaan": "Bagaimana hukum mewakafkan benda bergerak menurut madzhab Hanafi dibandingkan madzhab Syafi'i, dan bagaimana undang-undang wakaf di Indonesia mengatur jenis harta benda wakaf?",
+      "topik": "wakaf benda bergerak",
+      "asal": "Perbandingan Madzhab Fikih; Hukum Wakaf di Indonesia",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "turats",
+          "book_id": 124336,
+          "kitab": "مختصر القدوري",
+          "madzhab": "hanafi"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 12096,
+          "kitab": "منهاج الطالبين وعمدة المفتين في الفقه",
+          "madzhab": "syafii"
+        },
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 41/2004",
+          "pasal": "Pasal 16",
+          "status": "Berlaku",
+          "bpk_id": "40788",
+          "diubah_dengan": []
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_turats",
+          "penulis_turats",
+          "periksa_pasal",
+          "teks_peraturan"
+        ],
+        "catatan": "Mukhtashar al-Qaduri (jilid 1 hlm 127, kitab al-waqf): sah wakaf tanah dan tidak boleh wakaf benda yang dapat dipindahkan, dengan pengecualian dari Abu Yusuf dan Muhammad; Hanafi. Minhaj al-Thalibin (jilid 1 hlm 168, kitab al-waqf): sah wakaf tanah, benda bergerak, dan bagian yang belum dibagi; Syafi'i. UU 41/2004 (BPK 40788, status Berlaku, tanpa relasi perubahan di JDIH BPK) Pasal 16 (hlm 7 sampai 8 PDF): harta benda wakaf terdiri dari benda tidak bergerak dan benda bergerak, termasuk uang, logam mulia, surat berharga, kendaraan, HKI, dan hak sewa."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "perbandingan-madzhab-017",
+      "rumpun": "perbandingan-madzhab",
+      "pertanyaan": "Bagaimana perbedaan pendapat para fuqaha tentang wakaf uang (dirham dan dinar), dan bagaimana undang-undang wakaf di Indonesia mengatur wakaf benda bergerak berupa uang?",
+      "topik": "wakaf benda bergerak",
+      "asal": "Perbandingan Madzhab Fikih; Hukum Wakaf di Indonesia",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 41/2004",
+          "pasal": "Pasal 28",
+          "status": "Berlaku",
+          "bpk_id": "40788",
+          "diubah_dengan": []
+        },
+        {
+          "jenis": "turats",
+          "book_id": 18608,
+          "kitab": "روضة القضاة وطريق النجاة",
+          "madzhab": "hanafi"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 30065,
+          "kitab": "موسوعة الفقه على المذاهب الأربعة - ياسر النجار",
+          "madzhab": "muqaran"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_turats",
+          "penulis_turats",
+          "cari_dalam_pdf"
+        ],
+        "catatan": "UU 41/2004 Pasal 28 (hlm 11 PDF): wakif dapat mewakafkan benda bergerak berupa uang melalui lembaga keuangan syariah yang ditunjuk Menteri; Pasal 29 mengatur sertifikat wakaf uang. Raudhat al-Qudhat karya Ibnu al-Simnani (jilid 2 hlm 790, fasal waqf al-darahim wa al-dananir) mencatat perbedaan di kalangan ashab al-Syafi'i; penulis fakih Hanafi (penulis_turats id 2782). Mausu'ah al-Fiqh 'ala al-Madzahib al-Arba'ah karya Yasir al-Najjar (jilid 11 hlm 393) membagi masalah wakaf dirham dan dinar; penulis kontemporer (id 3005), diberi muqaran. Kitab Maliki klasik tentang wakaf uang tidak muncul; pendapat Malikiyah hanya tampak dalam Majallah Majma' al-Fiqh."
+      },
+      "tertahan": true
+    },
+    {
+      "id": "perbandingan-madzhab-018",
+      "rumpun": "perbandingan-madzhab",
+      "pertanyaan": "Apakah talak tiga yang diucapkan sekaligus dalam satu lafaz jatuh tiga atau satu, dan bagaimana pendapat madzhab Hanafi dibandingkan pandangan Ibnu al-Qayyim yang berpegang pada riwayat Ibnu Abbas?",
+      "topik": "talak tiga sekaligus",
+      "asal": "Fikih Munakahat Perbandingan",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "hadis",
+          "id": "58138",
+          "derajat": "Hadis sahih"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 124336,
+          "kitab": "مختصر القدوري",
+          "madzhab": "hanafi"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 21713,
+          "kitab": "زاد المعاد في هدي خير العباد - ت الرسالة الثاني",
+          "madzhab": "hanbali"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_turats",
+          "penulis_turats",
+          "cari_hadis_berderajat",
+          "hadis_berderajat"
+        ],
+        "catatan": "Hadis 58138 (sahih, HR Muslim): pada masa Nabi, Abu Bakar, dan dua tahun awal Umar, talak tiga dihitung satu, lalu Umar memberlakukannya tiga. Mukhtashar al-Qaduri (jilid 1 hlm 154, kitab al-thalaq): talak bid'ah adalah menalak tiga dengan satu kata; bila dilakukan talak itu jatuh. Zad al-Ma'ad karya Ibnu al-Qayyim (jilid 5 hlm 226) memaparkan empat pendapat tentang talak tiga dengan satu kata; Ibnu al-Qayyim (id 14) diberi hanbali walau pendapatnya di sini berbeda dari mu'tamad madzhab."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "perbandingan-madzhab-019",
+      "rumpun": "perbandingan-madzhab",
+      "pertanyaan": "Apakah menjatuhkan talak tiga sekaligus termasuk perbuatan terlarang (talak bid'ah) menurut madzhab Hanafi, dan mengapa madzhab Syafi'i tidak mengharamkan penghimpunan tiga talak?",
+      "topik": "talak tiga sekaligus",
+      "asal": "Fikih Munakahat Perbandingan",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "turats",
+          "book_id": 124336,
+          "kitab": "مختصر القدوري",
+          "madzhab": "hanafi"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 13783,
+          "kitab": "النجم الوهاج في شرح المنهاج",
+          "madzhab": "syafii"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_turats",
+          "penulis_turats"
+        ],
+        "catatan": "Mukhtashar al-Qaduri (jilid 1 hlm 154): talak tiga dengan satu kata atau tiga dalam satu masa suci adalah talak bid'ah; bila dilakukan, jatuh dan pelakunya bermaksiat (lihat juga Bidayat al-Mubtadi hlm 68). al-Najm al-Wahhaj (jilid 7 hlm 555): tidak haram menghimpun talak-talak, walau berkata engkau tertalak tiga; Syafi'i (id 1790)."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "perbandingan-madzhab-020",
+      "rumpun": "perbandingan-madzhab",
+      "pertanyaan": "Apakah quru' dalam ayat iddah perempuan yang ditalak bermakna haid atau suci, dan bagaimana perbedaan pendapat madzhab Hanafi, Maliki, dan Hanbali?",
+      "topik": "iddah",
+      "asal": "Fikih Munakahat Perbandingan",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "ayat",
+          "surah": 2,
+          "ayat": 228
+        },
+        {
+          "jenis": "turats",
+          "book_id": 124336,
+          "kitab": "مختصر القدوري",
+          "madzhab": "hanafi"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 1206,
+          "kitab": "المختصر الصغير لابن عبد الحكم «خلافيات في الفقه»",
+          "madzhab": "maliki"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 26094,
+          "kitab": "الهداية على مذهب الإمام أحمد",
+          "madzhab": "hanbali"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_turats",
+          "penulis_turats",
+          "ambil_ayat"
+        ],
+        "catatan": "QS 2:228 (tiga kali quru'). Mukhtashar al-Qaduri (jilid 1 hlm 169, bab al-'iddah): iddahnya tiga aqra' dan aqra' adalah haid; Hanafi. al-Mukhtashar al-Shaghir karya Ibnu 'Abd al-Hakam (jilid 1 hlm 374): aqra' adalah masa suci antara dua haid; penulis termasuk sahabat utama Malik (penulis_turats id 1732). al-Hidayah karya Abu al-Khaththab al-Kalwadzani (jilid 1 hlm 484): aqra' adalah haid menurut riwayat yang lebih sahih; imam Hanabilah (id 198)."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "perbandingan-madzhab-021",
+      "rumpun": "perbandingan-madzhab",
+      "pertanyaan": "Berapa lama iddah perempuan hamil yang ditinggal mati suaminya, apakah sampai melahirkan atau masa terlama di antara melahirkan dan empat bulan sepuluh hari, dan bagaimana para fuqaha mengompromikan dua ayat iddah?",
+      "topik": "iddah",
+      "asal": "Fikih Munakahat Perbandingan",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "ayat",
+          "surah": 65,
+          "ayat": 4
+        },
+        {
+          "jenis": "ayat",
+          "surah": 2,
+          "ayat": 234
+        },
+        {
+          "jenis": "turats",
+          "book_id": 30052,
+          "kitab": "شرح مختصر الكرخي",
+          "madzhab": "hanafi"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 9849,
+          "kitab": "الفقه على المذاهب الأربعة",
+          "madzhab": "muqaran"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_turats",
+          "penulis_turats",
+          "ambil_ayat"
+        ],
+        "catatan": "QS 65:4 (iddah perempuan hamil sampai melahirkan) dan QS 2:234 (empat bulan sepuluh hari bagi yang ditinggal mati). Syarh Mukhtashar al-Karkhi karya al-Qaduri (jilid 4 hlm 261, kitab al-'iddah): iddah perempuan hamil adalah melahirkan dalam segala sebab iddah, dan perbedaan hanya pada yang ditinggal mati; Hanafi (id 2667). al-Fiqh 'ala al-Madzahib al-Arba'ah karya al-Jaziri (jilid 4 hlm 466) membahas keumuman dua ayat tersebut; penulis kontemporer (id 1315), diberi muqaran."
+      },
+      "tertahan": true
+    },
+    {
+      "id": "perbandingan-madzhab-022",
+      "rumpun": "perbandingan-madzhab",
+      "pertanyaan": "Bagaimana kedudukan kakek ketika mewarisi bersama saudara kandung atau saudara seayah, apakah kakek menghijab saudara seperti ayah menurut Abu Hanifah, atau berbagi dengan saudara sebagaimana pendapat Syafi'iyah dan Malikiyah?",
+      "topik": "hak waris kakek bersama saudara",
+      "asal": "Fikih Mawaris Perbandingan",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "turats",
+          "book_id": 21596,
+          "kitab": "الجوهرة النيرة على مختصر القدوري",
+          "madzhab": "hanafi"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 21721,
+          "kitab": "البيان في مذهب الإمام الشافعي",
+          "madzhab": "syafii"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 9627,
+          "kitab": "المعونة على مذهب عالم المدينة",
+          "madzhab": "maliki"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_turats",
+          "penulis_turats"
+        ],
+        "catatan": "al-Jauharah al-Nayyirah karya Abu Bakar al-Haddad (jilid 2 hlm 311, kitab al-fara'idh): saudara tidak mewarisi apa pun bersama kakek menurut Abu Hanifah; Hanafi (penulis_turats id 3139). al-Bayan karya al-'Imrani (jilid 9 hlm 94, bab al-jadd wa al-ikhwah): kakek berbagi dengan saudara selama pembagian tidak mengurangi bagiannya dari sepertiga; Syafi'i (id 1023). al-Ma'unah karya al-Qadhi Abdul Wahhab (jilid 3 hlm 1681): fasal muqasamah kakek dengan saudara laki-laki selama tidak kurang dari sepertiga; Maliki (id 1047)."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "perbandingan-madzhab-023",
+      "rumpun": "perbandingan-madzhab",
+      "pertanyaan": "Apakah orang yang sengaja meninggalkan shalat fardhu tanpa uzur wajib mengqadhanya, dan bagaimana pendapat jumhur fuqaha dibandingkan pendapat yang menyatakan qadha tidak disyariatkan baginya?",
+      "topik": "qadha shalat",
+      "asal": "Fikih Ibadah Perbandingan",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "hadis",
+          "id": "65088",
+          "derajat": "Sahih"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 12096,
+          "kitab": "منهاج الطالبين وعمدة المفتين في الفقه",
+          "madzhab": "syafii"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 384,
+          "kitab": "الفقه الإسلامي وأدلته للزحيلي",
+          "madzhab": "muqaran"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 9486,
+          "kitab": "فقه السنة",
+          "madzhab": "lainnya"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_turats",
+          "penulis_turats",
+          "cari_hadis_berderajat",
+          "hadis_berderajat"
+        ],
+        "catatan": "Hadis 65088 (sahih, muttafaq 'alaih): orang yang lupa shalat hendaknya mengerjakannya ketika ingat. Minhaj al-Thalibin (jilid 1 hlm 22): bersegera mengqadha shalat yang terlewat dan disunnahkan berurutan; Syafi'i. al-Fiqh al-Islami wa Adillatuh (jilid 2 hlm 1155): qadha wajib baik terlewat karena uzur maupun tidak, dan Syafi'iyah merinci kewajiban segera; muqaran. Fiqh al-Sunnah karya Sayyid Sabiq (jilid 1 hlm 274): jumhur mewajibkan qadha, sedangkan Ibnu Taimiyah berpendapat tidak disyariatkan; penulis kontemporer yang menurut penulis_turats (id 598) tidak terikat madzhab, diberi lainnya."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "perbandingan-madzhab-024",
+      "rumpun": "perbandingan-madzhab",
+      "pertanyaan": "Apakah wajib menjaga urutan (tertib) antara shalat yang diqadha dan shalat yang sedang masuk waktunya, dan bagaimana perbedaan pendapat madzhab Hanafi dengan madzhab Syafi'i?",
+      "topik": "qadha shalat",
+      "asal": "Fikih Ibadah Perbandingan",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "turats",
+          "book_id": 412,
+          "kitab": "مراقي الفلاح شرح نور الإيضاح",
+          "madzhab": "hanafi"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 12096,
+          "kitab": "منهاج الطالبين وعمدة المفتين في الفقه",
+          "madzhab": "syafii"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_turats",
+          "penulis_turats"
+        ],
+        "catatan": "Maraqi al-Falah karya al-Syurunbulali (jilid 1 hlm 171, bab qadha' al-fawa'it): tertib antara shalat yang terlewat dan shalat waktu, serta antar shalat yang terlewat, adalah wajib (mustahaq); Hanafi (penulis_turats id 1265). Minhaj al-Thalibin (jilid 1 hlm 22): bersegera mengqadha dan tertibnya disunnahkan serta didahulukan atas shalat hadirah yang tidak dikhawatirkan habis waktunya; Syafi'i."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "perbandingan-madzhab-025",
+      "rumpun": "perbandingan-madzhab",
+      "pertanyaan": "Kapan qunut subuh dibaca, sebelum atau sesudah ruku', dan apakah dinyaringkan, menurut madzhab Maliki dibandingkan madzhab Syafi'i?",
+      "topik": "qunut subuh",
+      "asal": "Fikih Ibadah Perbandingan",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "turats",
+          "book_id": 11355,
+          "kitab": "مختصر خليل",
+          "madzhab": "maliki"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 12096,
+          "kitab": "منهاج الطالبين وعمدة المفتين في الفقه",
+          "madzhab": "syafii"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_turats",
+          "penulis_turats"
+        ],
+        "catatan": "Mukhtashar Khalil (jilid 1 hlm 33): qunut secara pelan pada subuh saja dan sebelum ruku'; Maliki (id 568). Minhaj al-Thalibin (jilid 1 hlm 27): qunut disunnahkan pada i'tidal rakaat kedua subuh, yaitu sesudah ruku'; Syafi'i (id 44)."
+      },
+      "tertahan": false
+    }
+  ]
+}

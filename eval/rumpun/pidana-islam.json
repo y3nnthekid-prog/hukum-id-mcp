@@ -1,0 +1,955 @@
+{
+  "versi": 1,
+  "butir": [
+    {
+      "id": "pidana-islam-001",
+      "rumpun": "pidana-islam",
+      "pertanyaan": "Apa yang membedakan jarimah hudud dari jarimah ta'zir dari segi penentuan jenis dan kadar hukumannya, dan jarimah apa saja yang kadar hukumannya ditetapkan langsung oleh Al-Qur'an?",
+      "topik": "jarimah hudud",
+      "asal": "topik baku mata kuliah Fikih Jinayah",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "ayat",
+          "surah": 24,
+          "ayat": 2
+        },
+        {
+          "jenis": "ayat",
+          "surah": 24,
+          "ayat": 4
+        },
+        {
+          "jenis": "ayat",
+          "surah": 5,
+          "ayat": 38
+        },
+        {
+          "jenis": "turats",
+          "book_id": 9842,
+          "kitab": "التشريع الجنائي الإسلامي مقارنا بالقانون الوضعي",
+          "madzhab": "muqaran"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "ambil_ayat",
+          "cari_turats",
+          "penulis_turats"
+        ],
+        "catatan": "QS 24:2 (dera seratus kali bagi pezina), QS 24:4 (delapan puluh kali bagi penuduh zina tanpa empat saksi), dan QS 5:38 (potong tangan pencuri) dibaca lewat ambil_ayat. Cuplikan al-Tasyri' al-Jina'i karya Abdul Qadir Audah (jilid 1 hlm 685) mendefinisikan ta'zir sebagai hukuman atas jarimah yang kadarnya tidak ditetapkan syariat; penulis kontemporer (w. 1954) menurut penulis_turats, diberi madzhab muqaran karena kitabnya membandingkan fikih dengan hukum positif."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "pidana-islam-002",
+      "rumpun": "pidana-islam",
+      "pertanyaan": "Bagaimana kaidah menolak hukuman hudud karena adanya syubhat dipahami dalam fikih jinayah, dan apa pengaruhnya terhadap pembuktian zina yang bertumpu pada pengakuan pelaku?",
+      "topik": "jarimah hudud",
+      "asal": "topik baku mata kuliah Fikih Jinayah",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "turats",
+          "book_id": 2863,
+          "kitab": "معرفة السنن والآثار",
+          "madzhab": "syafii"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 21743,
+          "kitab": "شرح الزركشي على مختصر الخرقي",
+          "madzhab": "hanbali"
+        },
+        {
+          "jenis": "hadis",
+          "id": "6760",
+          "derajat": "Hadis sahih"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_turats",
+          "penulis_turats",
+          "hadis_berderajat"
+        ],
+        "catatan": "Ma'rifat al-Sunan wa al-Atsar karya al-Baihaqi (jilid 12 hlm 323) memuat bagian berjudul ادرءوا الحدود بالشبهات; penulis bermadzhab Syafi'i menurut penulis_turats. Syarh al-Zarkasyi 'ala Mukhtashar al-Khiraqi (jilid 6 hlm 296, Hanbali) membahas pengakuan sebagai jalan pembuktian zina. Hadis 6760 (kisah al-'asif, sahih, muttafaq 'alaih) menggantungkan rajam pada pengakuan."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "pidana-islam-003",
+      "rumpun": "pidana-islam",
+      "pertanyaan": "Apa dasar Al-Qur'an bagi qishash dalam pembunuhan sengaja, dan bagaimana kedudukan pemaafan dari keluarga korban serta peralihan dari qishash kepada diyat?",
+      "topik": "qishash-diyat",
+      "asal": "topik baku mata kuliah Fikih Jinayah",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "ayat",
+          "surah": 2,
+          "ayat": 178
+        },
+        {
+          "jenis": "ayat",
+          "surah": 2,
+          "ayat": 179
+        },
+        {
+          "jenis": "hadis",
+          "id": "58208",
+          "derajat": "Hadis hasan"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "ambil_ayat",
+          "cari_hadis_berderajat",
+          "hadis_berderajat"
+        ],
+        "catatan": "QS 2:178 mewajibkan qishash dan menyebut pemaafan dari saudara korban yang diikuti pembayaran dengan baik; QS 2:179 menyebut hikmah qishash. Hadis 58208 (hasan; Ibnu Majah, Tirmidzi, Abu Daud, Ahmad) memberi wali korban pilihan antara qishash dan diyat 30 hiqqah, 30 jadza'ah, 40 khalifah."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "pidana-islam-004",
+      "rumpun": "pidana-islam",
+      "pertanyaan": "Bagaimana fikih jinayah membedakan diyat pembunuhan sengaja, semi sengaja, dan tersalah, dan mengapa diyat pembunuhan semi sengaja disebut diyat yang diperberat walaupun pelakunya tidak diqishash?",
+      "topik": "qishash-diyat",
+      "asal": "topik baku mata kuliah Fikih Jinayah",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "hadis",
+          "id": "58215",
+          "derajat": "Hadis hasan"
+        },
+        {
+          "jenis": "hadis",
+          "id": "58208",
+          "derajat": "Hadis hasan"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_hadis_berderajat",
+          "hadis_berderajat"
+        ],
+        "catatan": "Hadis 58215 (hasan; Abu Daud, Ahmad): diyat syibh al-'amd diperberat seperti diyat sengaja dan pelakunya tidak dibunuh. Hadis 58208 (hasan) merinci komposisi diyat pembunuhan sengaja. Keduanya dari kategori Diat (id 220) Ensiklopedia Hadis Nabawi."
+      },
+      "tertahan": true
+    },
+    {
+      "id": "pidana-islam-005",
+      "rumpun": "pidana-islam",
+      "pertanyaan": "Apakah seorang muslim dapat diqishash karena membunuh nonmuslim berstatus dzimmi, dan bagaimana perbedaan pendapat Hanafiyah dengan Syafi'iyah dan Hanabilah dalam masalah ini?",
+      "topik": "qishash-diyat",
+      "asal": "Perbandingan Madzhab dalam Fikih Jinayah",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "turats",
+          "book_id": 17768,
+          "kitab": "التجريد للقدوري",
+          "madzhab": "hanafi"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 17885,
+          "kitab": "التهذيب في الفقه الشافعي",
+          "madzhab": "syafii"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 8463,
+          "kitab": "المغني لابن قدامة - ط مكتبة القاهرة",
+          "madzhab": "hanbali"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_turats",
+          "penulis_turats"
+        ],
+        "catatan": "al-Tajrid karya al-Qaduri (jilid 11 hlm 5438, bab Kitab al-Jinayat, masalah 1299): Hanafiyah berpendapat muslim diqishash karena membunuh dzimmi, al-Syafi'i tidak. al-Tahdzib karya al-Baghawi (jilid 7 hlm 6, Syafi'i) dan al-Mughni karya Ibnu Qudamah (jilid 8 hlm 277, bagian masalah qatl al-muslim bi kafir, Hanbali). Madzhab tiap penulis dicek lewat penulis_turats (id 2667, 4, 474); author id diperoleh dari metadata buku api.turath.io."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "pidana-islam-006",
+      "rumpun": "pidana-islam",
+      "pertanyaan": "Bagaimana pengertian ta'zir menurut fikih siyasah dan jinayah, dan siapa yang berwenang menentukan jenis serta kadar hukumannya?",
+      "topik": "ta'zir",
+      "asal": "topik baku mata kuliah Fikih Jinayah",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "turats",
+          "book_id": 22881,
+          "kitab": "الأحكام السلطانية للماوردي",
+          "madzhab": "syafii"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 9842,
+          "kitab": "التشريع الجنائي الإسلامي مقارنا بالقانون الوضعي",
+          "madzhab": "muqaran"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_turats",
+          "penulis_turats"
+        ],
+        "catatan": "al-Ahkam al-Sulthaniyyah karya al-Mawardi (jilid 1 hlm 344, Bab 19 Ahkam al-Jara'im, Fasal 6 tentang ta'zir) mendefinisikan ta'zir sebagai ta'dib atas dosa yang tidak disyariatkan had; al-Mawardi fakih Syafi'i (penulis_turats id 109). al-Tasyri' al-Jina'i karya Audah (jilid 1 hlm 685) mengutip definisi yang sama."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "pidana-islam-007",
+      "rumpun": "pidana-islam",
+      "pertanyaan": "Berapa batas maksimal hukuman ta'zir berupa cambuk menurut para fuqaha, dan bagaimana hadis larangan mencambuk lebih dari sepuluh kali kecuali dalam had dipahami dalam perbedaan pendapat itu?",
+      "topik": "ta'zir",
+      "asal": "Perbandingan Madzhab dalam Fikih Jinayah",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "hadis",
+          "id": "2987",
+          "derajat": "Sahih"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 384,
+          "kitab": "الفقه الإسلامي وأدلته للزحيلي",
+          "madzhab": "muqaran"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 18159,
+          "kitab": "الطرق الحكمية في السياسة الشرعية - ط عطاءات العلم",
+          "madzhab": "hanbali"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_hadis_berderajat",
+          "hadis_berderajat",
+          "cari_turats",
+          "penulis_turats"
+        ],
+        "catatan": "Hadis 2987 (sahih, muttafaq 'alaih, kategori Hukum Seputar Takzir) melarang cambuk di atas sepuluh kali kecuali dalam had. al-Fiqh al-Islami wa Adillatuh karya al-Zuhaili (jilid 7 hlm 5600, bab al-Ta'zir) mencatat pendapat Abu Hanifah, Syafi'iyah, dan Hanabilah bahwa ta'zir tidak mencapai had terendah; penulis kontemporer. al-Thuruq al-Hukmiyyah karya Ibnu al-Qayyim (jilid 1 hlm 283) memaparkan tiga pendapat tentang batas ta'zir."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "pidana-islam-008",
+      "rumpun": "pidana-islam",
+      "pertanyaan": "Berapa kali cambukan had bagi peminum khamar menurut madzhab Syafi'i dibandingkan madzhab Hanafi dan Maliki, dan jumlah mana yang dipilih Qanun Hukum Jinayat Aceh bagi pelaku yang baru pertama kali melakukannya?",
+      "topik": "khamar",
+      "asal": "Hukum Pidana Islam di Indonesia; Perbandingan Madzhab",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "hadis",
+          "id": "2946",
+          "derajat": "Hadis sahih"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 35120,
+          "kitab": "فتح القريب المجيب في شرح ألفاظ التقريب = القول المختار في شرح غاية الاختصار",
+          "madzhab": "syafii"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 123510,
+          "kitab": "شرح مسند الشافعي",
+          "madzhab": "syafii"
+        },
+        {
+          "jenis": "qanun",
+          "rujukan": "Qanun 6/2014",
+          "pasal": "Pasal 15"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "hadis_berderajat",
+          "cari_turats",
+          "penulis_turats",
+          "WebFetch"
+        ],
+        "catatan": "Hadis 2946 (sahih, muttafaq 'alaih): Nabi mencambuk peminum khamar sekitar empat puluh kali; syarahnya menyebut penetapan delapan puluh pada masa Umar. Fath al-Qarib (jilid 1 hlm 284, bab had syurb): had peminum merdeka empat puluh dan imam boleh menyampaikannya delapan puluh. Syarh Musnad al-Syafi'i karya al-Rafi'i (jilid 3 hlm 469) menyatakan had asal empat puluh menurut al-Syafi'i, sedangkan Abu Hanifah dan Malik delapan puluh. Naskah Qanun Aceh 6/2014 diambil dari jdih.acehprov.go.id (PDF 41 hlm, diekstrak teksnya); Qanun Aceh 12/2025 (diundangkan 21 November 2025, berlaku sejak diundangkan) mengubah antara lain Pasal 4, 16 sampai 22, 25, 33, 34, 46 sampai 51, dan 67, Pasal 15 tidak diubah; Pasal 15 ayat (1) mengancam peminum khamar dengan 'uqubat hudud cambuk 40 kali."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "pidana-islam-009",
+      "rumpun": "pidana-islam",
+      "pertanyaan": "Apakah meminum minuman beralkohol dengan sendirinya merupakan tindak pidana menurut KUHP baru, dan bagaimana perbedaannya dengan larangan khamar dalam hukum pidana Islam?",
+      "topik": "khamar",
+      "asal": "Hukum Pidana Islam di Indonesia",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "ayat",
+          "surah": 5,
+          "ayat": 90
+        },
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 1/2023",
+          "pasal": "Pasal 316",
+          "status": "Berlaku",
+          "bpk_id": "234935",
+          "diubah_dengan": [
+            "UU 1/2026"
+          ]
+        },
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 1/2023",
+          "pasal": "Pasal 424",
+          "status": "Berlaku",
+          "bpk_id": "234935",
+          "diubah_dengan": [
+            "UU 1/2026"
+          ]
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "ambil_ayat",
+          "periksa_pasal",
+          "cari_dalam_pdf",
+          "detail_peraturan"
+        ],
+        "catatan": "QS 5:90 dibaca lewat ambil_ayat. UU 1/2023 (BPK 234935, status Berlaku, berlaku 2 Januari 2026, diubah UU 1/2026): Pasal 316 hanya memidana orang yang mabuk di tempat umum yang mengganggu ketertiban atau mengancam keselamatan orang lain (hlm 105 PDF), Pasal 424 memidana menjual atau memberi minuman memabukkan kepada orang yang sedang mabuk, kepada Anak, atau memaksa orang meminumnya (hlm 144 sampai 145). Penelusuran PDF UU 1/2026 tidak menemukan perubahan Pasal 316 maupun Pasal 424."
+      },
+      "tertahan": true
+    },
+    {
+      "id": "pidana-islam-010",
+      "rumpun": "pidana-islam",
+      "pertanyaan": "Apakah hukum pidana Islam membedakan hukuman pezina muhsan dan ghairu muhsan, dan bagaimana Qanun Hukum Jinayat Aceh mengatur 'uqubat zina dalam kaitan dengan pembedaan tersebut?",
+      "topik": "zina dan qadzaf",
+      "asal": "Hukum Pidana Islam di Indonesia",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "ayat",
+          "surah": 24,
+          "ayat": 2
+        },
+        {
+          "jenis": "hadis",
+          "id": "6760",
+          "derajat": "Hadis sahih"
+        },
+        {
+          "jenis": "qanun",
+          "rujukan": "Qanun 6/2014",
+          "pasal": "Pasal 33"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "ambil_ayat",
+          "hadis_berderajat",
+          "WebFetch"
+        ],
+        "catatan": "QS 24:2 (dera seratus kali). Hadis 6760 (sahih, muttafaq 'alaih) membedakan pezina lajang (seratus kali dan pengasingan setahun) dari yang sudah menikah (rajam). Naskah Qanun Aceh 6/2014 diambil dari jdih.acehprov.go.id (PDF 41 hlm, diekstrak teksnya); Qanun Aceh 12/2025 (diundangkan 21 November 2025, berlaku sejak diundangkan) mengubah antara lain Pasal 4, 16 sampai 22, 25, 33, 34, 46 sampai 51, dan 67, termasuk Pasal 33: ayat (1) tetap mengancam setiap orang yang berzina dengan 'uqubat hudud cambuk 100 kali tanpa membedakan status muhsan, dan perubahan menyisipkan ayat (1a) bagi Anak 16 sampai 18 tahun."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "pidana-islam-011",
+      "rumpun": "pidana-islam",
+      "pertanyaan": "Bagaimana Qanun Hukum Jinayat Aceh setelah perubahan tahun 2025 mengatur 'uqubat bagi anak berusia 16 sampai 18 tahun yang belum menikah dan melakukan zina, serta bagi orang dewasa yang berzina dengan anak tersebut?",
+      "topik": "jinayat di Aceh (Qanun)",
+      "asal": "Hukum Pidana Islam di Indonesia",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "qanun",
+          "rujukan": "Qanun 12/2025"
+        },
+        {
+          "jenis": "qanun",
+          "rujukan": "Qanun 6/2014",
+          "pasal": "Pasal 33"
+        },
+        {
+          "jenis": "qanun",
+          "rujukan": "Qanun 6/2014",
+          "pasal": "Pasal 34"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "WebFetch"
+        ],
+        "catatan": "Naskah Qanun Aceh 12/2025 tentang Perubahan atas Qanun Aceh 6/2014 diambil dari jdih.acehprov.go.id (PDF 20 hlm, diekstrak teksnya). Angka 11 menyisipkan Pasal 33 ayat (1a) dan (2a): Anak 16 sampai 18 tahun yang belum menikah diancam 'uqubat ta'zir utama penjara paling lama 33 bulan, pengembalian kepada orang tua/wali, atau penempatan di tempat yang disediakan pemerintah. Angka 12 mengubah Pasal 34: orang dewasa yang berzina dengan Anak tersebut dikenai hudud Pasal 33 ayat (1) ditambah cambuk 50 sampai 100 kali atau denda 500 sampai 1.000 gram emas murni dan penjara 50 sampai 100 bulan. Pasal II: berlaku pada tanggal diundangkan, 21 November 2025."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "pidana-islam-012",
+      "rumpun": "pidana-islam",
+      "pertanyaan": "Apa unsur jarimah qadzaf dan hukumannya menurut Al-Qur'an, dan bagaimana Qanun Hukum Jinayat Aceh merumuskan 'uqubat bagi penuduh zina, termasuk bila perbuatan itu diulangi?",
+      "topik": "zina dan qadzaf",
+      "asal": "Hukum Pidana Islam di Indonesia",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "ayat",
+          "surah": 24,
+          "ayat": 4
+        },
+        {
+          "jenis": "qanun",
+          "rujukan": "Qanun 6/2014",
+          "pasal": "Pasal 57"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "ambil_ayat",
+          "WebFetch"
+        ],
+        "catatan": "QS 24:4: penuduh perempuan baik-baik tanpa empat saksi didera delapan puluh kali dan kesaksiannya tidak diterima. Naskah Qanun Aceh 6/2014 diambil dari jdih.acehprov.go.id (PDF 41 hlm, diekstrak teksnya); Qanun Aceh 12/2025 (diundangkan 21 November 2025, berlaku sejak diundangkan) mengubah antara lain Pasal 4, 16 sampai 22, 25, 33, 34, 46 sampai 51, dan 67, Pasal 57 tidak diubah; Pasal 57 ayat (1) cambuk 80 kali, ayat (2) pengulangan ditambah denda paling banyak 400 gram emas murni atau penjara paling lama 40 bulan."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "pidana-islam-013",
+      "rumpun": "pidana-islam",
+      "pertanyaan": "Bagaimana mekanisme li'an ketika suami menuduh istrinya berzina tanpa empat orang saksi, dan bagaimana prosedur sumpah itu diadopsi dalam Qanun Hukum Jinayat Aceh?",
+      "topik": "zina dan qadzaf",
+      "asal": "Hukum Pidana Islam di Indonesia",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "ayat",
+          "surah": 24,
+          "ayat": "6-9"
+        },
+        {
+          "jenis": "qanun",
+          "rujukan": "Qanun 6/2014",
+          "pasal": "Pasal 59"
+        },
+        {
+          "jenis": "qanun",
+          "rujukan": "Qanun 6/2014",
+          "pasal": "Pasal 60"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "ambil_ayat",
+          "WebFetch"
+        ],
+        "catatan": "QS 24:6 (empat kali sumpah suami) dan QS 24:9 (sumpah kelima istri tentang murka Allah) dibaca lewat ambil_ayat sebagai batas rentang 6 sampai 9. Naskah Qanun Aceh 6/2014 diambil dari jdih.acehprov.go.id (PDF 41 hlm, diekstrak teksnya); Qanun Aceh 12/2025 (diundangkan 21 November 2025, berlaku sejak diundangkan) mengubah antara lain Pasal 4, 16 sampai 22, 25, 33, 34, 46 sampai 51, dan 67, Pasal 59 dan 60 tidak diubah: Pasal 59 membolehkan suami atau istri mengadu kepada hakim dengan sumpah sebagai alat bukti, Pasal 60 mengatur sumpah lima kali di depan hakim."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "pidana-islam-014",
+      "rumpun": "pidana-islam",
+      "pertanyaan": "Berapa nisab pencurian yang mewajibkan hukuman potong tangan menurut jumhur ulama dibandingkan madzhab Hanafi, dan dalil apa yang menjadi dasar masing-masing pendapat?",
+      "topik": "pencurian (sariqah) dan nisab",
+      "asal": "Perbandingan Madzhab dalam Fikih Jinayah",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "ayat",
+          "surah": 5,
+          "ayat": 38
+        },
+        {
+          "jenis": "hadis",
+          "id": "2964",
+          "derajat": "Sahih"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 17768,
+          "kitab": "التجريد للقدوري",
+          "madzhab": "hanafi"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "ambil_ayat",
+          "cari_hadis_berderajat",
+          "hadis_berderajat",
+          "cari_turats",
+          "penulis_turats"
+        ],
+        "catatan": "QS 5:38. Hadis 2964 (sahih, muttafaq 'alaih, kategori Had Pencurian): tangan dipotong pada seperempat dinar atau lebih; faedahnya menyetarakan seperempat dinar dengan sekitar 1 gram emas lebih sedikit. al-Tajrid karya al-Qaduri (jilid 11 hlm 5965), fakih Hanafi menurut penulis_turats id 2667, mengutip atsar Ibnu Mas'ud bahwa tidak ada potong tangan pada kurang dari sepuluh dirham."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "pidana-islam-015",
+      "rumpun": "pidana-islam",
+      "pertanyaan": "Bagaimana KUHP baru merumuskan tindak pidana pencurian dan pencurian ringan berdasarkan nilai barang, dan dapatkah batas nilai itu dibandingkan dengan konsep nisab dalam jarimah sariqah?",
+      "topik": "pencurian (sariqah) dan nisab",
+      "asal": "Hukum Pidana Islam di Indonesia",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 1/2023",
+          "pasal": "Pasal 476",
+          "status": "Berlaku",
+          "bpk_id": "234935",
+          "diubah_dengan": [
+            "UU 1/2026"
+          ]
+        },
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 1/2023",
+          "pasal": "Pasal 478",
+          "status": "Berlaku",
+          "bpk_id": "234935",
+          "diubah_dengan": [
+            "UU 1/2026"
+          ]
+        },
+        {
+          "jenis": "hadis",
+          "id": "2964",
+          "derajat": "Sahih"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "teks_peraturan",
+          "cari_dalam_pdf",
+          "hadis_berderajat"
+        ],
+        "catatan": "UU 1/2023 hlm 166 sampai 167 PDF: Pasal 476 pencurian (penjara paling lama 5 tahun atau denda kategori V); Pasal 478 pencurian ringan bila tidak dalam rumah atau pekarangan tertutup dan harga barang tidak lebih dari Rp500.000,00, denda paling banyak kategori II. Penelusuran PDF UU 1/2026 (frasa Pasal 47 dan daftar ketentuan yang diubah) tidak menemukan perubahan Pasal 476 sampai 478. Hadis 2964 (sahih) untuk nisab seperempat dinar."
+      },
+      "tertahan": true
+    },
+    {
+      "id": "pidana-islam-016",
+      "rumpun": "pidana-islam",
+      "pertanyaan": "Apa yang dimaksud jarimah hirabah atau qath'u al-thariq, dan bagaimana empat bentuk hukuman dalam ayat hirabah dipahami oleh fuqaha, apakah sebagai pilihan imam atau disesuaikan dengan perbuatan pelaku?",
+      "topik": "hirabah",
+      "asal": "topik baku mata kuliah Fikih Jinayah",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "ayat",
+          "surah": 5,
+          "ayat": 33
+        },
+        {
+          "jenis": "hadis",
+          "id": "58194",
+          "derajat": "Hadis sahih"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 776,
+          "kitab": "شرح منتهى الإرادات لابن النجار = معونة أولي النهى",
+          "madzhab": "hanbali"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "ambil_ayat",
+          "hadis_berderajat",
+          "cari_turats",
+          "penulis_turats"
+        ],
+        "catatan": "QS 5:33 menyebut dibunuh, disalib, dipotong tangan dan kaki bersilang, atau diasingkan. Hadis 58194 (sahih; Nasa'i, Abu Daud, kategori Had Perampokan) menyebut orang yang keluar memerangi Allah dan Rasul-Nya dibunuh, disalib, atau diasingkan. Syarh Muntaha al-Iradat karya Ibnu al-Najjar (jilid 10 hlm 503) memuat bab had qutta' al-thariq; penulis fakih Hanbali menurut penulis_turats id 633."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "pidana-islam-017",
+      "rumpun": "pidana-islam",
+      "pertanyaan": "Kepada siapa saja Qanun Hukum Jinayat Aceh berlaku, termasuk bagi pelaku yang tidak beragama Islam, dan apa dasar kewenangannya dalam undang-undang tentang pemerintahan Aceh?",
+      "topik": "jinayat di Aceh (Qanun)",
+      "asal": "Hukum Pidana Islam di Indonesia",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "qanun",
+          "rujukan": "Qanun 6/2014",
+          "pasal": "Pasal 5"
+        },
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 11/2006",
+          "pasal": "Pasal 125",
+          "status": "Berlaku",
+          "bpk_id": "40174",
+          "diubah_dengan": []
+        },
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 11/2006",
+          "pasal": "Pasal 129",
+          "status": "Berlaku",
+          "bpk_id": "40174",
+          "diubah_dengan": []
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "periksa_pasal",
+          "teks_peraturan",
+          "WebFetch"
+        ],
+        "catatan": "UU 11/2006 (BPK 40174, status Berlaku, tanpa relasi Diubah dengan di JDIH BPK): Pasal 125 ayat (2) memasukkan jinayah ke dalam syariat Islam yang dilaksanakan di Aceh dan ayat (3) mendelegasikannya ke Qanun Aceh; Pasal 129 ayat (1) memberi pelaku bukan Islam yang berbuat bersama orang Islam pilihan menundukkan diri secara sukarela. Naskah Qanun Aceh 6/2014 diambil dari jdih.acehprov.go.id (PDF 41 hlm, diekstrak teksnya); Qanun Aceh 12/2025 (diundangkan 21 November 2025, berlaku sejak diundangkan) mengubah antara lain Pasal 4, 16 sampai 22, 25, 33, 34, 46 sampai 51, dan 67, Pasal 5 tidak diubah: berlaku bagi orang Islam, orang bukan Islam yang berbuat bersama orang Islam dan menundukkan diri, orang bukan Islam untuk jarimah yang tidak diatur KUHP, dan Badan Usaha."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "pidana-islam-018",
+      "rumpun": "pidana-islam",
+      "pertanyaan": "Bagaimana hubungan antara jarimah dalam Qanun Hukum Jinayat Aceh dengan tindak pidana serupa yang juga diatur dalam KUHP, dan pengadilan mana yang berwenang mengadilinya?",
+      "topik": "jinayat di Aceh (Qanun)",
+      "asal": "Hukum Pidana Islam di Indonesia",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "qanun",
+          "rujukan": "Qanun 6/2014",
+          "pasal": "Pasal 72"
+        },
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 11/2006",
+          "pasal": "Pasal 128",
+          "status": "Berlaku",
+          "bpk_id": "40174",
+          "diubah_dengan": []
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "periksa_pasal",
+          "teks_peraturan",
+          "WebFetch"
+        ],
+        "catatan": "Naskah Qanun Aceh 6/2014 diambil dari jdih.acehprov.go.id (PDF 41 hlm, diekstrak teksnya); Qanun Aceh 12/2025 (diundangkan 21 November 2025, berlaku sejak diundangkan) mengubah antara lain Pasal 4, 16 sampai 22, 25, 33, 34, 46 sampai 51, dan 67, Pasal 72 tidak diubah: bila jarimah dalam qanun juga diatur KUHP atau ketentuan pidana di luar KUHP, yang berlaku aturan jarimah dalam qanun. UU 11/2006 Pasal 128 ayat (3) (hlm 85 PDF): Mahkamah Syar'iyah berwenang atas perkara jinayah berdasarkan syariat Islam. UU 1/2023 tidak dirujuk karena tidak memuat ketentuan khusus tentang qanun jinayat."
+      },
+      "tertahan": true
+    },
+    {
+      "id": "pidana-islam-019",
+      "rumpun": "pidana-islam",
+      "pertanyaan": "Bagaimana KUHP baru mengakui hukum yang hidup dalam masyarakat sebagai dasar pemidanaan, dan jenis pidana apa yang dapat dijatuhkan untuk tindak pidana adat setelah perubahan oleh undang-undang penyesuaian pidana?",
+      "topik": "pidana adat/hukum yang hidup dalam masyarakat dalam KUHP baru",
+      "asal": "Hukum Pidana Islam di Indonesia",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 1/2023",
+          "pasal": "Pasal 2",
+          "status": "Berlaku",
+          "bpk_id": "234935",
+          "diubah_dengan": [
+            "UU 1/2026"
+          ]
+        },
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 1/2023",
+          "pasal": "Pasal 597",
+          "status": "Berlaku",
+          "bpk_id": "234935",
+          "diubah_dengan": [
+            "UU 1/2026"
+          ]
+        },
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 1/2023",
+          "pasal": "Pasal 66",
+          "status": "Berlaku",
+          "bpk_id": "234935",
+          "diubah_dengan": [
+            "UU 1/2026"
+          ]
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "periksa_pasal",
+          "detail_peraturan",
+          "cari_dalam_pdf",
+          "teks_peraturan"
+        ],
+        "catatan": "UU 1/2023 Pasal 2 (hlm 3 PDF) tidak diubah UU 1/2026. UU 1/2026 (BPK 337869, Berlaku sejak 2 Januari 2026) Pasal VII angka 46 mengubah Pasal 597 ayat (2): pidananya berupa pemenuhan kewajiban adat menurut Pasal 66 ayat (1) huruf f atau Pasal 120 ayat (1) huruf d; angka 6 menambah Pasal 66 ayat (6): pemenuhan kewajiban adat menjadi pidana pokok untuk tindak pidana berdasarkan hukum yang hidup yang diatur dalam Peraturan Daerah."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "pidana-islam-020",
+      "rumpun": "pidana-islam",
+      "pertanyaan": "Bagaimana kedudukan pidana mati dalam KUHP baru, dan apa yang berubah mengenai masa percobaan sepuluh tahun setelah undang-undang penyesuaian pidana berlaku?",
+      "topik": "pidana mati",
+      "asal": "Hukum Pidana Islam di Indonesia",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 1/2023",
+          "pasal": "Pasal 98",
+          "status": "Berlaku",
+          "bpk_id": "234935",
+          "diubah_dengan": [
+            "UU 1/2026"
+          ]
+        },
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 1/2023",
+          "pasal": "Pasal 100",
+          "status": "Berlaku",
+          "bpk_id": "234935",
+          "diubah_dengan": [
+            "UU 1/2026"
+          ]
+        },
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 1/2026",
+          "status": "Berlaku",
+          "bpk_id": "337869",
+          "diubah_dengan": []
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "periksa_pasal",
+          "teks_peraturan",
+          "detail_peraturan",
+          "cari_dalam_pdf"
+        ],
+        "catatan": "UU 1/2023 Pasal 98 (hlm 37 PDF): pidana mati diancamkan secara alternatif sebagai upaya terakhir; tidak diubah. UU 1/2026 Pasal VII angka 17 (hlm 18 sampai 19) menghapus Pasal 100 ayat (2) dan (5) serta mengubah ayat (1), (4), dan (6): hakim menjatuhkan pidana mati dengan masa percobaan 10 tahun, perubahan menjadi seumur hidup dengan Keputusan Presiden setelah pertimbangan Mahkamah Agung; angka 16 mengubah Pasal 99 ayat (1) dan angka 18 Pasal 101."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "pidana-islam-021",
+      "rumpun": "pidana-islam",
+      "pertanyaan": "Dalam hukum pidana Islam, untuk jarimah apa saja hukuman mati dikenal, dan bagaimana pandangan itu dapat dibandingkan dengan rumusan pidana mati sebagai upaya terakhir dalam KUHP baru?",
+      "topik": "pidana mati",
+      "asal": "Hukum Pidana Islam di Indonesia",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "hadis",
+          "id": "58194",
+          "derajat": "Hadis sahih"
+        },
+        {
+          "jenis": "ayat",
+          "surah": 2,
+          "ayat": 179
+        },
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 1/2023",
+          "pasal": "Pasal 98",
+          "status": "Berlaku",
+          "bpk_id": "234935",
+          "diubah_dengan": [
+            "UU 1/2026"
+          ]
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "hadis_berderajat",
+          "ambil_ayat",
+          "teks_peraturan"
+        ],
+        "catatan": "Hadis 58194 (sahih; Nasa'i, Abu Daud): darah muslim hanya halal karena zina muhsan, hirabah, atau membunuh jiwa. QS 2:179: dalam qishash ada jaminan kehidupan. UU 1/2023 Pasal 98 (hlm 37 PDF), tidak diubah UU 1/2026."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "pidana-islam-022",
+      "rumpun": "pidana-islam",
+      "pertanyaan": "Bagaimana KUHP baru merumuskan tindak pidana perzinaan, siapa yang berhak mengadu, dan bagaimana rumusan itu berbeda dari konsep jarimah zina dalam fikih jinayah?",
+      "topik": "perzinaan dan kohabitasi sebagai delik aduan dalam UU 1/2023",
+      "asal": "Hukum Pidana Islam di Indonesia",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 1/2023",
+          "pasal": "Pasal 411",
+          "status": "Berlaku",
+          "bpk_id": "234935",
+          "diubah_dengan": [
+            "UU 1/2026"
+          ]
+        },
+        {
+          "jenis": "ayat",
+          "surah": 24,
+          "ayat": 2
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "teks_peraturan",
+          "cari_dalam_pdf",
+          "ambil_ayat"
+        ],
+        "catatan": "UU 1/2023 Pasal 411 (hlm 140 sampai 141 PDF): persetubuhan dengan orang yang bukan suami atau istrinya, penjara paling lama 1 tahun atau denda kategori II; ayat (2) penuntutan hanya atas pengaduan suami atau istri bagi yang terikat perkawinan, atau Orang Tua atau anak bagi yang tidak terikat perkawinan; ayat (4) pengaduan dapat ditarik selama pemeriksaan sidang belum dimulai. Penelusuran PDF UU 1/2026 tidak menemukan perubahan Pasal 411. QS 24:2 untuk had zina."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "pidana-islam-023",
+      "rumpun": "pidana-islam",
+      "pertanyaan": "Apakah hidup bersama sebagai suami istri di luar perkawinan dapat dituntut menurut KUHP baru tanpa pengaduan, siapa yang berhak mengadu, dan sampai kapan pengaduan itu dapat ditarik kembali?",
+      "topik": "perzinaan dan kohabitasi sebagai delik aduan dalam UU 1/2023",
+      "asal": "Hukum Pidana Islam di Indonesia",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 1/2023",
+          "pasal": "Pasal 412",
+          "status": "Berlaku",
+          "bpk_id": "234935",
+          "diubah_dengan": [
+            "UU 1/2026"
+          ]
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "teks_peraturan",
+          "cari_dalam_pdf"
+        ],
+        "catatan": "UU 1/2023 Pasal 412 (hlm 141 PDF): hidup bersama sebagai suami istri di luar perkawinan, penjara paling lama 6 bulan atau denda kategori II; penuntutan hanya atas pengaduan suami atau istri, atau Orang Tua atau anak; Pasal 25, 26, dan 30 tidak berlaku; pengaduan dapat ditarik selama pemeriksaan sidang belum dimulai. Penelusuran PDF UU 1/2026 tidak menemukan perubahan Pasal 412."
+      },
+      "tertahan": true
+    },
+    {
+      "id": "pidana-islam-024",
+      "rumpun": "pidana-islam",
+      "pertanyaan": "Bagaimana mekanisme keadilan restoratif dalam KUHAP baru, apa syarat dan pengecualiannya, dan bagaimana kaitannya dengan konsep pemaafan (al-'afw) dalam qishash?",
+      "topik": "keadilan restoratif",
+      "asal": "Hukum Pidana Islam di Indonesia",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 20/2025",
+          "pasal": "Pasal 79",
+          "status": "Berlaku",
+          "bpk_id": "337302",
+          "diubah_dengan": []
+        },
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 20/2025",
+          "pasal": "Pasal 80",
+          "status": "Berlaku",
+          "bpk_id": "337302",
+          "diubah_dengan": []
+        },
+        {
+          "jenis": "peraturan",
+          "rujukan": "UU 20/2025",
+          "pasal": "Pasal 82",
+          "status": "Berlaku",
+          "bpk_id": "337302",
+          "diubah_dengan": []
+        },
+        {
+          "jenis": "ayat",
+          "surah": 2,
+          "ayat": 178
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "periksa_pasal",
+          "cari_dalam_pdf",
+          "ambil_ayat"
+        ],
+        "catatan": "UU 20/2025 tentang KUHAP (BPK 337302, Berlaku sejak 2 Januari 2026, mencabut UU 8/1981, tanpa relasi Diubah dengan): Pasal 79 (hlm 43 sampai 44 PDF) tujuan pemulihan termasuk pemaafan dari Korban atau Keluarganya dan tahap pelaksanaannya; Pasal 80 syarat antara lain ancaman denda paling banyak kategori III atau penjara paling lama 5 tahun dan tindak pidana pertama kali; Pasal 82 pengecualian antara lain tindak pidana kesusilaan, terorisme, dan korupsi. QS 2:178 tentang pemaafan dalam qishash."
+      },
+      "tertahan": false
+    },
+    {
+      "id": "pidana-islam-025",
+      "rumpun": "pidana-islam",
+      "pertanyaan": "Apakah kehamilan perempuan yang tidak bersuami dapat dijadikan bukti jarimah zina menurut fikih, dan bagaimana Qanun Hukum Jinayat Aceh menyikapi persoalan ini?",
+      "topik": "zina dan qadzaf",
+      "asal": "Hukum Pidana Islam di Indonesia; Perbandingan Madzhab",
+      "harapan": "jawab",
+      "rujukan_wajib": [
+        {
+          "jenis": "turats",
+          "book_id": 1699,
+          "kitab": "موطأ مالك - رواية يحيى - ت عبد الباقي",
+          "madzhab": "maliki"
+        },
+        {
+          "jenis": "turats",
+          "book_id": 21743,
+          "kitab": "شرح الزركشي على مختصر الخرقي",
+          "madzhab": "hanbali"
+        },
+        {
+          "jenis": "qanun",
+          "rujukan": "Qanun 6/2014",
+          "pasal": "Pasal 36"
+        }
+      ],
+      "verifikasi": {
+        "tanggal": "2026-10-15",
+        "alat": [
+          "cari_turats",
+          "penulis_turats",
+          "WebFetch"
+        ],
+        "catatan": "al-Muwaththa' riwayat Yahya (jilid 2 hlm 823) memuat atsar Umar bahwa rajam wajib bila ada bayyinah, kehamilan (al-habal), atau pengakuan; penulis Imam Malik (penulis_turats id 214). Syarh al-Zarkasyi 'ala Mukhtashar al-Khiraqi (jilid 6 hlm 296, Hanbali, penulis_turats id 1356) membahas atsar yang sama. Naskah Qanun Aceh 6/2014 diambil dari jdih.acehprov.go.id (PDF 41 hlm, diekstrak teksnya); Qanun Aceh 12/2025 (diundangkan 21 November 2025, berlaku sejak diundangkan) mengubah antara lain Pasal 4, 16 sampai 22, 25, 33, 34, 46 sampai 51, dan 67, Pasal 36 tidak diubah: perempuan hamil di luar nikah tidak dapat dituduh zina tanpa alat bukti yang cukup."
+      },
+      "tertahan": false
+    }
+  ]
+}

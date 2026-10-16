@@ -53,6 +53,8 @@ export type PotonganBertanda = {
   judul: string;
   rujukan: string;
   locator: PotonganLocator;
+  /** Offset awal tiap halaman di dalam teks, untuk menunjuk halaman sebuah kutipan. */
+  pageStarts?: Array<{ halaman: number; offset: number }>;
   text: string;
   contentHash: string;
   identitas: string[];
@@ -181,6 +183,7 @@ export function createSumberService(adapters: SumberAdapters, signer: Signer) {
         judul: String(raw.peraturan.judul || label),
         rujukan: `${label}${passage.locator.pasal ? ` ${passage.locator.pasal}` : ""}${passage.locator.bagian === "penjelasan" ? " (Penjelasan)" : ""}`,
         locator: passage.locator,
+        pageStarts: passage.pageStarts,
         text: passage.text,
         identitas: [label, ...(passage.locator.pasal ? [passage.locator.pasal] : [])],
         sumber: { ...sumber, url: pdf },
@@ -206,6 +209,7 @@ export function createSumberService(adapters: SumberAdapters, signer: Signer) {
                 judul: String(detail.metadata?.Judul || relation.label),
                 rujukan: `${label} ${ref.pasal} sebagaimana diubah ${relation.label}`,
                 locator: passage.locator,
+        pageStarts: passage.pageStarts,
                 text: passage.text,
                 identitas: [label, relation.label, ref.pasal],
                 sumber: {
@@ -295,6 +299,7 @@ export function createSumberService(adapters: SumberAdapters, signer: Signer) {
         judul: "Kompilasi Hukum Ekonomi Syariah (Edisi Revisi 2011)",
         rujukan: `KHES ${passage.locator.pasal}`,
         locator: passage.locator,
+        pageStarts: passage.pageStarts,
         text: passage.text,
         identitas: ["KHES", ref.pasal],
         sumber: {
