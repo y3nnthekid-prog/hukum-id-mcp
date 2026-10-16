@@ -35,12 +35,12 @@ export function createClaudeJsonModel(input: {
   return {
     provider: "claude",
     model,
-    async generate({ system, user, schema, effort, signal, allowRetries }) {
+    async generate({ system, user, schema, effort, signal, allowRetries, maxOutputTokens }) {
       try {
         const response = await client.beta.messages.parse(
           {
             model,
-            max_tokens: 16_000,
+            max_tokens: Math.min(16_000, Math.max(256, maxOutputTokens ?? 16_000)),
             system,
             messages: [{ role: "user", content: user }],
             output_config: {

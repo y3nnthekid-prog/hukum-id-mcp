@@ -8,6 +8,24 @@
 import { getBufferBersumber } from "./http.js";
 import { ambilJson, simpanJson, umurSimpan, waktuSimpan } from "./cache.js";
 import { parseLegalDate, selectPdfPages } from "./trust.js";
+import { Worker } from "node:worker_threads";
+
+export const PDF_LIMITS = { maxBytes: 16 * 1024 * 1024, maxPages: 600, maxChars: 4_000_000, timeoutMs: 45_000 };
+
+export function extractPdfIsolated(data, limits = PDF_LIMITS) {
+  if (data.byteLength > limits.maxBytes) return Promise.reject(new Error("PDF_BYTE_LIMIT"));
+  return new Promise((resolve, reject) => {
+    const worker = new Worker(new URL("./pdf-worker.js", import.meta.url), { execArgv: [], workerData: { data, maxPages: limits.maxPages, maxChars: limits.maxChars }, resourceLimits: { maxOldGenerationSizeMb: 96, stackSizeMb: 4 } });
+    const timer = setTimeout(() => { void worker.terminate(); reject(new Error("PDF_DEADLINE")); }, limits.timeoutMs);
+    worker.once("message", (result) => {
+      clearTimeout(timer);
+      void worker.terminate();
+      if (result.error) reject(new Error(result.error)); else resolve(result);
+    });
+    worker.once("error", () => { clearTimeout(timer); reject(new Error("PDF_RESOURCE_LIMIT")); });
+    worker.once("exit", (code) => { clearTimeout(timer); if (code !== 0) reject(new Error("PDF_RESOURCE_LIMIT")); });
+  });
+}
 
 const CATATAN =
   "Sebagian PDF resmi punya lapisan teks yang cacat. Bandingkan dengan PDF sumber sebelum mengutip verbatim.";
@@ -44,7 +62,7 @@ function renderLines(items) {
     .join("\n");
 }
 
-function pageText(items, pageWidth) {
+export function pageText(items, pageWidth) {
   const positioned = textItems(items);
   if (positioned.length === 0) return "";
 
@@ -128,24 +146,13 @@ export async function halamanPdf({ url_pdf, buffer, referer, lewati_cache = fals
     }
   }
 
-  const { getDocument } = await import("pdfjs-dist/legacy/build/pdf.mjs");
   // `asal` membawa waktu ambil untuk buffer yang sudah diunduh pemanggil (mis. fatwa dari Drive).
-  const unduhan = buffer ? asal : await getBufferBersumber(url_pdf, { referer, timeout: 120000 });
+  const unduhan = buffer ? asal : await getBufferBersumber(url_pdf, { referer, timeout: 120000, maxBytes: PDF_LIMITS.maxBytes });
   const data = new Uint8Array(buffer || unduhan.buffer);
-  const doc = await getDocument({ data, useSystemFonts: true, isEvalSupported: false }).promise;
-
-  const halaman = [];
-  for (let i = 1; i <= doc.numPages; i++) {
-    const page = await doc.getPage(i);
-    const isi = await page.getTextContent();
-    halaman.push({
-      halaman: i,
-      teks: pageText(isi.items, page.getViewport({ scale: 1 }).width),
-    });
-  }
+  const extracted = await extractPdfIsolated(data);
 
   const diambil_pada = unduhan?.diambil_pada || new Date().toISOString();
-  const hasil = withExtractionHealth({ total_halaman: doc.numPages, halaman, diambil_pada });
+  const hasil = withExtractionHealth({ ...extracted, diambil_pada });
   if (url_pdf) await simpanJson(kunci, hasil);
   return { ...hasil, dari_cache: Boolean(unduhan?.dari_cache) };
 }

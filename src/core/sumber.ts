@@ -16,6 +16,8 @@ import { HUKUM_ID_VERSION } from "../version.js";
 type Legacy = Record<string, any>;
 
 export type SumberAdapters = {
+  local?: ((ref: RujukanBuka) => HasilBuka | null) | undefined;
+  extra?: ((ref: RujukanBuka) => Promise<HasilBuka>) | undefined;
   inspectArticle: (input: Legacy) => Promise<Legacy>;
   regulationDetail: (id: string) => Promise<Legacy>;
   pdfPages: (input: { url_pdf: string }) => Promise<Legacy>;
@@ -27,6 +29,9 @@ export type SumberAdapters = {
 };
 
 export type RujukanBuka =
+  | { jenis: "khi"; pasal: string }
+  | { jenis: "qanun"; rujukan: string; pasal?: string | undefined }
+  | { jenis: "putusan"; id: string }
   | { jenis: "peraturan"; rujukan: string; pasal?: string | undefined }
   | { jenis: "fatwa"; nomor: string }
   | { jenis: "khes"; pasal: string }
@@ -422,6 +427,8 @@ export function createSumberService(adapters: SumberAdapters, signer: Signer) {
 
   async function buka(ref: RujukanBuka): Promise<HasilBuka> {
     try {
+      const local = adapters.local?.(ref);
+      if (local) return local;
       switch (ref.jenis) {
         case "peraturan":
           return await openRegulation(ref);
@@ -435,13 +442,14 @@ export function createSumberService(adapters: SumberAdapters, signer: Signer) {
           return await openHadith(ref);
         case "turats":
           return await openTurats(ref);
+        default:
+          return adapters.extra ? await adapters.extra(ref) : { rujukan: ref, status: "tidak_dapat_diperiksa", alasan: "Korpus belum tersedia.", potongan: [], peringatan: [] };
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      const blocked = /tantangan|membatasi|HTTP 403|HTTP 429|LURING|timed out|Gagal mengambil/i.test(message);
       return {
         rujukan: ref,
-        status: blocked ? "tidak_dapat_diperiksa" : "tidak_ditemukan",
+        status: "tidak_dapat_diperiksa",
         alasan: message.slice(0, 240),
         potongan: [],
         peringatan: [],

@@ -245,7 +245,7 @@ export function createApiApp({
     c.header("access-control-allow-methods", "GET,POST,PUT,OPTIONS");
     c.header(
       "access-control-allow-headers",
-      "authorization,content-type,idempotency-key,x-gemini-api-key,x-pasla-ai-provider,x-pasla-ai-model,x-pasla-ai-key"
+      "authorization,content-type,idempotency-key,x-gemini-api-key,x-pasla-ai-provider,x-pasla-ai-model,x-pasla-ai-key,x-pasla-step-ticket"
     );
     return c.body(null, 204);
   });

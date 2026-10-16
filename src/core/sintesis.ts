@@ -145,6 +145,7 @@ export async function sintesisBagian(input: {
       schema: ModelOutputSchema,
       effort: "medium",
       allowRetries: false,
+      maxOutputTokens: 4096,
       signal: input.signal,
     });
   }

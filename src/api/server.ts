@@ -13,12 +13,18 @@ import { signerFromEnvironment } from "../core/sign.js";
 import { createSumberService, type SumberAdapters } from "../core/sumber.js";
 import { legacyAdapters } from "../core/legacy-adapters.js";
 import { periksaPasal } from "../alur.js";
-import { detailPeraturan } from "../bpk.js";
-import { ambilAyat, hadisBerderajat } from "../dalil.js";
-import { teksFatwaDsn } from "../dsn.js";
-import { lokasiNaskahKhes } from "../khes.js";
+import { detailPeraturan, cariPeraturan } from "../bpk.js";
+import { ambilAyat, hadisBerderajat, cariAyat, cariHadisBerderajat } from "../dalil.js";
+import { teksFatwaDsn, cariFatwaDsn } from "../dsn.js";
+import { lokasiNaskahKhes, cariPasalKhes } from "../khes.js";
 import { halamanPdf } from "../pdf.js";
 import { cariTurats } from "../turats.js";
+import { cariLiteratur } from "../scholar.js";
+import { createTelusur } from "../core/telusur.js";
+import { CorpusIndex } from "../indexing/corpus.js";
+import { cariQanun, cariMetadataPutusan, bukaQanun } from "../sources/regional.js";
+import { mkdirSync } from "node:fs";
+import path from "node:path";
 import { createPlatformServer } from "../platform.js";
 import { createAzureSecureUploadService } from "../storage/azure.js";
 import { createAzureCorpusEvidenceResolver } from "../storage/evidence.js";
@@ -79,8 +85,40 @@ function resolveAiModel(selection: AiModelSelection): ResolvedAiModel {
 }
 
 const service = createLegalResearchService(legacyAdapters);
+const corpusPath = path.resolve(process.env.HUKUM_CORPUS_PATH || ".cache/research.sqlite");
+mkdirSync(path.dirname(corpusPath), { recursive: true });
+const corpus = new CorpusIndex(corpusPath);
+const telusur = createTelusur({
+  khi: async (query, limit) => corpus.search(query, "khi", limit),
+  qanun: cariQanun,
+  putusan: async (query, limit) => {
+    const local = [corpus.search(query, "putusan-ma", limit), corpus.search(query, "putusan-mk", limit)].flatMap((x) => x.hasil.map((item) => ({ ...item, tersedia: true })));
+    try { return { hasil: [...local, ...(await cariMetadataPutusan(query, limit)).hasil].slice(0, limit) }; }
+    catch (cause) { if (local.length) return { hasil: local }; throw cause; }
+  },
+  peraturan: async (query, limit) => {
+    const local = corpus.search(query, "peraturan", limit).hasil;
+    try { return { hasil: [...local, ...(await cariPeraturan({ keywords: query, limit })).hasil].slice(0, limit) }; }
+    catch (cause) { if (local.length) return { hasil: local }; throw cause; }
+  },
+  fatwa: (query, limit) => cariFatwaDsn({ query, limit }),
+  khes: (query, limit) => cariPasalKhes({ query, maks_temuan: limit }),
+  ayat: (query, limit) => cariAyat({ query, limit }),
+  hadis: (query, limit) => cariHadisBerderajat({ query, limit } as any),
+  turats: (query, limit) => cariTurats({ query, limit }),
+  literatur: (query, limit) => cariLiteratur({ query, limit } as any),
+});
 const signer = signerFromEnvironment();
 const sumber = signer ? createSumberService({
+  local: (ref) => {
+    const result = corpus.open(ref, signer);
+    return result.status === "dibuka" || result.status === "tidak_ditemukan" ? result : null;
+  },
+  extra: async (ref) => {
+    const local = corpus.open(ref, signer);
+    if (local.status === "dibuka" || ref.jenis !== "qanun") return local;
+    return bukaQanun(ref, signer);
+  },
   inspectArticle: ({ peraturan, pasal, sertakan_putusan_mk }) => periksaPasal({ peraturan, pasal, sertakan_putusan_mk }),
   regulationDetail: detailPeraturan,
   pdfPages: halamanPdf as SumberAdapters["pdfPages"],
@@ -101,8 +139,12 @@ const ask = createAsk({
 });
 
 const server = createPlatformServer({
+  matchCorpusHash: (hash) => corpus.byHash(hash),
+  requireStepTicket: process.env.NODE_ENV === "production" || process.env.PASLA_REQUIRE_STEP_TICKET === "true",
+  ...(process.env.PASLA_STEP_TICKET_SECRET ? { stepTickets: { secret: process.env.PASLA_STEP_TICKET_SECRET, audience: process.env.PASLA_ENGINE_ORIGIN || "https://api.pasla.tech" } } : {}),
   service,
   allowedOrigins,
+  telusur,
   ask,
   resolveAiModel,
   makeByokModel: createJsonModel,
@@ -157,6 +199,7 @@ server.listen(port, host, () => {
 for (const signal of ["SIGINT", "SIGTERM"] as const) {
   process.once(signal, () => {
     server.close(async () => {
+      corpus.close();
       if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
         const { shutdownAzureMonitor } = await import("@azure/monitor-opentelemetry");
         await shutdownAzureMonitor().catch(() => undefined);

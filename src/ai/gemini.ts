@@ -28,7 +28,7 @@ export function createGeminiJsonModel(input: {
   return {
     provider: "gemini",
     model,
-    async generate({ system, user, schema, signal }) {
+    async generate({ system, user, schema, signal, maxOutputTokens }) {
       const timeoutSignal = AbortSignal.timeout(timeoutMs);
       const combined = signal ? AbortSignal.any([signal, timeoutSignal]) : timeoutSignal;
       try {
@@ -41,7 +41,7 @@ export function createGeminiJsonModel(input: {
             responseMimeType: "application/json",
             responseJsonSchema: jsonSchemaOf(schema),
             temperature: 0.1,
-            maxOutputTokens: 4_096,
+            maxOutputTokens: Math.min(4096, Math.max(256, maxOutputTokens ?? 4096)),
           },
         });
         if (!response.text) throw new AiProviderError("Gemini tidak mengembalikan jawaban.");

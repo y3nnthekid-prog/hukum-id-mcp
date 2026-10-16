@@ -4,6 +4,20 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.1.0/), versi
 [Semantic Versioning](https://semver.org/lang/id/). Peneliti disarankan menyebutkan versi
 alat ini dalam tulisannya demi reproduktibilitas.
 
+## Belum dirilis
+
+- Profil enam rumpun dan telusur tanpa AI dengan kegagalan sumber terisolasi, cuplikan terbatas,
+  serta pemisahan metadata dari bukti isi. Adapter publik JDIHN dan Qanun Aceh menghormati batas akses.
+- Rencana dan penyaringan laporan melalui NDJSON. Tiket HMAC terikat akun, langkah, percobaan,
+  hash masukan, kedaluwarsa dan anggaran; tanpa percobaan ulang berbayar otomatis.
+- Indeks SQLite FTS5 untuk korpus publik dan importer PDF terikat root, sidik SHA-256,
+  provenance, pemeriksaan identitas dan attestation anonimisasi putusan.
+- Ekstraksi PDF dalam worker terpisah dengan batas heap, waktu, halaman, byte dan teks.
+  Build memastikan worker ikut terkemas. Node minimal 24.18.
+- Pencocokan unggahan hanya menerima sidik berkas. Teks klien tidak ditandatangani sebagai sumber resmi.
+
+Status, konfigurasi dan batas pratinjau dicatat dalam `docs/riset-v2-preview.md`.
+
 ## [0.8.2] - 2026-10-15
 
 Fondasi untuk ruang riset enam rumpun Pasla. Lihat [ADR-003](docs/decisions/003-ruang-riset-enam-rumpun.md).

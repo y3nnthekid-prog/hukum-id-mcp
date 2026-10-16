@@ -18,6 +18,138 @@ tags:
   - name: Operations
     description: Kesehatan layanan, sumber, dan status job.
 paths:
+  /v2/rumpun:
+    get:
+      summary: Profil enam rumpun dan batas cakupan
+      operationId: profilRumpunV2
+      tags: [Research]
+      responses:
+        "429": { $ref: "#/components/responses/RateLimited" }
+        "200":
+          description: Profil sumber, hierarki, contoh isu, dan cakupan terbatas
+          content:
+            application/json:
+              schema: { type: object, required: [data, meta], properties: { data: { type: object, additionalProperties: true }, meta: { $ref: "#/components/schemas/Meta" } } }
+  /v2/telusur:
+    post:
+      summary: Telusur lintas sumber tanpa akun atau AI
+      operationId: telusurV2
+      tags: [Research]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [rumpun, query]
+              properties:
+                rumpun: { $ref: "#/components/schemas/RumpunV2" }
+                query: { type: string, minLength: 2, maxLength: 300 }
+                sumber: { type: array, minItems: 1, maxItems: 10, items: { $ref: "#/components/schemas/JenisTelusurV2" } }
+                limit: { type: integer, minimum: 1, maximum: 50 }
+      responses:
+        "200":
+          description: Kandidat metadata, status pemeriksaan per sumber, dan peringatan cakupan
+          content:
+            application/json:
+              schema: { type: object, required: [data, meta], properties: { data: { type: object, additionalProperties: true }, meta: { $ref: "#/components/schemas/Meta" } } }
+        "422": { $ref: "#/components/responses/ValidationError" }
+        "503": { $ref: "#/components/responses/Unavailable" }
+  /v2/sumber/unggahan:
+    post:
+      summary: Cocokkan sidik PDF lokal dengan korpus publik
+      operationId: cocokkanUnggahanV2
+      tags: [Documents]
+      description: Hanya menerima sidik SHA-256. Berkas dan teks unggahan tidak dikirim atau disimpan. Sidik yang cocok tidak menandatangani teks dari klien.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: false, required: [fileHash], properties: { fileHash: { type: string, pattern: '^[a-f0-9]{64}$' } } }
+      responses:
+        "200":
+          description: hash_korpus_cocok atau unggahan_tidak_terverifikasi
+          content:
+            application/json:
+              schema: { type: object, additionalProperties: true }
+        "422": { $ref: "#/components/responses/ValidationError" }
+  /v2/sumber/potongan:
+    post:
+      summary: Alias pembukaan potongan sumber
+      operationId: potonganSumberV2
+      tags: [Documents]
+      requestBody: { $ref: "#/paths/~1v2~1sumber~1buka/post/requestBody" }
+      responses:
+        "200": { $ref: "#/paths/~1v2~1sumber~1buka/post/responses/200" }
+        "422": { $ref: "#/components/responses/ValidationError" }
+        "503": { $ref: "#/components/responses/Unavailable" }
+  /v2/laporan/rencana:
+    post:
+      summary: Susun rencana riset yang dapat disunting
+      operationId: rencanaLaporanV2
+      tags: [Research]
+      description: BYOK dan tiket akun singkat. Tidak menjawab fakta hukum. Output maksimal 2500 token; tanpa percobaan ulang otomatis.
+      parameters:
+        - { $ref: "#/paths/~1v2~1laporan~1sintesis/post/parameters/0" }
+        - { $ref: "#/paths/~1v2~1laporan~1sintesis/post/parameters/1" }
+        - { $ref: "#/paths/~1v2~1laporan~1sintesis/post/parameters/2" }
+        - { $ref: "#/components/parameters/TiketLangkahV2" }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, required: [rumpun, pertanyaan], properties: { rumpun: { $ref: "#/components/schemas/RumpunV2" }, pertanyaan: { type: string, minLength: 4, maxLength: 2000 } } }
+      responses:
+        "200":
+          description: NDJSON mulai, proses, lalu hasil rencana bertanda tangan atau galat
+          content:
+            application/x-ndjson:
+              schema: { type: object, additionalProperties: true }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "422": { $ref: "#/components/responses/ValidationError" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+        "503": { $ref: "#/components/responses/Unavailable" }
+  /v2/laporan/saring:
+    post:
+      summary: Aturan status deterministik lalu saran relevansi dari kutipan
+      operationId: saringLaporanV2
+      tags: [Research]
+      description: Maksimal 24 kandidat. Tanda tangan, pencabutan, dan ketidakpastian konsolidasi diperiksa sebelum model. Setiap keputusan AI harus menyertakan kutipan persis minimal delapan kata.
+      parameters:
+        - { $ref: "#/paths/~1v2~1laporan~1sintesis/post/parameters/0" }
+        - { $ref: "#/paths/~1v2~1laporan~1sintesis/post/parameters/1" }
+        - { $ref: "#/paths/~1v2~1laporan~1sintesis/post/parameters/2" }
+        - { $ref: "#/components/parameters/TiketLangkahV2" }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [rencana, kandidat]
+              properties:
+                rencana: { $ref: "#/components/schemas/RencanaV2" }
+                kandidat:
+                  type: array
+                  maxItems: 24
+                  items:
+                    type: object
+                    required: [id, judul, statusBuka, potongan]
+                    properties:
+                      id: { type: string, minLength: 1, maxLength: 100 }
+                      judul: { type: string, maxLength: 500 }
+                      statusBuka: { type: string, enum: [dibuka, tidak_ditemukan, tidak_dapat_diperiksa] }
+                      potongan: { type: array, maxItems: 24, items: { $ref: "#/components/schemas/PotonganV2" } }
+      responses:
+        "200":
+          description: NDJSON mulai, proses, lalu keputusan bertanda tangan atau galat
+          content:
+            application/x-ndjson:
+              schema: { type: object, additionalProperties: true }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "422": { $ref: "#/components/responses/ValidationError" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+        "503": { $ref: "#/components/responses/Unavailable" }
   /v2/kunci-publik:
     get:
       summary: Ambil kunci publik penandatangan bukti v2
@@ -105,6 +237,7 @@ paths:
           in: header
           description: Wajib untuk penyedia kompatibel OpenAI.
           schema: { type: string, pattern: '^[A-Za-z0-9._:/@-]{1,100}$' }
+        - { $ref: "#/components/parameters/TiketLangkahV2" }
       requestBody:
         required: true
         content:
@@ -409,12 +542,48 @@ components:
       scheme: bearer
       bearerFormat: JWT
   parameters:
+    TiketLangkahV2:
+      name: X-Pasla-Step-Ticket
+      in: header
+      required: true
+      description: Tiket HMAC dari Functions, berlaku 120 detik, terikat akun/attempt/input/anggaran/audience, sekali pakai. Wajib pada konfigurasi produksi.
+      schema: { type: string, maxLength: 2500 }
     DocumentId:
       name: id
       in: path
       required: true
       schema: { type: string, minLength: 1, maxLength: 500 }
   schemas:
+    RumpunV2:
+      type: string
+      enum: [ilmu-hukum, hes, htn, hukum-keluarga, pidana-islam, perbandingan-madzhab]
+    JenisTelusurV2:
+      type: string
+      enum: [peraturan, fatwa, khes, khi, qanun, putusan, turats, ayat, hadis, literatur]
+    RencanaV2:
+      type: object
+      required: [isu, subpertanyaan, penelusuran, kriteria, bagian]
+      properties:
+        isu: { type: string, minLength: 4, maxLength: 1000 }
+        subpertanyaan: { type: array, minItems: 1, maxItems: 8, items: { type: string, minLength: 4, maxLength: 300 } }
+        penelusuran:
+          type: array
+          minItems: 1
+          maxItems: 10
+          items:
+            type: object
+            required: [kueri, sumber]
+            properties:
+              kueri: { type: string, minLength: 2, maxLength: 120 }
+              sumber: { type: array, minItems: 1, maxItems: 10, items: { $ref: "#/components/schemas/JenisTelusurV2" } }
+        kriteria:
+          type: object
+          required: [masukkan, keluarkan, sertakanHistoris]
+          properties:
+            masukkan: { type: array, minItems: 1, maxItems: 6, items: { type: string, minLength: 1, maxLength: 300 } }
+            keluarkan: { type: array, maxItems: 6, items: { type: string, minLength: 1, maxLength: 300 } }
+            sertakanHistoris: { type: boolean }
+        bagian: { type: array, minItems: 1, maxItems: 6, items: { $ref: "#/components/schemas/BagianV2" } }
     TandaV2:
       type: object
       required: [alg, kid, sig]
@@ -428,6 +597,22 @@ components:
       description: Judul pasal tanpa ayat; pencocokan huruf besar dan kecil diabaikan.
     RujukanV2:
       oneOf:
+        - type: object
+          required: [jenis, pasal]
+          properties:
+            jenis: { const: khi }
+            pasal: { $ref: "#/components/schemas/PasalV2" }
+        - type: object
+          required: [jenis, rujukan]
+          properties:
+            jenis: { const: qanun }
+            rujukan: { type: string, pattern: '^Qanun(?: Aceh)? \d{1,3}/\d{4}$' }
+            pasal: { $ref: "#/components/schemas/PasalV2" }
+        - type: object
+          required: [jenis, id]
+          properties:
+            jenis: { const: putusan }
+            id: { type: string, pattern: '^[a-zA-Z0-9:._-]{1,120}$' }
         - type: object
           required: [jenis, rujukan]
           properties:

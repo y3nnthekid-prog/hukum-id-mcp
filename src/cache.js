@@ -27,6 +27,7 @@ function cacheBeku() {
 
 /** Umur simpan ditentukan seberapa mungkin isinya berubah. */
 export function umurSimpan(url) {
+  if (/https:\/\/jdihn\.go\.id\/(?:search|doc\/)/i.test(url)) return 7 * HARI;
   if (/\.pdf(\?|$)/i.test(url) || /\/Download\//i.test(url) || /putusan\/download\//i.test(url))
     return 60 * HARI; // salinan resmi yang sudah diundangkan/diucapkan: praktis abadi
   if (/drive\.google\.com/i.test(url)) return 60 * HARI; // salinan fatwa

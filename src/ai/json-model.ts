@@ -28,6 +28,7 @@ export interface JsonModel {
     signal?: AbortSignal | undefined;
     /** false untuk langkah laporan berbayar yang tidak boleh dicoba ulang otomatis. */
     allowRetries?: boolean | undefined;
+    maxOutputTokens?: number | undefined;
   }): Promise<T>;
 }
 

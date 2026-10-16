@@ -42,7 +42,7 @@ export function createOpenAiCompatibleJsonModel(input: {
   return {
     provider: input.provider,
     model: input.model,
-    async generate({ system, user, schema, signal }) {
+    async generate({ system, user, schema, signal, maxOutputTokens }) {
       const timeoutSignal = AbortSignal.timeout(timeoutMs);
       const combined = signal ? AbortSignal.any([signal, timeoutSignal]) : timeoutSignal;
       let response: Response;
@@ -58,7 +58,7 @@ export function createOpenAiCompatibleJsonModel(input: {
           body: JSON.stringify({
             model: input.model,
             temperature: 0.1,
-            max_tokens: 4_096,
+            max_tokens: Math.min(4096, Math.max(256, maxOutputTokens ?? 4096)),
             response_format: { type: "json_object" },
             messages: [
               { role: "system", content: system },

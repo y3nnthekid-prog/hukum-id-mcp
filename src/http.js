@@ -100,6 +100,10 @@ function headers(referer) {
 // diselipkan di dalam dokumen yang sedang dibaca bisa saja meminta model
 // mengambil alamat internal. Sumber hukum tidak pernah berada di sana.
 const SOURCE_HOSTS = new Set([
+  "jdih.acehprov.go.id",
+  "jdihn.go.id",
+  "bphn.go.id",
+  "badilag.mahkamahagung.go.id",
   "peraturan.bpk.go.id",
   "putusan3.mahkamahagung.go.id",
   "www.mkri.id",
