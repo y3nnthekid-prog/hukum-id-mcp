@@ -59,40 +59,70 @@ class Pool {
     private readonly queue: number
   ) {}
   async acquire(signal: AbortSignal): Promise<boolean> {
+    if (signal.aborted) return false;
     if (this.active < this.size) {
       this.active += 1;
       return true;
     }
     if (this.waiting.length >= this.queue) return false;
-    const granted = await new Promise<boolean>((resolve) => {
-      const ticket = () => resolve(true);
+    return new Promise<boolean>((resolve) => {
+      const ticket = () => {
+        signal.removeEventListener("abort", abort);
+        resolve(true);
+      };
+      const abort = () => {
+        this.waiting = this.waiting.filter((item) => item !== ticket);
+        resolve(false);
+      };
       this.waiting.push(ticket);
-      signal.addEventListener(
-        "abort",
-        () => {
-          this.waiting = this.waiting.filter((item) => item !== ticket);
-          resolve(false);
-        },
-        { once: true }
-      );
+      signal.addEventListener("abort", abort, { once: true });
     });
-    if (granted) this.active += 1;
-    return granted;
   }
   release() {
-    this.active -= 1;
-    this.waiting.shift()?.();
+    // Serahkan slot langsung ke antrean, agar pemanggil baru tidak mendahuluinya.
+    const next = this.waiting.shift();
+    if (next) next();
+    else this.active -= 1;
   }
+}
+
+/** Respons boleh berakhir saat tenggat, tetapi slot tetap ditahan sampai pekerjaan benar-benar selesai. */
+function beforeAbort<T>(work: Promise<T>, signal: AbortSignal): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const abort = () => reject(signal.reason);
+    signal.addEventListener("abort", abort, { once: true });
+    work.then(
+      (value) => { signal.removeEventListener("abort", abort); resolve(value); },
+      (cause) => { signal.removeEventListener("abort", abort); reject(cause); }
+    );
+    if (signal.aborted) abort();
+  });
 }
 
 async function readBoundedJson(c: Context<Env>, maxBytes: number) {
   const declared = Number(c.req.header("content-length") || 0);
   if (declared > maxBytes) throw new Error("PAYLOAD_TOO_LARGE");
   // Batas juga diterapkan pada isi sebenarnya: body chunked tidak membawa content-length.
-  const text = await c.req.text();
-  if (Buffer.byteLength(text) > maxBytes) throw new Error("PAYLOAD_TOO_LARGE");
+  const reader = c.req.raw.body?.getReader();
+  if (!reader) throw new Error("INVALID_JSON");
+  const chunks: Uint8Array[] = [];
+  let bytes = 0;
   try {
-    return JSON.parse(text) as unknown;
+    while (true) {
+      const chunk = await reader.read();
+      if (chunk.done) break;
+      bytes += chunk.value.byteLength;
+      if (bytes > maxBytes) {
+        void reader.cancel().catch(() => undefined);
+        throw new Error("PAYLOAD_TOO_LARGE");
+      }
+      chunks.push(chunk.value);
+    }
+  } finally {
+    reader.releaseLock();
+  }
+  try {
+    return JSON.parse(Buffer.concat(chunks, bytes).toString("utf8")) as unknown;
   } catch {
     throw new Error("INVALID_JSON");
   }
@@ -115,26 +145,33 @@ export function registerV2(app: Hono<Env>, deps: V2Dependencies) {
   });
 
   app.post("/v2/sumber/buka", async (c) => {
-    if (!deps.sumber) return error(c, 503, "SIGNING_NOT_CONFIGURED", "Pembukaan sumber v2 belum dikonfigurasi pada server ini.");
+    const sumber = deps.sumber;
+    if (!sumber || !deps.signer) return error(c, 503, "SIGNING_NOT_CONFIGURED", "Pembukaan sumber v2 belum dikonfigurasi pada server ini.");
     const parsed = BukaSchema.safeParse(await readBoundedJson(c, 20_000));
     if (!parsed.success) return error(c, 422, "VALIDATION_ERROR", "Rujukan tidak sah.", parsed.error.flatten());
     const signal = AbortSignal.any([c.req.raw.signal, AbortSignal.timeout(deadlineMs)]);
     if (!(await bukaPool.acquire(signal))) {
+      if (signal.aborted) return error(c, 503, "DEADLINE", "Permintaan dibatalkan atau batas waktunya habis.");
       c.header("retry-after", "20");
       return error(c, 503, "BUSY", "Pasla sedang ramai. Coba lagi sebentar lagi.");
     }
-    try {
+    const opening = (async () => {
       const results = [];
       for (const ref of parsed.data.rujukan) {
         if (signal.aborted) {
           results.push({ rujukan: ref, status: "tidak_dapat_diperiksa", alasan: "Batas waktu permintaan habis.", potongan: [], peringatan: [] });
           continue;
         }
-        results.push(await deps.sumber.buka(ref as RujukanBuka));
+        results.push(await sumber.buka(ref as RujukanBuka));
       }
+      return results;
+    })().finally(() => bukaPool.release());
+    try {
+      const results = await beforeAbort(opening, signal);
       return c.json({ data: results, meta: { traceId: c.get("traceId"), kid: deps.signer?.kid ?? null } });
-    } finally {
-      bukaPool.release();
+    } catch (cause) {
+      if (signal.aborted) return error(c, 503, "DEADLINE", "Batas waktu pembukaan sumber habis atau permintaan dibatalkan.");
+      throw cause;
     }
   });
 
@@ -163,8 +200,10 @@ export function registerV2(app: Hono<Env>, deps: V2Dependencies) {
       return error(c, 422, "AI_MODEL_INVALID", message);
     }
 
-    const signal = AbortSignal.any([c.req.raw.signal, AbortSignal.timeout(deadlineMs)]);
+    const cancelled = new AbortController();
+    const signal = AbortSignal.any([c.req.raw.signal, AbortSignal.timeout(deadlineMs), cancelled.signal]);
     if (!(await sintesisPool.acquire(signal))) {
+      if (signal.aborted) return error(c, 503, "DEADLINE", "Permintaan dibatalkan atau batas waktunya habis.");
       c.header("retry-after", "20");
       return error(c, 503, "BUSY", "Pasla sedang ramai. Coba lagi sebentar lagi.");
     }
@@ -175,11 +214,15 @@ export function registerV2(app: Hono<Env>, deps: V2Dependencies) {
     c.header("cache-control", "no-store");
     const signer = deps.signer;
     return stream(c, async (out) => {
+      out.onAbort(() => cancelled.abort());
       const write = (value: unknown) => out.write(`${JSON.stringify(value)}\n`);
       const keepAlive = setInterval(() => void write({ jenis: "proses" }), 10_000);
+      let workStarted = false;
       try {
         await write({ jenis: "mulai", traceId: c.get("traceId") });
-        const hasil = await sintesisBagian({
+        signal.throwIfAborted();
+        workStarted = true;
+        const work = sintesisBagian({
           pertanyaan: parsed.data.pertanyaan,
           bagian: parsed.data.bagian,
           potongan: parsed.data.potongan as unknown as PotonganBertanda[],
@@ -187,7 +230,8 @@ export function registerV2(app: Hono<Env>, deps: V2Dependencies) {
           signer,
           publicKeysPem: publicKeys(),
           signal,
-        });
+        }).finally(() => sintesisPool.release());
+        const hasil = await beforeAbort(work, signal);
         await write({ jenis: "hasil", data: hasil });
       } catch (cause) {
         const aborted = signal.aborted;
@@ -202,7 +246,7 @@ export function registerV2(app: Hono<Env>, deps: V2Dependencies) {
         });
       } finally {
         clearInterval(keepAlive);
-        sintesisPool.release();
+        if (!workStarted) sintesisPool.release();
       }
     });
   });

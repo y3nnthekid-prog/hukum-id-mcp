@@ -26,6 +26,8 @@ export interface JsonModel {
     schema: z.ZodType<T>;
     effort: AiEffort;
     signal?: AbortSignal | undefined;
+    /** false untuk langkah laporan berbayar yang tidak boleh dicoba ulang otomatis. */
+    allowRetries?: boolean | undefined;
   }): Promise<T>;
 }
 

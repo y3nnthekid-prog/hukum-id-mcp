@@ -9,7 +9,16 @@ import type { AiModelSelection, ResolvedAiModel } from "./app.js";
 import { createEntraAuthenticatorFromEnvironment } from "../auth.js";
 import { createAsk } from "../core/ask.js";
 import { createLegalResearchService } from "../core/service.js";
+import { signerFromEnvironment } from "../core/sign.js";
+import { createSumberService, type SumberAdapters } from "../core/sumber.js";
 import { legacyAdapters } from "../core/legacy-adapters.js";
+import { periksaPasal } from "../alur.js";
+import { detailPeraturan } from "../bpk.js";
+import { ambilAyat, hadisBerderajat } from "../dalil.js";
+import { teksFatwaDsn } from "../dsn.js";
+import { lokasiNaskahKhes } from "../khes.js";
+import { halamanPdf } from "../pdf.js";
+import { cariTurats } from "../turats.js";
 import { createPlatformServer } from "../platform.js";
 import { createAzureSecureUploadService } from "../storage/azure.js";
 import { createAzureCorpusEvidenceResolver } from "../storage/evidence.js";
@@ -70,6 +79,17 @@ function resolveAiModel(selection: AiModelSelection): ResolvedAiModel {
 }
 
 const service = createLegalResearchService(legacyAdapters);
+const signer = signerFromEnvironment();
+const sumber = signer ? createSumberService({
+  inspectArticle: ({ peraturan, pasal, sertakan_putusan_mk }) => periksaPasal({ peraturan, pasal, sertakan_putusan_mk }),
+  regulationDetail: detailPeraturan,
+  pdfPages: halamanPdf as SumberAdapters["pdfPages"],
+  fatwaText: ({ rujukan, maks_karakter }) => teksFatwaDsn({ rujukan, maks_karakter }),
+  khesLocation: lokasiNaskahKhes,
+  verse: ({ surah, ayat }) => ambilAyat({ surah, ayat }),
+  gradedHadith: ({ id }) => hadisBerderajat({ id }),
+  turats: ({ query, limit }) => cariTurats({ query, limit }),
+}, signer) : undefined;
 const ask = createAsk({
   adapters: legacyAdapters,
   service,
@@ -85,6 +105,8 @@ const server = createPlatformServer({
   allowedOrigins,
   ask,
   resolveAiModel,
+  makeByokModel: createJsonModel,
+  ...(signer && sumber ? { signer, sumber } : {}),
   platformAiDailyLimit: Number.isInteger(dailyLimit) && dailyLimit >= 0 ? dailyLimit : 15,
   ...(pilotVm ? { trustCloudflareIp: true } : {}),
   ...(pilotVm && !expectedToken ? { disableMcp: true } : {}),
@@ -124,6 +146,7 @@ server.listen(port, host, () => {
     console.error("WARNING: remote MCP authentication is disabled for local development.");
   }
   if (!uploadService) console.error("INFO: upload storage is disabled.");
+  if (!signer) console.error("INFO: v2 belum aktif; PASLA_SIGNING_KEY belum dikonfigurasi.");
   console.error(
     platformProvider && platformKey
       ? `INFO: platform AI = ${platformProvider}${platformModel ? ` (${platformModel})` : ""}, ${dailyLimit}/hari per klien.`

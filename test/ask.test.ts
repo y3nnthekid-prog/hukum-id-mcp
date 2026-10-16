@@ -400,6 +400,23 @@ test("penyedia Claude memakai keluaran terstruktur dan mengubah 401 menjadi pesa
   }
 });
 
+test("Claude does not retry a paid report step after an upstream failure", async () => {
+  let calls = 0;
+  const server = createServer((_request, response) => {
+    calls += 1;
+    response.writeHead(503, { "content-type": "application/json" });
+    response.end(JSON.stringify({ type: "error", error: { type: "api_error", message: "temporary failure" } }));
+  });
+  await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
+  try {
+    const model = createClaudeJsonModel({ apiKey: "kunci-uji-sintetis", baseURL: `http://127.0.0.1:${(server.address() as AddressInfo).port}` });
+    await assert.rejects(model.generate({ system: "s", user: "u", schema: z.object({}), effort: "low", allowRetries: false }), AiProviderError);
+    assert.equal(calls, 1);
+  } finally {
+    await new Promise<void>((resolve) => server.close(() => resolve()));
+  }
+});
+
 // --- regresi sumber -----------------------------------------------------------
 
 test("singkatan kementerian diterjemahkan ke nama yang dicari JDIH BPK", async () => {

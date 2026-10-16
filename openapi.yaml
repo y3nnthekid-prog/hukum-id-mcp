@@ -18,6 +18,115 @@ tags:
   - name: Operations
     description: Kesehatan layanan, sumber, dan status job.
 paths:
+  /v2/kunci-publik:
+    get:
+      summary: Ambil kunci publik penandatangan bukti v2
+      operationId: kunciPublikV2
+      tags: [Operations]
+      responses:
+        "200":
+          description: Kunci Ed25519 aktif dan kunci publik yang diterima selama rotasi
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    type: object
+                    required: [alg, kid, kunci]
+                    properties:
+                      alg: { const: Ed25519 }
+                      kid: { type: string }
+                      kunci: { type: array, items: { type: string, description: Kunci publik PEM SPKI } }
+                  meta: { $ref: "#/components/schemas/Meta" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+        "503": { $ref: "#/components/responses/Unavailable" }
+  /v2/sumber/buka:
+    post:
+      summary: Buka rujukan menjadi potongan bertanda tangan tanpa AI
+      operationId: bukaSumberV2
+      tags: [Documents]
+      description: >-
+        Maksimal 8 rujukan dan 20000 byte JSON per permintaan. Mesin membuka sumber sendiri,
+        lalu menandatangani metadata dan sidik teksnya. Status tidak_dapat_diperiksa dibedakan
+        dari tidak_ditemukan. Kunci penandatangan wajib dikonfigurasi pada server.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [rujukan]
+              properties:
+                rujukan: { type: array, minItems: 1, maxItems: 8, items: { $ref: "#/components/schemas/RujukanV2" } }
+      responses:
+        "200":
+          description: Status pembukaan dan potongan per rujukan
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data: { type: array, items: { $ref: "#/components/schemas/HasilBukaV2" } }
+                  meta:
+                    allOf:
+                      - { $ref: "#/components/schemas/Meta" }
+                      - { type: object, required: [kid], properties: { kid: { type: [string, "null"] } } }
+        "400": { $ref: "#/components/responses/InvalidJson" }
+        "413": { $ref: "#/components/responses/PayloadTooLarge" }
+        "422": { $ref: "#/components/responses/ValidationError" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+        "503": { $ref: "#/components/responses/Unavailable" }
+  /v2/laporan/sintesis:
+    post:
+      summary: Sintesis satu bagian laporan dari potongan bertanda tangan
+      operationId: sintesisLaporanV2
+      tags: [Research]
+      description: >-
+        BYOK wajib, tanpa kuota platform atau percobaan ulang otomatis. Maksimal 24 potongan
+        dan 2000000 byte JSON. Potongan yang diubah, bersidik salah, atau bertanda tangan asing
+        ditolak sebelum model dipanggil. Hasil mencatat potongan dan kalimat yang ditolak.
+        Respons NDJSON dimulai dengan mulai, diikuti proses tiap 10 detik selama model bekerja,
+        lalu hasil bertanda tangan atau galat. Tenggat 80 detik termasuk waktu antrean.
+        Pembukaan sumber dan sintesis memakai kolam konkurensi terpisah.
+      parameters:
+        - name: X-Pasla-AI-Provider
+          in: header
+          required: true
+          schema: { type: string, enum: [claude, gemini, openai, openrouter, groq, deepseek, mistral] }
+        - name: X-Pasla-AI-Key
+          in: header
+          required: true
+          description: Kunci hanya melintas per permintaan dan tidak pernah disimpan atau dipantulkan.
+          schema: { type: string, minLength: 8, maxLength: 512, pattern: '^[\x21-\x7e]{8,512}$' }
+        - name: X-Pasla-AI-Model
+          in: header
+          description: Wajib untuk penyedia kompatibel OpenAI.
+          schema: { type: string, pattern: '^[A-Za-z0-9._:/@-]{1,100}$' }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [pertanyaan, bagian, potongan]
+              properties:
+                pertanyaan: { type: string, minLength: 4, maxLength: 2000 }
+                bagian: { $ref: "#/components/schemas/BagianV2" }
+                potongan: { type: array, minItems: 1, maxItems: 24, items: { $ref: "#/components/schemas/PotonganV2" } }
+      responses:
+        "200":
+          description: Satu objek JSON per baris; galat setelah streaming dimulai tetap memakai status HTTP 200
+          content:
+            application/x-ndjson:
+              schema: { $ref: "#/components/schemas/PeristiwaSintesisV2" }
+        "400": { $ref: "#/components/responses/InvalidJson" }
+        "413": { $ref: "#/components/responses/PayloadTooLarge" }
+        "422": { $ref: "#/components/responses/ValidationError" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+        "503": { $ref: "#/components/responses/Unavailable" }
   /health:
     get:
       summary: Periksa kesiapan API
@@ -306,6 +415,216 @@ components:
       required: true
       schema: { type: string, minLength: 1, maxLength: 500 }
   schemas:
+    TandaV2:
+      type: object
+      required: [alg, kid, sig]
+      properties:
+        alg: { const: Ed25519 }
+        kid: { type: string }
+        sig: { type: string, description: Tanda tangan base64url atas JSON kanonik }
+    PasalV2:
+      type: string
+      pattern: '^Pasal\s+(?:\d{1,4}[A-Z]?|[IVX]{1,6})$'
+      description: Judul pasal tanpa ayat; pencocokan huruf besar dan kecil diabaikan.
+    RujukanV2:
+      oneOf:
+        - type: object
+          required: [jenis, rujukan]
+          properties:
+            jenis: { const: peraturan }
+            rujukan: { type: string, minLength: 3, maxLength: 60 }
+            pasal: { $ref: "#/components/schemas/PasalV2" }
+        - type: object
+          required: [jenis, nomor]
+          properties:
+            jenis: { const: fatwa }
+            nomor: { type: string, pattern: '^\d{1,3}/DSN-MUI/[IVX]+/\d{4}$' }
+        - type: object
+          required: [jenis, pasal]
+          properties:
+            jenis: { const: khes }
+            pasal: { $ref: "#/components/schemas/PasalV2" }
+        - type: object
+          required: [jenis, surah, ayat]
+          properties:
+            jenis: { const: ayat }
+            surah: { type: integer, minimum: 1, maximum: 114 }
+            ayat: { type: integer, minimum: 1, maximum: 286 }
+        - type: object
+          required: [jenis, id]
+          properties:
+            jenis: { const: hadis }
+            id: { type: string, pattern: '^\d{1,8}$' }
+        - type: object
+          required: [jenis, query]
+          properties:
+            jenis: { const: turats }
+            query: { type: string, minLength: 2, maxLength: 120 }
+            limit: { type: integer, minimum: 1, maximum: 10 }
+    LapisanV2:
+      type: string
+      enum: [norma, tafsir-resmi, praktik, pedoman, dalil, fikih-doktrin]
+    PotonganV2:
+      type: object
+      required: [id, documentId, jenis, judul, rujukan, locator, text, contentHash, identitas, lapisan, sumber, retrievedAt, verificationStatus, mesin, tanda]
+      properties:
+        id: { type: string }
+        documentId: { type: string }
+        jenis: { type: string, enum: [peraturan, qanun, putusan-mk, putusan-ma, fatwa, khes, khi, ayat, hadis, turats, literatur] }
+        judul: { type: string }
+        rujukan: { type: string }
+        locator:
+          type: object
+          description: Lokasi pasal, bagian, halaman, ayat atau kitab sesuai jenis sumber
+          additionalProperties: true
+        pageStarts:
+          type: array
+          items:
+            type: object
+            required: [halaman, offset]
+            properties:
+              halaman: { type: integer }
+              offset: { type: integer }
+        text: { type: string }
+        contentHash: { type: string, description: Sidik SHA-256 teks }
+        identitas: { type: array, items: { type: string } }
+        lapisan: { type: array, items: { $ref: "#/components/schemas/LapisanV2" } }
+        sumber:
+          type: object
+          required: [nama, url, otoritas, status, diubahDengan, dicabutDengan]
+          properties:
+            nama: { type: string }
+            url: { type: string }
+            otoritas: { type: string }
+            status: { type: [string, "null"] }
+            diubahDengan: { type: array, items: { type: string } }
+            dicabutDengan: { type: array, items: { type: string } }
+            ujiMateri:
+              type: array
+              items:
+                type: object
+                required: [nomor, url]
+                properties:
+                  nomor: { type: string }
+                  url: { type: string, format: uri }
+        retrievedAt: { type: string, format: date-time }
+        verificationStatus: { type: string, enum: [verified_live, verified_snapshot] }
+        mesin: { type: string }
+        tanda: { $ref: "#/components/schemas/TandaV2" }
+    HasilBukaV2:
+      type: object
+      required: [rujukan, status, potongan, peringatan]
+      properties:
+        rujukan: { $ref: "#/components/schemas/RujukanV2" }
+        status: { type: string, enum: [dibuka, tidak_ditemukan, tidak_dapat_diperiksa] }
+        alasan: { type: string }
+        potongan: { type: array, items: { $ref: "#/components/schemas/PotonganV2" } }
+        peringatan: { type: array, items: { type: string } }
+    BagianV2:
+      type: object
+      required: [judul, fokus]
+      properties:
+        judul: { type: string, minLength: 1, maxLength: 120 }
+        fokus: { type: string, minLength: 1, maxLength: 600 }
+    HasilSintesisV2:
+      type: object
+      required: [v, pertanyaan, bagian, model, potongan, potonganDitolak, kalimat, dibuang, analisis, analisisDibuang, dibuatPada, mesin, tanda]
+      properties:
+        v: { const: 1 }
+        pertanyaan: { type: string }
+        bagian: { $ref: "#/components/schemas/BagianV2" }
+        model:
+          type: [object, "null"]
+          required: [penyedia, nama]
+          properties:
+            penyedia: { type: string }
+            nama: { type: string }
+        potongan:
+          type: array
+          items:
+            type: object
+            required: [id, contentHash, rujukan]
+            properties:
+              id: { type: string }
+              contentHash: { type: string }
+              rujukan: { type: string }
+        potonganDitolak:
+          type: array
+          items:
+            type: object
+            required: [id, alasan]
+            properties:
+              id: { type: string }
+              alasan: { type: string }
+        kalimat:
+          type: array
+          items:
+            type: object
+            required: [id, teks, lapisan, potonganId, kutipan, rentang, halaman]
+            properties:
+              id: { type: string }
+              teks: { type: string }
+              lapisan: { $ref: "#/components/schemas/LapisanV2" }
+              potonganId: { type: string }
+              kutipan: { type: string }
+              rentang:
+                type: object
+                required: [start, end]
+                properties:
+                  start: { type: integer }
+                  end: { type: integer }
+              halaman: { type: [integer, "null"] }
+        dibuang:
+          type: array
+          items:
+            type: object
+            required: [id, teks, alasan, rincian]
+            properties:
+              id: { type: string }
+              teks: { type: string }
+              alasan: { type: string }
+              rincian: { type: string }
+        analisis:
+          type: array
+          items:
+            type: object
+            required: [teks, merujuk]
+            properties:
+              teks: { type: string }
+              merujuk: { type: array, items: { type: string } }
+        analisisDibuang:
+          type: array
+          items:
+            type: object
+            required: [teks, rincian]
+            properties:
+              teks: { type: string }
+              rincian: { type: string }
+        dibuatPada: { type: string, format: date-time }
+        mesin: { type: string }
+        tanda: { $ref: "#/components/schemas/TandaV2" }
+    PeristiwaSintesisV2:
+      oneOf:
+        - type: object
+          required: [jenis, traceId]
+          properties:
+            jenis: { const: mulai }
+            traceId: { type: string, format: uuid }
+        - type: object
+          required: [jenis]
+          properties:
+            jenis: { const: proses }
+        - type: object
+          required: [jenis, data]
+          properties:
+            jenis: { const: hasil }
+            data: { $ref: "#/components/schemas/HasilSintesisV2" }
+        - type: object
+          required: [jenis, kode, pesan]
+          properties:
+            jenis: { const: galat }
+            kode: { type: string, enum: [DEADLINE, AI_PROVIDER_ERROR] }
+            pesan: { type: string }
     Meta:
       type: object
       required: [traceId]
@@ -466,6 +785,9 @@ components:
                 used: { type: boolean }
         limits: { type: array, items: { type: string } }
   responses:
+    InvalidJson:
+      description: Body bukan JSON yang sah
+      content: { application/json: { schema: { $ref: "#/components/schemas/ErrorEnvelope" } } }
     GenericSuccess:
       description: Successful response
       content:

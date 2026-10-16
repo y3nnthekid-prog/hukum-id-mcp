@@ -29,6 +29,12 @@ Fondasi untuk ruang riset enam rumpun Pasla. Lihat [ADR-003](docs/decisions/003-
   SEOJK.
 - ADR-003: mesin tanpa status, BYOK hanya melintas, potongan bertanda tangan, dan batas akses
   sumber yang dihormati.
+- API v2 kini terhubung ke server: kunci publik Ed25519, pembukaan sumber bertanda tangan,
+  dan sintesis per bagian lewat NDJSON dengan BYOK wajib. Tanpa `PASLA_SIGNING_KEY`, rute v2
+  menjawab 503. Potongan palsu, diubah, atau tidak lengkap ditolak sebelum AI dipanggil.
+- Body v2 dibatasi saat dibaca, pembatalan streaming diteruskan ke model, dan tenggat
+  mengakhiri respons tanpa membuka slot untuk pekerjaan yang masih berjalan. Sintesis
+  menonaktifkan percobaan ulang otomatis Claude untuk langkah berbayar.
 
 ## [0.8.1] - 2026-10-14
 

@@ -6,27 +6,11 @@ import {
 } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import type { Transport } from "@modelcontextprotocol/sdk/shared/transport.js";
 
-import { createApiApp, type AiModelSelection, type JobStore, type ResolvedAiModel, type UploadStore } from "./api/app.js";
-import type { AskFunction } from "./core/ask.js";
-import type { EvidenceSynthesisProvider } from "./ai/evidence-synthesis.js";
-import type { Evidence } from "./core/contracts.js";
-import type { LegalResearchService } from "./core/service.js";
+import { createApiApp, type ApiDependencies } from "./api/app.js";
 import { createEvidenceFirstMcpServer } from "./mcp/server.js";
 
-type PlatformOptions = {
-  service: LegalResearchService;
-  uploadStore?: UploadStore;
-  jobStore?: JobStore;
-  allowedOrigins?: string[];
-  authenticate?: (authorization: string | undefined) => Promise<string | null>;
+type PlatformOptions = ApiDependencies & {
   authorizeMcp?: (request: IncomingMessage) => boolean | Promise<boolean>;
-  makeAiProvider?: (ephemeralApiKey: string | undefined) => EvidenceSynthesisProvider | null;
-  resolveEvidence?: (evidenceIds: string[], ownerId: string) => Promise<Evidence[]>;
-  ask?: AskFunction;
-  resolveAiModel?: (selection: AiModelSelection) => ResolvedAiModel;
-  platformAiDailyLimit?: number;
-  askConcurrency?: { active: number; queued: number };
-  trustCloudflareIp?: boolean;
   /** Matikan endpoint MCP remote sepenuhnya. */
   disableMcp?: boolean;
 };
@@ -57,20 +41,7 @@ function jsonRpcError(response: ServerResponse, status: number, message: string)
 }
 
 export function createPlatformServer(options: PlatformOptions) {
-  const app = createApiApp({
-    service: options.service,
-    ...(options.uploadStore ? { uploadStore: options.uploadStore } : {}),
-    ...(options.jobStore ? { jobStore: options.jobStore } : {}),
-    ...(options.allowedOrigins ? { allowedOrigins: options.allowedOrigins } : {}),
-    ...(options.authenticate ? { authenticate: options.authenticate } : {}),
-    ...(options.makeAiProvider ? { makeAiProvider: options.makeAiProvider } : {}),
-    ...(options.resolveEvidence ? { resolveEvidence: options.resolveEvidence } : {}),
-    ...(options.ask ? { ask: options.ask } : {}),
-    ...(options.resolveAiModel ? { resolveAiModel: options.resolveAiModel } : {}),
-    ...(options.platformAiDailyLimit !== undefined ? { platformAiDailyLimit: options.platformAiDailyLimit } : {}),
-    ...(options.askConcurrency ? { askConcurrency: options.askConcurrency } : {}),
-    ...(options.trustCloudflareIp ? { trustCloudflareIp: true } : {}),
-  });
+  const app = createApiApp(options);
   const apiListener = getRequestListener(app.fetch);
   const allowedOrigins = new Set(options.allowedOrigins ?? []);
 

@@ -96,6 +96,7 @@ function pageOf(potongan: PotonganBertanda, offset: number) {
 
 /** Potongan yang sah: tanda tangannya cocok dengan salah satu kunci publik mesin dan teksnya utuh. */
 export function checkPassage(potongan: PotonganBertanda, publicKeysPem: string[]) {
+  if (typeof potongan.text !== "string") return "Bentuk potongan tidak sah.";
   if (contentHash(potongan.text) !== potongan.contentHash) return "Teks potongan tidak cocok dengan sidiknya.";
   if (!verifySignature(signedPart(potongan), potongan.tanda, publicKeysPem)) return "Tanda tangan potongan tidak sah.";
   return null;
@@ -143,6 +144,7 @@ export async function sintesisBagian(input: {
       }),
       schema: ModelOutputSchema,
       effort: "medium",
+      allowRetries: false,
       signal: input.signal,
     });
   }

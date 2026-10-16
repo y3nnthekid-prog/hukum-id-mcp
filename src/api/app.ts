@@ -10,6 +10,7 @@ import { type Evidence } from "../core/contracts.js";
 import type { LegalResearchService, SearchSource } from "../core/service.js";
 import { observeApiRequest } from "../telemetry.js";
 import { HUKUM_ID_VERSION } from "../version.js";
+import { registerV2, type V2Dependencies } from "./v2.js";
 
 type ApiEnv = { Variables: { traceId: string; userId: string | null } };
 
@@ -35,7 +36,7 @@ export interface JobStore {
   getJob(id: string, ownerId: string): Promise<unknown | null>;
 }
 
-type ApiDependencies = {
+export type ApiDependencies = V2Dependencies & {
   service: LegalResearchService;
   uploadStore?: UploadStore;
   jobStore?: JobStore;
@@ -166,6 +167,7 @@ export function createApiApp({
   platformAiDailyLimit = 15,
   askConcurrency = { active: 2, queued: 6 },
   trustCloudflareIp = false,
+  ...v2Dependencies
 }: ApiDependencies) {
   const app = new Hono<ApiEnv>();
   const counters = new Map<string, { count: number; resetAt: number }>();
@@ -499,6 +501,8 @@ export function createApiApp({
     c.header("cache-control", `public, max-age=${Math.floor(SOURCE_STATUS_TTL_MS / 1000)}`);
     return c.json({ data, meta: { traceId: c.get("traceId"), checkedAt: entry.checkedAt } });
   });
+
+  registerV2(app, v2Dependencies);
 
   app.notFound((c) => apiError(c, 404, "NOT_FOUND", "Endpoint tidak ditemukan."));
   app.onError((error, c) => {

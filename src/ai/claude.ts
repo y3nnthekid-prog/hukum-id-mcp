@@ -35,7 +35,7 @@ export function createClaudeJsonModel(input: {
   return {
     provider: "claude",
     model,
-    async generate({ system, user, schema, effort, signal }) {
+    async generate({ system, user, schema, effort, signal, allowRetries }) {
       try {
         const response = await client.beta.messages.parse(
           {
@@ -51,7 +51,7 @@ export function createClaudeJsonModel(input: {
               ? { betas: ["server-side-fallback-2026-07-01"], fallbacks: "default" as const }
               : {}),
           },
-          { ...(signal ? { signal } : {}) }
+          { ...(signal ? { signal } : {}), ...(allowRetries === false ? { maxRetries: 0 } : {}) }
         );
         if (response.stop_reason === "refusal") {
           throw new AiProviderError("Claude menolak menjawab permintaan ini.");
