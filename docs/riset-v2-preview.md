@@ -67,6 +67,11 @@ Naskah resmi KHI belum diperoleh: BPHN memberi tantangan akses dan tidak ditembu
 Peta madzhab, salinan putusan, konsolidasi Qanun dan cakupan korpus belum lengkap.
 Helper PDF uji materi BPK belum diekspos sebagai rujukan API. Evaluasi model berbayar,
 kalibrasi pemilik, uji beban campuran 450 MiB dan persetujuan produksi belum selesai.
-Preview v2 sudah berjalan terpisah di port 3102; v1 tetap di 3101. Pembaruan parser
-dan korpus di atas harus dipasang sebagai rilis v2 terisolasi sebelum dianggap
-tersedia lewat HTTPS. Semua rumpun tetap berlabel cakupan terbatas.
+Preview v2 sudah berjalan terpisah di port 3102; v1 tetap di 3101. Rilis `8dd6367`
+beserta korpus di atas telah dipasang pada 18 Oktober. Empat sumber dibuka dan
+diverifikasi dengan kunci publik yang dipatok sebelum aktivasi dianggap berhasil;
+PID v1 tidak berubah. Rilis/korpus sebelumnya dipertahankan. Uji PDF Linux dari
+dist juga lulus pada cgroup 450 MiB; itu belum menggantikan uji beban campuran.
+Uji HTTPS 3×10 pembukaan sumber tanpa AI memberi p95 552,14 / 319,94 / 307,56 ms
+dan nol galat; gerbang 500 ms belum lulus pada seluruh gelombang.
+Semua rumpun tetap berlabel cakupan terbatas.
