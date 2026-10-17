@@ -45,6 +45,12 @@ test("a single source cannot starve other sources from a limited search result",
   assert.deepEqual(result.kandidat.map((x) => x.jenis), ["peraturan", "fatwa"]);
 });
 
+test("FTS article references remain attached to regulation search candidates", async () => {
+  const telusur = createTelusur({ peraturan: async () => ({ hasil: [{ judul: "Peraturan uji Pasal 20A", rujukan: "UU 1/2020", pasal: "Pasal 20A" }] }) });
+  const result = await telusur({ rumpun: "ilmu-hukum", query: "uji", sumber: ["peraturan"] });
+  assert.deepEqual(result.kandidat[0]!.rujukan, { jenis: "peraturan", rujukan: "UU 1/2020", pasal: "Pasal 20A" });
+});
+
 test("research API exposes six profiles and search without an AI key or signer", async () => {
   const app = createApiApp({ service: {} as any, telusur: createTelusur({}) });
   const profiles = await app.request("/v2/rumpun");

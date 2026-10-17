@@ -37,7 +37,7 @@ export type Passage = {
 // di naskah resmi ("Pasai 624", "Pasal 1O"), dan menerima pasal Romawi undang-undang perubahan
 // ("Pasal I" memuat perubahan, "Pasal II" ketentuan penutup). Lapisan teks resmi kadang menghapus
 // spasinya ("Pasal222" pada UU 7/2017).
-const ARTICLE_HEADING = /^[ \t]*Pasa[li][ \t]*(\d[\dOl]{0,3}[A-Z]?|[IVX]{1,6})[ \t]*$/gm;
+const ARTICLE_HEADING = /^[ \t]*Pasa[li][ \t]*(\d(?:[ \t]*[\dOl]){0,3}(?:[ \t]*[A-Z])?|[IVX]{1,6})[ \t]*$/gm;
 const EXPLANATION_HEADING = /^[ \t]*PENJELASAN[ \t]*$/gm;
 const ATTACHMENT_HEADING = /^[ \t]*LAMPIRAN\b/gm;
 
@@ -55,13 +55,15 @@ export function contentHash(text: string) {
   return createHash("sha256").update(text.normalize("NFC")).digest("hex");
 }
 
-function passageId(documentId: string, locator: PassageLocator, hash: string) {
+function passageId(documentId: string, locator: PassageLocator, hash: string, offset: number) {
   const identity = JSON.stringify({
     documentId,
     bagian: locator.bagian,
     pasal: locator.pasal ?? null,
     mengubah: locator.mengubah ?? null,
     hash,
+    // Judul dan isi yang identik dapat berulang, bahkan pada halaman yang sama.
+    offset,
   });
   return `ps_${createHash("sha256").update(identity).digest("hex").slice(0, 24)}`;
 }
@@ -142,7 +144,7 @@ export function segmentPages(documentId: string, pages: Page[]): Passage[] {
     const target = bagian === "batang-tubuh" && !roman ? amendedAt(match.index) : null;
     marks.push({
       offset: match.index,
-      pasal: `Pasal ${roman ? match[1]! : ocrDigits(match[1]!).toUpperCase()}`,
+      pasal: `Pasal ${roman ? match[1]! : ocrDigits(match[1]!).replace(/[ \t]/g, "").toUpperCase()}`,
       bagian,
       ...(target ? { mengubah: target } : {}),
     });
@@ -171,7 +173,7 @@ export function segmentPages(documentId: string, pages: Page[]): Passage[] {
       halamanAkhir: local[local.length - 1]!.halaman,
     };
     const hash = contentHash(raw);
-    passages.push({ id: passageId(documentId, locator, hash), documentId, locator, text: raw, pageStarts: local, contentHash: hash });
+    passages.push({ id: passageId(documentId, locator, hash, mark.offset), documentId, locator, text: raw, pageStarts: local, contentHash: hash });
   }
   return passages;
 }

@@ -6,7 +6,7 @@ import { signedPart, type HasilBuka, type PotonganBertanda, type RujukanBuka } f
 import type { Signer } from "../core/sign.js";
 import { HUKUM_ID_VERSION } from "../version.js";
 
-export type CorpusMeta = { id: string; jenis: JenisSumber; judul: string; rujukan: string; sourceUrl: string; fileHash: string; retrievedAt: string; importedBy: string; anonim?: boolean; status?: string; madzhab?: string; complete?: boolean; extractionHealth?: { status: string }; buku?: Array<{ buku: string; halaman: number }> };
+export type CorpusMeta = { id: string; jenis: JenisSumber; judul: string; rujukan: string; sourceUrl: string; fileHash: string; retrievedAt: string; importedBy: string; anonim?: boolean; status?: string; diubahDengan?: string[]; dicabutDengan?: string[]; madzhab?: string; complete?: boolean; extractionHealth?: { status: string }; buku?: Array<{ buku: string; halaman: number }> };
 type Stored = { meta: CorpusMeta; passage: Passage };
 function tokens(query: string) {
   return [...new Set(canonicalize(query).text.match(/[\p{L}\p{N}]+/gu) ?? [])].slice(0, 12);
@@ -79,7 +79,7 @@ export class CorpusIndex {
     const complete = Number(coverage?.n ?? 0) > 0 && Number(coverage?.complete) === 1;
     const selected = this.db.prepare(`SELECT metadata FROM passages WHERE ${conditions} AND (? IS NULL OR lower(json_extract(metadata, '$.passage.locator.pasal')) = ?) LIMIT ?`).all(...bindings, article ?? null, article ?? null, article ? 8 : 4).map((row) => JSON.parse(String(row.metadata)) as Stored);
     const potongan = selected.map(({ meta, passage }): PotonganBertanda => {
-      const base = { ...passage, jenis: meta.jenis, judul: meta.judul, rujukan: `${meta.rujukan}${passage.locator.pasal ? ` ${passage.locator.pasal}` : ""}`, identitas: [meta.rujukan, ...(passage.locator.pasal ? [passage.locator.pasal] : [])], lapisan: lapisanSah({ jenis: meta.jenis, bagian: passage.locator.bagian }), sumber: { nama: meta.sourceUrl, url: meta.sourceUrl, otoritas: "Salinan sumber resmi yang diimpor", status: meta.status ?? null, diubahDengan: [], dicabutDengan: [] }, retrievedAt: meta.retrievedAt, verificationStatus: "verified_snapshot" as const, mesin: HUKUM_ID_VERSION };
+      const base = { ...passage, jenis: meta.jenis, judul: meta.judul, rujukan: `${meta.rujukan}${passage.locator.pasal ? ` ${passage.locator.pasal}` : ""}`, identitas: [meta.rujukan, ...(passage.locator.pasal ? [passage.locator.pasal] : [])], lapisan: lapisanSah({ jenis: meta.jenis, bagian: passage.locator.bagian }), sumber: { nama: meta.sourceUrl, url: meta.sourceUrl, otoritas: "Salinan sumber resmi yang diimpor", status: meta.status ?? null, diubahDengan: meta.diubahDengan ?? [], dicabutDengan: meta.dicabutDengan ?? [] }, retrievedAt: meta.retrievedAt, verificationStatus: "verified_snapshot" as const, mesin: HUKUM_ID_VERSION };
       return { ...base, tanda: signer.sign(signedPart(base)) };
     });
     return { rujukan: ref, status: potongan.length ? "dibuka" : complete ? "tidak_ditemukan" : "tidak_dapat_diperiksa", potongan, peringatan: ["Salinan korpus adalah snapshot. Periksa perubahan dan status terbaru pada sumber resmi.", ...(!complete ? ["Kelengkapan ekstraksi belum dikonfirmasi; pasal yang tidak terbaca belum membuktikan ketidakadaan."] : [])] };

@@ -3,6 +3,14 @@ import test from "node:test";
 import { CorpusIndex } from "../src/indexing/corpus.js";
 import { createSigner, generateSigningKey, verifySignature } from "../src/core/sign.js";
 import { signedPart } from "../src/core/sumber.js";
+import { CorpusManifest } from "../src/indexing/manifest.js";
+
+test("CLI manifest preserves reviewed status and completeness instead of silently dropping them", () => {
+  const manifest = { id: "qanun-uji", jenis: "qanun", judul: "Judul sintetis", rujukan: "Qanun Aceh 7/2013", sourceUrl: "https://jdih.acehprov.go.id/uji.pdf", retrievedAt: "2026-10-16T00:00:00Z", importedBy: "fixture", file: "uji.pdf", status: "Berlaku", complete: false };
+  assert.deepEqual(CorpusManifest.parse(manifest), manifest);
+  assert.throws(() => CorpusManifest.parse({ ...manifest, complete: "true" }));
+  assert.throws(() => CorpusManifest.parse({ ...manifest, typo_status: "Berlaku" }));
+});
 
 test("FTS indexes originals, normalizes Arabic, binds hostile queries, and signs only stored text", () => {
   const corpus = new CorpusIndex(":memory:");
@@ -19,6 +27,22 @@ test("FTS indexes originals, normalizes Arabic, binds hostile queries, and signs
     assert.equal(corpus.byHash("b".repeat(64)), null);
     assert.ok(corpus.byHash("a".repeat(64)));
     assert.equal(corpus.open({ jenis: "khi", pasal: "Pasal 9999" }, signer).status, "tidak_ditemukan");
+  } finally { corpus.close(); }
+});
+
+test("reviewed amendment relationships survive manifest import and are covered by the passage signature", () => {
+  const manifest = CorpusManifest.parse({ id: "qanun-relasi", jenis: "qanun", judul: "Naskah sintetis historis", rujukan: "Qanun Aceh 6/2014", sourceUrl: "https://jdih.acehprov.go.id/uji.pdf", retrievedAt: "2026-10-18T00:00:00Z", importedBy: "fixture", file: "uji.pdf", status: "Diubah", diubahDengan: ["Qanun Aceh 12/2025"], dicabutDengan: [] });
+  assert.deepEqual(manifest.diubahDengan, ["Qanun Aceh 12/2025"]);
+  const corpus = new CorpusIndex(":memory:"); const signer = createSigner(generateSigningKey());
+  try {
+    const { file: _file, ...meta } = manifest;
+    corpus.replace({ ...meta, fileHash: "e".repeat(64) }, [{ halaman: 1, teks: "Pasal 1\nTeks asli, belum dikonsolidasikan." }]);
+    const opened = corpus.open({ jenis: "qanun", rujukan: "Qanun Aceh 6/2014", pasal: "Pasal 1" }, signer);
+    const passage = opened.potongan[0]!;
+    assert.deepEqual(passage.sumber.diubahDengan, ["Qanun Aceh 12/2025"]);
+    assert.ok(verifySignature(signedPart(passage), passage.tanda, [signer.publicKeyPem]));
+    passage.sumber.diubahDengan = [];
+    assert.equal(verifySignature(signedPart(passage), passage.tanda, [signer.publicKeyPem]), false);
   } finally { corpus.close(); }
 });
 

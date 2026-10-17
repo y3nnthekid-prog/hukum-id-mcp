@@ -25,7 +25,8 @@
     "README.md",
     "NOTICE.md",
     "LICENSE",
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    "pdf-profile.json"
   ],
   "engines": {
     "node": ">=24.18"
@@ -41,7 +42,7 @@
     "lint": "eslint src/**/*.ts test/**/*.ts web/**/*.ts web/**/*.tsx",
     "lint:api": "redocly lint openapi.yaml --skip-rule no-server-example.com",
     "typecheck": "tsc --noEmit",
-    "build": "tsc",
+    "build": "node scripts/verifikasi-profil-pdf.mjs && tsc",
     "test": "npm run test:unit",
     "test:unit": "node test/trust-foundation.test.js && node test/abstain.test.js && node test/parser.test.js && node --import tsx --test test/cache.test.ts test/core-contract.test.ts test/core-service.test.ts test/ai-synthesis.test.ts test/ask.test.ts test/api.test.ts test/auth.test.ts test/upload-storage.test.ts test/evidence-store.test.ts test/index-release.test.ts test/web-client.test.ts test/mcp-contract.test.ts test/remote-mcp.test.ts test/telemetry.test.ts test/version.test.ts test/canonical.test.ts test/passages.test.ts test/sign.test.ts test/validator.test.ts test/sintesis.test.ts test/research-v2.test.ts test/corpus.test.ts test/pdf-limits.test.ts test/step-ticket.test.ts test/regional.test.ts",
     "test:abstain": "node test/abstain.test.js",
@@ -89,7 +90,7 @@
     "hono": "^4.11.4",
     "ipaddr.js": "^1.9.1",
     "jose": "^6.2.11",
-    "pdfjs-dist": "^4.10.38",
+    "pdfjs-dist": "6.4.299",
     "zod": "^4.5.4"
   },
   "devDependencies": {

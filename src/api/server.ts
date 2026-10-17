@@ -90,7 +90,11 @@ mkdirSync(path.dirname(corpusPath), { recursive: true });
 const corpus = new CorpusIndex(corpusPath);
 const telusur = createTelusur({
   khi: async (query, limit) => corpus.search(query, "khi", limit),
-  qanun: cariQanun,
+  qanun: async (query, limit) => {
+    const local = corpus.search(query, "qanun", limit).hasil;
+    try { return { hasil: [...local, ...(await cariQanun(query, limit)).hasil].slice(0, limit) }; }
+    catch (cause) { if (local.length) return { hasil: local }; throw cause; }
+  },
   putusan: async (query, limit) => {
     const local = [corpus.search(query, "putusan-ma", limit), corpus.search(query, "putusan-mk", limit)].flatMap((x) => x.hasil.map((item) => ({ ...item, tersedia: true })));
     try { return { hasil: [...local, ...(await cariMetadataPutusan(query, limit)).hasil].slice(0, limit) }; }

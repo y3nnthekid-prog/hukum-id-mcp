@@ -9,76 +9,37 @@ import { getBufferBersumber } from "./http.js";
 import { ambilJson, simpanJson, umurSimpan, waktuSimpan } from "./cache.js";
 import { parseLegalDate, selectPdfPages } from "./trust.js";
 import { Worker } from "node:worker_threads";
+import { readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 
-export const PDF_LIMITS = { maxBytes: 16 * 1024 * 1024, maxPages: 600, maxChars: 4_000_000, timeoutMs: 45_000 };
+const PDF_PROFILE = JSON.parse(readFileSync(new URL("../pdf-profile.json", import.meta.url), "utf8"));
+export const PDF_EXTRACTION_PROFILE = createHash("sha256").update(JSON.stringify(PDF_PROFILE)).digest("hex");
 
-export function extractPdfIsolated(data, limits = PDF_LIMITS) {
+export const PDF_LIMITS = { maxBytes: 16 * 1024 * 1024, maxPages: 600, maxChars: 4_000_000, maxPageChars: 150_000, maxPageItems: 100_000, timeoutMs: 45_000 };
+const WORKER_RESOURCE_LIMITS = { maxOldGenerationSizeMb: 96, stackSizeMb: 4 };
+
+export function extractPdfIsolated(data, limits = PDF_LIMITS, workerUrl = new URL("./pdf-worker.js", import.meta.url)) {
   if (data.byteLength > limits.maxBytes) return Promise.reject(new Error("PDF_BYTE_LIMIT"));
   return new Promise((resolve, reject) => {
-    const worker = new Worker(new URL("./pdf-worker.js", import.meta.url), { execArgv: [], workerData: { data, maxPages: limits.maxPages, maxChars: limits.maxChars }, resourceLimits: { maxOldGenerationSizeMb: 96, stackSizeMb: 4 } });
-    const timer = setTimeout(() => { void worker.terminate(); reject(new Error("PDF_DEADLINE")); }, limits.timeoutMs);
-    worker.once("message", (result) => {
-      clearTimeout(timer);
-      void worker.terminate();
-      if (result.error) reject(new Error(result.error)); else resolve(result);
-    });
-    worker.once("error", () => { clearTimeout(timer); reject(new Error("PDF_RESOURCE_LIMIT")); });
-    worker.once("exit", (code) => { clearTimeout(timer); if (code !== 0) reject(new Error("PDF_RESOURCE_LIMIT")); });
+    const worker = new Worker(workerUrl, { execArgv: [], workerData: { data, maxPages: limits.maxPages, maxChars: limits.maxChars, maxPageChars: limits.maxPageChars ?? PDF_LIMITS.maxPageChars, maxPageItems: limits.maxPageItems ?? PDF_LIMITS.maxPageItems, documentOptions: PDF_PROFILE.textOptions }, resourceLimits: WORKER_RESOURCE_LIMITS });
+    let settled = false;
+    const finish = (error, result) => {
+      if (settled) return;
+      settled = true; clearTimeout(timer);
+      void worker.terminate().catch(() => undefined);
+      if (error) reject(error); else resolve(result);
+    };
+    const timer = setTimeout(() => finish(new Error("PDF_DEADLINE")), limits.timeoutMs);
+    worker.once("message", result => finish(result.error ? new Error(result.error) : null, result));
+    worker.once("error", () => finish(new Error("PDF_RESOURCE_LIMIT")));
+    worker.once("exit", () => finish(new Error("PDF_WORKER_EXIT")));
   });
 }
 
 const CATATAN =
   "Sebagian PDF resmi punya lapisan teks yang cacat. Bandingkan dengan PDF sumber sebelum mengutip verbatim.";
 
-function textItems(items) {
-  return items
-    .filter((item) => typeof item.str === "string" && item.str.trim())
-    .map((item) => ({
-      text: item.str.trim(),
-      x: Number(item.transform?.[4] ?? 0),
-      y: Number(item.transform?.[5] ?? 0),
-      width: Number(item.width ?? 0),
-      height: Math.max(Number(item.height ?? 0), 1),
-    }));
-}
-
-function renderLines(items) {
-  const ordered = [...items].sort((left, right) => {
-    const sameLine = Math.abs(left.y - right.y) <= Math.max(left.height, right.height) * 0.35;
-    return sameLine ? left.x - right.x : right.y - left.y;
-  });
-  const lines = [];
-  for (const item of ordered) {
-    const current = lines.at(-1);
-    if (current && Math.abs(current.y - item.y) <= Math.max(current.height, item.height) * 0.35) {
-      current.parts.push(item);
-      current.height = Math.max(current.height, item.height);
-    } else {
-      lines.push({ y: item.y, height: item.height, parts: [item] });
-    }
-  }
-  return lines
-    .map((line) => line.parts.sort((left, right) => left.x - right.x).map((item) => item.text).join(" "))
-    .join("\n");
-}
-
-export function pageText(items, pageWidth) {
-  const positioned = textItems(items);
-  if (positioned.length === 0) return "";
-
-  const midpoint = pageWidth / 2;
-  const left = positioned.filter((item) => item.x + item.width / 2 < midpoint);
-  const right = positioned.filter((item) => item.x + item.width / 2 >= midpoint);
-  const leftEdge = left.length ? Math.max(...left.map((item) => item.x + item.width)) : Infinity;
-  const rightEdge = right.length ? Math.min(...right.map((item) => item.x)) : -Infinity;
-  const hasSeparatedColumns =
-    left.length >= 2 && right.length >= 2 && rightEdge - leftEdge >= Math.max(24, pageWidth * 0.04);
-
-  return (hasSeparatedColumns ? `${renderLines(left)}\n${renderLines(right)}` : renderLines(positioned))
-    .replace(/[ \t]+/g, " ")
-    .replace(/\n\s*\n\s*\n+/g, "\n\n")
-    .trim();
-}
+export { pageText } from "./pdf-text.js";
 
 const DATE_PATTERNS = [
   /\b\d{4}-\d{1,2}-\d{1,2}\b/g,
@@ -136,8 +97,10 @@ function withExtractionHealth(document) {
 
 /** Ambil seluruh halaman sebagai teks, dari cache bila ada. */
 export async function halamanPdf({ url_pdf, buffer, referer, lewati_cache = false, asal = null }) {
-  const kunci = "pdf-teks::" + (url_pdf || "buffer");
-  if (url_pdf && !lewati_cache) {
+  const policy = JSON.stringify({ limits: PDF_LIMITS, resources: WORKER_RESOURCE_LIMITS });
+  const kunci = "pdf-teks::" + PDF_EXTRACTION_PROFILE + "::" + policy + "::" + (url_pdf || "buffer");
+  // Buffer tidak dapat dibuktikan berasal dari URL ini; jangan baca/tulis cache URL-nya.
+  if (url_pdf && !buffer && !lewati_cache) {
     const tersimpan = await ambilJson(kunci, umurSimpan(url_pdf));
     if (tersimpan?.halaman?.length) {
       // Entri lama belum mencatat waktu ambil; waktu tulis berkas cache adalah batas atasnya.
@@ -152,8 +115,8 @@ export async function halamanPdf({ url_pdf, buffer, referer, lewati_cache = fals
   const extracted = await extractPdfIsolated(data);
 
   const diambil_pada = unduhan?.diambil_pada || new Date().toISOString();
-  const hasil = withExtractionHealth({ ...extracted, diambil_pada });
-  if (url_pdf) await simpanJson(kunci, hasil);
+  const hasil = withExtractionHealth({ ...extracted, diambil_pada, extraction_profile: PDF_EXTRACTION_PROFILE });
+  if (url_pdf && !buffer) await simpanJson(kunci, hasil);
   return { ...hasil, dari_cache: Boolean(unduhan?.dari_cache) };
 }
 

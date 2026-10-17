@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "pdfjs": "6.4.299",
+  "lineJoinSha256": "fbb816c1884c91a598ff36cb39a9581ec76cf7095331d726414eed461c533c6f",
+  "coordinates": "getViewport(scale=1).width; TextItem.transform PDF coordinates",
+  "textOptions": {
+    "isEvalSupported": false,
+    "useSystemFonts": true,
+    "disableFontFace": true,
+    "maxImageSize": 0,
+    "stopAtErrors": true,
+    "useWorkerFetch": false,
+    "useWasm": false,
+    "isOffscreenCanvasSupported": false,
+    "isImageDecoderSupported": false
+  }
+}

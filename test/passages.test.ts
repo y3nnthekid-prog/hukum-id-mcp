@@ -11,6 +11,15 @@ const law = [
   { halaman: 30, teks: "PENJELASAN\nATAS UNDANG-UNDANG NOMOR 1 TAHUN 1974\nPasal 7\nAyat (1)\nUntuk menjaga kesehatan suami-isteri." },
 ];
 
+test("spaced numeric article headings retain raw text and resolve exact article identities", () => {
+  const passages = segmentPages("fixture-spaced", [{ halaman: 9, teks: "Pasal 10\nIsi sepuluh.\nPasal 1 1\nIsi sebelas. Rujukan Pasal 1 2 ayat (1) tetap teks.\nPasal 1 14\nIsi seratus empat belas.\nPENJELASAN\nPasal 1 1\nPenjelasan sebelas." }]);
+  assert.equal(findArticle(passages, "Pasal 1").norma.length, 0);
+  assert.match(findArticle(passages, "Pasal 11").norma[0]!.text, /^Pasal 1 1\nIsi sebelas/);
+  assert.equal(findArticle(passages, "Pasal 11").penjelasan.length, 1);
+  assert.match(findArticle(passages, "Pasal 114").norma[0]!.text, /Isi seratus empat belas/);
+  assert.equal(findArticle(passages, "Pasal 12").norma.length, 0);
+});
+
 test("articles are cut at standalone headings and continue across pages", () => {
   const passages = segmentPages("bpk:47406", law);
   const { norma, penjelasan } = findArticle(passages, "Pasal 7");
@@ -55,6 +64,13 @@ test("passage ids are stable and content addressed", () => {
   assert.deepEqual(first, second);
   assert.ok(first.every((id) => /^ps_[a-f0-9]{24}$/.test(id)));
   assert.equal(new Set(first).size, first.length);
+});
+
+test("identical repeated article text has distinct stable occurrence ids", () => {
+  const pages = [{ halaman: 1, teks: "Pasal 1\nTeks sama.\nPasal 1\nTeks sama.\nPasal 2\nAkhir." }, { halaman: 2, teks: "Pasal 1\nTeks sama.\nPasal 2\nAkhir." }];
+  const passages = segmentPages("fixture-duplicate", pages);
+  assert.equal(new Set(passages.map(p => p.id)).size, passages.length);
+  assert.deepEqual(passages.map(p => p.id), segmentPages("fixture-duplicate", pages).map(p => p.id));
 });
 
 test("amending laws with Roman articles, and OCR-misread headings, are segmented correctly", () => {

@@ -14,14 +14,19 @@ export function parseAceh(data: unknown) {
     const link = html.match(/href="(https:\/\/jdih\.acehprov\.go\.id\/dih\/detail\/[a-f0-9-]+)"[^>]*>([\s\S]*?)<\/a>/i);
     if (!link) return [];
     const judul = inline(link[2]);
-    const ref = judul.match(/^Qanun\s+Aceh\s+Nomor\s+(\d+)\s+Tahun\s+(\d{4})\b/i);
+    const ref = judul.match(/^(?:Qanun|Peraturan\s+Daerah)\s+Aceh\s+Nomor\s+(\d+)\s+Tahun\s+(\d{4})\b/i);
     return ref ? [{ id: link[1]!.split("/").at(-1)!, judul, nomor: ref[1]!, tahun: ref[2]!, rujukan: `Qanun Aceh ${ref[1]}/${ref[2]}`, url: link[1]!, status: null, provinsi: /Provinsi Aceh/.test(html) }] : [];
   });
   return entries.sort((a, b) => Number(b.provinsi) - Number(a.provinsi)).filter((item, index, all) => all.findIndex((x) => x.rujukan === item.rujukan) === index);
 }
 export async function cariQanun(query: string, limit = 10) {
-  const params = new URLSearchParams({ "search[value]": query, length: String(Math.min(limit * 3, 50)), start: "0" });
+  const params = new URLSearchParams({ "search[value]": kueriKatalogAceh(query), length: String(Math.min(limit * 3, 50)), start: "0" });
   return { hasil: parseAceh(await getJson(`https://jdih.acehprov.go.id/dih/jsondata?${params}`, { retries: 0 })).slice(0, limit) };
+}
+export function kueriKatalogAceh(query: string) {
+  // Katalog lama menamai Qanun sebagai Peraturan Daerah. Identitas nomor/tahun tetap sama.
+  const ref = query.trim().match(/^Qanun(?:\s+Aceh)?(?:\s+Nomor)?\s+(\d+)\s*(?:\/|Tahun\s+)(\d{4})\b/i);
+  return ref ? `Nomor ${ref[1]} Tahun ${ref[2]}` : query;
 }
 export function parseJdihn(html: string) {
   const hasil: Array<{ id: string; judul: string; url: string; tersedia: false }> = [];

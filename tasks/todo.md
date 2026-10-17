@@ -1,5 +1,10 @@
 # Penerimaan dan bukti penyelesaian
 
+- [x] Checkpoint 18 Oktober: verify lengkap 129 uji TypeScript; profil PDF 6.4.299
+  selaras web, worker dist/exit/cache diperiksa, locator OCR dan identitas potongan
+  berulang diperbaiki. Korpus lokal bertambah Qanun 7/2013, 6/2014 dan 12/2025;
+  seluruhnya parsial, relasi perubahan ditandatangani. Lihat docs/riset-v2-preview.md.
+
 - [x] Fondasi fase 0 dan integrasi tiga rute v2. Verify 104 uji, commit 2561519.
 - [x] Checkpoint mesin 16 Oktober: profil/telusur, rencana/saring, tiket, FTS5/importer,
   worker PDF dan unggahan hash. `npm run verify` lulus 119 uji TypeScript dan seluruh rantai build.

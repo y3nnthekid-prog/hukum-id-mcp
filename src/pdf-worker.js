@@ -1,10 +1,10 @@
 import { parentPort, workerData } from "node:worker_threads";
 import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
-import { pageText } from "./pdf.js";
+import { pageText } from "./pdf-text.js";
 
 let doc;
 try {
-  doc = await getDocument({ data: workerData.data, useSystemFonts: true, isEvalSupported: false, disableFontFace: true, maxImageSize: 0, stopAtErrors: true }).promise;
+  doc = await getDocument({ ...workerData.documentOptions, data: workerData.data }).promise;
   if (doc.numPages > workerData.maxPages) throw new Error("PDF_PAGE_LIMIT");
   const halaman = [];
   let characters = 0;
@@ -18,7 +18,7 @@ try {
       if (part.done) break;
       for (const item of part.value.items) {
         pageChars += typeof item.str === "string" ? item.str.length : 0;
-        if (pageChars > 150000 || characters + pageChars > workerData.maxChars || items.length > 100000) {
+        if (pageChars > workerData.maxPageChars || characters + pageChars > workerData.maxChars || items.length >= workerData.maxPageItems) {
           await stream.cancel().catch(() => undefined);
           throw new Error("PDF_TEXT_LIMIT");
         }
@@ -27,7 +27,7 @@ try {
     }
     const teks = pageText(items, page.getViewport({ scale: 1 }).width);
     characters += teks.length;
-    if (characters > workerData.maxChars) throw new Error("PDF_TEXT_LIMIT");
+    if (teks.length > workerData.maxPageChars || characters > workerData.maxChars) throw new Error("PDF_TEXT_LIMIT");
     halaman.push({ halaman: i, teks });
     page.cleanup();
   }

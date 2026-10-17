@@ -28,13 +28,35 @@ hanya dapat dinyatakan pada impor lengkap dengan pemeriksaan ekstraksi yang sesu
 
 ## Bukti saat checkpoint
 
-`npm run verify` lulus: lint, OpenAPI, 119 uji TypeScript beserta uji fondasi/parser,
+`npm run verify` terbaru (18 Oktober) lulus: lint, OpenAPI, 129 uji TypeScript beserta uji fondasi/parser,
 typecheck, build, smoke PDF dari dist, dan build web bawaan. `eval:periksa` menjaga hash
 35 soal tertahan. Itu validasi dataset, bukan hasil evaluasi model.
 
 PERMA 14/2016 berhasil diimpor dari salinan PDF JDIH BPK: 11 halaman, 16 potongan,
 SHA-256 `5592fa9022db9dd4ca0a1aa28c2579c3feec4a1e34ceaff8e150dea746b4ed70`.
 Impor tetap parsial sampai kelengkapan naskah diaudit. Berkas dan indeks diabaikan Git.
+
+Tambahan korpus JDIH Aceh (snapshot, bukan konsolidasi):
+
+| Naskah | Potongan | SHA-256 | Batas |
+|---|---:|---|---|
+| Qanun 7/2013, Hukum Acara Jinayat | 586 | `ae2566d91ba11f528d7ab2caf8357f4114f42ed9af939956d9be29b714236084` | 112 halaman; kelengkapan belum diaudit |
+| Qanun 6/2014, Hukum Jinayat | 152 | `3b2b44006b625b7454f735322a8eb466238ac5dd40a8202f427b2bfa08a8dc71` | Naskah asli; berstatus Diubah oleh Qanun 12/2025 |
+| Qanun 12/2025, perubahan Qanun 6/2014 | 27 | `896d4db4e012bbf392a0545a1c3f919a52d932077cb5017e4a45af4dc786c326` | Teks terbaca halaman 1–14; halaman 15–20 memerlukan OCR/pemeriksaan |
+
+Relasi perubahan pada manifest dipertahankan dalam metadata dan tanda tangan
+potongan. Naskah asli tidak ditulis ulang menjadi teks konsolidasi. Semua impor
+ini `complete:false`, sehingga pasal yang tidak terbaca tidak membuktikan ketiadaan.
+Sumber primer: [7/2013](https://jdih.acehprov.go.id/dih/detail/fe938c25-dc87-4d28-a6aa-1df884784289),
+[6/2014](https://jdih.acehprov.go.id/dih/detail/8728e682-3306-42d5-a307-64bb638859c7),
+[12/2025](https://jdih.acehprov.go.id/dih/detail/630e9ae4-952f-4116-94fe-071d2c7184b4).
+
+Parser kini dipatok ke pdfjs-dist 6.4.299. `pdf-profile.json` dan penyusun baris
+identik dengan web; build menolak versi/hash/profil yang berbeda. Cache juga
+mengikat profil dan batas sumber daya. Input buffer tidak memakai cache URL.
+Worker yang keluar sebelum mengirim hasil ditolak, dan proses dist memuat modul
+penyusun baris hasil build. Nomor pasal OCR berspasi dinormalisasi hanya pada
+locator; teks sumber tetap dipertahankan.
 
 Sumber: [detail PERMA](https://peraturan.bpk.go.id/Details/209692/perma-no-14-tahun-2016),
 [PDF resmi](https://peraturan.bpk.go.id/Download/203788/Perma%20Nomor%2014%20Tahun%202016.pdf).
@@ -44,5 +66,7 @@ Sumber: [detail PERMA](https://peraturan.bpk.go.id/Details/209692/perma-no-14-ta
 Naskah resmi KHI belum diperoleh: BPHN memberi tantangan akses dan tidak ditembus.
 Peta madzhab, salinan putusan, konsolidasi Qanun dan cakupan korpus belum lengkap.
 Helper PDF uji materi BPK belum diekspos sebagai rujukan API. Evaluasi model berbayar,
-kalibrasi pemilik, uji beban 450 MiB, deployment pratinjau dan persetujuan produksi
-belum selesai. Semua rumpun tetap berlabel cakupan terbatas.
+kalibrasi pemilik, uji beban campuran 450 MiB dan persetujuan produksi belum selesai.
+Preview v2 sudah berjalan terpisah di port 3102; v1 tetap di 3101. Pembaruan parser
+dan korpus di atas harus dipasang sebagai rilis v2 terisolasi sebelum dianggap
+tersedia lewat HTTPS. Semua rumpun tetap berlabel cakupan terbatas.
