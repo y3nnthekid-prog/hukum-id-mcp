@@ -6,6 +6,7 @@ import { AiModelNameSchema, AiProviderIdSchema, type AiProviderId, type JsonMode
 import { sintesisBagian } from "../core/sintesis.js";
 import type { Signer } from "../core/sign.js";
 import type { PotonganBertanda, RujukanBuka, SumberService } from "../core/sumber.js";
+import { isMkBpkUrl, MK_NUMBER } from "../core/rujukan.js";
 import { JENIS_TELUSUR, RUMPUN, type RumpunId } from "../rumpun/index.js";
 import type { TelusurService } from "../core/telusur.js";
 import { RencanaSchema, rencanaLaporan, saringLaporan, type KandidatSaring } from "../core/laporan.js";
@@ -45,6 +46,7 @@ const RujukanSchema = z.discriminatedUnion("jenis", [
   z.object({ jenis: z.literal("khi"), pasal: ArticleSchema }),
   z.object({ jenis: z.literal("qanun"), rujukan: z.string().regex(/^Qanun(?: Aceh)? \d{1,3}\/\d{4}$/i), pasal: ArticleSchema.optional() }),
   z.object({ jenis: z.literal("putusan"), id: z.string().regex(/^[a-zA-Z0-9:._-]{1,120}$/) }),
+  z.object({ jenis: z.literal("putusan-mk-bpk"), nomor: z.string().regex(MK_NUMBER), url: z.string().max(1000).refine(isMkBpkUrl), halaman: z.number().int().min(1).max(600).optional() }),
   z.object({ jenis: z.literal("peraturan"), rujukan: z.string().trim().min(3).max(60), pasal: ArticleSchema.optional() }),
   z.object({ jenis: z.literal("fatwa"), nomor: z.string().trim().regex(/^\d{1,3}\/DSN-MUI\/[IVX]+\/\d{4}$/) }),
   z.object({ jenis: z.literal("khes"), pasal: ArticleSchema }),

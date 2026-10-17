@@ -614,6 +614,13 @@ components:
             jenis: { const: putusan }
             id: { type: string, pattern: '^[a-zA-Z0-9:._-]{1,120}$' }
         - type: object
+          required: [jenis, nomor, url]
+          properties:
+            jenis: { const: putusan-mk-bpk }
+            nomor: { type: string, pattern: '^\d{1,4}/PUU-[IVXL]{1,8}/\d{4}$' }
+            url: { type: string, format: uri, maxLength: 1000, description: 'HTTPS peraturan.bpk.go.id/DownloadUjiMateri/<id>/<filename>.pdf, tanpa kredensial, query atau fragment. Nama berkas tidak boleh memuat pemisah path tersandi.' }
+            halaman: { type: integer, minimum: 1, maximum: 600 }
+        - type: object
           required: [jenis, rujukan]
           properties:
             jenis: { const: peraturan }

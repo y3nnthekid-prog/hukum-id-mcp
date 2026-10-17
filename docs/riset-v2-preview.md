@@ -28,7 +28,7 @@ hanya dapat dinyatakan pada impor lengkap dengan pemeriksaan ekstraksi yang sesu
 
 ## Bukti saat checkpoint
 
-`npm run verify` terbaru (18 Oktober) lulus: lint, OpenAPI, 129 uji TypeScript beserta uji fondasi/parser,
+`npm run verify` terbaru (18 Oktober) lulus: lint, OpenAPI, 131 uji TypeScript beserta uji fondasi/parser,
 typecheck, build, smoke PDF dari dist, dan build web bawaan. `eval:periksa` menjaga hash
 35 soal tertahan. Itu validasi dataset, bukan hasil evaluasi model.
 
@@ -65,7 +65,15 @@ Sumber: [detail PERMA](https://peraturan.bpk.go.id/Details/209692/perma-no-14-ta
 
 Naskah resmi KHI belum diperoleh: BPHN memberi tantangan akses dan tidak ditembus.
 Peta madzhab, salinan putusan, konsolidasi Qanun dan cakupan korpus belum lengkap.
-Helper PDF uji materi BPK belum diekspos sebagai rujukan API. Evaluasi model berbayar,
+Rujukan API `putusan-mk-bpk` menerima nomor perkara, URL resmi DownloadUjiMateri
+berbentuk ID/nama.pdf, dan halaman opsional 1–600. Kepala putusan diperiksa pada
+awal dokumen, bukan kemunculan nomor dalam pembahasan; spasi OCR dinormalisasi
+hanya untuk identitas. Teks asli tetap ditandatangani. Contoh unduhan resmi
+`https://peraturan.bpk.go.id/DownloadUjiMateri/42/33_PUU-XIV_2016.pdf` berhasil
+dibuka sebagai 33/PUU-XIV/2016. Bawaan hanya delapan halaman awal, bukan seluruh
+putusan. Perubahan ini harus dipasang sebagai rilis baru setelah checkpoint 8dd6367.
+
+Evaluasi model berbayar,
 kalibrasi pemilik, uji beban campuran 450 MiB dan persetujuan produksi belum selesai.
 Preview v2 sudah berjalan terpisah di port 3102; v1 tetap di 3101. Rilis `8dd6367`
 beserta korpus di atas telah dipasang pada 18 Oktober. Empat sumber dibuka dan

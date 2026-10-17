@@ -5,6 +5,7 @@ import { provenanceTiming } from "../core/provenance.js";
 import { signedPart, type HasilBuka, type PotonganBertanda, type RujukanBuka } from "../core/sumber.js";
 import type { Signer } from "../core/sign.js";
 import { HUKUM_ID_VERSION } from "../version.js";
+import { isMkBpkUrl, MK_NUMBER } from "../core/rujukan.js";
 
 export function parseAceh(data: unknown) {
   const rows = (data as { data?: unknown[] })?.data;
@@ -68,13 +69,19 @@ export async function bukaQanun(ref: Extract<RujukanBuka, { jenis: "qanun" }>, s
   return { rujukan: ref, status: potongan.length ? "dibuka" : "tidak_dapat_diperiksa", potongan, peringatan: ["Berlaku khusus sesuai yurisdiksi Aceh. Status perubahan belum dikonsolidasikan dari katalog ini; jangan menyebut bunyi ini sebagai ketentuan terkini tanpa pemeriksaan tambahan."] };
 }
 
-export async function bukaMkBpk(url: string, nomor: string, signer: Signer) {
-  const parsed = new URL(url);
-  if (parsed.origin !== "https://peraturan.bpk.go.id" || !/^\/DownloadUjiMateri\/[\w%.-]+$/.test(parsed.pathname) || parsed.search) throw new Error("Jalur PDF uji materi tidak sah.");
-  const doc = await halamanPdf({ url_pdf: url } as any);
-  const compact = (s: string) => s.toLowerCase().replace(/[^\p{L}\p{N}]/gu, "");
-  if (!compact(doc.halaman.map((p: Page) => p.teks).join(" ")).includes(compact(nomor))) throw new Error("Nomor putusan tidak cocok dengan naskah PDF BPK.");
-  return (doc.halaman as Page[]).slice(0, 8).map((page): PotonganBertanda => {
+export async function bukaMkBpk(url: string, nomor: string, signer: Signer, options: { halaman?: number; loadPdf?: (input: { url_pdf: string }) => Promise<any> } = {}) {
+  if (!isMkBpkUrl(url)) throw new Error("Jalur PDF uji materi tidak sah.");
+  if (!MK_NUMBER.test(nomor)) throw new Error("Nomor putusan tidak sah.");
+  if (options.halaman !== undefined && (!Number.isInteger(options.halaman) || options.halaman < 1 || options.halaman > 600)) throw new Error("Halaman putusan tidak sah.");
+  const doc = await (options.loadPdf ?? halamanPdf)({ url_pdf: url } as any);
+  // Hanya kepala putusan, bukan nomor perkara yang dikutip di pembahasannya.
+  const front = (doc.halaman as Page[]).filter(p => p.halaman <= 2).map(p => p.teks).join("\n").slice(0, 1000);
+  const title = /(?:^|\n)[ \t]*PUTUSAN\s+(?:NOMOR|NO\.?)\s*:?\s*/iu.exec(front);
+  const heading = title ? front.slice(title.index + title[0].length).match(/^(\d[\d\s]{0,11})\/\s*P\s*U\s*U\s*[-‐–]\s*([IVXL\s]{1,30})\/\s*([\d\s]{4,12})\s*DEMI\s+KEADILAN\b/iu) : null;
+  const identity = heading ? `${heading[1]}/PUU-${heading[2]}/${heading[3]}`.replace(/\s/g, "").toUpperCase() : "";
+  if (identity !== nomor.toUpperCase()) throw new Error("Nomor putusan tidak cocok dengan kepala naskah PDF BPK.");
+  const pages = (doc.halaman as Page[]).filter(p => p.teks.trim() && (options.halaman === undefined || p.halaman === options.halaman)).slice(0, 8);
+  return pages.map((page): PotonganBertanda => {
     const text = page.teks.slice(0, 6000);
     const base = { id: `ps_${contentHash(`${url}|${page.halaman}|${text}`).slice(0, 24)}`, documentId: `mk-bpk:${contentHash(url).slice(0, 24)}`, jenis: "putusan-mk" as const, judul: `Putusan ${nomor}`, rujukan: nomor, locator: { halamanAwal: page.halaman, halamanAkhir: page.halaman }, pageStarts: [{ halaman: page.halaman, offset: 0 }], text, contentHash: contentHash(text), identitas: [nomor], lapisan: ["tafsir-resmi" as const], sumber: { nama: "Salinan uji materi JDIH BPK RI", url, otoritas: "Mahkamah Konstitusi RI", status: null, diubahDengan: [], dicabutDengan: [] }, ...provenanceTiming(doc), mesin: HUKUM_ID_VERSION };
     return { ...base, tanda: signer.sign(signedPart(base)) };

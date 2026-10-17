@@ -22,7 +22,7 @@ import { cariTurats } from "../turats.js";
 import { cariLiteratur } from "../scholar.js";
 import { createTelusur } from "../core/telusur.js";
 import { CorpusIndex } from "../indexing/corpus.js";
-import { cariQanun, cariMetadataPutusan, bukaQanun } from "../sources/regional.js";
+import { cariQanun, cariMetadataPutusan, bukaQanun, bukaMkBpk } from "../sources/regional.js";
 import { mkdirSync } from "node:fs";
 import path from "node:path";
 import { createPlatformServer } from "../platform.js";
@@ -119,6 +119,10 @@ const sumber = signer ? createSumberService({
     return result.status === "dibuka" || result.status === "tidak_ditemukan" ? result : null;
   },
   extra: async (ref) => {
+    if (ref.jenis === "putusan-mk-bpk") {
+      const potongan = await bukaMkBpk(ref.url, ref.nomor, signer, ref.halaman ? { halaman: ref.halaman } : {});
+      return { rujukan: ref, status: potongan.length ? "dibuka" : "tidak_dapat_diperiksa", potongan, peringatan: ["Salinan resmi putusan MK di JDIH BPK. Cuplikan awal maksimal delapan halaman; pilih halaman untuk memeriksa bagian lain. Bukan pemeriksaan keseluruhan pertimbangan dan amar."] };
+    }
     const local = corpus.open(ref, signer);
     if (local.status === "dibuka" || ref.jenis !== "qanun") return local;
     return bukaQanun(ref, signer);

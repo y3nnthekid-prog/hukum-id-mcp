@@ -32,6 +32,7 @@ export type RujukanBuka =
   | { jenis: "khi"; pasal: string }
   | { jenis: "qanun"; rujukan: string; pasal?: string | undefined }
   | { jenis: "putusan"; id: string }
+  | { jenis: "putusan-mk-bpk"; nomor: string; url: string; halaman?: number | undefined }
   | { jenis: "peraturan"; rujukan: string; pasal?: string | undefined }
   | { jenis: "fatwa"; nomor: string }
   | { jenis: "khes"; pasal: string }

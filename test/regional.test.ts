@@ -24,5 +24,22 @@ test("JDIHN parser only yields public metadata document links", () => {
 });
 test("MK download adapter refuses untrusted hosts and paths before network access", async () => {
   const signer = createSigner(generateSigningKey());
-  for (const url of ["https://evil.example/DownloadUjiMateri/a.pdf", "https://peraturan.bpk.go.id/Details/123", "https://peraturan.bpk.go.id/DownloadUjiMateri/a.pdf?redirect=evil"]) await assert.rejects(bukaMkBpk(url, "1/PUU-I/2003", signer), /Jalur PDF/);
+  for (const url of ["https://evil.example/DownloadUjiMateri/a.pdf", "https://peraturan.bpk.go.id/Details/123", "https://peraturan.bpk.go.id/DownloadUjiMateri/a.pdf?redirect=evil", "https://user:pass@peraturan.bpk.go.id/DownloadUjiMateri/42/a.pdf", "https://peraturan.bpk.go.id/DownloadUjiMateri/42/a%2Fb.pdf", "https://peraturan.bpk.go.id/DownloadUjiMateri/42/a.pdf#x"]) await assert.rejects(bukaMkBpk(url, "1/PUU-I/2003", signer), /Jalur PDF/);
+});
+
+test("MK BPK opens the published two-segment download path and checks the decision heading, not cited cases", async () => {
+  const signer = createSigner(generateSigningKey());
+  const url = "https://peraturan.bpk.go.id/DownloadUjiMateri/42/33_PUU-XIV_2016.pdf";
+  const loadPdf = async () => ({ halaman: [{ halaman: 1, teks: "PUTUSAN\nNomor 33/PUU-XIV/2016\nDEMI KEADILAN\nDalam permohonan ini dirujuk Putusan Nomor 46/PUU-VIII/2010." }, { halaman: 2, teks: "Teks halaman kedua sintetis." }], diambil_pada: "2026-10-18T00:00:00Z" });
+  const opened = await bukaMkBpk(url, "33/PUU-XIV/2016", signer, { loadPdf });
+  assert.equal(opened.length, 2); assert.equal(opened[0]!.jenis, "putusan-mk");
+  await assert.rejects(bukaMkBpk(url, "46/PUU-VIII/2010", signer, { loadPdf }), /Nomor putusan/);
+  await assert.rejects(bukaMkBpk(url, "3/PUU-XIV/2016", signer, { loadPdf }), /Nomor putusan/);
+  const page = await bukaMkBpk(url, "33/PUU-XIV/2016", signer, { loadPdf, halaman: 2 });
+  assert.equal(page.length, 1); assert.equal(page[0]!.locator.halamanAwal, 2);
+  const spaced = async () => ({ halaman: [{ halaman: 1, teks: "SALINAN\nPUTUSAN\nNomor 33/ PUU-X IV /201 6\nDEMI KEADILAN" }] });
+  const original = await bukaMkBpk(url, "33/PUU-XIV/2016", signer, { loadPdf: spaced });
+  assert.match(original[0]!.text, /X IV \/201 6/);
+  const precedingCitation = async () => ({ halaman: [{ halaman: 1, teks: "CATATAN PENGANTAR\nDokumen ini membahas Putusan Nomor 46/PUU-VIII/2010.\nPUTUSAN\nNomor 33/PUU-XIV/2016\nDEMI KEADILAN" }] });
+  await assert.rejects(bukaMkBpk(url, "46/PUU-VIII/2010", signer, { loadPdf: precedingCitation }), /Nomor putusan/);
 });

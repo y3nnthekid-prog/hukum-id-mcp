@@ -63,6 +63,17 @@ test("research API exposes six profiles and search without an AI key or signer",
   assert.equal(invalid.status, 422);
 });
 
+test("MK BPK reference API accepts only official PDF paths with an exact case and bounded page", async () => {
+  const signer = createSigner(generateSigningKey()); let opened = 0;
+  const sumber = { publicKeyPem: signer.publicKeyPem, kid: signer.kid, buka: async (ref: any) => { opened++; return { rujukan: ref, status: "tidak_dapat_diperiksa" as const, potongan: [], peringatan: [] }; } };
+  const app = createApiApp({ service: {} as any, signer, sumber });
+  const reference = { jenis: "putusan-mk-bpk", nomor: "33/PUU-XIV/2016", url: "https://peraturan.bpk.go.id/DownloadUjiMateri/42/33_PUU-XIV_2016.pdf", halaman: 25 };
+  const post = (ref: unknown) => app.request("/v2/sumber/potongan", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ rujukan: [ref] }) });
+  assert.equal((await post(reference)).status, 200); assert.equal(opened, 1);
+  for (const change of [{ url: "https://evil.example/a.pdf" }, { nomor: "33" }, { halaman: 0 }, { halaman: 601 }]) assert.equal((await post({ ...reference, ...change })).status, 422);
+  assert.equal(opened, 1);
+});
+
 test("planning and screening require per-request BYOK", async () => {
   const signer = createSigner(generateSigningKey());
   const app = createApiApp({ service: {} as any, signer, makeByokModel: () => { throw new Error("Tidak boleh dipanggil tanpa kunci."); } });
