@@ -174,3 +174,24 @@ nyata bila tersedia. Rujukan kompatibilitas:
 [structured outputs Azure](https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/structured-outputs),
 [reasoning Azure](https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/reasoning),
 [API v1](https://learn.microsoft.com/en-us/azure/foundry/openai/api-version-lifecycle).
+
+### Hasil pilot 18 Oktober
+
+Tujuh panggilan nyata, estimasi gabungan US$0,020967 dan reservasi konservatif
+US$0,05850775. Satu alur rencana → saring → sintesis selesai, dengan satu kalimat
+diterima validator mekanis dan nol kalimat sumber dibuang. Satu pernyataan
+analisis ditolak karena tidak merujuk kalimat bersumber yang lolos. Semua sumber beku identik
+serta tanda tangan sumber/hasil tersimpan diperiksa ulang. Tidak ada data riset
+pribadi atau butir tertahan yang dipakai.
+
+Empat panggilan rencana gagal tetap dihitung: kegagalan awal belum memiliki
+diagnosis terperinci; satu `OUTPUT_LENGTH` pada medium/2500; satu `LOCAL_SCHEMA`
+pada low/4096 sebelum petunjuk batas; dan satu `LOCAL_SCHEMA` setelah petunjuk
+batas karena dua kueri melampaui 120 karakter. Pilot dihentikan, tidak dicoba
+ulang otomatis. **Tidak ada tiga putaran sukses** dan tidak ada kelulusan mutu.
+Profil low/4096 terbukti dapat menjalankan satu alur, belum konsisten pada
+pengulangan. Jangan memasang Azure ke layanan publik berdasarkan pilot ini.
+
+Bukti lokal tugas: `outputs/pasla-azure-pilot-2026-10-18/README.md` dan
+`results.json`, beserta keempat jejak percobaan dan salinan sumber publik.
+Kode pilot `0f9d932`; 134 uji utama, 14 uji evaluasi/typecheck dan lint lulus.

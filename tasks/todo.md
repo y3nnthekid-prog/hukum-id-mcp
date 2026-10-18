@@ -53,3 +53,8 @@
 - [ ] Naskah KHI utuh: lampiran perpustakaan MA yang ditemukan hanya pengantar/
   daftar isi pindai, tidak diimpor. Snapshot lain tetap parsial.
 - [ ] Mutu model/juri/label manusia dan produksi belum dinyatakan lulus.
+- [x] Pilot integrasi Azure lokal `0f9d932`, batas US$1: tujuh panggilan termasuk
+  empat rencana yang ditolak; satu alur lengkap dan satu kalimat lolos validator
+  mekanis; satu analisis ditolak. Estimasi US$0,020967; sumber beku/tanda tangan diperiksa ulang.
+  Empat belas uji evaluasi/typecheck, 134 uji utama dan lint lulus. Ini belum
+  tiga putaran sukses, pengujian UI/provider publik atau kelulusan mutu.

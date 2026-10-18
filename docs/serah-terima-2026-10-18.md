@@ -92,10 +92,20 @@ aktif `/opt/pasla-preview/releases/ac1bfba`, korpus
    ditolak pada indeks memori kosong. Kandidat dan audit telah disimpan untuk
    kurasi, bukan diimpor. Salinan USU identik Madiun; kandidat Kemenag 2018
    juga gagal penomoran. Rincian/hash pada docs/riset-v2-preview.md.
-3. `npm run eval:v2` adalah preflight tanpa jaringan; kolektor lengkap ada tetapi
-   tidak ada pengumpulan berbayar. Dilarang membaca butir tertahan. Snapshot,
-   temperature nol, penilaian recall/status/jebakan, juri independen, sekitar 40
-   label manusia, kunci dan budget belum siap. Jangan menyebut mutu model lulus.
+3. `npm run eval:v2` adalah preflight tanpa jaringan; belum ada pengumpulan
+   berbayar lewat kolektor penuh. Pilot Azure lokal terpisah `0f9d932` memakai
+   deployment lama `pasla-chat`/GPT-5 mini 2025-08-07, dengan persetujuan maksimum
+   US$1. Tujuh panggilan termasuk empat rencana yang ditolak; satu alur lengkap
+   selesai dan satu kalimat lolos validator mekanis; satu analisis ditolak karena
+   rujukannya tidak lolos. Estimasi US$0,020967,
+   reservasi konservatif US$0,05850775. Semua hash sumber dan tanda tangan hasil
+   tersimpan diperiksa ulang; tanpa riset pribadi, butir tertahan atau deploy.
+   Profil low/4096 diperlukan setelah keluaran terpotong, tetapi pengulangan
+   masih gagal batas panjang kueri. Bukan tiga putaran sukses atau kelulusan mutu.
+   Rincian ada di eval/README.md dan output tugas pasla-azure-pilot-2026-10-18.
+   Snapshot/attestasi lengkap, temperature nol, penilaian recall/status/jebakan,
+   juri independen dan sekitar 40 label manusia belum siap. Jangan memakai
+   persetujuan pilot untuk evaluasi besar atau pengeluaran berulang.
 4. Gerbang HTTPS 500 ms belum lulus pada seluruh gelombang sebelumnya (p95
    552,14/319,94/307,56 ms). Uji campuran sintetis tidak menggantikannya.
 5. Monitoring ketika komputer mati, alert semua lalu lintas/struktur sumber,
