@@ -36,3 +36,17 @@
 - [ ] Keamanan, build, browser WebKit, beban 450 MB, alert/retensi/rollback/backup.
   Verifikasi: seluruh perintah proyek dan laporan bukti tanpa kredensial.
 - [ ] Pratinjau terpisah dan laporan rilis; produksi menunggu persetujuan pemilik.
+
+### Bukti lanjutan 18 Oktober (gerbang keseluruhan tetap terbuka)
+
+- [x] Rilis mesin `ac1bfba` aktif: korpus empat sumber + MK BPK halaman 25 dan
+  tanda tangan dipatok lulus; v1 tidak berganti proses; rollback lama tersedia.
+- [x] Beban campuran terisolasi 450 MiB: 6 PDF 112 halaman + 24 AI sintetis,
+  30/30 selesai, nol biaya provider, dua PDF/delapan AI overlap; kedua PID tetap.
+- [x] Backup preview terenkripsi dipulihkan ke D1 sementara; skema/count,
+  integrity dan foreign key cocok; database uji dihapus, database lama utuh.
+- [ ] Login Google nyata: widget pernah Success tetapi server menolak. Diagnosis
+  aman sudah diterbitkan; menunggu percobaan pemilik untuk kode penolakan spesifik.
+- [ ] Naskah KHI utuh: lampiran perpustakaan MA yang ditemukan hanya pengantar/
+  daftar isi pindai, tidak diimpor. Snapshot lain tetap parsial.
+- [ ] Mutu model/juri/label manusia dan produksi belum dinyatakan lulus.

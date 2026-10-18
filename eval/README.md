@@ -74,3 +74,46 @@ mendaftar rujukan yang belum terverifikasi, dan mencocokkan sidik butir tertahan
 
 `/v1/ask` belum membuka ayat, hadis, kitab, KHES, KHI, Qanun, maupun putusan. Rujukan jenis itu
 sengaja dihitung terlewat, supaya angkanya menjadi garis dasar bagi API v2.
+
+## Pengumpulan alur v2
+
+`npm run eval:v2` hanya preflight lokal, tanpa jaringan atau panggilan AI. Bawaan
+satu butir latihan, tiga putaran. Butir tertahan selalu dikeluarkan; tidak ada
+opsi untuk membukanya pada kolektor ini. `npm run test:eval-v2` memeriksa tipe dan
+menjalankan alur sintetis tanpa biaya.
+
+`eval/v2-flow.ts` menerima hanya pertanyaan/rumpun, lalu menjalankan rencana,
+kueri rencana, kandidat telusur, pembukaan sumber, penyaringan, dan sintesis per
+bagian. Rujukan wajib tidak diteruskan ke proses penemuan. Tanda tangan, hash,
+konteks pertanyaan/bagian dan sumber hasil diverifikasi terhadap kunci yang dipatok.
+Kandidat dibatasi 24, bukti tersimpan 120 dan bukti sintesis 24. Pilihan bukti
+otomatis ini dicatat sebagai perilaku kolektor, bukan penilaian pengguna manusia.
+Kolektor belum memilih pasal lanjutan atau tautan MK seperti pengguna manual;
+hal itu dapat menurunkan recall dan harus dihitung sebagai keterbatasan, bukan
+ditambal dengan membuka rujukan kunci jawaban.
+
+Pengumpulan berbayar hanya untuk server eval khusus pada loopback, dengan
+snapshot beku yang disiapkan operator; jangan memakai secret tiket layanan publik.
+Baru setelah budget disetujui pemilik, isi variabel lingkungan `EVAL_AI_PROVIDER`,
+`EVAL_AI_MODEL` (ID bertanggal), `EVAL_AI_KEY`, `EVAL_STEP_TICKET_SECRET`,
+`EVAL_TICKET_AUDIENCE`, dan `EVAL_PUBLIC_KEY_FILE` (PEM publik). Perintah juga
+mensyaratkan `EVAL_CONFIRM_PAID=pasla-eval-v2`, `--run` dan
+`--max-paid-steps <batas>`. Contoh bentuk perintah, bukan otorisasi biaya:
+
+```bash
+npm run eval:v2 -- --api http://127.0.0.1:3102 --rumpun hes --limit 1 --putaran 3 --max-paid-steps 8 --run
+```
+
+Kolektor memeriksa pin sebelum langkah berbayar, menghitung setiap permintaan
+berbayar termasuk yang gagal, tidak mencoba ulang otomatis, membatasi input tiket
+20.000 token konservatif dan menunggu jendela baru setelah enam langkah akun.
+Batas jumlah langkah bukan plafon uang; harga penyedia dan budget tetap harus
+diperiksa sebelum menjalankan. Hasil disimpan di `eval/hasil/` yang diabaikan Git.
+Kode galat aman dicatat tanpa body/header penyedia atau kredensial.
+
+Hasil **selalu `qualityGatePassed:false`**: ini baru kolektor jejak. Snapshot beku
+belum diattestasi lewat API, temperature 0 belum dapat dipaksakan pada API saat
+ini, penilaian recall/status/jebakan masih harus dihitung dari jejak sesudah
+penemuan, dan penilaian kesetiaan memerlukan penyedia juri independen yang
+dikalibrasi terhadap label manusia. Tidak ada pengumpulan berbayar dijalankan
+pada checkpoint 18 Oktober. Preflight dan uji sintetis bukan kelulusan model.

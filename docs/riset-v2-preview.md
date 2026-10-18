@@ -71,15 +71,33 @@ awal dokumen, bukan kemunculan nomor dalam pembahasan; spasi OCR dinormalisasi
 hanya untuk identitas. Teks asli tetap ditandatangani. Contoh unduhan resmi
 `https://peraturan.bpk.go.id/DownloadUjiMateri/42/33_PUU-XIV_2016.pdf` berhasil
 dibuka sebagai 33/PUU-XIV/2016. Bawaan hanya delapan halaman awal, bukan seluruh
-putusan. Perubahan ini harus dipasang sebagai rilis baru setelah checkpoint 8dd6367.
+putusan. Rilis `ac1bfba` sudah aktif pada 18 Oktober: empat sumber korpus dan
+putusan 33/PUU-XIV/2016 halaman 25 dibuka serta diverifikasi terhadap kunci yang
+dipatok sebelum aktivasi diterima. Rilis/korpus `8dd6367` dipertahankan untuk rollback.
 
-Evaluasi model berbayar,
-kalibrasi pemilik, uji beban campuran 450 MiB dan persetujuan produksi belum selesai.
+Evaluasi model berbayar, kalibrasi pemilik dan persetujuan produksi belum selesai.
 Preview v2 sudah berjalan terpisah di port 3102; v1 tetap di 3101. Rilis `8dd6367`
 beserta korpus di atas telah dipasang pada 18 Oktober. Empat sumber dibuka dan
 diverifikasi dengan kunci publik yang dipatok sebelum aktivasi dianggap berhasil;
 PID v1 tidak berubah. Rilis/korpus sebelumnya dipertahankan. Uji PDF Linux dari
-dist juga lulus pada cgroup 450 MiB; itu belum menggantikan uji beban campuran.
+dist juga lulus. Uji campuran terpisah pada rilis `ac1bfba` kemudian lulus dalam
+cgroup MemoryMax 450 MiB, MemorySwapMax 0 dan CPUQuota 50%: tiga gelombang masing-
+masing dua ekstraksi PDF 112 halaman tanpa cache dan delapan sintesis sintetis
+dengan delay dua detik. Seluruh 30 permintaan selesai, nol galat/panggilan AI
+berbayar/egress; maksimum dua PDF dan delapan AI dengan overlap teramati. PDF
+memerlukan sekitar 14,3–17,0 detik. Ini uji kapasitas dengan provider sintetis,
+bukan latensi atau mutu provider nyata, dan sintesis memakai bukti sintetis
+terpisah dari isi PDF. PID v1/v2 tetap sama dan NRestarts nol sesudah uji.
 Uji HTTPS 3×10 pembukaan sumber tanpa AI memberi p95 552,14 / 319,94 / 307,56 ms
 dan nol galat; gerbang 500 ms belum lulus pada seluruh gelombang.
 Semua rumpun tetap berlabel cakupan terbatas.
+
+Kolektor `npm run eval:v2` kini menyediakan preflight tanpa jaringan/biaya dan
+alur v2 teruji sintetis; rujukan kunci jawaban tidak dikirim ke penemuan sumber.
+Jejak tetap menandai gerbang mutu belum lulus. Lihat `eval/README.md` untuk batas
+snapshot, temperature, juri, label manusia dan otorisasi biaya.
+
+Kandidat KHI dari perpustakaan resmi MA (katalog id 2913, lampiran fid 3858)
+berhasil diunduh, tetapi hanya enam halaman pindai pengantar/daftar isi, tanpa
+lapisan teks maupun batang Buku I–III. Pemeriksaan visual menegaskan lampiran
+parsial; berkas ini tidak diimpor sebagai naskah KHI lengkap.

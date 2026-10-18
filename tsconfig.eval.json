@@ -1,0 +1,6 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": { "rootDir": ".", "noEmit": true },
+  "include": ["eval/v2-flow.ts", "scripts/eval-v2.ts", "test/eval-v2.test.ts"],
+  "exclude": ["node_modules", "dist"]
+}
