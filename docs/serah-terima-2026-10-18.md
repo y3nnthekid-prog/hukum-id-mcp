@@ -26,6 +26,14 @@ dan `eval/README.md`; dokumen 16 Oktober adalah konteks historis.
   salinan perangkat dihapus, termasuk penghapusan dari tab versi lama.
   Probe HTTPS 10:16:14 UTC lulus preview/mesin/tanda tangan tanpa AI; satu sumber
   926 ms bukan bukti kelulusan performa. Brave tidak tersedia untuk screenshot baru.
+- Pembaruan uji web `3e80f4a` memeriksa laporan bertanda tangan setelah reload,
+  pemulihan akun fixture dari konteks kosong dan ekspor Markdown/DOCX dengan
+  kalimat serta nomor catatan kaki yang terhubung. Seluruh 34 Chromium/WebKit,
+  18 lokal, 32 Workers, 8 operasi dan typecheck lulus pada versi akhir uji.
+  DOCX contoh satu halaman dari kedua browser dirender/diperiksa lewat LibreOffice
+  26.2.4.2, termasuk Latin/Arab. Tidak ada perubahan runtime/deploy atau AI berbayar.
+  Ini bukan login Google kedua, laporan D1/provider nyata, uji penyaringan AI,
+  kompatibilitas Microsoft Word atau dokumen panjang.
 - MK 33/PUU-XIV/2016 halaman 25 juga dibuka lewat HTTPS publik; hash dan tanda
   tangan terhadap kunci yang dipatok lulus. Tidak ada panggilan AI.
 - Empat sumber korpus tetap snapshot parsial. Qanun 6/2014 menyertakan relasi
@@ -86,7 +94,7 @@ aktif `/opt/pasla-preview/releases/ac1bfba`, korpus
 4. Gerbang HTTPS 500 ms belum lulus pada seluruh gelombang sebelumnya (p95
    552,14/319,94/307,56 ms). Uji campuran sintetis tidak menggantikannya.
 5. Monitoring ketika komputer mati, alert semua lalu lintas/struktur sumber,
-   retensi log jaringan, backup perangkat lain, pemeriksaan Office, enam laporan
+   retensi log jaringan, backup perangkat lain, pemeriksaan Word/dokumen panjang, enam laporan
    manual dan keputusan hukum/produksi masih terbuka.
    Backup sesudah login, dengan satu pengguna/sesi/proyek sintetis, lulus restore
    SQLite memori. Restore D1 remote tetap hanya diuji untuk snapshot kosong.
