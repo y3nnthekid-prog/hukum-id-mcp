@@ -11,6 +11,7 @@ import { JENIS_TELUSUR, RUMPUN, type RumpunId } from "../rumpun/index.js";
 import type { TelusurService } from "../core/telusur.js";
 import { RencanaSchema, rencanaLaporan, saringLaporan, type KandidatSaring } from "../core/laporan.js";
 import { createTicketGuard } from "../core/step-ticket.js";
+import type { createManagedAzure } from "../core/managed-ai.js";
 
 /**
  * API v2: riset bertahap untuk ruang riset enam rumpun.
@@ -34,6 +35,7 @@ export type V2Dependencies = {
   /** Kunci publik lain yang masih diterima selama masa rotasi. */
   extraPublicKeysPem?: string[] | undefined;
   makeByokModel?: ((selection: { provider: AiProviderId; model?: string | undefined; apiKey: string }) => JsonModel) | undefined;
+  managedAi?: ReturnType<typeof createManagedAzure> | undefined;
   /** Batas konkurensi: pembukaan sumber mengurai PDF (berat memori), sintesis menunggu penyedia AI (ringan). */
   pools?: { buka: number; sintesis: number; antrean: number } | undefined;
   deadlineMs?: number | undefined;
@@ -218,7 +220,7 @@ export function registerV2(app: Hono<Env>, deps: V2Dependencies) {
 
   function paidStep<T>(path: string, schema: z.ZodType<T>, run: (input: T, model: JsonModel, signal: AbortSignal, signer: Signer) => Promise<unknown>) {
     app.post(path, async (c) => {
-    if (!deps.signer || !deps.makeByokModel) {
+    if (!deps.signer || (!deps.makeByokModel && !deps.managedAi)) {
       return error(c, 503, "SIGNING_NOT_CONFIGURED", "Sintesis v2 belum dikonfigurasi pada server ini.");
     }
     const parsed = schema.safeParse(await readBoundedJson(c, 2_000_000));
@@ -227,24 +229,34 @@ export function registerV2(app: Hono<Env>, deps: V2Dependencies) {
     const rawKey = c.req.header("x-pasla-ai-key")?.trim();
     const rawProvider = c.req.header("x-pasla-ai-provider")?.trim();
     const rawModel = c.req.header("x-pasla-ai-model")?.trim() || undefined;
-    if (!rawKey || !rawProvider) return error(c, 422, "AI_KEY_REQUIRED", "Sintesis laporan memakai kunci AI milikmu sendiri.");
+    const managed = c.req.header("x-pasla-ai-mode") === "managed-azure";
+    if (managed && (!deps.managedAi || !guard)) return error(c, 503, "MANAGED_DISABLED", "AI Pasla belum diaktifkan pada preview ini.");
+    if (!managed && (!rawKey || !rawProvider)) return error(c, 422, "AI_KEY_REQUIRED", "Sintesis laporan memakai kunci AI milikmu sendiri.");
     const provider = AiProviderIdSchema.safeParse(rawProvider);
-    if (!provider.success) return error(c, 422, "AI_PROVIDER_INVALID", "Penyedia AI tidak dikenal.");
-    if (!ByokKeySchema.safeParse(rawKey).success) return error(c, 422, "BYOK_INVALID", "Format kunci API tidak sah.");
-    if (rawModel !== undefined && !AiModelNameSchema.safeParse(rawModel).success) {
+    if (!managed && !provider.success) return error(c, 422, "AI_PROVIDER_INVALID", "Penyedia AI tidak dikenal.");
+    if (!managed && !ByokKeySchema.safeParse(rawKey).success) return error(c, 422, "BYOK_INVALID", "Format kunci API tidak sah.");
+    if (!managed && rawModel !== undefined && !AiModelNameSchema.safeParse(rawModel).success) {
       return error(c, 422, "AI_MODEL_INVALID", "Nama model tidak sah.");
     }
     if (deps.requireStepTicket && !guard) return error(c, 503, "TICKET_NOT_CONFIGURED", "Tiket akun untuk langkah AI belum dikonfigurasi.");
+    let ticket: ReturnType<NonNullable<typeof guard>> | undefined;
     if (guard) {
-      try { guard(c.req.header("x-pasla-step-ticket") || "", path.split("/").at(-1)!, parsed.data); }
+      try { ticket = guard(c.req.header("x-pasla-step-ticket") || "", path.split("/").at(-1)!, parsed.data); }
       catch (cause) {
         const rate = cause instanceof Error && cause.message === "ACCOUNT_RATE_LIMIT";
         return error(c, rate ? 429 : 401, rate ? "ACCOUNT_RATE_LIMIT" : "TICKET_INVALID", rate ? "Batas enam langkah per menit untuk akun tercapai." : "Tiket langkah tidak sah, sudah dipakai, atau kedaluwarsa.");
       }
     }
+    if ((ticket?.v === 2) !== managed) return error(c, 401, "TICKET_MODE", "Tiket tidak sesuai dengan pilihan AI.");
     let model: JsonModel;
+    let usage: ReturnType<ReturnType<typeof createManagedAzure>>["summary"] | undefined;
     try {
-      model = deps.makeByokModel({ provider: provider.data, model: rawModel, apiKey: rawKey });
+      if (managed && ticket?.v === 2) {
+        const selection = deps.managedAi!(ticket); model = selection.model; usage = selection.summary;
+      } else {
+        if (!provider.success || !rawKey || !deps.makeByokModel) throw new Error();
+        model = deps.makeByokModel({ provider: provider.data, model: rawModel, apiKey: rawKey });
+      }
     } catch (cause) {
       const message = cause instanceof Error && cause.message === "MODEL_REQUIRED" ? "Penyedia ini membutuhkan nama model." : "Penyedia AI tidak didukung.";
       return error(c, 422, "AI_MODEL_INVALID", message);
@@ -274,12 +286,14 @@ export function registerV2(app: Hono<Env>, deps: V2Dependencies) {
         workStarted = true;
         const work = run(parsed.data, model, signal, signer).finally(() => sintesisPool.release());
         const hasil = await beforeAbort(work, signal);
+        if (usage) { const measured = usage(); await write({ jenis: "pemakaian", data: { calls: measured.calls, usage: measured.usage, lastFailure: measured.lastFailure, validationIssues: measured.validationIssues } }); }
         await write({ jenis: "hasil", data: hasil });
       } catch (cause) {
         const aborted = signal.aborted;
+        if (usage) { const measured = usage(); await write({ jenis: "pemakaian", data: { calls: measured.calls, usage: measured.usage, lastFailure: measured.lastFailure, validationIssues: measured.validationIssues } }); }
         await write({
           jenis: "galat",
-          kode: aborted ? "DEADLINE" : "AI_PROVIDER_ERROR",
+          kode: aborted ? "DEADLINE" : cause instanceof Error && /^MANAGED_(?:BUSY|RATE|REPLAY)$/.test(cause.message) ? cause.message : "AI_PROVIDER_ERROR",
           pesan: aborted
             ? "Batas waktu habis sebelum penyedia AI menjawab. Kurangi jumlah potongan lalu ulangi bagian ini."
             : cause instanceof Error && cause.name === "AiProviderError"

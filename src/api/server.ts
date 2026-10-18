@@ -5,6 +5,7 @@ import { timingSafeEqual } from "node:crypto";
 import { createGeminiEvidenceProvider } from "../ai/gemini.js";
 import { AiProviderIdSchema, type AiProviderId } from "../ai/json-model.js";
 import { createJsonModel } from "../ai/registry.js";
+import { createManagedAzure, createManagedClaims } from "../core/managed-ai.js";
 import type { AiModelSelection, ResolvedAiModel } from "./app.js";
 import { createEntraAuthenticatorFromEnvironment } from "../auth.js";
 import { createAsk } from "../core/ask.js";
@@ -147,6 +148,10 @@ const ask = createAsk({
 });
 
 const server = createPlatformServer({
+  ...(process.env.PASLA_MANAGED_AI_ENABLED === "true" ? { managedAi: (() => {
+    if (!process.env.PASLA_AZURE_OPENAI_KEY || !process.env.PASLA_MANAGED_CLAIMS_FILE || process.env.PASLA_MANAGED_CLAIMS_FILE === ":memory:") throw new Error("MANAGED_CONFIG");
+    return createManagedAzure({ apiKey: process.env.PASLA_AZURE_OPENAI_KEY, claims: createManagedClaims(process.env.PASLA_MANAGED_CLAIMS_FILE) });
+  })() } : {}),
   matchCorpusHash: (hash) => corpus.byHash(hash),
   requireStepTicket: process.env.NODE_ENV === "production" || process.env.PASLA_REQUIRE_STEP_TICKET === "true",
   ...(process.env.PASLA_STEP_TICKET_SECRET ? { stepTickets: { secret: process.env.PASLA_STEP_TICKET_SECRET, audience: process.env.PASLA_ENGINE_ORIGIN || "https://api.pasla.tech" } } : {}),

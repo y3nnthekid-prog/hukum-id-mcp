@@ -88,12 +88,13 @@ paths:
       summary: Susun rencana riset yang dapat disunting
       operationId: rencanaLaporanV2
       tags: [Research]
-      description: BYOK dan tiket akun singkat. Tidak menjawab fakta hukum. Output maksimal 2500 token; tanpa percobaan ulang otomatis.
+      description: BYOK dan tiket akun singkat; alternatif preview privat memakai mode managed-azure dengan tiket v2 dan kunci di VPS. Tidak menjawab fakta hukum. Output BYOK maksimal 2500 token, Azure terkelola low/4096 termasuk reasoning; tanpa percobaan ulang otomatis.
       parameters:
         - { $ref: "#/paths/~1v2~1laporan~1sintesis/post/parameters/0" }
         - { $ref: "#/paths/~1v2~1laporan~1sintesis/post/parameters/1" }
         - { $ref: "#/paths/~1v2~1laporan~1sintesis/post/parameters/2" }
         - { $ref: "#/components/parameters/TiketLangkahV2" }
+        - { name: X-Pasla-AI-Mode, in: header, schema: { type: string, enum: [managed-azure] }, description: Hanya gateway preview dengan tiket v2 terikat profil Azure. }
       requestBody:
         required: true
         content:
@@ -217,7 +218,9 @@ paths:
       operationId: sintesisLaporanV2
       tags: [Research]
       description: >-
-        BYOK wajib, tanpa kuota platform atau percobaan ulang otomatis. Maksimal 24 potongan
+        BYOK wajib kecuali mode managed-azure preview privat dengan tiket v2 terikat profil;
+        mode terkelola memakai kunci hanya pada VPS, low/4096 dan konsumsi tiket persisten.
+        Tidak ada percobaan ulang otomatis. Maksimal 24 potongan
         dan 2000000 byte JSON. Potongan yang diubah, bersidik salah, atau bertanda tangan asing
         ditolak sebelum model dipanggil. Hasil mencatat potongan dan kalimat yang ditolak.
         Respons NDJSON dimulai dengan mulai, diikuti proses tiap 10 detik selama model bekerja,
@@ -226,18 +229,18 @@ paths:
       parameters:
         - name: X-Pasla-AI-Provider
           in: header
-          required: true
+          description: Wajib pada BYOK; tidak digunakan pada mode managed-azure.
           schema: { type: string, enum: [claude, gemini, openai, openrouter, groq, deepseek, mistral] }
         - name: X-Pasla-AI-Key
           in: header
-          required: true
-          description: Kunci hanya melintas per permintaan dan tidak pernah disimpan atau dipantulkan.
+          description: Wajib pada BYOK; hanya melintas per permintaan dan tidak pernah disimpan atau dipantulkan. Mode managed-azure memakai rahasia VPS.
           schema: { type: string, minLength: 8, maxLength: 512, pattern: '^[\x21-\x7e]{8,512}$' }
         - name: X-Pasla-AI-Model
           in: header
           description: Wajib untuk penyedia kompatibel OpenAI.
           schema: { type: string, pattern: '^[A-Za-z0-9._:/@-]{1,100}$' }
         - { $ref: "#/components/parameters/TiketLangkahV2" }
+        - { name: X-Pasla-AI-Mode, in: header, schema: { type: string, enum: [managed-azure] }, description: Hanya gateway preview dengan tiket v2 terikat profil Azure. }
       requestBody:
         required: true
         content:
