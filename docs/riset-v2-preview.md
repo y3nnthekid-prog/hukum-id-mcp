@@ -101,3 +101,18 @@ Kandidat KHI dari perpustakaan resmi MA (katalog id 2913, lampiran fid 3858)
 berhasil diunduh, tetapi hanya enam halaman pindai pengantar/daftar isi, tanpa
 lapisan teks maupun batang Buku I–III. Pemeriksaan visual menegaskan lampiran
 parsial; berkas ini tidak diimpor sebagai naskah KHI lengkap.
+
+Kandidat lain dari situs Kelurahan Pilangbango Madiun adalah salinan ulang 2001,
+35 halaman dengan Buku I/II/III pada halaman 1/24/30. Pemeriksaan gambar halaman
+16 dan 18 menegaskan Pasal 124 dan 139 tidak ada pada PDF, meskipun kesehatan
+lapisan teks berstatus ok. Naskah ini tidak diimpor. Hash SHA-256:
+`3f884f63ae069cde40e325ee6c5c0f966a0423489e4d17ea23b06dafca7022cb`.
+
+Importer lokal kini memeriksa urutan 1–229, teks isi pasal, batas Buku I/II/III
+pada pasal 1/171/215, serta memisahkan penjelasan sebelum pemeriksaan cakupan.
+Naskah dengan penanda daftar isi memerlukan kurasi manual. Audit struktur ini
+tidak mengesahkan transkripsi atau status hukum terkini. Penolakan PDF nyata
+diuji dengan indeks memori kosong; tidak ada baris yang ditulis. Perubahan hanya
+alat impor lokal; layanan VPS aktif tetap `ac1bfba` dan korpus empat sumber.
+
+[Kandidat yang ditolak](https://kelurahan-pilangbango.madiunkota.go.id/wp-content/uploads/2022/02/Kompilasi-Hukum-Islam.pdf).

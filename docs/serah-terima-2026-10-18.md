@@ -8,8 +8,8 @@ dan `eval/README.md`; dokumen 16 Oktober adalah konteks historis.
 - Mesin: cabang `riset/fase-0`; API v2 aktif `ac1bfba` (putusan MK BPK).
   Commit sesudahnya hanya kolektor evaluasi, pengujian dan dokumen; tidak perlu
   mengganti layanan aktif untuk kolektor lokal tersebut.
-- Web: cabang `codex/ruang-riset`, commit `df6a1fa`; deployment preview
-  `81905b29.pasla.pages.dev`, alias `riset.pasla.pages.dev`.
+- Web: cabang `codex/ruang-riset`, kode `b154d78`; deployment preview
+  `74db1359.pasla.pages.dev`, alias `riset.pasla.pages.dev`.
 - Produksi tetap memerlukan evaluasi dan keputusan pemilik; akun preview
   dibatasi satu email terverifikasi yang sebelumnya disetujui.
 
@@ -57,15 +57,19 @@ aktif `/opt/pasla-preview/releases/ac1bfba`, korpus
 
 ## Pekerjaan berikutnya dan penghambat
 
-1. Login Google nyata belum berhasil. Screenshot pemilik menunjukkan widget
-   Turnstile Success, tetapi `/api/auth/start` menolak. Diagnosis aman sudah
-   diterbitkan; menunggu kode dari percobaan baru pemilik. Token sintetis memberi
-   TURNSTILE_TOKEN dan secret lokal cocok widget. Jangan meminta token/secret.
-   Kebijakan preview sudah versi 18 Oktober; pemilik harus membaca versi itu.
+1. Login Google nyata berhasil setelah pemilik mematikan debugging browser.
+   Profil terlihat, proyek sintetis dibuat/disinkronkan dan bertahan sesudah
+   reload; kueri agregat hanya fixture mengonfirmasi satu baris D1 versi 1.
+   Pemulihan galat login sudah diterbitkan (JSON, cookie state tetap, reset token,
+   penolakan kiriman ganda/BFCache dan kode aman). Ekspor/logout sesi nyata belum
+   diuji karena browser terputus saat screenshot; jangan meminta token/secret.
 2. KHI utuh belum tersedia. Lampiran katalog resmi perpustakaan MA id 2913/fid
    3858 hanya enam halaman pengantar/daftar isi pindai, tidak diimpor. BPHN masih
    membatasi akses. Tidak ada bypass tantangan. Pemetaan madzhab dan impor putusan
    manual anonim masih perlu diselesaikan.
+   Salinan ulang pada situs Madiun (35 halaman) juga ditolak: PDF asli kehilangan
+   pasal 124 dan 139. Importer lokal kini menolak celah urutan/batas buku, pasal
+   kosong dan daftar isi yang memerlukan kurasi. Lihat docs/riset-v2-preview.md.
 3. `npm run eval:v2` adalah preflight tanpa jaringan; kolektor lengkap ada tetapi
    tidak ada pengumpulan berbayar. Dilarang membaca butir tertahan. Snapshot,
    temperature nol, penilaian recall/status/jebakan, juri independen, sekitar 40
@@ -75,6 +79,8 @@ aktif `/opt/pasla-preview/releases/ac1bfba`, korpus
 5. Monitoring ketika komputer mati, alert semua lalu lintas/struktur sumber,
    retensi log jaringan, backup perangkat lain, pemeriksaan Office, enam laporan
    manual dan keputusan hukum/produksi masih terbuka.
+   Backup sesudah login, dengan satu pengguna/sesi/proyek sintetis, lulus restore
+   SQLite memori. Restore D1 remote tetap hanya diuji untuk snapshot kosong.
 
 Jadwal backup harian dan probe per jam sudah dibuat sebagai heartbeat Codex lokal;
 komputer/aplikasi yang tidak aktif tetap membatasi pelaksanaannya.

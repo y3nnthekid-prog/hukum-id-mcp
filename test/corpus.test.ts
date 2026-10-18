@@ -4,6 +4,47 @@ import { CorpusIndex } from "../src/indexing/corpus.js";
 import { createSigner, generateSigningKey, verifySignature } from "../src/core/sign.js";
 import { signedPart } from "../src/core/sumber.js";
 import { CorpusManifest } from "../src/indexing/manifest.js";
+import { inspectKhiBooks } from "../src/indexing/import.js";
+
+function khiFixture() {
+  return [
+    { halaman: 1, teks: "KOMPILASI HUKUM ISLAM\nBUKU I\nHUKUM PERKAWINAN\n" + Array.from({ length: 170 }, (_, i) => `Pasal ${i + 1}\nIsi sintetis perkawinan untuk uji.\n`).join("") },
+    { halaman: 2, teks: "BUKU II\nHUKUM KEWARISAN\n" + Array.from({ length: 44 }, (_, i) => `Pasal ${i + 171}\nIsi sintetis kewarisan untuk uji.\n`).join("") },
+    { halaman: 3, teks: "BUKU III\nHUKUM PERWAKAFAN\n" + Array.from({ length: 15 }, (_, i) => `Pasal ${i + 215}\nIsi sintetis perwakafan untuk uji.\n`).join("") },
+    { halaman: 4, teks: "PENJELASAN\nATAS KOMPILASI\nPasal 124\nPenjelasan sintetis, bukan pengganti pasal batang tubuh.\n" },
+  ];
+}
+
+test("KHI book audit accepts the complete ordered body and excludes explanation headings", () => {
+  assert.deepEqual(inspectKhiBooks(khiFixture()), [{ buku: "I", halaman: 1 }, { buku: "II", halaman: 2 }, { buku: "III", halaman: 3 }]);
+});
+
+test("KHI book audit rejects missing articles even when explanation contains the number", () => {
+  const pages = khiFixture(); pages[0]!.teks = pages[0]!.teks.replace("Pasal 124\nIsi sintetis perkawinan untuk uji.\n", "");
+  assert.throws(() => inspectKhiBooks(pages), /KHI_ARTICLE_COVERAGE/);
+  const sameLine = khiFixture(); sameLine[2]!.teks = sameLine[2]!.teks.replace("Pasal 229\nIsi sintetis perwakafan untuk uji.\n", ""); sameLine[3]!.teks = "PENJELASAN ATAS KOMPILASI HUKUM ISLAM\nPasal 229\nCukup jelas.";
+  assert.throws(() => inspectKhiBooks(sameLine), /KHI_ARTICLE_COVERAGE/);
+});
+
+test("KHI book audit rejects contents-only copies, duplicated articles, and wrong book boundaries", () => {
+  assert.throws(() => inspectKhiBooks([{ halaman: 1, teks: "KOMPILASI HUKUM ISLAM\nBUKU I\nBUKU II\nBUKU III\nDaftar isi saja." }]), /KHI_/);
+  const duplicate = khiFixture(); duplicate[0]!.teks += "Pasal 170\nSalinan ganda.\n";
+  assert.throws(() => inspectKhiBooks(duplicate), /KHI_ARTICLE_COVERAGE/);
+  const shifted = khiFixture(); shifted[0]!.teks = shifted[0]!.teks.replace("Pasal 170\nIsi sintetis perkawinan untuk uji.\n", ""); shifted[1]!.teks = shifted[1]!.teks.replace("HUKUM KEWARISAN\n", "HUKUM KEWARISAN\nPasal 170\nIsi sintetis dipindah ke buku yang salah.\n");
+  assert.throws(() => inspectKhiBooks(shifted), /KHI_BOOK_BOUNDARY/);
+  const ocrShifted = khiFixture(); ocrShifted[0]!.teks = ocrShifted[0]!.teks.replace("Pasal 170\nIsi sintetis perkawinan untuk uji.\n", ""); ocrShifted[1]!.teks = ocrShifted[1]!.teks.replace("HUKUM KEWARISAN\n", "HUKUM KEWARISAN\nPasai 170\nIsi sintetis dipindah ke buku yang salah.\n");
+  assert.throws(() => inspectKhiBooks(ocrShifted), /KHI_BOOK_BOUNDARY/);
+  const contents = khiFixture(); contents[0]!.teks = "DAFTAR ISI\n" + contents[0]!.teks;
+  assert.throws(() => inspectKhiBooks(contents), /KHI_CONTENTS_REVIEW/);
+  const pagination = khiFixture().map(page => ({ ...page, teks: page.teks.replace(/Isi sintetis (?:perkawinan|kewarisan|perwakafan) untuk uji\./g, "12") }));
+  assert.throws(() => inspectKhiBooks(pagination), /KHI_ARTICLE_COVERAGE/);
+  const empty = khiFixture(); empty[0]!.teks = empty[0]!.teks.replace("Pasal 124\nIsi sintetis perkawinan untuk uji.\n", "Pasal 124\n");
+  assert.throws(() => inspectKhiBooks(empty), /KHI_ARTICLE_COVERAGE/);
+  for (const [page, number, content] of [[0, 170, "perkawinan"], [1, 214, "kewarisan"]] as const) {
+    const boundaryEmpty = khiFixture(); boundaryEmpty[page]!.teks = boundaryEmpty[page]!.teks.replace(`Pasal ${number}\nIsi sintetis ${content} untuk uji.\n`, `Pasal ${number}\n`);
+    assert.throws(() => inspectKhiBooks(boundaryEmpty), /KHI_ARTICLE_COVERAGE/);
+  }
+});
 
 test("CLI manifest preserves reviewed status and completeness instead of silently dropping them", () => {
   const manifest = { id: "qanun-uji", jenis: "qanun", judul: "Judul sintetis", rujukan: "Qanun Aceh 7/2013", sourceUrl: "https://jdih.acehprov.go.id/uji.pdf", retrievedAt: "2026-10-16T00:00:00Z", importedBy: "fixture", file: "uji.pdf", status: "Berlaku", complete: false };

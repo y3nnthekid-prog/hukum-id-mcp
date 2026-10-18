@@ -45,8 +45,11 @@
   30/30 selesai, nol biaya provider, dua PDF/delapan AI overlap; kedua PID tetap.
 - [x] Backup preview terenkripsi dipulihkan ke D1 sementara; skema/count,
   integrity dan foreign key cocok; database uji dihapus, database lama utuh.
-- [ ] Login Google nyata: widget pernah Success tetapi server menolak. Diagnosis
-  aman sudah diterbitkan; menunggu percobaan pemilik untuk kode penolakan spesifik.
+- [x] Login Google nyata setelah debugging dimatikan, profil dan sinkronisasi satu
+  proyek sintetis sesudah reload; D1 versi 1 dikonfirmasi. Ekspor/logout nyata
+  masih terbuka, sehingga gerbang akun keseluruhan belum dicentang.
+- [x] Importer KHI menolak celah pasal/batas buku/isi kosong dan meminta kurasi
+  daftar isi. Salinan Madiun kehilangan 124/139; tidak diimpor, indeks uji kosong.
 - [ ] Naskah KHI utuh: lampiran perpustakaan MA yang ditemukan hanya pengantar/
   daftar isi pindai, tidak diimpor. Snapshot lain tetap parsial.
 - [ ] Mutu model/juri/label manusia dan produksi belum dinyatakan lulus.
