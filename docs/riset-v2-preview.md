@@ -116,3 +116,27 @@ diuji dengan indeks memori kosong; tidak ada baris yang ditulis. Perubahan hanya
 alat impor lokal; layanan VPS aktif tetap `ac1bfba` dan korpus empat sumber.
 
 [Kandidat yang ditolak](https://kelurahan-pilangbango.madiunkota.go.id/wp-content/uploads/2022/02/Kompilasi-Hukum-Islam.pdf).
+
+### Penelusuran KHI lanjutan, 18 Oktober
+
+PDF dari JDIH USU identik byte dengan salinan Madiun di atas, sehingga bukan
+perbaikan sumber. Kandidat Kemenag 2018, 262 halaman, SHA-256
+`322fe34a0fc77ba234a2e853e43925d1713b4cc447f95e07ef537bd2a451a2e3`,
+juga ditolak. Pemeriksaan gambar menunjukkan penomoran 123 langsung 125 dan
+138 langsung 140. Sebagian isi yang berhubungan dengan 139 tampak bergabung
+di bawah 138; ini bukan klaim bahwa seluruh prosa 139 hilang.
+
+[PDF Kemenag lain](https://simbi.kemenag.go.id/eliterasi/storage/perpustakaan/pusat/316a67e6-6a05-4bf8-9f1d-6e8b22741b90/buku-digital/df7746a999-7125653410.pdf)
+berisi 252 halaman, 11.183.433 byte, SHA-256
+`c9753b29af00510111a997ceebea9b5203dc69eda3eaa65ad052a0884aac1092`.
+Batang KHI berada pada halaman PDF 189–240. Gambar halaman 214 dan 217
+memperlihatkan Pasal 124 dan 139. Enam halaman contoh telah diperiksa visual;
+ini belum membuktikan seluruh 229 pasal lengkap atau transkripsinya benar.
+OCR tersembunyi rusak: parser hanya mengenali 173 segmen pasal. Impor penuh
+ditolak `KHI_CONTENTS_REVIEW`, pemeriksaan batang ditolak
+`KHI_ARTICLE_COVERAGE`; indeks memori tetap kosong. Tidak ada impor live.
+
+PDF asli, teks mentah dengan `reviewed:false`, audit dan gambar contoh ada di
+output tugas `pasla-khi-kemenag-pusat/`. Langkah berikutnya adalah kurasi OCR
+terhadap gambar asli dengan pemetaan halaman tetap, pemeriksaan 1–229 dan
+batas buku, lalu review transkripsi; jangan melonggarkan pemeriksaan importer.

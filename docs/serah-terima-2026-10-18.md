@@ -87,6 +87,11 @@ aktif `/opt/pasla-preview/releases/ac1bfba`, korpus
    Salinan ulang pada situs Madiun (35 halaman) juga ditolak: PDF asli kehilangan
    pasal 124 dan 139. Importer lokal kini menolak celah urutan/batas buku, pasal
    kosong dan daftar isi yang memerlukan kurasi. Lihat docs/riset-v2-preview.md.
+   Penelusuran lanjutan menemukan PDF Kemenag 252 halaman dengan Pasal 124/139
+   terlihat pada gambar. OCR belum layak: hanya 173 segmen dikenali, impor
+   ditolak pada indeks memori kosong. Kandidat dan audit telah disimpan untuk
+   kurasi, bukan diimpor. Salinan USU identik Madiun; kandidat Kemenag 2018
+   juga gagal penomoran. Rincian/hash pada docs/riset-v2-preview.md.
 3. `npm run eval:v2` adalah preflight tanpa jaringan; kolektor lengkap ada tetapi
    tidak ada pengumpulan berbayar. Dilarang membaca butir tertahan. Snapshot,
    temperature nol, penilaian recall/status/jebakan, juri independen, sekitar 40
