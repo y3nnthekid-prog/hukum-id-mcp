@@ -8,8 +8,8 @@ dan `eval/README.md`; dokumen 16 Oktober adalah konteks historis.
 - Mesin: cabang `riset/fase-0`; API v2 aktif `ac1bfba` (putusan MK BPK).
   Commit sesudahnya hanya kolektor evaluasi, pengujian dan dokumen; tidak perlu
   mengganti layanan aktif untuk kolektor lokal tersebut.
-- Web: cabang `codex/ruang-riset`, kode `b154d78`; deployment preview
-  `74db1359.pasla.pages.dev`, alias `riset.pasla.pages.dev`.
+- Web: cabang `codex/ruang-riset`, kode `8504424`; deployment preview
+  `0956fb9c.pasla.pages.dev`, alias `riset.pasla.pages.dev`.
 - Produksi tetap memerlukan evaluasi dan keputusan pemilik; akun preview
   dibatasi satu email terverifikasi yang sebelumnya disetujui.
 
@@ -18,7 +18,14 @@ dan `eval/README.md`; dokumen 16 Oktober adalah konteks historis.
 - Verify mesin: 131 uji TypeScript utama beserta fondasi/parser, lint/OpenAPI,
   typecheck, build, PDF dist dan build web bawaan lulus. Lima uji kolektor v2
   beserta typecheck terpisah lulus pada versi akhir kolektor.
-- Web: 14 lokal, 30 Workers, 8 operasi, 16 Chromium/WebKit, build/typecheck lulus.
+- Web terbaru: 18 lokal, 32 Workers, 8 operasi, build/typecheck lulus. Sebanyak
+  34 Chromium/WebKit lulus sebelum penajaman bootstrap metadata, lalu 12 kasus
+  fokus pemuatan akun/penghapusan perangkat lulus sesudahnya. Daftar laporan
+  akun pada perangkat baru teruji dengan fixture; login Google kedua belum.
+  Pengaman transaksi mempertahankan draf lokal dan menolak respons lama sesudah
+  salinan perangkat dihapus, termasuk penghapusan dari tab versi lama.
+  Probe HTTPS 10:16:14 UTC lulus preview/mesin/tanda tangan tanpa AI; satu sumber
+  926 ms bukan bukti kelulusan performa. Brave tidak tersedia untuk screenshot baru.
 - MK 33/PUU-XIV/2016 halaman 25 juga dibuka lewat HTTPS publik; hash dan tanda
   tangan terhadap kunci yang dipatok lulus. Tidak ada panggilan AI.
 - Empat sumber korpus tetap snapshot parsial. Qanun 6/2014 menyertakan relasi
