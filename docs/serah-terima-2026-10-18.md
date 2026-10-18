@@ -61,8 +61,10 @@ aktif `/opt/pasla-preview/releases/ac1bfba`, korpus
    Profil terlihat, proyek sintetis dibuat/disinkronkan dan bertahan sesudah
    reload; kueri agregat hanya fixture mengonfirmasi satu baris D1 versi 1.
    Pemulihan galat login sudah diterbitkan (JSON, cookie state tetap, reset token,
-   penolakan kiriman ganda/BFCache dan kode aman). Ekspor/logout sesi nyata belum
-   diuji karena browser terputus saat screenshot; jangan meminta token/secret.
+   penolakan kiriman ganda/BFCache dan kode aman). Screenshot akun/proyek berhasil
+   disimpan setelah sambungan pulih. Ekspor nyata 755 byte diperiksa: kebijakan
+   18 Oktober dan fixture versi 1 cocok. Logout belum diuji; sesi pemilik tetap
+   masuk. Jangan meminta token/secret.
 2. KHI utuh belum tersedia. Lampiran katalog resmi perpustakaan MA id 2913/fid
    3858 hanya enam halaman pengantar/daftar isi pindai, tidak diimpor. BPHN masih
    membatasi akses. Tidak ada bypass tantangan. Pemetaan madzhab dan impor putusan
