@@ -96,7 +96,9 @@ test("plan prompt asks for short queries and two initial sections without loosen
   const signer = createSigner(generateSigningKey());
   const plan = { isu: "Isu sintetis", subpertanyaan: ["Apa cakupannya?"], penelusuran: [{ kueri: "uji", sumber: ["peraturan"] }], kriteria: { masukkan: ["Relevan"], keluarkan: [], sertakanHistoris: false }, bagian: [{ judul: "Temuan", fokus: "Uji sumber" }] };
   await rencanaLaporan({ pertanyaan: "Uji sintetis", rumpun: "hes", signer, signal: AbortSignal.timeout(1000), model: { provider: "openai", model: "synthetic", async generate(request) {
-    assert.match(request.system, /80 karakter/); assert.match(request.system, /120 karakter/); assert.match(request.system, /dua bagian/); return request.schema.parse(plan);
+    assert.match(request.system, /80 karakter/); assert.match(request.system, /120 karakter/); assert.match(request.system, /dua bagian/);
+    assert.match(request.system, /syarat inklusi/); assert.match(request.system, /alasan eksklusi/); assert.match(request.system, /laporan temuan/);
+    return request.schema.parse(plan);
   } } });
   assert.equal(RencanaSchema.safeParse({ ...plan, penelusuran: [{ kueri: "q".repeat(121), sumber: ["peraturan"] }] }).success, false);
 });
