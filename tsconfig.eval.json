@@ -1,6 +1,6 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": { "rootDir": ".", "noEmit": true },
-  "include": ["eval/v2-flow.ts", "scripts/eval-v2.ts", "test/eval-v2.test.ts"],
+  "include": ["eval/v2-flow.ts", "eval/azure-pasla.ts", "scripts/eval-v2.ts", "scripts/eval-azure-pilot.ts", "test/eval-v2.test.ts", "test/azure-eval.test.ts"],
   "exclude": ["node_modules", "dist"]
 }

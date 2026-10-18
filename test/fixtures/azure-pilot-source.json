@@ -1,0 +1,69 @@
+{
+  "source": {
+    "data": [
+      {
+        "rujukan": {
+          "jenis": "peraturan",
+          "rujukan": "PERMA 14/2016",
+          "pasal": "Pasal 2"
+        },
+        "status": "dibuka",
+        "potongan": [
+          {
+            "id": "ps_ec94f45a9cea28c9756b0e23",
+            "documentId": "perma-14-2016",
+            "locator": {
+              "pasal": "Pasal 2",
+              "bagian": "batang-tubuh",
+              "halamanAwal": 5,
+              "halamanAkhir": 5
+            },
+            "text": "Pasal 2\nPerkara ekonomi syariah dapat diajukan dalam bentuk\ngugatan sederhana atau gugatan dengan acara biasa.\nBAB III\nTATA CARA PEMERIKSAAN PERKARA DENGAN\nACARA SEDERHANA\n",
+            "pageStarts": [
+              {
+                "halaman": 5,
+                "offset": 0
+              }
+            ],
+            "contentHash": "2fbc035cfb378e0c004d7c35951f823f0c9cac4c6a20f2ffb797eda43955c296",
+            "jenis": "peraturan",
+            "judul": "Peraturan Mahkamah Agung Nomor 14 Tahun 2016 tentang Tata Cara Penyelesaian Ekonomi Syariah",
+            "rujukan": "PERMA 14/2016 Pasal 2",
+            "identitas": [
+              "PERMA 14/2016",
+              "Pasal 2"
+            ],
+            "lapisan": [
+              "norma"
+            ],
+            "sumber": {
+              "nama": "https://peraturan.bpk.go.id/Download/203788/Perma%20Nomor%2014%20Tahun%202016.pdf",
+              "url": "https://peraturan.bpk.go.id/Download/203788/Perma%20Nomor%2014%20Tahun%202016.pdf",
+              "otoritas": "Salinan sumber resmi yang diimpor",
+              "status": "Berlaku",
+              "diubahDengan": [],
+              "dicabutDengan": []
+            },
+            "retrievedAt": "2026-10-16T07:00:19.282Z",
+            "verificationStatus": "verified_snapshot",
+            "mesin": "0.8.2",
+            "tanda": {
+              "alg": "Ed25519",
+              "kid": "6cd41178ee645bbd",
+              "sig": "s3U_HfdVgyMPoEQHUExRuCipXYC4bzVpqfb44eFcBDN9-ZzdETUfRDNYwGfXbGwWgu2FmHgUiy4mmzU8zt6NCw"
+            }
+          }
+        ],
+        "peringatan": [
+          "Salinan korpus adalah snapshot. Periksa perubahan dan status terbaru pada sumber resmi.",
+          "Kelengkapan ekstraksi belum dikonfirmasi; pasal yang tidak terbaca belum membuktikan ketidakadaan."
+        ]
+      }
+    ],
+    "meta": {
+      "traceId": "1c2e2f25-9f8c-48b6-b910-018bfbbb1fc2",
+      "kid": "6cd41178ee645bbd"
+    }
+  },
+  "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAyQ1heT7b5JQe+3xGu2BUykLOeZLUV0yQSiF51dDnFF0=\n-----END PUBLIC KEY-----\n"
+}

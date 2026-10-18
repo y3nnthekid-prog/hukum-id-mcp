@@ -115,5 +115,62 @@ Hasil **selalu `qualityGatePassed:false`**: ini baru kolektor jejak. Snapshot be
 belum diattestasi lewat API, temperature 0 belum dapat dipaksakan pada API saat
 ini, penilaian recall/status/jebakan masih harus dihitung dari jejak sesudah
 penemuan, dan penilaian kesetiaan memerlukan penyedia juri independen yang
-dikalibrasi terhadap label manusia. Tidak ada pengumpulan berbayar dijalankan
-pada checkpoint 18 Oktober. Preflight dan uji sintetis bukan kelulusan model.
+dikalibrasi terhadap label manusia. Belum ada pengumpulan berbayar melalui
+kolektor v2 ini pada checkpoint 18 Oktober; pilot Azure di bawah terpisah.
+Preflight dan uji sintetis bukan kelulusan model.
+
+## Pilot integrasi Azure lokal
+
+`npm run eval:azure-pilot` menyediakan preflight tanpa jaringan atau AI.
+Pilot terpisah ini memakai core rencana/saring/sintesis secara langsung dengan
+satu pertanyaan sintetis dan PERMA 14/2016 Pasal 2 yang **dipilih sebelumnya**.
+Ini tidak mengukur penemuan sumber, recall, mutu hukum, akun, API publik atau UI.
+`qualityGatePassed` selalu `false`; kolektor v2 di atas tetap memiliki gerbangnya.
+
+Transport dipatok ke `https://pasla.openai.azure.com/openai/v1/chat/completions`,
+deployment `pasla-chat`, respons model `gpt-5-mini-2025-08-07`. Identitas hasil
+bertanda tangan mencatat Azure/deployment/versi, sementara vendor model OpenAI.
+Tidak ada endpoint baru atau kunci platform pada aplikasi/layanan publik.
+Skema wire mengikuti subset Azure; batas panjang/jumlah dijelaskan melalui
+description dan tetap diperiksa Zod lokal, bukan dianggap dipaksakan Azure.
+Diagnosis kegagalan menyimpan kode serta nama bidang yang diizinkan, tanpa
+nilai, pesan validasi mentah atau isi respons. `max_completion_tokens`
+mencakup token reasoning, tanpa `temperature`.
+
+Pemilik menyetujui **maksimum US$1 untuk pilot awal** pada 18 Oktober 2026.
+Jangan menganggap ini otorisasi evaluasi besar atau pengeluaran berulang.
+Untuk eksekusi operator, `--run` juga mensyaratkan
+`EVAL_CONFIRM_PAID=pasla-azure-pilot-usd1`, `AZURE_OPENAI_API_KEY` sementara dan
+`EVAL_PUBLIC_KEY_FILE` berisi **hanya PEM publik Ed25519** yang sudah dipatok.
+Jangan menulis/mencetak kunci API, private PEM, respons galat atau header penyedia.
+
+Bawaan tiga putaran, maksimum sembilan percobaan, input konservatif maksimum
+20.000 token dan output maksimum 4.096 token per panggilan. Jeda awal panggilan
+65 detik, tenggat per panggilan 90 detik, tanpa retry otomatis. Reservasi uang
+dihitung **sebelum** jaringan dan dipertahankan pada kegagalan. Pemakaian terukur
+yang tersedia dicatat walaupun identitas model/isi respons ditolak.
+`--runs 1..3`, `--max-calls 1..9` dan `--max-usd` yang lebih kecil dapat
+mempersempit pilot. **Batas ini per proses**: operator wajib mengurangi sisa
+budget dan percobaan dari seluruh jejak terdahulu sebelum melanjutkan manual.
+Jangan menjalankan dua proses sekaligus di bawah persetujuan US$1 yang sama.
+
+Profil bawaan `core` mempertahankan effort/batas keluaran yang diminta core.
+`--profile low-4096` adalah override pilot eksplisit: seluruh langkah memakai
+reasoning `low` dan batas keluaran 4.096, termasuk reasoning. Jejak mencatat
+profil dan nama model hasil bertanda tangan berakhiran `:low-4096`.
+Profil ini bukan pengujian konfigurasi bawaan core/public API.
+
+Sumber diperiksa hash/tanda tangannya sebelum AI dan dibekukan di
+`eval/hasil/azure-pilot-*/source.json`. Kelanjutan manual wajib memakai
+`--source-file <source.json awal>` agar tidak mengunduh sumber lain; pin/hash/
+tanda tangan diperiksa ulang lokal. Signer hasil adalah kunci uji sementara,
+hanya PEM publiknya disimpan. Jejak tahap parsial dan batas/pemakaian tetap
+disimpan saat berhenti; jangan menghapus hasil gagal dari pelaporan gabungan.
+
+Estimasi memakai tarif tanpa diskon cache US$0,25 input dan US$2 output per satu
+juta token dari [publikasi Microsoft](https://devblogs.microsoft.com/foundry/whats-new-in-azure-ai-foundry-august-2025/).
+Ini estimasi, bukan tagihan Azure atau pengaturan plafon akun. Cocokkan tagihan
+nyata bila tersedia. Rujukan kompatibilitas:
+[structured outputs Azure](https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/structured-outputs),
+[reasoning Azure](https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/reasoning),
+[API v1](https://learn.microsoft.com/en-us/azure/foundry/openai/api-version-lifecycle).
