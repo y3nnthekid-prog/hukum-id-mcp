@@ -1,0 +1,33 @@
+{
+  "v": 1,
+  "sourceHash": "ed952dea04b87d14ecf037f9f324a65d50b396ddd34fc28ddf9ff014391971f6",
+  "sourcePages": [
+    19,
+    19
+  ],
+  "pages": [
+    {
+      "halaman": 19,
+      "teks": "Pasal 46\n(1) Dalam hal terjadi kegagalan Pelindungan Data Pribadi,\nPengendali Data Pribadi wajib menyampaikan\npemberitahuan secara tertulis paling lambat 3 x 24\n(tiga kali dua puluh empat) jam kepada:\na. Subjek Data Pribadi; dan\nb. lembaga.\n(2) Pemberitahuan tertulis sebagaimana dimaksud pada\nayat (1) minimal memuat:\na. Data Pribadi yang terungkap;\nb. kapan dan bagaimana Data Pribadi terungkap; dan\nc. upaya penanganan dan pemulihan atas\nterungkapnya Data Pribadi oleh Pengendali Data\nPribadi.\n(3) Dalam hal tertentu, Pengendali Data Pribadi wajib\nmemberitahukan kepada masyarakat mengenai\nkegagalan Pelindungan Data Pribadi.",
+      "imageHash": "2de33c4243a9138b9bd3fab4aea70899ae0ea3207b900c400f2192331f2fb915"
+    }
+  ],
+  "reviews": [
+    {
+      "pass": 1,
+      "reviewer": "primary assistant visual pass1",
+      "reviewedAt": "2026-10-20T13:02:26.700Z",
+      "textHash": "3a78fb429c52c6aede5b63610c0e3bf62add00a2b2f795c81c270cdb918ec823",
+      "sourceHash": "ed952dea04b87d14ecf037f9f324a65d50b396ddd34fc28ddf9ff014391971f6",
+      "issues": []
+    },
+    {
+      "pass": 2,
+      "reviewer": "independent source-review subagent /root/review_uu27_article46",
+      "reviewedAt": "2026-10-20T13:04:56.552Z",
+      "textHash": "3a78fb429c52c6aede5b63610c0e3bf62add00a2b2f795c81c270cdb918ec823",
+      "sourceHash": "ed952dea04b87d14ecf037f9f324a65d50b396ddd34fc28ddf9ff014391971f6",
+      "issues": []
+    }
+  ]
+}

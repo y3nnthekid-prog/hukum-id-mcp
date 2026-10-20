@@ -25,7 +25,8 @@ try {
         items.push(item);
       }
     }
-    const teks = pageText(items, page.getViewport({ scale: 1 }).width);
+    const viewport = page.getViewport({ scale: 1 });
+    const teks = pageText(items, viewport.width, viewport.transform);
     characters += teks.length;
     if (teks.length > workerData.maxPageChars || characters > workerData.maxChars) throw new Error("PDF_TEXT_LIMIT");
     halaman.push({ halaman: i, teks });

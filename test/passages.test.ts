@@ -11,6 +11,20 @@ const law = [
   { halaman: 30, teks: "PENJELASAN\nATAS UNDANG-UNDANG NOMOR 1 TAHUN 1974\nPasal 7\nAyat (1)\nUntuk menjaga kesehatan suami-isteri." },
 ];
 
+test("the observed PENJEI,ASAN OCR heading separates explanation from operative text", () => {
+  const pages = [
+    { halaman: 19, teks: "Pasal 46\nPengendali wajib menyampaikan pemberitahuan." },
+    { halaman: 35, teks: "PENJEI,ASAN\nATAS\nUNDANG-UNDANG REPUBLIK INDONESIA\nI UMUM\nKeterangan umum." },
+    { halaman: 46, teks: "Pasal 46\nAyat (1)\nYang dimaksud dengan kegagalan adalah kegagalan melindungi data." },
+  ];
+  const result = findArticle(segmentPages("ocr-section-fixture", pages), "Pasal 46");
+  assert.equal(result.norma.length, 1);
+  assert.equal(result.penjelasan.length, 1);
+  assert.equal(result.penjelasan[0]!.locator.halamanAwal, 46);
+  assert.match(result.penjelasan[0]!.text, /kegagalan melindungi data/);
+  assert.ok(segmentPages("ocr-section-fixture", pages).some(p => p.locator.bagian === "penjelasan" && p.text.startsWith("PENJEI,ASAN")));
+});
+
 test("spaced numeric article headings retain raw text and resolve exact article identities", () => {
   const passages = segmentPages("fixture-spaced", [{ halaman: 9, teks: "Pasal 10\nIsi sepuluh.\nPasal 1 1\nIsi sebelas. Rujukan Pasal 1 2 ayat (1) tetap teks.\nPasal 1 14\nIsi seratus empat belas.\nPENJELASAN\nPasal 1 1\nPenjelasan sebelas." }]);
   assert.equal(findArticle(passages, "Pasal 1").norma.length, 0);

@@ -38,7 +38,9 @@ export type Passage = {
 // ("Pasal I" memuat perubahan, "Pasal II" ketentuan penutup). Lapisan teks resmi kadang menghapus
 // spasinya ("Pasal222" pada UU 7/2017).
 const ARTICLE_HEADING = /^[ \t]*Pasa[li][ \t]*(\d(?:[ \t]*[\dOl]){0,3}(?:[ \t]*[A-Z])?|[IVX]{1,6})[ \t]*$/gm;
-const EXPLANATION_HEADING = /^[ \t]*PENJELASAN[ \t]*$/gm;
+// Varian OCR ini terlihat pada salinan resmi UU27/2022. Tetap hanya judul satu baris;
+// teks sumber tidak diperbaiki atau diganti oleh pengenalan batas bagian.
+const EXPLANATION_HEADING = /^[ \t]*(?:PENJELASAN|PENJEI,ASAN)[ \t]*$/gm;
 const ATTACHMENT_HEADING = /^[ \t]*LAMPIRAN\b/gm;
 
 /**

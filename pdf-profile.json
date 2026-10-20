@@ -1,8 +1,8 @@
 {
-  "version": 1,
+  "version": 2,
   "pdfjs": "6.4.299",
-  "lineJoinSha256": "fbb816c1884c91a598ff36cb39a9581ec76cf7095331d726414eed461c533c6f",
-  "coordinates": "getViewport(scale=1).width; TextItem.transform PDF coordinates",
+  "lineJoinSha256": "760fcfa9f8eaaa2ef3518e148f727ed7a87ed30bb8493035fba9bf1cdeecec1f",
+  "coordinates": "getViewport(scale=1).width and transform; TextItem origins mapped to viewport, y-up for line sorting",
   "textOptions": {
     "isEvalSupported": false,
     "useSystemFonts": true,

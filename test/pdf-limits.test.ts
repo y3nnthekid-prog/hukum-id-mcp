@@ -9,6 +9,11 @@ import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 
+test("a rotated PDF retains visible line order through the isolated extraction worker", async () => {
+  const result = await extractPdfIsolated(new Uint8Array(PDF_FIXTURES.halamanBerotasi));
+  assert.equal(result.halaman[0].teks, 'Pasal 1\nIsi pertama.\nPasal 2\nIsi kedua.');
+});
+
 test("PDF browser and engine profiles pin the same parser and line-join bytes", () => {
   const pkg = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
   assert.equal(pkg.dependencies["pdfjs-dist"], "6.4.299");

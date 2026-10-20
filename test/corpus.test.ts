@@ -7,6 +7,26 @@ import { CorpusManifest } from "../src/indexing/manifest.js";
 import { inspectKhiBooks } from "../src/indexing/import.js";
 import { validateTranscription } from '../src/indexing/transcription.js';
 import { contentHash } from '../src/core/passages.js';
+import {readFileSync} from 'node:fs';
+
+test('reviewed preview source extracts bind both reviews and retain the corrected operative text', () => {
+  const root=new URL('../docs/corpus-reviewed/2026-10-20/',import.meta.url);
+  const load=(name:string,total:number)=>{
+    const raw=JSON.parse(readFileSync(new URL(name+'.json',root),'utf8'));
+    return validateTranscription(raw,raw.sourceHash,total,false);
+  };
+  const uu=load('uu-27-2022-pasal46',50);
+  assert.deepEqual(uu.provenance.sourcePages,[19,19]);
+  assert.match(uu.pages[0]!.teks,/wajib menyampaikan/);
+  assert.match(uu.pages[0]!.teks,/3 x 24/);
+  assert.doesNotMatch(uu.pages[0]!.teks,/Pasal 4[578]/);
+  const original=load('perma-2-2015',15),amender=load('perma-4-2019',8),qanun=load('qanun-12-2025',20);
+  assert.equal(original.pages.length,15);assert.equal(amender.pages.length,8);assert.equal(qanun.pages.length,20);
+  assert.match(original.pages.map(p=>p.teks).join('\n'),/Pasal 24[\s\S]*?kepada/);
+  assert.match(amender.pages.map(p=>p.teks).join('\n'),/Rp500\.000\.000,00/);
+  assert.match(qanun.pages.find(p=>p.halaman===14)!.teks,/Pasal 74A[\s\S]*?dicabut dan dinyatakan tidak berlaku/);
+  assert.equal(qanun.provenance.reviews.length,2);
+});
 
 test('curated KHI requires original binding, every body page and two content-bound reviews', () => {
   const pages=khiFixture().slice(0,3).map(p=>({...p,imageHash:'a'.repeat(64)}));

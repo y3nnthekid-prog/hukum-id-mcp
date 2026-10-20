@@ -16,9 +16,11 @@ Register berversi: `material-source-register-2026-10-20.json` (12 rekaman). Berk
 
 KHI: seluruh 52 gambar batang (PDF189–240) ditelaah dalam dua lintasan dengan konteks terpisah. Draf pendamping dan koreksi tersimpan; kerusakan karakter dan anomali sumber tetap terbuka, termasuk judul tercetak “Pasal16” antara115/117. Tidak diimpor; pemeriksaan1–229 dan batas buku tidak dilonggarkan. Jangan menandatangani draf ini sebagai transkripsi tuntas atau menormalkan isi dari ingatan.
 
-Qanun12/2025: draf pendamping halaman15–20 sudah dibuat dari gambar. Lintasan kedua dan pemeriksaan visual penuh halaman1–14 belum selesai; tidak diimpor. Naskah asli dan pengubah tetap terpisah, tanpa konsolidasi otomatis.
+Qanun12/2025: seluruh20 halaman kini telah diperiksa dalam dua lintasan. Salah baca nomor50A/74A dan ayat1a dikoreksi berdasarkan gambar; tanda baca dan ejaan ganjil sumber dipertahankan. Transkripsi pendamping bertanda provenance sudah diuji pada salinan korpus terpisah. Naskah asli dan pengubah tetap terpisah, tanpa konsolidasi otomatis.
 
-PERMA2/2015 dan4/2019: PDF resmi berhasil diperoleh melalui tautan JDIH BPK. Jalur pembukaan preview belum lulus; urutan OCR PERMA2/2015 perlu kurasi sebelum impor.
+PERMA2/2015 dan4/2019: seluruh15 dan8 halaman telah ditelaah dua lintasan terhadap gambar resmi. Pendamping lengkap tersedia pada `corpus-reviewed/2026-10-20/`. PERMA4/2019 berotasi90; parser kini memetakan posisi teks melalui viewport di mesin dan browser. Naskah asli dan perubahan tidak dikonsolidasikan otomatis. Jalur live setelah pembaruan korpus masih harus diperiksa.
+
+UU27/2022: lapisan teks halaman19 menghilangkan kata “menyampaikan” pada Pasal46. Kutipan lengkap Pasal46 dikurasi dari gambar dalam dua lintasan. Cakupannya hanya pasal itu, bukan seluruh halaman/UU/penjelasan. Judul OCR “PENJEI,ASAN” pada halaman35 kini dikenali sebagai batas bagian, sehingga penjelasan tidak disajikan sebagai norma. Teks asli tidak diubah oleh pengenalan batas ini.
 
 Putusan33/PUU-XIV/2016: salinan resmi lengkap40halaman tersimpan; halaman relevan dapat dibuka secara eksplisit. Seluruh salinan belum dinyatakan lolos anonimisasi untuk impor.
 
@@ -34,7 +36,7 @@ Turath: pencarian Arab menemukan kitab6228 halaman internal335 (cetak351) dan ki
 
 ## Pekerjaan lanjutan wajib
 
-1. Selesaikan isu sumber KHI, kurasi PERMA2/2015 dan penjelasan Qanun; tinjau sebelum impor.
+1. Selesaikan isu sumber KHI. Terapkan korpus yang telah ditelaah ke preview dan periksa jalur penemuan/pembukaan aktual.
 2. Lengkapi dua lintasan isi untuk12 kasus, termasuk terjemahan dan atribusi pendapat kitab yang dapat diikuti pengguna awam.
 3. Pulihkan alat browser akun: reset masih menghasilkan `failed to write kernel assets: The system cannot find the path specified. (os error 3)`. Jangan membuat sesi palsu atau mengambil cookie dari profil browser.
 4. Periksa ledger sebelum setiap panggilan; jalankan enam sintesis melalui sesi sah hanya setelah sumber cukup. Maksimum tambahan mengikuti sisa aktual, tidak lebih12.

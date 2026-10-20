@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "at": "2026-10-20T09:19:57.969Z",
   "sources": [
     {
@@ -16,12 +16,29 @@
         "invalid_legal_dates": [],
         "warnings": []
       },
-      "documentComplete": "not_reviewed",
+      "documentComplete": "not_reviewed_full_document",
       "interpretationReviewed": false,
       "reviewPasses": [],
       "label": "UU 27/2022",
       "publisher": "JDIH BPK RI",
-      "relationships": {}
+      "relationships": {},
+      "curation": {
+        "kind": "telaah AI berbasis sumber",
+        "sourcePages": [
+          19,
+          19
+        ],
+        "scope": "Hanya Pasal46 lengkap pada halamanPDF19; bukan seluruh halaman/UU/penjelasan",
+        "reviewPasses": 2,
+        "reviewedFile": "docs/corpus-reviewed/2026-10-20/uu-27-2022-pasal46.json",
+        "sidecarSha256": "6c41350b682645131ba99bc69da1d23b8658852a4e5f1ee8430786fbc28fea01",
+        "completeFlag": false,
+        "expertHumanReview": false
+      },
+      "nativeTextKnownDefects": [
+        "Lapisan teks halaman19 menghilangkan kata menyampaikan pada Pasal46; transkripsi terbatas menggantikan pembukaan Pasal46.",
+        "Judul PENJEI,ASAN halaman35 sebelumnya tidak dikenali sebagai batas penjelasan; segmenter diperbaiki, tanpa memperbaiki kata sumber."
+      ]
     },
     {
       "id": "uu-12-2011",
@@ -201,7 +218,7 @@
           "Halaman tanpa teks dilewati tanpa mengubah nomor halaman asli: 15, 16, 17, 18, 19, 20."
         ]
       },
-      "documentComplete": "not_reviewed",
+      "documentComplete": "all_original_pages_visually_reviewed",
       "interpretationReviewed": false,
       "reviewPasses": [],
       "label": "Qanun Aceh 12/2025",
@@ -209,7 +226,20 @@
       "relationships": {
         "diubahDengan": []
       },
-      "expectedHash": "896d4db4e012bbf392a0545a1c3f919a52d932077cb5017e4a45af4dc786c326"
+      "expectedHash": "896d4db4e012bbf392a0545a1c3f919a52d932077cb5017e4a45af4dc786c326",
+      "curation": {
+        "kind": "telaah AI berbasis sumber",
+        "sourcePages": [
+          1,
+          20
+        ],
+        "scope": "Seluruh halaman naskah, tanpa running page/catchword atau ilustrasi tanda tangan",
+        "reviewPasses": 2,
+        "reviewedFile": "docs/corpus-reviewed/2026-10-20/qanun-12-2025.json",
+        "sidecarSha256": "18cef1c0f911b4000f7d4a0cd6da6db3fafebfb8d9094bc75d942b3e27964ec8",
+        "completeFlag": false,
+        "expertHumanReview": false
+      }
     },
     {
       "id": "mk-33-puu-xiv-2016",
@@ -246,9 +276,22 @@
         "invalid_legal_dates": [],
         "warnings": []
       },
-      "documentComplete": "not_reviewed",
+      "documentComplete": "all_original_pages_visually_reviewed",
       "interpretationReviewed": false,
-      "reviewPasses": []
+      "reviewPasses": [],
+      "curation": {
+        "kind": "telaah AI berbasis sumber",
+        "sourcePages": [
+          1,
+          15
+        ],
+        "scope": "Seluruh halaman naskah, tanpa running page/catchword atau ilustrasi tanda tangan",
+        "reviewPasses": 2,
+        "reviewedFile": "docs/corpus-reviewed/2026-10-20/perma-2-2015.json",
+        "sidecarSha256": "62dbe5757095442397e8dce963481fb121cd9c8503c6c971ce1660e01d4c2e06",
+        "completeFlag": false,
+        "expertHumanReview": false
+      }
     },
     {
       "id": "perma-4-2019",
@@ -264,9 +307,25 @@
         "invalid_legal_dates": [],
         "warnings": []
       },
-      "documentComplete": "not_reviewed",
+      "documentComplete": "all_original_pages_visually_reviewed",
       "interpretationReviewed": false,
-      "reviewPasses": []
+      "reviewPasses": [],
+      "curation": {
+        "kind": "telaah AI berbasis sumber",
+        "sourcePages": [
+          1,
+          8
+        ],
+        "scope": "Seluruh halaman naskah, tanpa running page/catchword atau ilustrasi tanda tangan",
+        "reviewPasses": 2,
+        "reviewedFile": "docs/corpus-reviewed/2026-10-20/perma-4-2019.json",
+        "sidecarSha256": "b01ac36cbfc857f855b37d7288009f8ddebcb62d27ecad069e28a44b09c530d1",
+        "completeFlag": false,
+        "expertHumanReview": false
+      },
+      "nativeTextKnownDefects": [
+        "Halaman berotasi90 sebelumnya diurutkan dengan koordinat mentah; parser diperbaiki. Kesalahan OCR tersisa dikurasi terhadap gambar."
+      ]
     },
     {
       "id": "turats-6228-335",
@@ -462,5 +521,6 @@
       "status": "source_blocked",
       "reason": "Dua lintasan atas 52 gambar selesai; kerusakan karakter, tipografi dan nomor tercetak Pasal16 antara115/117 belum terselesaikan. Bukan alasan melonggarkan importer."
     }
-  ]
+  ],
+  "updatedAt": "2026-10-20T13:12:32.891Z"
 }

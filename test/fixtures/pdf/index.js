@@ -2,7 +2,7 @@ function escapePdfText(value) {
   return String(value).replace(/([\\()])/g, "\\$1");
 }
 
-function buildPdf(pages) {
+function buildPdf(pages, { rotation = 0, matrix = '1 0 0 1' } = {}) {
   const objects = [];
   const pageRefs = pages.map((_, index) => `${4 + index * 2} 0 R`).join(" ");
   objects.push("<< /Type /Catalog /Pages 2 0 R >>");
@@ -15,11 +15,11 @@ function buildPdf(pages) {
     const commands = pages[index]
       .map(({ x, y, text, rawPdfString }) => {
         const literal = rawPdfString ?? escapePdfText(text);
-        return `BT /F1 12 Tf 1 0 0 1 ${x} ${y} Tm (${literal}) Tj ET`;
+        return `BT /F1 12 Tf ${matrix} ${x} ${y} Tm (${literal}) Tj ET`;
       })
       .join("\n");
     objects[pageId - 1] =
-      `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] ` +
+      `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Rotate ${rotation} ` +
       `/Resources << /Font << /F1 3 0 R >> >> /Contents ${streamId} 0 R >>`;
     objects[streamId - 1] = `<< /Length ${Buffer.byteLength(commands, "latin1")} >>\nstream\n${commands}\nendstream`;
   }
@@ -41,6 +41,12 @@ function buildPdf(pages) {
 }
 
 export const PDF_FIXTURES = {
+  halamanBerotasi: buildPdf([[
+    { x: 100, y: 100, text: 'Pasal 1' },
+    { x: 130, y: 100, text: 'Isi pertama.' },
+    { x: 160, y: 100, text: 'Pasal 2' },
+    { x: 190, y: 100, text: 'Isi kedua.' },
+  ]], { rotation: 90, matrix: '0 1 -1 0' }),
   scanTanpaTeks: buildPdf([[]]),
   duaKolom: buildPdf([
     [

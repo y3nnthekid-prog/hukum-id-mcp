@@ -1,12 +1,13 @@
 // Ekstraksi baris bersama mesin dan peramban; profil mematok SHA-256 berkas ini.
-function textItems(items) {
-  return items.filter(item => typeof item.str === 'string' && item.str.trim()).map(item => ({
-    text: item.str.trim(),
-    x: Number(item.transform?.[4] ?? 0),
-    y: Number(item.transform?.[5] ?? 0),
-    width: Number(item.width ?? 0),
-    height: Math.max(Number(item.height ?? 0), 1),
-  }));
+function textItems(items, viewportTransform) {
+  const [a,b,c,d,e,f] = viewportTransform ?? [1,0,0,-1,0,0];
+  const scale = Math.hypot(a,b);
+  return items.filter(item => typeof item.str === 'string' && item.str.trim()).map(item => {
+    const x = Number(item.transform?.[4] ?? 0), y = Number(item.transform?.[5] ?? 0);
+    // Posisi layar mengikuti rotasi/crop halaman. Penyusun baris memakai y ke atas.
+    return { text:item.str.trim(), x:a*x+c*y+e, y:-(b*x+d*y+f),
+      width:Number(item.width ?? 0)*scale, height:Math.max(Number(item.height ?? 0)*scale,1) };
+  });
 }
 function renderLines(items) {
   const ordered = [...items].sort((left, right) => {
@@ -23,8 +24,8 @@ function renderLines(items) {
   }
   return lines.map(line => line.parts.sort((left, right) => left.x - right.x).map(item => item.text).join(' ')).join('\n');
 }
-export function pageText(items, pageWidth) {
-  const positioned = textItems(items);
+export function pageText(items, pageWidth, viewportTransform) {
+  const positioned = textItems(items, viewportTransform);
   if (!positioned.length) return '';
   const midpoint = pageWidth / 2;
   const left = positioned.filter(item => item.x + item.width / 2 < midpoint);
