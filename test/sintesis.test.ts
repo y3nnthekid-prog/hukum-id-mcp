@@ -92,10 +92,14 @@ test("faithful sentences pass with page; unfaithful ones are dropped with a reas
     ["k3", "MODALITAS_TIDAK_DIDUKUNG"],
     ["k4", "POTONGAN_TIDAK_DIKENAL"],
   ]);
-  assert.equal(result.analisis.length, 1);
-  assert.equal(result.analisisDibuang.length, 1);
+  assert.equal(result.analisis.length, 0);
+  assert.equal(result.analisisDibuang.length, 2);
+  assert.deepEqual(result.cakupan?.documentIds,['bpk:122740']);
+  assert.equal(result.cakupan?.passageIds.length,1);
+  assert.ok(result.cakupan?.batas.some(text=>text.includes('cakupan jawaban berkurang')));
   const { tanda, ...unsigned } = result;
   assert.ok(verifySignature(unsigned, tanda, [signer.publicKeyPem]));
+  assert.equal(verifySignature({...unsigned,cakupan:{...result.cakupan,documentIds:['palsu']}},tanda,[signer.publicKeyPem]),false);
 });
 
 test("forged or tampered passages are rejected before the model ever sees them", async () => {

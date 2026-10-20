@@ -68,8 +68,34 @@ test("authority layers: a fatwa or KHI can never be presented as a binding norm"
 
 test("AI analysis may only build on validated sentences and cannot introduce new legal references", () => {
   const lolos = new Set(["k1", "k2"]);
-  assert.equal(validateAnalysis({ kalimat: "Kedua ketentuan ini saling melengkapi.", merujuk: ["k1", "k2"], lolos }).ok, true);
+  assert.equal(validateAnalysis({ kalimat: "Kedua ketentuan ini saling melengkapi.", merujuk: ["k1", "k2"], lolos }).ok, false);
   assert.equal(validateAnalysis({ kalimat: "Kedua ketentuan ini saling melengkapi.", merujuk: [], lolos }).ok, false);
   assert.equal(validateAnalysis({ kalimat: "Ini sejalan dengan Pasal 28B UUD.", merujuk: ["k1"], lolos }).ok, false);
   assert.equal(validateAnalysis({ kalimat: "Ini diperkuat UU 35/2014.", merujuk: ["k1"], lolos }).ok, false);
+});
+
+test("analysis needs the actual evidence and cannot launder an extra conclusion through valid IDs", () => {
+  const lolos = new Set(["k1", "k2"]);
+  const bukti = new Map([
+    ["k1", "Orang tua dapat meminta dispensasi kepada Pengadilan dengan alasan sangat mendesak."],
+    ["k2", "Pengadilan wajib mendengar pendapat kedua orang tua calon mempelai."],
+  ]);
+  const cases: Array<[string, string[]]> = [
+    ["Orang tua dapat meminta dispensasi dalam 30 hari.", ["k1"]],
+    ["Pengadilan wajib memberikan dispensasi kepada orang tua.", ["k1", "k2"]],
+    ["Orang tua tidak dapat meminta dispensasi kepada Pengadilan.", ["k1"]],
+    ["Dispensasi otomatis dikabulkan oleh Pengadilan.", ["k1"]],
+    ["Pengadilan dapat meminta dispensasi kepada orang tua.", ["k1"]],
+    ["Semua orang tua dapat meminta dispensasi kepada Pengadilan.", ["k1"]],
+  ];
+  for (const [kalimat, merujuk] of cases) assert.equal(validateAnalysis({ kalimat, merujuk, lolos, bukti }).ok, false, kalimat);
+  assert.equal(validateAnalysis({ kalimat: "Orang tua dapat meminta dispensasi kepada Pengadilan dengan alasan sangat mendesak; Pengadilan wajib mendengar pendapat kedua orang tua calon mempelai.", merujuk: ["k1", "k2"], lolos, bukti }).ok, true);
+});
+
+test("analysis does not strip actors as PDF furniture and preserves semicolons inside intact evidence", () => {
+  const lolos = new Set(["k1"]);
+  const original = "Presiden\nwajib menyampaikan laporan pelaksanaan peraturan ini kepada Dewan Perwakilan Rakyat.";
+  assert.equal(validateAnalysis({ kalimat: original.replace("Presiden", "Republik Indonesia"), merujuk: ["k1"], lolos, bukti: new Map([["k1", original]]) }).ok, false);
+  const quoted = "Pengadilan wajib mendengar pendapat kedua orang tua; permohonan diajukan secara tertulis.";
+  assert.equal(validateAnalysis({ kalimat: quoted, merujuk: ["k1"], lolos, bukti: new Map([["k1", quoted]]) }).ok, true);
 });

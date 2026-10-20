@@ -200,14 +200,39 @@ export function validateSentence(input: {
 }
 
 /**
- * Kalimat "Analisis AI" tidak membawa kutipan, jadi tidak boleh memperkenalkan rujukan hukum apa
- * pun dan wajib merujuk paling sedikit satu kalimat bersumber yang sudah lolos.
+ * Analisis tidak boleh mendapat kebebasan menambah kesimpulan hanya karena ID rujukannya sah.
+ * Tanpa pemeriksa semantik, terima hanya perangkaian utuh kutipan yang sudah lolos; bukan
+ * gabungan kosakata semua sumber, yang dapat memindahkan kewajiban/negasi ke subjek lain.
+ * Ini pemeriksaan konservatif atas dukungan teks, bukan pembuktian kebenaran penafsiran.
  */
-export function validateAnalysis(input: { kalimat: string; merujuk: string[]; lolos: Set<string> }): HasilValidasi {
+export function validateAnalysis(input: { kalimat: string; merujuk: string[]; lolos: Set<string>; bukti?: ReadonlyMap<string, string> }): HasilValidasi {
   if (!input.merujuk.length || !input.merujuk.every((id) => input.lolos.has(id))) {
     return { ok: false, alasan: "RUJUKAN_TIDAK_DIDUKUNG", rincian: "Analisis harus merujuk kalimat bersumber yang sudah lolos validasi." };
   }
   const ref = canonicalize(input.kalimat).text.match(REFERENCE);
   if (ref) return { ok: false, alasan: "RUJUKAN_TIDAK_DIDUKUNG", rincian: `Analisis tidak boleh memperkenalkan rujukan "${ref[0]}".` };
+  // Jangan memakai canonicalize(): penghapus header PDF dapat menghapus nama pelaku.
+  const normalize = (text: string) => text.normalize("NFC").toLowerCase().replace(/\s+/gu, " ").trim().replace(/[.!?]+$/u, "").trim();
+  const evidence = input.merujuk.map((id) => input.bukti?.get(id));
+  if (evidence.some((text) => !text)) return { ok: false, alasan: "RUJUKAN_TIDAK_DIDUKUNG", rincian: "Teks bukti analisis tidak tersedia; ID rujukan saja tidak cukup." };
+  // Titik koma adalah satu-satunya pemisah perangkaian. Jangan memecah titik desimal,
+  // singkatan, atau syarat di dalam kutipan lalu menganggap potongannya kalimat lengkap.
+  const quotes = evidence.map((text) => normalize(text!));
+  // Cocokkan kutipan utuh dahulu, sehingga titik koma asli di dalam bukti tidak terpotong.
+  const pending = [normalize(input.kalimat)];
+  const visited = new Set<string>();
+  let supported = false;
+  while (pending.length) {
+    const rest = pending.pop()!;
+    if (visited.has(rest)) continue;
+    visited.add(rest);
+    if (quotes.includes(rest) && rest) { supported = true; break; }
+    for (const quote of quotes) {
+      if (quote && rest.startsWith(`${quote};`)) pending.push(rest.slice(quote.length + 1).trim());
+    }
+  }
+  if (!supported) {
+    return { ok: false, alasan: "KATA_TIDAK_DIDUKUNG", rincian: "Analisis menambah atau mengubah isi kutipan yang dirujuk. Periksa hubungan, syarat, angka, kewajiban, dan negasinya pada sumber." };
+  }
   return { ok: true, start: 0, end: 0 };
 }

@@ -44,10 +44,13 @@ Aturan kalimat:
 - "lapisan" harus salah satu dari lapisan_sah milik potongan itu. Fatwa, KHES, dan KHI tidak pernah "norma".
 - Bila sebuah pasal sudah diubah, dahulukan potongan bunyi "sebagaimana diubah" dan jangan menyajikan bunyi lama sebagai hukum yang berlaku.
 - Bila potongan tidak cukup untuk fokus bagian ini, kembalikan kalimat kosong. Jangan mengarang.
+- Jawab pertanyaan langsung lebih dahulu. Untuk pembahasan mendalam, pilih kutipan yang menunjukkan hubungan, syarat, dan pengecualian yang relevan, bukan mengulang satu isi dengan banyak kalimat.
+- Jangan menyatakan hubungan perubahan, kesepakatan pendapat, atau konsolidasi lengkap hanya dari kemiripan topik. Setiap hubungan harus tertulis dalam bukti.
 
 Aturan analisis:
 - Analisis opsional, paling banyak 3 kalimat, dan hanya menghubungkan kalimat yang sudah Anda tulis (sebut id-nya di "merujuk").
 - Analisis tidak boleh menyebut pasal, peraturan, putusan, atau fatwa apa pun.
+- Pemeriksa analisis konservatif: hanya perangkaian UTUH kutipan kalimat yang dirujuk, dipisahkan titik koma. Jangan mengubah subjek, syarat, negasi, angka, atau menambahkan kesimpulan. Jika hanya mengulang, biarkan analisis kosong dan utamakan kalimat bersumber yang menjawab pertanyaan.
 
 Jangan memberi nasihat hukum atau strategi perkara. Bahasa Indonesia baku dan jelas.`;
 
@@ -74,6 +77,7 @@ export type HasilSintesis = {
   dibuang: KalimatDibuang[];
   analisis: Array<{ teks: string; merujuk: string[] }>;
   analisisDibuang: Array<{ teks: string; rincian: string }>;
+  cakupan?: { v:1; documentIds:string[]; passageIds:string[]; batas:string[] };
   dibuatPada: string;
   mesin: string;
 };
@@ -188,10 +192,11 @@ export async function sintesisBagian(input: {
   });
 
   const lolos = new Set(kalimat.map((item) => item.id));
+  const bukti = new Map(kalimat.map((item) => [item.id, item.kutipan]));
   const analisis: HasilSintesis["analisis"] = [];
   const analisisDibuang: HasilSintesis["analisisDibuang"] = [];
   for (const item of raw.analisis.slice(0, 3)) {
-    const result = validateAnalysis({ kalimat: item.teks, merujuk: item.merujuk, lolos });
+    const result = validateAnalysis({ kalimat: item.teks, merujuk: item.merujuk, lolos, bukti });
     if (result.ok) analisis.push({ teks: item.teks, merujuk: item.merujuk });
     else analisisDibuang.push({ teks: item.teks, rincian: result.rincian });
   }
@@ -207,6 +212,14 @@ export async function sintesisBagian(input: {
     dibuang,
     analisis,
     analisisDibuang,
+    cakupan:{v:1,documentIds:[...new Set(kalimat.map(item=>byId.get(item.potonganId)!.documentId))],passageIds:[...new Set(kalimat.map(item=>item.potonganId))],batas:[
+      ...(potonganDitolak.length?['Sebagian bahan tidak lolos pemeriksaan tanda tangan atau keutuhan teks.']:[]),
+      ...(dibuang.length||analisisDibuang.length?['Sebagian pernyataan atau analisis tidak lolos pemeriksaan dukungan; cakupan jawaban berkurang.']:[]),
+      ...(sah.some(p=>p.sumber.diubahDengan.length)?['Ada naskah yang dicatat telah diubah. Kutipan ini tidak membuktikan konsolidasi lengkap atau aturan terkini.']:[]),
+      ...(sah.some(p=>p.sumber.dicabutDengan.length)?['Ada sumber yang dicatat telah dicabut; kedudukan historisnya perlu dibedakan dari aturan terkini.']:[]),
+      ...(sah.some(p=>p.sumber.teksTerpotong)?['Ada teks sumber terpotong; halaman belum terbaca lengkap.']:[]),
+      'Jawaban terbatas pada kutipan yang tercantum; kecocokan teks bukan pemeriksaan menyeluruh atas makna hukum.'
+    ]},
     dibuatPada: new Date().toISOString(),
     mesin: HUKUM_ID_VERSION,
   };
