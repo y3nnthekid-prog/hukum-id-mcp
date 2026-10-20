@@ -54,7 +54,7 @@ const RujukanSchema = z.discriminatedUnion("jenis", [
   z.object({ jenis: z.literal("khes"), pasal: ArticleSchema }),
   z.object({ jenis: z.literal("ayat"), surah: z.number().int().min(1).max(114), ayat: z.number().int().min(1).max(286) }),
   z.object({ jenis: z.literal("hadis"), id: z.string().trim().regex(/^\d{1,8}$/) }),
-  z.object({ jenis: z.literal("turats"), query: z.string().trim().min(2).max(120), limit: z.number().int().min(1).max(10).optional() }),
+  z.object({ jenis: z.literal("turats"), query: z.string().trim().min(2).max(120).optional(), limit: z.number().int().min(1).max(10).optional(), bookId: z.number().int().min(1).max(10000000).optional(), pageId: z.number().int().min(0).max(1000000).optional() }).refine(ref => ref.bookId !== undefined ? ref.pageId !== undefined && ref.query === undefined && ref.limit === undefined : ref.query !== undefined && ref.pageId === undefined, "Gunakan kueri lama atau identitas kitab dan halaman yang lengkap."),
 ]);
 
 const BukaSchema = z.object({ rujukan: z.array(RujukanSchema).min(1).max(8) });

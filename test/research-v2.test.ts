@@ -6,7 +6,55 @@ import { createApiApp } from "../src/api/app.js";
 import { RencanaSchema, saringLaporan } from "../src/core/laporan.js";
 import { createSigner, generateSigningKey } from "../src/core/sign.js";
 import { contentHash } from "../src/core/passages.js";
-import { signedPart, type PotonganBertanda } from "../src/core/sumber.js";
+import { createSumberService, signedPart, type PotonganBertanda } from "../src/core/sumber.js";
+import { uraikanHalamanTurats } from "../src/turats.js";
+
+test("turats discovery pins book and internal page separately from printed pagination", async () => {
+  const telusur = createTelusur({ turats: async () => ({ hasil: [{ kitab: "Kitab uji", book_id: 12, page_id: 437, halaman: 439, cuplikan: "Kutipan uji" }] }) });
+  const result = await telusur({ rumpun: "perbandingan-madzhab", query: "خيار المجلس", sumber: ["turats"] });
+  assert.deepEqual(result.kandidat[0]!.rujukan, { jenis: "turats", bookId: 12, pageId: 437 });
+});
+
+test("exact turats opening keeps edition and rejects a mismatched book or page", () => {
+  const book = { meta: { id: 12, name: "Kitab uji", info: "Edisi uji, penerbit uji", author_id: 7, version: "1" } };
+  const page = { meta: JSON.stringify({ page_id: 437, page: 439, vol: "1", book_name: "Kitab uji", author_name: "Penulis uji" }), text: "Kutipan Arab uji yang dibuka dari halaman tertentu." };
+  const parsed = uraikanHalamanTurats(book, page, { bookId: 12, pageId: 437 });
+  assert.equal(parsed.hasil[0]!.halaman, 439);
+  assert.equal(parsed.hasil[0]!.edisi, book.meta.info);
+  assert.equal(parsed.hasil[0]!.page_id, 437);
+  assert.throws(() => uraikanHalamanTurats(book, page, { bookId: 13, pageId: 437 }));
+  assert.throws(() => uraikanHalamanTurats(book, page, { bookId: 12, pageId: 439 }));
+  assert.throws(() => uraikanHalamanTurats(book, {...page,meta:JSON.stringify({page_id:null,book_name:'Kitab uji'})}, { bookId:12,pageId:0 }));
+});
+
+test("exact turats references reach the exact adapter and preserve signed provenance", async () => {
+  const signer = createSigner(generateSigningKey());
+  const source = createSumberService({ turats: async () => { throw Error("Must not re-search"); }, turatsPage: async ({ bookId, pageId }: { bookId: number; pageId: number }) => ({ hasil: [{ book_id: bookId, page_id: pageId, kitab: "Kitab uji", penulis: "Penulis uji", halaman: 439, edisi: "Edisi uji", cuplikan: "Teks uji" }] }) } as any, signer);
+  const opened = await source.buka({ jenis: "turats", bookId: 12, pageId: 437 });
+  assert.equal(opened.status, "dibuka");
+  assert.equal(opened.potongan[0]!.locator.pageId, 437);
+  assert.equal(opened.potongan[0]!.locator.halamanAwal, 439);
+  assert.equal(opened.potongan[0]!.sumber.edisi, "Edisi uji");
+  const next=await source.buka({jenis:'turats',bookId:12,pageId:438});
+  assert.notEqual(opened.potongan[0]!.id,next.potongan[0]!.id);
+  const incompleteEdition=createSumberService({turats:async()=>({}),turatsPage:async()=>({hasil:[{book_id:12,page_id:438,kitab:'Kitab',halaman:'pendahuluan',cuplikan:'teks',versi:'3',terpotong:true}]})} as any,signer);
+  const partial=await incompleteEdition.buka({jenis:'turats',bookId:12,pageId:438});
+  assert.equal(partial.potongan[0]!.sumber.teksTerpotong,true);
+  assert.equal(partial.potongan[0]!.sumber.versiTranskripsi,'3');
+  assert.equal(partial.potongan[0]!.locator.halamanAwal,undefined);
+  assert.equal(partial.potongan[0]!.locator.halamanCetak,'pendahuluan');
+});
+
+test('turats API accepts exact or legacy references, rejecting mixed or incomplete locations', async () => {
+  const signer=createSigner(generateSigningKey());
+  const received:unknown[]=[];
+  const source={publicKeyPem:signer.publicKeyPem,kid:signer.kid,buka:async(ref:any)=>{received.push(ref);return {rujukan:ref,status:'tidak_ditemukan' as const,potongan:[],peringatan:[]};}};
+  const app=createApiApp({service:{} as any,signer,sumber:source});
+  const post=(ref:unknown)=>app.request('/v2/sumber/potongan',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({rujukan:[ref]})});
+  for(const ref of [{jenis:'turats',bookId:12,pageId:0},{jenis:'turats',query:'خيار المجلس',limit:2}])assert.equal((await post(ref)).status,200);
+  for(const ref of [{bookId:12},{pageId:12},{bookId:12,pageId:0,query:'abc'},{bookId:12,pageId:0,limit:2},{bookId:-1,pageId:0},{bookId:12,pageId:1000001}])assert.equal((await post({jenis:'turats',...ref})).status,422);
+  assert.equal(received.length,2);
+});
 
 test("six research profiles expose coverage limits and source authority", () => {
   assert.equal(Object.keys(RUMPUN).length, 6);

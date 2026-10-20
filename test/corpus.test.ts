@@ -5,6 +5,24 @@ import { createSigner, generateSigningKey, verifySignature } from "../src/core/s
 import { signedPart } from "../src/core/sumber.js";
 import { CorpusManifest } from "../src/indexing/manifest.js";
 import { inspectKhiBooks } from "../src/indexing/import.js";
+import { validateTranscription } from '../src/indexing/transcription.js';
+import { contentHash } from '../src/core/passages.js';
+
+test('curated KHI requires original binding, every body page and two content-bound reviews', () => {
+  const pages=khiFixture().slice(0,3).map(p=>({...p,imageHash:'a'.repeat(64)}));
+  const textHash=contentHash(JSON.stringify(pages));
+  const review=(pass:number)=>({pass,reviewer:`AI pass ${pass}`,reviewedAt:'2026-10-20T00:00:00Z',textHash,sourceHash:'b'.repeat(64),issues:[]});
+  const input={v:1,sourceHash:'b'.repeat(64),sourcePages:[1,3],pages,reviews:[review(1),review(2)]};
+  assert.equal(validateTranscription(input,'b'.repeat(64),4,true).provenance.reviewKind,'telaah AI berbasis sumber');
+  assert.throws(()=>validateTranscription(input,'c'.repeat(64),4,true),/SOURCE_HASH/);
+  assert.throws(()=>validateTranscription({...input,reviews:[review(1)]},'b'.repeat(64),4,true));
+  assert.throws(()=>validateTranscription({...input,pages:pages.filter(p=>p.halaman!==2)},'b'.repeat(64),4,true));
+  const changed=structuredClone(input);changed.pages[0]!.teks+='teks diubah';
+  assert.throws(()=>validateTranscription(changed,'b'.repeat(64),4,true),/REVIEW_HASH/);
+  const missing=structuredClone(input);missing.pages[0]!.teks=missing.pages[0]!.teks.replace('Pasal 124\nIsi sintetis perkawinan untuk uji.\n','');
+  const changedHash=contentHash(JSON.stringify(missing.pages));missing.reviews.forEach(r=>r.textHash=changedHash);
+  assert.throws(()=>validateTranscription(missing,'b'.repeat(64),4,true),/KHI_ARTICLE_COVERAGE/);
+});
 
 function khiFixture() {
   return [

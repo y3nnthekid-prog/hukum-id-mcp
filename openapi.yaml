@@ -656,6 +656,25 @@ components:
             jenis: { const: turats }
             query: { type: string, minLength: 2, maxLength: 120 }
             limit: { type: integer, minimum: 1, maximum: 10 }
+          not:
+            anyOf:
+              - required: [bookId]
+                properties: { bookId: {} }
+              - required: [pageId]
+                properties: { pageId: {} }
+        - type: object
+          description: Halaman internal Turath; pageId berbeda dari nomor halaman cetak.
+          required: [jenis, bookId, pageId]
+          properties:
+            jenis: { const: turats }
+            bookId: { type: integer, minimum: 1, maximum: 10000000 }
+            pageId: { type: integer, minimum: 0, maximum: 1000000 }
+          not:
+            anyOf:
+              - required: [query]
+                properties: { query: {} }
+              - required: [limit]
+                properties: { limit: {} }
     LapisanV2:
       type: string
       enum: [norma, tafsir-resmi, praktik, pedoman, dalil, fikih-doktrin]
@@ -682,6 +701,24 @@ components:
               offset: { type: integer }
         text: { type: string }
         contentHash: { type: string, description: Sidik SHA-256 teks }
+        transkripsi:
+          type: object
+          description: Catatan kurasi pendamping opsional, tercakup tanda tangan. Bukan bukti penafsiran atau penelaahan manusia.
+          required: [sourceHash, transcriptionHash, sourcePages, reviewKind, reviews]
+          properties:
+            sourceHash: { type: string, pattern: '^[a-f0-9]{64}$' }
+            transcriptionHash: { type: string, pattern: '^[a-f0-9]{64}$' }
+            sourcePages: { type: array, minItems: 2, maxItems: 2, items: { type: integer } }
+            reviewKind: { const: telaah AI berbasis sumber }
+            reviews:
+              type: array
+              items:
+                type: object
+                required: [pass, reviewer, reviewedAt]
+                properties:
+                  pass: { type: integer, enum: [1, 2] }
+                  reviewer: { type: string }
+                  reviewedAt: { type: string, format: date-time }
         identitas: { type: array, items: { type: string } }
         lapisan: { type: array, items: { $ref: "#/components/schemas/LapisanV2" } }
         sumber:
@@ -694,6 +731,9 @@ components:
             status: { type: [string, "null"] }
             diubahDengan: { type: array, items: { type: string } }
             dicabutDengan: { type: array, items: { type: string } }
+            edisi: { type: string }
+            versiTranskripsi: { type: string }
+            teksTerpotong: { type: boolean }
             ujiMateri:
               type: array
               items:
@@ -795,6 +835,15 @@ components:
             properties:
               teks: { type: string }
               rincian: { type: string }
+        cakupan:
+          type: object
+          description: Cakupan bahan yang benar-benar dipakai kalimat lolos, bukan klaim kecukupan hukum; tercakup tanda tangan.
+          required: [v, documentIds, passageIds, batas]
+          properties:
+            v: { const: 1 }
+            documentIds: { type: array, items: { type: string } }
+            passageIds: { type: array, items: { type: string } }
+            batas: { type: array, items: { type: string } }
         dibuatPada: { type: string, format: date-time }
         mesin: { type: string }
         tanda: { $ref: "#/components/schemas/TandaV2" }

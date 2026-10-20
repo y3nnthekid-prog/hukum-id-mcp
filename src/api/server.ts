@@ -19,7 +19,7 @@ import { ambilAyat, hadisBerderajat, cariAyat, cariHadisBerderajat } from "../da
 import { teksFatwaDsn, cariFatwaDsn } from "../dsn.js";
 import { lokasiNaskahKhes, cariPasalKhes } from "../khes.js";
 import { halamanPdf } from "../pdf.js";
-import { cariTurats } from "../turats.js";
+import { cariTurats, bukaHalamanTurats } from "../turats.js";
 import { cariLiteratur } from "../scholar.js";
 import { createTelusur } from "../core/telusur.js";
 import { CorpusIndex } from "../indexing/corpus.js";
@@ -136,6 +136,7 @@ const sumber = signer ? createSumberService({
   verse: ({ surah, ayat }) => ambilAyat({ surah, ayat }),
   gradedHadith: ({ id }) => hadisBerderajat({ id }),
   turats: ({ query, limit }) => cariTurats({ query, limit }),
+  turatsPage: bukaHalamanTurats,
 }, signer) : undefined;
 const ask = createAsk({
   adapters: legacyAdapters,

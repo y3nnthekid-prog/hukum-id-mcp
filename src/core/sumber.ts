@@ -26,6 +26,7 @@ export type SumberAdapters = {
   verse: (input: Legacy) => Promise<Legacy>;
   gradedHadith: (input: Legacy) => Promise<Legacy>;
   turats: (input: Legacy) => Promise<Legacy>;
+  turatsPage?: (input: { bookId: number; pageId: number }) => Promise<Legacy>;
 };
 
 export type RujukanBuka =
@@ -38,7 +39,8 @@ export type RujukanBuka =
   | { jenis: "khes"; pasal: string }
   | { jenis: "ayat"; surah: number; ayat: number }
   | { jenis: "hadis"; id: string }
-  | { jenis: "turats"; query: string; limit?: number | undefined };
+  | { jenis: "turats"; query: string; limit?: number | undefined }
+  | { jenis: "turats"; bookId: number; pageId: number };
 
 export type PotonganLocator = Partial<PassageLocator> & {
   halamanAwal?: number;
@@ -49,10 +51,13 @@ export type PotonganLocator = Partial<PassageLocator> & {
   kitab?: string;
   jilid?: string | null;
   bookId?: number;
+  pageId?: number;
+  halamanCetak?: string;
   madzhab?: string | null;
 };
 
 export type PotonganBertanda = {
+  transkripsi?:import('../indexing/transcription.js').TranscriptionProvenance;
   id: string;
   documentId: string;
   jenis: JenisSumber;
@@ -72,6 +77,9 @@ export type PotonganBertanda = {
     status: string | null;
     diubahDengan: string[];
     dicabutDengan: string[];
+    edisi?: string;
+    versiTranskripsi?: string;
+    teksTerpotong?: boolean;
     /**
      * Putusan MK yang menguji peraturan ini menurut JDIH BPK (salinan PDF resmi di BPK). Daftar ini
      * tidak lengkap; kosong bukan bukti belum pernah diuji.
@@ -392,18 +400,20 @@ export function createSumberService(adapters: SumberAdapters, signer: Signer) {
   }
 
   async function openTurats(ref: Extract<RujukanBuka, { jenis: "turats" }>): Promise<HasilBuka> {
-    const raw = await adapters.turats({ query: ref.query, limit: Math.min(ref.limit ?? 5, 10) });
+    const raw = "bookId" in ref
+      ? await (adapters.turatsPage ? adapters.turatsPage({ bookId: ref.bookId, pageId: ref.pageId }) : Promise.reject(new Error("Pembukaan halaman kitab belum tersedia pada mesin ini.")))
+      : await adapters.turats({ query: ref.query, limit: Math.min(ref.limit ?? 5, 10) });
     const items: Legacy[] = Array.isArray(raw.hasil) ? raw.hasil : [];
     const potongan = items
       .filter((item) => String(item.cuplikan ?? "").trim())
       .map((item) =>
         finish({
-          id: idFor("ps", `turats:${item.book_id}|${item.jilid}|${item.halaman}|${item.cuplikan}`),
+          id: idFor("ps", `turats:${item.book_id}|${item.page_id ?? 'legacy'}|${item.jilid}|${item.halaman}|${item.cuplikan}`),
           documentId: `turath:${item.book_id}`,
           jenis: "turats",
           judul: String(item.kitab || "Kitab"),
           rujukan: `${item.kitab ?? "Kitab"}, ${item.penulis ?? "penulis tidak tercatat"}${item.jilid ? `, juz ${item.jilid}` : ""}${item.halaman ? `, hlm. ${item.halaman}` : ""}`,
-          locator: { kitab: String(item.kitab || ""), jilid: item.jilid ?? null, bookId: Number(item.book_id), ...(item.halaman ? { halamanAwal: Number(item.halaman), halamanAkhir: Number(item.halaman) } : {}) },
+          locator: { kitab: String(item.kitab || ""), jilid: item.jilid ?? null, bookId: Number(item.book_id), ...(Number.isSafeInteger(item.page_id) ? { pageId: item.page_id } : {}), ...(item.halaman !== null && item.halaman !== undefined ? {halamanCetak:String(item.halaman)}:{}), ...(Number.isSafeInteger(Number(item.halaman)) && Number(item.halaman)>0 ? { halamanAwal: Number(item.halaman), halamanAkhir: Number(item.halaman) } : {}) },
           text: String(item.cuplikan),
           identitas: [String(item.kitab || "")],
           sumber: {
@@ -413,6 +423,9 @@ export function createSumberService(adapters: SumberAdapters, signer: Signer) {
             status: null,
             diubahDengan: [],
             dicabutDengan: [],
+            ...(item.edisi ? { edisi: String(item.edisi) } : {}),
+            ...(item.versi !== undefined ? { versiTranskripsi: String(item.versi) } : {}),
+            ...(typeof item.terpotong === 'boolean' ? {teksTerpotong:item.terpotong} : {}),
           },
           ...provenanceTiming(null),
         })

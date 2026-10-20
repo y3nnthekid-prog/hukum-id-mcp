@@ -10,6 +10,7 @@ export const CorpusManifest = z.object({
   retrievedAt: z.iso.datetime(),
   importedBy: z.string().min(1).max(100),
   file: z.string().min(1),
+  transcriptionFile: z.string().min(1).optional(),
   root: z.string().min(1).optional(),
   anonim: z.boolean().optional(),
   expectedHash: z.string().regex(/^[a-f0-9]{64}$/).optional(),

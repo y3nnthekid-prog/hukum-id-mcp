@@ -4,6 +4,7 @@ import { resolveSafeImportPath } from "../khes.js";
 import { halamanPdf, PDF_LIMITS } from "../pdf.js";
 import { type CorpusMeta, CorpusIndex } from "./corpus.js";
 import { segmentPages, type Page } from "../core/passages.js";
+import { validateTranscription } from './transcription.js';
 
 /** Strict body-only audit; contents pages require manual curation. No legal attestation. */
 export function inspectKhiBooks(pages: Page[]) {
@@ -34,7 +35,7 @@ export function inspectKhiBooks(pages: Page[]) {
   return books.map(({ buku, halaman }) => ({ buku, halaman }));
 }
 
-export async function importCorpusPdf(input: Omit<CorpusMeta, "fileHash" | "buku"> & { file: string; root?: string; expectedHash?: string }, corpus: CorpusIndex) {
+export async function importCorpusPdf(input: Omit<CorpusMeta, "fileHash" | "buku" | "transkripsi"> & { file: string; root?: string; expectedHash?: string; transcriptionFile?: string }, corpus: CorpusIndex) {
   const url = new URL(input.sourceUrl);
   if (url.protocol !== "https:" || !/(?:^|\.)go\.id$/.test(url.hostname) || url.username || url.password) throw new Error("Sumber impor harus URL resmi pemerintah melalui HTTPS.");
   if (/^putusan-/.test(input.jenis) && !input.anonim) throw new Error("Impor putusan mensyaratkan salinan yang diperiksa anonimisasi oleh pengimpor.");
@@ -45,14 +46,21 @@ export async function importCorpusPdf(input: Omit<CorpusMeta, "fileHash" | "buku
   const fileHash = createHash("sha256").update(bytes).digest("hex");
   if (input.expectedHash && fileHash !== input.expectedHash) throw new Error("Sidik berkas berbeda dari manifest impor.");
   const extracted = await halamanPdf({ buffer: bytes } as any);
-  const pages = extracted.halaman as Page[];
-  if (extracted.extraction_health?.status === "no_text_layer") throw new Error("PDF memerlukan OCR dan pemeriksaan manusia sebelum impor.");
+  let pages = extracted.halaman as Page[];
+  let transkripsi:CorpusMeta['transkripsi'];
+  if(input.transcriptionFile) {
+    const sidecar=await resolveSafeImportPath(input.transcriptionFile,{root:input.root??process.env.HUKUM_IMPORT_ROOT??process.cwd()});
+    if((await stat(sidecar)).size>2*1024*1024)throw Error('TRANSCRIPTION_BYTE_LIMIT');
+    const curated=validateTranscription(JSON.parse(await readFile(sidecar,'utf8')),fileHash,pages.length,input.jenis==='khi');
+    pages=curated.pages;transkripsi=curated.provenance;
+  } else if (extracted.extraction_health?.status === "no_text_layer") throw new Error("PDF memerlukan transkripsi dan pemeriksaan terdokumentasi sebelum impor.");
   const all = pages.map((p) => p.teks).join("\n");
   const compact = (s: string) => s.toLowerCase().replace(/[^\p{L}\p{N}]/gu, "");
-  if (input.jenis === "khi" && !/kompilasi\s+hukum\s+islam/i.test(all)) throw new Error("Judul KHI tidak ditemukan di naskah.");
+  const originalText=(extracted.halaman as Page[]).map(p=>p.teks).join('\n');
+  if (input.jenis === "khi" && !/kompilasi\s+hukum\s+islam/i.test(originalText) && !(transkripsi && /kompilasi\s+hukum\s+islam/i.test(all))) throw new Error("Judul KHI tidak ditemukan di naskah atau transkripsi yang ditelaah.");
   if (/^putusan-/.test(input.jenis) && !compact(all).includes(compact(input.rujukan))) throw new Error("Nomor putusan tidak cocok dengan naskah.");
   const buku = input.jenis === "khi" ? inspectKhiBooks(pages) : pages.flatMap((page) => [...page.teks.matchAll(/\bBUKU\s+(III|II|I)\b/g)].map((match) => ({ buku: match[1]!, halaman: page.halaman })));
-  const { file: _file, root: _root, expectedHash: _hash, ...meta } = input;
+  const { file: _file, root: _root, expectedHash: _hash, transcriptionFile:_transcription, ...meta } = input;
   const extractionHealth = extracted.extraction_health;
-  return corpus.replace({ ...meta, fileHash, buku, extractionHealth, complete: input.complete === true && extractionHealth?.status === "ok" }, pages);
+  return corpus.replace({ ...meta, fileHash, buku, extractionHealth, ...(transkripsi?{transkripsi}:{}), complete: input.complete === true && !transkripsi && extractionHealth?.status === "ok" }, pages);
 }

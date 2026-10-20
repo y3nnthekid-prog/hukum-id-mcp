@@ -49,6 +49,8 @@ export async function cariTurats({ query, limit = 5 }) {
       bagian: Array.isArray(m.headings) ? m.headings.slice(0, 2) : [],
       cuplikan: cuplikan.length > BATAS_CUPLIKAN ? cuplikan.slice(0, BATAS_CUPLIKAN) + " …" : cuplikan,
       book_id: x.book_id,
+      page_id: m.page_id ?? null,
+      author_id: x.author_id ?? null,
     };
   });
 
@@ -69,6 +71,33 @@ export async function cariTurats({ query, limit = 5 }) {
         "bukan menggantikan peraturan perundang-undangan maupun fatwa DSN-MUI.",
     ],
   };
+}
+
+/** Kontrak respons primer /book dan /page; pg memakai page_id, bukan halaman cetak. */
+export function uraikanHalamanTurats(book, page, { bookId, pageId }) {
+  const meta = uraikanMeta(page?.meta);
+  if (Number(book?.meta?.id) !== bookId || !Number.isSafeInteger(meta.page_id) || meta.page_id !== pageId ||
+      !book?.meta?.name || meta.book_name !== book.meta.name || !bersihkan(page?.text)) {
+    throw new Error("Identitas kitab atau halaman turats tidak cocok; hasil tidak dipakai.");
+  }
+  const text = bersihkan(page.text);
+  const truncated = text.length > 6000;
+  return {
+    sumber: "api.turath.io",
+    hasil: [{ book_id: bookId, page_id: pageId, author_id: book.meta.author_id ?? null,
+      kitab: meta.book_name, penulis: meta.author_name || null, jilid: meta.vol ?? null,
+      halaman: meta.page ?? null, edisi: bersihkan(book.meta.info), versi: String(book.meta.version ?? ""),
+      cuplikan: truncated ? text.slice(0, 6000) : text, terpotong: truncated }],
+    peringatan: ["Halaman berasal dari transkripsi digital Turath; cocokkan dengan edisi cetak. Identitas penulis bukan bukti madzhab pendapat yang sedang dikutip.",
+      ...(truncated ? ["Teks halaman dibatasi 6.000 karakter; halaman belum terbaca lengkap."] : [])],
+  };
+}
+
+export async function bukaHalamanTurats({ bookId, pageId }) {
+  if (!Number.isSafeInteger(bookId) || bookId < 1 || bookId > 10000000 || !Number.isSafeInteger(pageId) || pageId < 0 || pageId > 1000000) throw new Error("Rujukan halaman turats tidak sah.");
+  const book = await getJson(`${API}/book?id=${bookId}&ver=3`, { timeout: 30000 });
+  const page = await getJson(`${API}/page?book_id=${bookId}&pg=${pageId}&ver=3`, { timeout: 30000 });
+  return uraikanHalamanTurats(book, page, { bookId, pageId });
 }
 
 /** Ambil biografi ringkas penulis, untuk menilai kedudukan sebuah rujukan. */

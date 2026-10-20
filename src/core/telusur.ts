@@ -30,7 +30,10 @@ function reference(jenis: JenisTelusur, item: Raw): RujukanBuka | null {
     if (surah >= 1 && surah <= 114 && ayat >= 1 && ayat <= 286) return { jenis, surah, ayat };
   }
   if (jenis === "hadis" && /^\d{1,8}$/.test(text(item.id))) return { jenis, id: text(item.id) };
-  if (jenis === "turats" && text(item.cuplikan)) return { jenis, query: text(item.cuplikan).slice(0, 120), limit: 5 };
+  if (jenis === "turats") {
+    if (Number.isSafeInteger(item.book_id) && item.book_id > 0 && item.book_id <= 10000000 && Number.isSafeInteger(item.page_id) && item.page_id >= 0 && item.page_id <= 1000000) return { jenis, bookId: item.book_id, pageId: item.page_id };
+    if (text(item.cuplikan)) return { jenis, query: text(item.cuplikan).slice(0, 120), limit: 5 };
+  }
   return null;
 }
 function candidate(jenis: JenisTelusur, item: Raw): Kandidat | null {
