@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "campaign": "material-six-fields-20261020",
+  "status": "in_progress",
+  "reviewLabel": "telaah AI berbasis sumber",
+  "heldOutEvaluationChanged": false,
+  "budget": { "campaign": "azure-preview-20261018", "limitMicroUsd": 1000000, "limitReservations": 36, "baselineReservations": 24, "baselineReservedMicroUsd": 297317, "baselineRemainingMicroUsd": 702683, "refreshBeforeEveryPaidCall": true },
+  "rubric": ["Identitas, halaman, kutipan dan atribusi cocok", "Bahan cukup dan menjawab cakupan pertanyaan", "Kedudukan sumber dan hubungan perubahan tepat", "Tidak ada kesimpulan tambahan tanpa dukungan", "Bahasa awam, batas dan tindakan berikutnya jelas"],
+  "cases": [
+    { "id": "hukum-langsung", "field": "Ilmu Hukum", "kind": "direct", "question": "Apa bunyi UU 27/2022 Pasal 46?", "needs": ["UU 27/2022 Pasal 46"], "status": "not_run", "paid": false },
+    { "id": "hukum-mendalam", "field": "Ilmu Hukum", "kind": "deep", "question": "Bagaimana hubungan naskah UU 12/2011 dengan perubahan dalam UU 13/2022 berdasarkan dokumen yang dibuka?", "needs": ["UU 12/2011", "UU 13/2022", "hubungan perubahan penerbit"], "status": "not_run", "paid": true },
+    { "id": "hes-langsung", "field": "Ekonomi Syariah", "kind": "direct", "question": "Apa bunyi PERMA 14/2016 Pasal 2?", "needs": ["PERMA 14/2016 Pasal 2"], "status": "not_run", "paid": false },
+    { "id": "hes-mendalam", "field": "Ekonomi Syariah", "kind": "deep", "question": "Bagaimana hubungan PERMA 14/2016 dengan aturan gugatan sederhana yang dirujuknya?", "needs": ["PERMA 14/2016", "aturan gugatan sederhana yang tertulis dalam dokumen", "perubahan aturan terkait"], "status": "not_run", "paid": true },
+    { "id": "htn-langsung", "field": "Tata Negara", "kind": "direct", "question": "Apa bunyi amar Putusan 33/PUU-XIV/2016?", "needs": ["salinan resmi lengkap", "nomor pada kepala", "halaman amar"], "status": "not_run", "paid": false },
+    { "id": "htn-mendalam", "field": "Tata Negara", "kind": "deep", "question": "Apa perbedaan dan hubungan amar dengan pertimbangan dalam Putusan 33/PUU-XIV/2016?", "needs": ["salinan resmi lengkap", "halaman amar", "halaman pertimbangan yang relevan"], "status": "not_run", "paid": true },
+    { "id": "keluarga-langsung", "field": "Keluarga Islam", "kind": "direct", "question": "Apa bunyi KHI Pasal 176?", "needs": ["KHI Buku I-III, Pasal 1-229 dikurasi dua lintasan", "KHI Pasal 176"], "status": "source_blocked", "paid": false },
+    { "id": "keluarga-mendalam", "field": "Keluarga Islam", "kind": "deep", "question": "Bagaimana hubungan definisi KHI Pasal 171 dengan ketentuan Pasal 176 dan apa batas penjelasannya?", "needs": ["KHI terkurasi", "KHI Pasal 171", "KHI Pasal 176"], "status": "source_blocked", "paid": true },
+    { "id": "pidana-langsung", "field": "Pidana Islam", "kind": "direct", "question": "Apa bunyi Qanun 6/2014 Pasal 9 pada naskah aslinya?", "needs": ["Qanun 6/2014 Pasal 9", "peringatan naskah diubah"], "status": "not_run", "paid": false },
+    { "id": "pidana-mendalam", "field": "Pidana Islam", "kind": "deep", "question": "Bagaimana hubungan naskah Qanun 6/2014 dengan Qanun 12/2025 tanpa menganggapnya sebagai konsolidasi lengkap?", "needs": ["Qanun 6/2014", "Qanun 12/2025 batang tubuh dan penjelasan", "hubungan perubahan penerbit"], "status": "not_run", "paid": true },
+    { "id": "madzhab-langsung", "field": "Perbandingan Madzhab", "kind": "direct", "question": "Apa identitas kitab, penulis, dan lokasi kutipan tentang khiyar majlis?", "needs": ["kueri Arab terlihat", "kitab dan penulis", "edisi dan halaman yang stabil"], "status": "source_blocked", "paid": false },
+    { "id": "madzhab-mendalam", "field": "Perbandingan Madzhab", "kind": "deep", "question": "Apa perbandingan dua pendapat tentang khiyar majlis yang benar-benar didukung kutipan kitab beridentitas?", "needs": ["dua pendapat eksplisit", "dua atribusi diperiksa", "kitab, penulis, edisi dan halaman stabil"], "status": "source_blocked", "paid": true }
+  ],
+  "closure": "Seluruh 12 kasus lulus rubrik dan dua lintasan; enam pembahasan nyata melalui sesi sah; biaya dan slot dalam ledger; preview cocok versi; produksi tidak berubah."
+}

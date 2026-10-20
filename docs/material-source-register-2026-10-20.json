@@ -1,0 +1,466 @@
+{
+  "version": 1,
+  "at": "2026-10-20T09:19:57.969Z",
+  "sources": [
+    {
+      "id": "uu-27-2022",
+      "sourceUrl": "https://peraturan.bpk.go.id/Download/224884/UU%20Nomor%2027%20Tahun%202022.pdf",
+      "retrievedAt": "2026-09-04T20:45:00.548Z",
+      "fileHash": "ed952dea04b87d14ecf037f9f324a65d50b396ddd34fc28ddf9ff014391971f6",
+      "bytes": 2977828,
+      "pages": 50,
+      "extractionHealth": {
+        "status": "ok",
+        "text_layer_pages": 50,
+        "empty_pages": [],
+        "invalid_legal_dates": [],
+        "warnings": []
+      },
+      "documentComplete": "not_reviewed",
+      "interpretationReviewed": false,
+      "reviewPasses": [],
+      "label": "UU 27/2022",
+      "publisher": "JDIH BPK RI",
+      "relationships": {}
+    },
+    {
+      "id": "uu-12-2011",
+      "sourceUrl": "https://peraturan.bpk.go.id/Download/28610/UU%2012%20Tahun%202011.pdf",
+      "retrievedAt": "2026-09-04T20:47:08.735Z",
+      "fileHash": "539b705040f263ebf933b0ab739868a227e94932691407852e95aa0eaa05c8db",
+      "bytes": 648819,
+      "pages": 201,
+      "extractionHealth": {
+        "status": "ok",
+        "text_layer_pages": 201,
+        "empty_pages": [],
+        "invalid_legal_dates": [],
+        "warnings": []
+      },
+      "documentComplete": "not_reviewed",
+      "interpretationReviewed": false,
+      "reviewPasses": [],
+      "label": "UU 12/2011",
+      "publisher": "JDIH BPK RI",
+      "relationships": {
+        "Diubah dengan": [
+          {
+            "id": "337869",
+            "peraturan": "UU No. 1 Tahun 2026",
+            "tentang": "Penyesuaian Pidana",
+            "catatan": "Ketentuan Pasal 15 Undang-Undang Nomor 12 Tahun 2011 diubah.",
+            "url": "https://peraturan.bpk.go.id/Details/337869/uu-no-1-tahun-2026"
+          },
+          {
+            "id": "212810",
+            "peraturan": "UU No. 13 Tahun 2022",
+            "tentang": "Perubahan Kedua atas Undang-Undang Nomor 12 Tahun 2011 tentang Pembentukan Peraturan Perundang-Undangan",
+            "catatan": null,
+            "url": "https://peraturan.bpk.go.id/Details/212810/uu-no-13-tahun-2022"
+          },
+          {
+            "id": "121716",
+            "peraturan": "UU No. 15 Tahun 2019",
+            "tentang": "Perubahan atas Undang-Undang Nomor 12 Tahun 2011 Tentang Pembentukan Peraturan Perundang-Undangan",
+            "catatan": null,
+            "url": "https://peraturan.bpk.go.id/Details/121716/uu-no-15-tahun-2019"
+          }
+        ],
+        "Mencabut": [
+          {
+            "id": "40503",
+            "peraturan": "UU No. 10 Tahun 2004",
+            "tentang": "Pembentukan Peraturan Perundang-Undangan",
+            "catatan": null,
+            "url": "https://peraturan.bpk.go.id/Details/40503/uu-no-10-tahun-2004"
+          }
+        ]
+      }
+    },
+    {
+      "id": "uu-13-2022",
+      "sourceUrl": "https://peraturan.bpk.go.id/Download/207035/UU%20Nomor%2013%20Tahun%202022.pdf",
+      "retrievedAt": "2026-09-04T20:47:12.509Z",
+      "fileHash": "1feca7ed8b1bdf635b9e332df8fd21d03bed7e44d280e9adf083f77f03b352ae",
+      "bytes": 3813148,
+      "pages": 63,
+      "extractionHealth": {
+        "status": "ok",
+        "text_layer_pages": 63,
+        "empty_pages": [],
+        "invalid_legal_dates": [],
+        "warnings": []
+      },
+      "documentComplete": "not_reviewed",
+      "interpretationReviewed": false,
+      "reviewPasses": [],
+      "label": "UU 13/2022",
+      "publisher": "JDIH BPK RI",
+      "relationships": {
+        "Diubah dengan": [
+          {
+            "id": "337869",
+            "peraturan": "UU No. 1 Tahun 2026",
+            "tentang": "Penyesuaian Pidana",
+            "catatan": "Ketentuan Pasal 15 Undang-Undang Nomor 12 Tahun 2011 diubah.",
+            "url": "https://peraturan.bpk.go.id/Details/337869/uu-no-1-tahun-2026"
+          }
+        ],
+        "Mengubah": [
+          {
+            "id": "121716",
+            "peraturan": "UU No. 15 Tahun 2019",
+            "tentang": "Perubahan atas Undang-Undang Nomor 12 Tahun 2011 Tentang Pembentukan Peraturan Perundang-Undangan",
+            "catatan": null,
+            "url": "https://peraturan.bpk.go.id/Details/121716/uu-no-15-tahun-2019"
+          },
+          {
+            "id": "39188",
+            "peraturan": "UU No. 12 Tahun 2011",
+            "tentang": "Pembentukan Peraturan Perundang-Undangan",
+            "catatan": null,
+            "url": "https://peraturan.bpk.go.id/Details/39188/uu-no-12-tahun-2011"
+          }
+        ]
+      }
+    },
+    {
+      "id": "perma-14-2016",
+      "sourceUrl": "https://peraturan.bpk.go.id/Download/203788/Perma%20Nomor%2014%20Tahun%202016.pdf",
+      "retrievedAt": "2026-10-16T07:00:19.282Z",
+      "fileHash": "5592fa9022db9dd4ca0a1aa28c2579c3feec4a1e34ceaff8e150dea746b4ed70",
+      "bytes": 285517,
+      "pages": 11,
+      "extractionHealth": {
+        "status": "degraded",
+        "text_layer_pages": 10,
+        "empty_pages": [
+          11
+        ],
+        "invalid_legal_dates": [],
+        "warnings": [
+          "Halaman tanpa teks dilewati tanpa mengubah nomor halaman asli: 11."
+        ]
+      },
+      "documentComplete": "not_reviewed",
+      "interpretationReviewed": false,
+      "reviewPasses": [],
+      "label": "PERMA 14/2016",
+      "publisher": "JDIH BPK",
+      "relationships": {
+        "diubahDengan": []
+      },
+      "expectedHash": "5592fa9022db9dd4ca0a1aa28c2579c3feec4a1e34ceaff8e150dea746b4ed70"
+    },
+    {
+      "id": "qanun-aceh-6-2014",
+      "sourceUrl": "https://jdih.acehprov.go.id/dih/download/produk-hukum/8728e682-3306-42d5-a307-64bb638859c7",
+      "retrievedAt": "2026-10-17T17:58:02.155Z",
+      "fileHash": "3b2b44006b625b7454f735322a8eb466238ac5dd40a8202f427b2bfa08a8dc71",
+      "bytes": 1573566,
+      "pages": 41,
+      "extractionHealth": {
+        "status": "ok",
+        "text_layer_pages": 41,
+        "empty_pages": [],
+        "invalid_legal_dates": [],
+        "warnings": []
+      },
+      "documentComplete": "not_reviewed",
+      "interpretationReviewed": false,
+      "reviewPasses": [],
+      "label": "Qanun Aceh 6/2014",
+      "publisher": "JDIH Aceh",
+      "relationships": {
+        "diubahDengan": [
+          "Qanun Aceh 12/2025"
+        ]
+      },
+      "expectedHash": "3b2b44006b625b7454f735322a8eb466238ac5dd40a8202f427b2bfa08a8dc71"
+    },
+    {
+      "id": "qanun-aceh-12-2025",
+      "sourceUrl": "https://jdih.acehprov.go.id/dih/download/produk-hukum/630e9ae4-952f-4116-94fe-071d2c7184b4",
+      "retrievedAt": "2026-10-17T17:58:11.562Z",
+      "fileHash": "896d4db4e012bbf392a0545a1c3f919a52d932077cb5017e4a45af4dc786c326",
+      "bytes": 7038636,
+      "pages": 20,
+      "extractionHealth": {
+        "status": "degraded",
+        "text_layer_pages": 14,
+        "empty_pages": [
+          15,
+          16,
+          17,
+          18,
+          19,
+          20
+        ],
+        "invalid_legal_dates": [],
+        "warnings": [
+          "Halaman tanpa teks dilewati tanpa mengubah nomor halaman asli: 15, 16, 17, 18, 19, 20."
+        ]
+      },
+      "documentComplete": "not_reviewed",
+      "interpretationReviewed": false,
+      "reviewPasses": [],
+      "label": "Qanun Aceh 12/2025",
+      "publisher": "JDIH Aceh",
+      "relationships": {
+        "diubahDengan": []
+      },
+      "expectedHash": "896d4db4e012bbf392a0545a1c3f919a52d932077cb5017e4a45af4dc786c326"
+    },
+    {
+      "id": "mk-33-puu-xiv-2016",
+      "sourceUrl": "https://peraturan.bpk.go.id/DownloadUjiMateri/42/33_PUU-XIV_2016.pdf",
+      "retrievedAt": "2026-10-17T18:21:21.254Z",
+      "fileHash": "b899cf7dd885db32ab2e5f799dd2a32b89e122db50a4b252a8b137d65b56e3cc",
+      "bytes": 309024,
+      "pages": 40,
+      "extractionHealth": {
+        "status": "ok",
+        "text_layer_pages": 40,
+        "empty_pages": [],
+        "invalid_legal_dates": [],
+        "warnings": []
+      },
+      "documentComplete": "not_reviewed",
+      "interpretationReviewed": false,
+      "reviewPasses": [],
+      "label": "33/PUU-XIV/2016",
+      "publisher": "Mahkamah Konstitusi, salinan JDIH BPK",
+      "anonymizationReviewed": false
+    },
+    {
+      "id": "perma-2-2015",
+      "sourceUrl": "https://peraturan.bpk.go.id/Download/258697/Perma%20Nomor%202%20Tahun%202015.pdf",
+      "detailUrl": "https://peraturan.bpk.go.id/Details/209475/perma-no-2-tahun-2015",
+      "retrievedAt": "2026-10-20T09:27:26.389Z",
+      "fileHash": "c6ceda10f8e8e31cc30856ba830c38849600f3e4ee2676673c7395601977cb3d",
+      "pages": 15,
+      "extractionHealth": {
+        "status": "ok",
+        "text_layer_pages": 15,
+        "empty_pages": [],
+        "invalid_legal_dates": [],
+        "warnings": []
+      },
+      "documentComplete": "not_reviewed",
+      "interpretationReviewed": false,
+      "reviewPasses": []
+    },
+    {
+      "id": "perma-4-2019",
+      "sourceUrl": "https://peraturan.bpk.go.id/Download/258497/PERMA_04_2019.pdf",
+      "detailUrl": "https://peraturan.bpk.go.id/Details/206070/perma-no-4-tahun-2019",
+      "retrievedAt": "2026-10-20T09:27:29.339Z",
+      "fileHash": "f2fd4bee41fe185d1326885a74e5d84e529139678bc0c07788b247233162cf51",
+      "pages": 8,
+      "extractionHealth": {
+        "status": "ok",
+        "text_layer_pages": 8,
+        "empty_pages": [],
+        "invalid_legal_dates": [],
+        "warnings": []
+      },
+      "documentComplete": "not_reviewed",
+      "interpretationReviewed": false,
+      "reviewPasses": []
+    },
+    {
+      "id": "turats-6228-335",
+      "sourceUrl": "https://api.turath.io/page?book_id=6228&pg=335&ver=3",
+      "bookUrl": "https://api.turath.io/book?id=6228&ver=3",
+      "fileHash": "0c281fc825802379f400832f467273f118342190bcfc7dbd1ae92291a1f3d8f0",
+      "label": "اختلاف الأئمة العلماء لابن هبيرة",
+      "author": "ابن هبيرة",
+      "edition": "الكتاب: اختلاف الأئمة العلماء المؤلف: يحيى بن (هُبَيْرَة بن) محمد بن هبيرة الذهلي الشيبانيّ، أبو المظفر، عون الدين (ت ٥٦٠ هـ) المحقق: السيد يوسف أحمد الناشر: دار الكتب العلمية - لبنان / بيروت الطبعة: الأولى، ١٤٢٣ هـ - ٢٠٠٢ م عدد الأجزاء: ٢ تنبيه: \"الاتفاق\" الذي يحكيه ابنُ هبيرة في هذا الكتاب: ليس هو \"الإجماع\" المعروف، وإنما هو اتفاق الأئمة الأربعة فقط؛ كما اصطلح عليه المؤلف بهذا الكتاب وصرح به في مقدمته (انظر ١/ ٢٥ - ٢٦ من هذه الطبعة). [ترقيم الكتاب موافق للمطبوع]",
+      "internalPage": 335,
+      "printedPage": 351,
+      "volume": "1",
+      "transcriptionVersion": "1.0",
+      "documentComplete": false,
+      "interpretationReviewed": false,
+      "reviewPasses": [],
+      "origin": "digital_transcription",
+      "attributionWarning": "Pendapat yang dilaporkan tidak otomatis madzhab penulis."
+    },
+    {
+      "id": "turats-6172-48",
+      "sourceUrl": "https://api.turath.io/page?book_id=6172&pg=48&ver=3",
+      "bookUrl": "https://api.turath.io/book?id=6172&ver=3",
+      "fileHash": "31fb4ab02374646fc3d36c3d67167edb7d04290110fded0e96a49b9efcb7be13",
+      "label": "جواهر العقود ومعين القضاة والموقعين والشهود",
+      "author": "المنهاجي الأسيوطي",
+      "edition": "الكتاب: جواهر العقود ومعين القضاة والموقعين والشهود المؤلف: شمس الدين محمد بن أحمد المنهاجي الأسيوطي [ت ٨٨٠ هـ] حققها وخرج أحاديثها: مسعد عبد الحميد محمد السعدني [هذا المثبَت على الغلاف] ضبَطَه وقَدَّم له: محمد أمين الضناوي [وهذا ما دُوّن بمقدمة الكتاب!] الناشر: دار الكتب العلمية بيروت - لبنان الطبعة: الأول، ١٤١٧ هـ - ١٩٩٦ م عدد الأجزاء: ٢ [ترقيم الكتاب موافق للمطبوع]",
+      "internalPage": 48,
+      "printedPage": 50,
+      "volume": "1",
+      "transcriptionVersion": "1.1",
+      "documentComplete": false,
+      "interpretationReviewed": false,
+      "reviewPasses": [],
+      "origin": "digital_transcription",
+      "attributionWarning": "Pendapat yang dilaporkan tidak otomatis madzhab penulis."
+    },
+    {
+      "id": "khi-kemenag-pusat",
+      "label": "Kompilasi Hukum Islam, kandidat salinan Kemenag",
+      "sourceUrl": "https://simbi.kemenag.go.id/eliterasi/storage/perpustakaan/pusat/316a67e6-6a05-4bf8-9f1d-6e8b22741b90/buku-digital/df7746a999-7125653410.pdf",
+      "fileHash": "c9753b29af00510111a997ceebea9b5203dc69eda3eaa65ad052a0884aac1092",
+      "pages": 252,
+      "sourcePages": [
+        189,
+        240
+      ],
+      "documentComplete": false,
+      "interpretationReviewed": false,
+      "imported": false,
+      "reviewPasses": [
+        {
+          "file": "review-pass1-189-206.json",
+          "pass": 1,
+          "pages": [
+            189,
+            190,
+            191,
+            192,
+            193,
+            194,
+            195,
+            196,
+            197,
+            198,
+            199,
+            200,
+            201,
+            202,
+            203,
+            204,
+            205,
+            206
+          ]
+        },
+        {
+          "file": "review-pass1-207-223.json",
+          "pass": 1,
+          "pages": [
+            207,
+            208,
+            209,
+            210,
+            211,
+            212,
+            213,
+            214,
+            215,
+            216,
+            217,
+            218,
+            219,
+            220,
+            221,
+            222,
+            223
+          ]
+        },
+        {
+          "file": "review-pass1-224-240.json",
+          "pass": 1,
+          "pages": [
+            224,
+            225,
+            226,
+            227,
+            228,
+            229,
+            230,
+            231,
+            232,
+            233,
+            234,
+            235,
+            236,
+            237,
+            238,
+            239,
+            240
+          ]
+        },
+        {
+          "file": "review-pass2-189-206.json",
+          "pass": 2,
+          "pages": [
+            189,
+            190,
+            191,
+            192,
+            193,
+            194,
+            195,
+            196,
+            197,
+            198,
+            199,
+            200,
+            201,
+            202,
+            203,
+            204,
+            205,
+            206
+          ]
+        },
+        {
+          "file": "review-pass2-207-223.json",
+          "pass": 2,
+          "pages": [
+            207,
+            208,
+            209,
+            210,
+            211,
+            212,
+            213,
+            214,
+            215,
+            216,
+            217,
+            218,
+            219,
+            220,
+            221,
+            222,
+            223
+          ]
+        },
+        {
+          "file": "review-pass2-224-240.json",
+          "pass": 2,
+          "pages": [
+            224,
+            225,
+            226,
+            227,
+            228,
+            229,
+            230,
+            231,
+            232,
+            233,
+            234,
+            235,
+            236,
+            237,
+            238,
+            239,
+            240
+          ]
+        }
+      ],
+      "status": "source_blocked",
+      "reason": "Dua lintasan atas 52 gambar selesai; kerusakan karakter, tipografi dan nomor tercetak Pasal16 antara115/117 belum terselesaikan. Bukan alasan melonggarkan importer."
+    }
+  ]
+}
