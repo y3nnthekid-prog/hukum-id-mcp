@@ -1,0 +1,64 @@
+{
+  "v": 1,
+  "reviewKind": "telaah AI berbasis sumber",
+  "reviewer": "primary assistant",
+  "reviewedAt": "2026-10-21T07:57:41.427Z",
+  "status": "reconciled_material_review_pending_runtime",
+  "id": "pidana-mendalam",
+  "brief": "Qanun 12/2025 berjudul Perubahan atas Qanun 6/2014 tentang Hukum Jinayat. Untuk mengetahui apa yang berubah, naskah asli dibaca bersama daftar perubahan dalam Pasal I; keduanya tetap ditampilkan sebagai dokumen terpisah.",
+  "explanation": "Pasal I pada halaman PDF 3 membuka daftar perubahan. Bagian yang berisi rumusan pasal terpisah dari bagian Penjelasan yang mulai pada halaman PDF 15. Pasal I angka 25 pada halaman PDF 14 menyisipkan Pasal 74A, yang menyatakan Pasal 80 ayat (1) dan (2) Qanun 9/2019 dicabut dan tidak berlaku. Pasal II menyatakan Qanun ini berlaku pada tanggal diundangkan; dokumen mencatat pengundangan 21 November 2025.",
+  "limits": "Ini panduan membaca hubungan dokumen sumber, bukan teks konsolidasi, daftar lengkap perubahan, atau kepastian status hukum terkini. Pilih pasal yang ingin dibaca, buka bunyi aslinya, cari nomor perubahan yang menyebut pasal itu dalam Pasal I, lalu baca Penjelasan terkait. Qanun 9/2019 belum ditelaah di sini; kutipan pencabutan hanya menyangkut dua ayat yang disebut.",
+  "evidence": [
+    {
+      "key": "qanun12-amender",
+      "id": "qanun-aceh-12-2025",
+      "page": 3,
+      "section": "Pasal I",
+      "quote": "Beberapa ketentuan dalam Qanun Aceh Nomor 6 Tahun 2014 tentang Hukum Jinayat (Lembaran Aceh Tahun 2014 Nomor 7, Tambahan Lembaran Aceh Nomor 66) diubah sebagai berikut:",
+      "image": "qanun/qanun-12-2025-page-03.png",
+      "fileHash": "896d4db4e012bbf392a0545a1c3f919a52d932077cb5017e4a45af4dc786c326"
+    },
+    {
+      "key": "qanun12-repeal",
+      "id": "qanun-aceh-12-2025",
+      "page": 14,
+      "section": "Pasal I angka 25, sisipan Pasal 74A",
+      "quote": "Ketentuan Pasal 80 ayat (1) dan Pasal 80 ayat (2) Qanun Aceh Nomor 9 Tahun 2019 tentang Penyelenggaraan Penanganan Kekerasan Terhadap Perempuan dan Anak (Lembaran Aceh Tahun 2019 Nomor 17, Tambahan Lembaran Aceh Nomor 119) dicabut dan dinyatakan tidak berlaku.",
+      "image": "qanun/qanun-12-2025-page-14.png",
+      "fileHash": "896d4db4e012bbf392a0545a1c3f919a52d932077cb5017e4a45af4dc786c326"
+    },
+    {
+      "key": "qanun12-start",
+      "id": "qanun-aceh-12-2025",
+      "page": 14,
+      "section": "Pasal II",
+      "quote": "Qanun ini mulai berlaku pada tanggal diundangkan.",
+      "image": "qanun/qanun-12-2025-page-14.png",
+      "fileHash": "896d4db4e012bbf392a0545a1c3f919a52d932077cb5017e4a45af4dc786c326"
+    },
+    {
+      "key": "qanun12-explanation-boundary",
+      "id": "qanun-aceh-12-2025",
+      "page": 15,
+      "section": "Kepala Penjelasan, I. Umum",
+      "quote": "PENJELASAN ATAS QANUN ACEH NOMOR 12 TAHUN 2025 TENTANG PERUBAHAN ATAS QANUN ACEH NOMOR 6 TAHUN 2014 TENTANG HUKUM JINAYAT",
+      "image": "qanun/qanun-12-2025-page-15.png",
+      "fileHash": "896d4db4e012bbf392a0545a1c3f919a52d932077cb5017e4a45af4dc786c326"
+    }
+  ],
+  "additionalReviewedSources": [
+    "qanun/qanun-12-2025.reviewed.json",
+    "sources/qanun-aceh-6-2014.pages.json"
+  ],
+  "reviewBasis": "Primary pass: complete Qanun12 sidecar reviewed twice previously; original Qanun6 supplied separately, no automatic consolidation.",
+  "paidCalls": 0,
+  "notAnAzureResult": true,
+  "reconciliation": {
+    "at": "2026-10-21T08:07:15.430Z",
+    "findingFiles": [
+      "htn-qanun-pass2.json"
+    ],
+    "classification": "valid_actionable",
+    "resolution": "Koreksi kutipan/lokasi/istilah dan batas diterapkan; penelaah memeriksa ulang artefak final sebelum kelulusan materi."
+  }
+}

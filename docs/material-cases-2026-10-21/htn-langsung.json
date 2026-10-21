@@ -1,0 +1,40 @@
+{
+  "v": 1,
+  "reviewKind": "telaah AI berbasis sumber",
+  "reviewer": "primary assistant",
+  "reviewedAt": "2026-10-21T07:57:41.424Z",
+  "status": "reconciled_material_review_pending_runtime",
+  "id": "htn-langsung",
+  "brief": "Amar Putusan 33/PUU-XIV/2016 mengabulkan permohonan dan memuat pernyataan bersyarat tentang Pasal 263 ayat (1) UU 8/1981. Bunyi lengkap bagian Mengadili disertakan pada dasar jawaban.",
+  "explanation": "Amar adalah bagian putusan yang menyebut keputusan Mahkamah. Dalam amar ini, pernyataan tentang Pasal 263 ayat (1) bersyarat. Pertimbangan [3.14] halaman 38 menjelaskan pemaknaan yang dimaksud: peninjauan kembali (PK) hanya dapat diajukan terpidana atau ahli warisnya, dan tidak terhadap putusan bebas atau lepas dari segala tuntutan hukum. Ini penjelasan hubungan amar dan pertimbangan dalam putusan 2016 tersebut.",
+  "limits": "Baca amar lengkap halaman 39 bersama [3.14] halaman 38. Putusan ini tidak cukup untuk menentukan hak mengajukan PK pada perkara sekarang; perkembangan aturan dan putusan setelah 2016 belum ditelaah di sini.",
+  "evidence": [
+    {
+      "id": "mk-33-puu-xiv-2016",
+      "page": 39,
+      "quote": "Mengadili,\nMenyatakan:\n1. Mengabulkan permohonan Pemohon;\n1.1. Pasal 263 ayat (1) Undang-Undang Nomor 8 Tahun 1981 tentang Hukum Acara Pidana (Lembaran Negara Republik Indonesia Tahun 1981 Nomor 76, Tambahan Lembaran Negara Republik Indonesia Nomor 3209) bertentangan dengan UUD 1945 secara bersyarat, yaitu sepanjang dimaknai lain selain yang secara eksplisit tersurat dalam norma a quo;\n1.2. Pasal 263 ayat (1) Undang-Undang Nomor 8 Tahun 1981 tentang Hukum Acara Pidana (Lembaran Negara Republik Indonesia Tahun 1981 Nomor 76, Tambahan Lembaran Negara Republik Indonesia Nomor 3209) tidak mempunyai kekuatan hukum mengikat secara bersyarat, yaitu sepanjang dimaknai lain selain yang secara eksplisit tersurat dalam norma a quo;\n2. Memerintahkan pemuatan putusan ini dalam Berita Negara Republik Indonesia sebagaimana mestinya.",
+      "fileHash": "b899cf7dd885db32ab2e5f799dd2a32b89e122db50a4b252a8b137d65b56e3cc",
+      "image": "C:/Users/yennthekid/Documents/Codex/2026-10-16/ak/outputs/pasla-material-2026-10-20/case-review-images/mk-33-puu-xiv-2016-39.png"
+    },
+    {
+      "key": "mk-reasoning-314",
+      "id": "mk-33-puu-xiv-2016",
+      "page": 38,
+      "section": "[3.14]",
+      "quote": "Menimbang bahwa berdasarkan seluruh pertimbangan hukum di atas Mahkamah memandang penting untuk menegaskan kembali bahwa norma Pasal 263 ayat (1) UU 8/1981 adalah norma yang konstitusional sepanjang tidak dimaknai lain selain bahwa peninjauan kembali hanya dapat diajukan oleh terpidana atau ahli warisnya, dan tidak boleh diajukan terhadap putusan bebas dan lepas dari segala tuntutan hukum. Pemaknaan yang berbeda terhadap norma a quo akan menimbulkan ketidakpastian hukum dan ketidakadilan yang justru menjadikannya inkonstitusional. Untuk itu Mahkamah perlu menegaskan bahwa demi kepastian hukum yang adil norma Pasal 263 ayat (1) UU 8/1981 menjadi inkonstitusional jika dimaknai lain.",
+      "image": "case-review-images/mk-33-puu-xiv-2016-38.png",
+      "fileHash": "b899cf7dd885db32ab2e5f799dd2a32b89e122db50a4b252a8b137d65b56e3cc"
+    }
+  ],
+  "reviewBasis": "Primary pass: full original amar page39 image checked; case identity on complete40page file needs independent confirmation. Independent pass confirmed case head PDF1 and full amar39; no party PII copied.",
+  "paidCalls": 0,
+  "notAnAzureResult": true,
+  "reconciliation": {
+    "at": "2026-10-21T08:07:15.365Z",
+    "findingFiles": [
+      "htn-qanun-pass2.json"
+    ],
+    "classification": "valid_actionable",
+    "resolution": "Koreksi kutipan/lokasi/istilah dan batas diterapkan; penelaah memeriksa ulang artefak final sebelum kelulusan materi."
+  }
+}

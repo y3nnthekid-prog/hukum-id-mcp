@@ -1,0 +1,45 @@
+{
+  "v": 1,
+  "reviewKind": "telaah AI berbasis sumber",
+  "reviewer": "primary assistant",
+  "reviewedAt": "2026-10-21T07:57:41.403Z",
+  "status": "reconciled_material_review_pending_runtime",
+  "id": "hukum-mendalam",
+  "brief": "UU 13/2022 mengubah sejumlah ketentuan UU 12/2011; kedua dokumen dibaca bersama, bukan sebagai dua aturan yang saling menggantikan seluruh isinya.",
+  "explanation": "Sebagai contoh terbatas, Pasal 9 naskah 2011 memuat dua ayat tentang pengujian oleh Mahkamah Konstitusi dan Mahkamah Agung. Pasal I angka 2 UU 13/2022 menyatakan Pasal 9 diubah, lalu menampilkan enam ayat. Ayat (1) dan (2) tetap memuat pembagian pengujian itu, sedangkan ayat (3)–(6) mengatur penanganan di lingkungan DPR dan Pemerintah serta pengaturan lebih lanjut. Pembukaan Pasal I juga menyebut perubahan terdahulu, UU 15/2019.",
+  "limits": "Ini contoh hubungan naskah berdasarkan Pasal 9 dan pembukaan Pasal I, bukan daftar seluruh perubahan atau teks konsolidasi terkini. Baca UU 15/2019 dan perubahan/putusan lain yang relevan sebelum menerapkan ketentuan untuk kasus nyata.",
+  "evidence": [
+    {
+      "id": "uu-12-2011",
+      "page": 8,
+      "quote": "Pasal 9\n(1) Dalam hal suatu Undang-Undang diduga bertentangan dengan Undang-Undang Dasar Negara Republik Indonesia Tahun 1945, pengujiannya dilakukan oleh Mahkamah Konstitusi.\n(2) Dalam hal suatu Peraturan Perundang-undangan di bawah Undang-Undang diduga bertentangan dengan Undang-Undang, pengujiannya dilakukan oleh Mahkamah Agung.",
+      "fileHash": "539b705040f263ebf933b0ab739868a227e94932691407852e95aa0eaa05c8db",
+      "image": "C:/Users/yennthekid/Documents/Codex/2026-10-16/ak/outputs/pasla-material-2026-10-20/case-review-images/uu-12-2011-8.png"
+    },
+    {
+      "id": "uu-13-2022",
+      "page": 2,
+      "quote": "Beberapa ketentuan dalam Undang-Undang Nomor 12 Tahun 2011 tentang Pembentukan Peraturan Perundang-undangan",
+      "fileHash": "1feca7ed8b1bdf635b9e332df8fd21d03bed7e44d280e9adf083f77f03b352ae",
+      "image": "C:/Users/yennthekid/Documents/Codex/2026-10-16/ak/outputs/pasla-material-2026-10-20/case-review-images/uu-13-2022-2.png"
+    },
+    {
+      "id": "uu-13-2022",
+      "page": 3,
+      "quote": "Ketentuan Pasal 9 diubah sehingga berbunyi sebagai berikut:",
+      "fileHash": "1feca7ed8b1bdf635b9e332df8fd21d03bed7e44d280e9adf083f77f03b352ae",
+      "image": "C:/Users/yennthekid/Documents/Codex/2026-10-16/ak/outputs/pasla-material-2026-10-20/case-review-images/uu-13-2022-3.png"
+    }
+  ],
+  "reviewBasis": "Primary pass: viewed original PDF images pages UU12/8 and UU13/2,3; full native page text retained as context. Selected example only.",
+  "paidCalls": 0,
+  "notAnAzureResult": true,
+  "reconciliation": {
+    "at": "2026-10-21T08:07:15.344Z",
+    "findingFiles": [
+      "hukum-hes-pass2.json"
+    ],
+    "classification": "valid_actionable",
+    "resolution": "Koreksi kutipan/lokasi/istilah dan batas diterapkan; penelaah memeriksa ulang artefak final sebelum kelulusan materi."
+  }
+}

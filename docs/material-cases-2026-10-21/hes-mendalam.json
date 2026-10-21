@@ -1,0 +1,70 @@
+{
+  "v": 1,
+  "reviewKind": "telaah AI berbasis sumber",
+  "reviewer": "primary assistant",
+  "reviewedAt": "2026-10-21T07:57:41.423Z",
+  "status": "reconciled_material_review_pending_runtime",
+  "id": "hes-mendalam",
+  "brief": "PERMA 14/2016 menyediakan acara sederhana dan acara biasa untuk perkara ekonomi syariah. Untuk pemeriksaan sederhana, Pasal 3 ayat (3) merujuk PERMA 2/2015 dengan pengecualian bagi aturan khusus dalam PERMA 14/2016.",
+  "explanation": "PERMA 2/2015 mengatur tata cara gugatan sederhana. PERMA 4/2019 secara eksplisit mengubah PERMA 2/2015; antara lain, Pasal 3 ayat (1) yang ditampilkannya memuat nilai gugatan materiil paling banyak Rp500.000.000,00. Sementara itu naskah PERMA 14/2016 Pasal 3 ayat (2) yang dibuka masih mencantumkan Rp200.000.000,00 untuk pemeriksaan sederhana. Angka Rp500 juta berasal dari perubahan PERMA 2/2015, sedangkan Rp200 juta tercantum dalam naskah PERMA 14/2016 yang diperiksa. Dokumen perubahan PERMA 2/2015 saja tidak membuktikan bahwa bunyi Pasal 3 ayat (2) PERMA 14/2016 telah diganti.",
+  "limits": "Bahan ini menjelaskan hubungan rujukan dan perbedaan bunyi tiga dokumen, tetapi belum memastikan batas nilai yang harus diterapkan pada perkara ekonomi syariah saat ini. Sebelum mengajukan perkara, minta pengadilan agama menjelaskan pedoman resmi yang dipakai untuk batas nilai dan syarat gugatan sederhana. PERMA 14/2016 membahas tata cara penyelesaian perkara ekonomi syariah; dokumen ini bukan Kompilasi Hukum Ekonomi Syariah (KHES).",
+  "evidence": [
+    {
+      "id": "perma-14-2016",
+      "page": 5,
+      "quote": "Pemeriksaan perkara sebagaimana dimaksud pada ayat (2) mengacu pada Peraturan Mahkamah Agung Nomor 2 Tahun 2015 tentang Tata Cara Penyelesaian Gugatan Sederhana kecuali hal-hal yang diatur secara khusus dalam Peraturan Mahkamah Agung ini.",
+      "fileHash": "5592fa9022db9dd4ca0a1aa28c2579c3feec4a1e34ceaff8e150dea746b4ed70",
+      "image": "C:/Users/yennthekid/Documents/Codex/2026-10-16/ak/outputs/pasla-material-2026-10-20/case-review-images/perma-14-2016-5.png"
+    },
+    {
+      "id": "perma-14-2016",
+      "page": 5,
+      "quote": "Perkara ekonomi syariah dapat diajukan dalam bentuk gugatan sederhana atau gugatan dengan acara biasa.",
+      "fileHash": "5592fa9022db9dd4ca0a1aa28c2579c3feec4a1e34ceaff8e150dea746b4ed70",
+      "image": "C:/Users/yennthekid/Documents/Codex/2026-10-16/ak/outputs/pasla-material-2026-10-20/case-review-images/perma-14-2016-5.png"
+    },
+    {
+      "id": "perma-14-2016",
+      "page": 5,
+      "quote": "Pemeriksaan perkara dengan acara sederhana adalah pemeriksaan terhadap perkara ekonomi syariah yang nilainya paling banyak Rp200.000.000,00 (dua ratus juta rupiah).",
+      "fileHash": "5592fa9022db9dd4ca0a1aa28c2579c3feec4a1e34ceaff8e150dea746b4ed70",
+      "image": "C:/Users/yennthekid/Documents/Codex/2026-10-16/ak/outputs/pasla-material-2026-10-20/case-review-images/perma-14-2016-5.png"
+    },
+    {
+      "id": "perma-4-2019",
+      "page": 3,
+      "quote": "Beberapa ketentuan dalam Peraturan Mahkamah Agung Nomor 2 Tahun 2015 tentang Tata Cara Penyelesaian Gugatan Sederhana (Berita Negara Republik Indonesia Tahun 2015 Nomor 1172), diubah sebagai berikut:",
+      "fileHash": "f2fd4bee41fe185d1326885a74e5d84e529139678bc0c07788b247233162cf51",
+      "image": "C:/Users/yennthekid/Documents/Codex/2026-10-16/ak/outputs/pasla-material-2026-10-20/perma/perma-4-2019-page-03.png"
+    },
+    {
+      "id": "perma-4-2019",
+      "page": 4,
+      "quote": "Ketentuan ayat (1) Pasal 3 diubah, sehingga Pasal 3 berbunyi sebagai berikut:",
+      "fileHash": "f2fd4bee41fe185d1326885a74e5d84e529139678bc0c07788b247233162cf51",
+      "image": "C:/Users/yennthekid/Documents/Codex/2026-10-16/ak/outputs/pasla-material-2026-10-20/perma/perma-4-2019-page-04.png"
+    },
+    {
+      "id": "perma-4-2019",
+      "page": 4,
+      "quote": "Gugatan sederhana diajukan terhadap perkara cidera janji dan/atau perbuatan melawan hukum dengan nilai gugatan materiil paling banyak Rp500.000.000,00 (lima ratus juta rupiah).",
+      "fileHash": "f2fd4bee41fe185d1326885a74e5d84e529139678bc0c07788b247233162cf51",
+      "image": "C:/Users/yennthekid/Documents/Codex/2026-10-16/ak/outputs/pasla-material-2026-10-20/perma/perma-4-2019-page-04.png"
+    }
+  ],
+  "additionalReviewedSources": [
+    "perma/perma-2-2015.reviewed.json",
+    "perma/perma-4-2019.reviewed.json"
+  ],
+  "reviewBasis": "Primary pass: PERMA14 page5 image checked; PERMA2 and4 full reviewed sidecars supply exact text and image mappings.",
+  "paidCalls": 0,
+  "notAnAzureResult": true,
+  "reconciliation": {
+    "at": "2026-10-21T08:07:15.356Z",
+    "findingFiles": [
+      "hukum-hes-pass2.json"
+    ],
+    "classification": "valid_actionable",
+    "resolution": "Koreksi kutipan/lokasi/istilah dan batas diterapkan; penelaah memeriksa ulang artefak final sebelum kelulusan materi."
+  }
+}

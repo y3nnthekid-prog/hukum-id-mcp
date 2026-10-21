@@ -1,0 +1,31 @@
+{
+  "v": 1,
+  "reviewKind": "telaah AI berbasis sumber",
+  "reviewer": "primary assistant",
+  "reviewedAt": "2026-10-21T07:57:41.420Z",
+  "status": "reconciled_material_review_pending_runtime",
+  "id": "hes-langsung",
+  "brief": "Perkara ekonomi syariah dapat diajukan dalam bentuk gugatan sederhana atau gugatan dengan acara biasa.",
+  "explanation": "Pasal ini menyebut dua bentuk pengajuan perkara. Pasal 2 sendiri belum merinci syarat untuk memilih masing-masing bentuk.",
+  "limits": "Pasal 2 hanya menyebut dua bentuk pengajuan. Untuk mulai memeriksa syarat acara sederhana, baca Pasal 3 PERMA 14/2016 beserta aturan yang dirujuknya. Pastikan ketentuan yang berlaku kepada pengadilan agama sebelum mengajukan perkara. Kutipan ini belum menilai apakah gugatan tertentu memenuhi syarat.",
+  "evidence": [
+    {
+      "id": "perma-14-2016",
+      "page": 5,
+      "quote": "Perkara ekonomi syariah dapat diajukan dalam bentuk gugatan sederhana atau gugatan dengan acara biasa.",
+      "fileHash": "5592fa9022db9dd4ca0a1aa28c2579c3feec4a1e34ceaff8e150dea746b4ed70",
+      "image": "C:/Users/yennthekid/Documents/Codex/2026-10-16/ak/outputs/pasla-material-2026-10-20/case-review-images/perma-14-2016-5.png"
+    }
+  ],
+  "reviewBasis": "Primary pass: original page5 visually checked.",
+  "paidCalls": 0,
+  "notAnAzureResult": true,
+  "reconciliation": {
+    "at": "2026-10-21T08:07:15.352Z",
+    "findingFiles": [
+      "hukum-hes-pass2.json"
+    ],
+    "classification": "valid_actionable",
+    "resolution": "Koreksi kutipan/lokasi/istilah dan batas diterapkan; penelaah memeriksa ulang artefak final sebelum kelulusan materi."
+  }
+}

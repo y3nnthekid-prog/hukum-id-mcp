@@ -1,0 +1,85 @@
+{
+  "v": 1,
+  "reviewKind": "telaah AI berbasis sumber",
+  "reviewer": "primary assistant translation draft pass1",
+  "reviewedAt": "2026-10-20T13:37:06.361Z",
+  "status": "reviewed_companion_translation",
+  "sources": [
+    {
+      "bookId": 6228,
+      "pageId": 335,
+      "printedPage": 351,
+      "volume": "1",
+      "title": "اختلاف الأئمة العلماء لابن هبيرة",
+      "author": "ابن هبيرة",
+      "edition": "الكتاب: اختلاف الأئمة العلماء المؤلف: يحيى بن (هُبَيْرَة بن) محمد بن هبيرة الذهلي الشيبانيّ، أبو المظفر، عون الدين (ت ٥٦٠ هـ) المحقق: السيد يوسف أحمد الناشر: دار الكتب العلمية - لبنان / بيروت الطبعة: الأولى، ١٤٢٣ هـ - ٢٠٠٢ م عدد الأجزاء: ٢ تنبيه: \"الاتفاق\" الذي يحكيه ابنُ هبيرة في هذا الكتاب: ليس هو \"الإجماع\" المعروف، وإنما هو اتفاق الأئمة الأربعة فقط؛ كما اصطلح عليه المؤلف بهذا الكتاب وصرح به في مقدمته (انظر ١/ ٢٥ - ٢٦ من هذه الطبعة). [ترقيم الكتاب موافق للمطبوع]",
+      "transcriptionVersion": "1.0",
+      "sourceTextHash": "29974bf5c4dc77e1044341911f73d0af678040c983ef28be42e2a73fa36138c5",
+      "sourceFileHash": "0c281fc825802379f400832f467273f118342190bcfc7dbd1ae92291a1f3d8f0",
+      "sourceText": "فَقَالَ أَبُو حنيفَة وَمَالك: خِيَار الْمجْلس بَاطِل وَالْعقد بالْقَوْل كَاف لَازم وَإِذا وَجب البيع بَينهمَا فَلَيْسَ لأَحَدهمَا الْخِيَار وَإِن كَانَا فِي الْمجْلس. وَقَالَ الشَّافِعِي وَأحمد: هُوَ صَحِيح ثَابت وَلكُل وَاحِد مِنْهُمَا الْخِيَار مَا دَامَ فِي الْمجْلس فَيبقى وَلَو طَال مكثهما أَو تماشيا منَازِل وَإِن زَادَت الْمدَّة عَن ثَلَاثَة أَيَّام. وَاخْتلفُوا هَل يثبت خِيَار الْمجْلس فِي عقد السّلم وَالصرْف أم لَا؟ فَقَالَ أَبُو حنيفَة وَمَالك: لَيْسَ بِثَابِت فيهمَا وَلَا فِي غَيرهمَا من الْعُقُود. وَقَالَ الشَّافِعِي: يثبت فيهمَا جَمِيعًا. وَعَن أَحْمد رِوَايَتَانِ كالمذهبين. وَاتَّفَقُوا على أَنه يجوز شَرط الْخِيَار للمتعاقدين مَعًا ولأحدهما بِانْفِرَادِهِ إِذا شَرطه. ثمَّ اخْتلفُوا فِي مُدَّة الْخِيَار.",
+      "sourceUrl": "https://api.turath.io/page?book_id=6228&pg=335&ver=3"
+    },
+    {
+      "bookId": 6172,
+      "pageId": 48,
+      "printedPage": 50,
+      "volume": "1",
+      "title": "جواهر العقود ومعين القضاة والموقعين والشهود",
+      "author": "المنهاجي الأسيوطي",
+      "edition": "الكتاب: جواهر العقود ومعين القضاة والموقعين والشهود المؤلف: شمس الدين محمد بن أحمد المنهاجي الأسيوطي [ت ٨٨٠ هـ] حققها وخرج أحاديثها: مسعد عبد الحميد محمد السعدني [هذا المثبَت على الغلاف] ضبَطَه وقَدَّم له: محمد أمين الضناوي [وهذا ما دُوّن بمقدمة الكتاب!] الناشر: دار الكتب العلمية بيروت - لبنان الطبعة: الأول، ١٤١٧ هـ - ١٩٩٦ م عدد الأجزاء: ٢ [ترقيم الكتاب موافق للمطبوع]",
+      "transcriptionVersion": "1.1",
+      "sourceTextHash": "63b21268322cadac5d4f83bc3beb42a74faaba57cd136cb8a9e821717d49cfb5",
+      "sourceFileHash": "31fb4ab02374646fc3d36c3d67167edb7d04290110fded0e96a49b9efcb7be13",
+      "sourceText": "والمعاطاة لَا ينْعَقد بهَا البيع على الرَّاجِح من مَذْهَب الشَّافِعِي وَهِي رِوَايَة عَن أبي حنيفَة وَأحمد وَقَالَ مَالك: ينْعَقد بهَا البيع وَبيع المصادر صَحِيح عِنْد مَالك وَاخْتَارَهُ ابْن الصّباغ وَالنَّوَوِيّ وَجَمَاعَة من الشَّافِعِيَّة وَهِي رِوَايَة عَن أبي حنيفَة وَأحمد مثله والأشياء الحقيرة: هَل يشْتَرط فِيهَا الْإِيجَاب وَالْقَبُول كالخطيرة قَالَ أَبُو حنيفَة فِي رِوَايَة: لَا يشْتَرط لَا فِي الحقيرة وَلَا فِي الخطيرة وَقَالَ فِي رِوَايَة أُخْرَى: يشْتَرط فِي الخطيرة دون الحقيرة وَبِه قَالَ أَحْمد وَقَالَ مَالك: لَا يشْتَرط مُطلقًا وكل مَا رَآهُ النَّاس بيعا فَهُوَ صَحِيح جَائِز وَقدر الحقير برطل خبز وَينْعَقد البيع بِلَفْظ الاستدعاء عِنْد الثَّلَاثَة كبعني فَيَقُول: بِعْتُك وَقَالَ أَبُو حنيفَة: لَا ينْعَقد فصل : وَإِذا انْعَقَد البيع: ثَبت لكل من الْمُتَبَايعين خِيَار الْمجْلس مَا لم يَتَفَرَّقَا أَو يتخايرا عِنْد الشَّافِعِي وَأحمد وَقَالَ أَبُو حنيفَة وَمَالك: لَا يثبت خِيَار الْمجْلس وَيجوز شَرط الْخِيَار ثَلَاثَة أَيَّام عِنْد أبي حنيفَة وَالشَّافِعِيّ وَلَا يجوز فَوق ذَلِك وَقَالَ مَالك: يجوز على حسب مَا تَدْعُو إِلَيْهِ الْحَاجة وَيخْتَلف ذَلِك باخْتلَاف المبيعات فالفاكهة الَّتِي لَا تبقى أَكثر من يَوْم لَا يجوز الْخِيَار فِيهَا أَكثر من يَوْم والعزبة الَّتِي لَا يُمكن الْوُقُوف عَلَيْهَا فِي ثَلَاثَة أَيَّام يجوز شَرط الْخِيَار فِيهَا أَكثر من ثَلَاثَة أَيَّام وَقَالَ أَحْمد وَأَبُو يُوسُف وَمُحَمّد: يثبت من الْخِيَار مَا يتفقان على شَرطه كالأجل وَإِن شَرط الْخِيَار إِلَى اللَّيْل لم يدْخل اللَّيْل فِي الْخِيَار عِنْد الثَّلَاثَة وَقَالَ أَبُو حنيفَة: يدْخل فِيهِ وَإِذا مَضَت مُدَّة الْخِيَار من غير اخْتِيَار فسخ وَلَا إجَازَة لزم البيع عِنْد الثَّلَاثَة وَقَالَ مَالك: لَا يلْزم بِمُجَرَّد ذَلِك وَإِذا بَاعه سلْعَة على أَنه إِن لم يقضه الثّمن فِي ثَلَاثَة أَيَّام فَلَا بيع بَينهمَا فَذَاك شَرط فَاسد يفْسد البيع وَكَذَلِكَ إِذا قَالَ البَائِع: بِعْتُك على أَنِّي إِذا رددت عَلَيْك الثّمن بعد ثَلَاثَة أَيَّام فَلَا بيع بَيْننَا عِنْد الثَّلَاثَة وَقَالَ أَبُو حنيفَة: البيع صَحِيح وَيكون فِي القَوْل الأول إِثْبَات خِيَار المُشْتَرِي وَحده وَيكون فِي القَوْل الثَّانِي: إِثْبَات خِيَار البَائِع وَحده وَلَا يلْزم تَسْلِيم الثّمن فِي مُدَّة الْخِيَار عِنْد الثَّلَاثَة وَقَالَ مَالك: يلْزم فصل : وَمن ثَبت لَهُ الْخِيَار فسخ البيع بِحُضُور صَاحبه وَفِي غيبته عِنْد مَالك وَالشَّافِعِيّ وَأحمد وَقَالَ أَبُو حنيفَة: لَيْسَ لَهُ فسخ إِلَّا بِحُضُور صَاحبه",
+      "sourceUrl": "https://api.turath.io/page?book_id=6172&pg=48&ver=3"
+    }
+  ],
+  "translations": [
+    {
+      "id": "ibn-hubayra-abu-hanifa-malik",
+      "source": 6228,
+      "arabic": "فَقَالَ أَبُو حنيفَة وَمَالك: خِيَار الْمجْلس بَاطِل وَالْعقد بالْقَوْل كَاف لَازم وَإِذا وَجب البيع بَينهمَا فَلَيْسَ لأَحَدهمَا الْخِيَار وَإِن كَانَا فِي الْمجْلس.",
+      "indonesian": "Abu Hanifah dan Malik berpendapat: khiyar majlis tidak berlaku; akad dengan ucapan sudah mencukupi dan mengikat. Apabila jual beli telah mengikat di antara keduanya, tidak ada hak pilih bagi salah seorang dari keduanya, meskipun mereka masih berada dalam majelis."
+    },
+    {
+      "id": "ibn-hubayra-shafii-ahmad",
+      "source": 6228,
+      "arabic": "وَقَالَ الشَّافِعِي وَأحمد: هُوَ صَحِيح ثَابت وَلكُل وَاحِد مِنْهُمَا الْخِيَار مَا دَامَ فِي الْمجْلس",
+      "indonesian": "Syafi‘i dan Ahmad berpendapat: khiyar tersebut sah dan berlaku. Masing-masing pihak mempunyai hak pilih selama masih berada dalam majelis."
+    },
+    {
+      "id": "al-minhaji-four-attributions",
+      "source": 6172,
+      "arabic": "وَإِذا انْعَقَد البيع: ثَبت لكل من الْمُتَبَايعين خِيَار الْمجْلس مَا لم يَتَفَرَّقَا أَو يتخايرا عِنْد الشَّافِعِي وَأحمد وَقَالَ أَبُو حنيفَة وَمَالك: لَا يثبت خِيَار الْمجْلس",
+      "indonesian": "Jika jual beli telah terjadi, menurut Syafi‘i dan Ahmad, masing-masing pihak memiliki khiyar majlis. Hak itu berlangsung sampai keduanya berpisah atau saling menentukan pilihan. Abu Hanifah dan Malik berpendapat bahwa khiyar majlis tidak berlaku."
+    }
+  ],
+  "proposedBriefAnswer": "Dua halaman kitab ini mengatribusikan pendapat yang berbeda: Abu Hanifah dan Malik tidak menetapkan khiyar majlis, sedangkan Syafi‘i dan Ahmad menetapkannya. Atribusi itu dibaca dari kalimat kitab yang menyebut nama mereka, bukan ditebak dari identitas penulis.",
+  "limits": [
+    "Ini terjemahan pendamping Pasla atas transkripsi digital Turath, bukan terjemahan penerbit atau pemeriksaan scan edisi cetak.",
+    "Cuplikan tidak cukup untuk menjelaskan seluruh dalil, pengecualian, riwayat pendapat, atau semua ketentuan khiyar syarat.",
+    "Makna rinci saling menentukan pilihan (يتخايرا) membutuhkan konteks tambahan; jangan menambahkan syarat hukum yang tidak ditulis dalam kutipan.",
+    "Jangan menyamakan kesepakatan empat imam yang disebut metadata IbnHubayra dengan seluruh ijmak."
+  ],
+  "issues": [],
+  "reconciliation": {
+    "at": "2026-10-21T07:59:59.654Z",
+    "finding": "KH-P2-01",
+    "classification": "valid_actionable",
+    "resolution": "Kata tetap diganti berlaku; tidak memperluas cakupan khiyar majlis.",
+    "independentReview": "khiyar-translation-pass2.json"
+  },
+  "reviews": [
+    {
+      "pass": 1,
+      "reviewer": "primary assistant translation draft pass1",
+      "reviewedAt": "2026-10-20T13:37:06.361Z"
+    },
+    {
+      "pass": 2,
+      "reviewer": "review_khiyar_translation_finish",
+      "reviewedAt": "2026-10-21"
+    }
+  ],
+  "contentHash": "8455d0388bae20a7611e52a33c26af5a793b502e8fa1a9f9dba6d941e0e959bf"
+}

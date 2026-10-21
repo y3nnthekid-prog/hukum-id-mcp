@@ -1,0 +1,110 @@
+{
+  "v": 1,
+  "reviewKind": "pemeriksaan rekonsiliasi AI berbasis sumber",
+  "reviewer": "/root/review_material_hukum_hes",
+  "reviewedAt": "2026-10-21T08:08:17.096729+00:00",
+  "scope": "Hanya rekonsiliasi tiga artefak final terhadap hukum-hes-pass2.json dan draf awal; sumber dan gambar yang telah diperiksa tidak ditelusuri ulang. Bukan sertifikasi pakar hukum, pemeriksaan runtime, atau penetapan hukum berlaku kini.",
+  "basis": "Semua field materi dan evidence dibandingkan dengan draf awal ditambah koreksi persis yang direkomendasikan; metadata status dan rekonsiliasi diperiksa tanpa menganggapnya bukti kelulusan runtime. SHA256 mengikat hasil ini pada byte artefak yang dibaca.",
+  "priorReviewSha256": "91544919393f24b34751fd631ad99195c94a0e36b66b58f1130942b0581f8862",
+  "paidCalls": 0,
+  "notAnAzureResult": true,
+  "result": "all_reconciliation_issues_closed",
+  "cases": [
+    {
+      "id": "hukum-mendalam",
+      "artifactPath": "C:/Users/yennthekid/Documents/Codex/2026-10-16/ak/outputs/pasla-material-2026-10-20/case-reviews/hukum-mendalam.reviewed.json",
+      "artifactSha256": "6ebabbc83e96d88d44086650ba19dfcccc11042643cfaf6c458a04923b25f0f2",
+      "result": "no_remaining_issues",
+      "closedIssueIds": [],
+      "checks": {
+        "identity_page_quote": {
+          "status": "no_issues",
+          "finding": "Identitas dan bukti lama tetap; tambahan bukti, jika ada, persis sesuai koreksi berbasis gambar pada pass2."
+        },
+        "adequate_scope": {
+          "status": "no_issues",
+          "finding": "Cakupan tidak diperluas dari contoh terbatas yang diperiksa pada pass2."
+        },
+        "source_status_change": {
+          "status": "no_issues",
+          "finding": "Pembedaan naskah sumber dan perubahan tetap sesuai hasil pass2; tidak ada klaim batas nilai berlaku kini."
+        },
+        "unsupported_conclusions": {
+          "status": "no_issues",
+          "finding": "Tidak ada tambahan kesimpulan substantif di luar koreksi yang direkomendasikan."
+        },
+        "plain_language_limits_action": {
+          "status": "no_issues",
+          "finding": "Batas dan tindakan lanjutan sesuai hasil pass2; seluruh perbaikan redaksi yang diminta sudah diterapkan."
+        }
+      },
+      "issues": []
+    },
+    {
+      "id": "hes-langsung",
+      "artifactPath": "C:/Users/yennthekid/Documents/Codex/2026-10-16/ak/outputs/pasla-material-2026-10-20/case-reviews/hes-langsung.reviewed.json",
+      "artifactSha256": "eea0a093b83403f6b5977fbc69735fa4627aed97fac577d66fe9baf8c364dec1",
+      "result": "no_remaining_issues",
+      "closedIssueIds": [
+        "HL-1"
+      ],
+      "checks": {
+        "identity_page_quote": {
+          "status": "no_issues",
+          "finding": "Identitas dan bukti lama tetap; tambahan bukti, jika ada, persis sesuai koreksi berbasis gambar pada pass2."
+        },
+        "adequate_scope": {
+          "status": "no_issues",
+          "finding": "Cakupan tidak diperluas dari contoh terbatas yang diperiksa pada pass2."
+        },
+        "source_status_change": {
+          "status": "no_issues",
+          "finding": "Pembedaan naskah sumber dan perubahan tetap sesuai hasil pass2; tidak ada klaim batas nilai berlaku kini."
+        },
+        "unsupported_conclusions": {
+          "status": "no_issues",
+          "finding": "Tidak ada tambahan kesimpulan substantif di luar koreksi yang direkomendasikan."
+        },
+        "plain_language_limits_action": {
+          "status": "no_issues",
+          "finding": "Batas dan tindakan lanjutan sesuai hasil pass2; seluruh perbaikan redaksi yang diminta sudah diterapkan."
+        }
+      },
+      "issues": []
+    },
+    {
+      "id": "hes-mendalam",
+      "artifactPath": "C:/Users/yennthekid/Documents/Codex/2026-10-16/ak/outputs/pasla-material-2026-10-20/case-reviews/hes-mendalam.reviewed.json",
+      "artifactSha256": "ff23d7e7d46ca5eb068a45ebd16ff506b7e762fe32896b141792daa7096937e1",
+      "result": "no_remaining_issues",
+      "closedIssueIds": [
+        "HM-1",
+        "HM-2",
+        "HM-3"
+      ],
+      "checks": {
+        "identity_page_quote": {
+          "status": "no_issues",
+          "finding": "Identitas dan bukti lama tetap; tambahan bukti, jika ada, persis sesuai koreksi berbasis gambar pada pass2."
+        },
+        "adequate_scope": {
+          "status": "no_issues",
+          "finding": "Cakupan tidak diperluas dari contoh terbatas yang diperiksa pada pass2."
+        },
+        "source_status_change": {
+          "status": "no_issues",
+          "finding": "Pembedaan naskah sumber dan perubahan tetap sesuai hasil pass2; tidak ada klaim batas nilai berlaku kini."
+        },
+        "unsupported_conclusions": {
+          "status": "no_issues",
+          "finding": "Tidak ada tambahan kesimpulan substantif di luar koreksi yang direkomendasikan."
+        },
+        "plain_language_limits_action": {
+          "status": "no_issues",
+          "finding": "Batas dan tindakan lanjutan sesuai hasil pass2; seluruh perbaikan redaksi yang diminta sudah diterapkan."
+        }
+      },
+      "issues": []
+    }
+  ]
+}

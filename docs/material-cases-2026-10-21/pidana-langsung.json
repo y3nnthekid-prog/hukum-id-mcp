@@ -1,0 +1,41 @@
+{
+  "v": 1,
+  "reviewKind": "telaah AI berbasis sumber",
+  "reviewer": "primary assistant",
+  "reviewedAt": "2026-10-21T07:57:41.426Z",
+  "status": "reconciled_material_review_pending_runtime",
+  "id": "pidana-langsung",
+  "brief": "Petugas yang sedang melaksanakan tugas atau perintah atasan sesuai dengan peraturan perundang-undangan tidak dikenakan ‘Uqubat.",
+  "explanation": "Pasal 9 naskah 2014 berada dalam bagian Alasan Pembenar. Uqubat berarti hukuman dalam Qanun. Syarat sesuai dengan peraturan perundang-undangan harus ikut dibaca. Baca juga Pasal 11: perintah jabatan tanpa wewenang tidak menghapus Uqubat, kecuali orang yang diperintah dengan itikad baik mengira perintah itu berwenang dan pelaksanaannya termasuk lingkup pekerjaannya.",
+  "limits": "Ini pembacaan Pasal 9 dan Pasal 11 naskah 2014 pada halaman 8. Qanun 12/2025 mengubah sejumlah ketentuan Qanun ini; telaah dua dokumen tersebut tidak membuktikan seluruh aturan yang berlaku kini atau hasil penilaian tindakan petugas tertentu.",
+  "evidence": [
+    {
+      "id": "qanun-aceh-6-2014",
+      "page": 8,
+      "quote": "Petugas yang sedang melaksanakan tugas atau perintah atasan sesuai dengan peraturan perundang-undangan tidak dikenakan ‘Uqubat.",
+      "fileHash": "3b2b44006b625b7454f735322a8eb466238ac5dd40a8202f427b2bfa08a8dc71",
+      "image": "C:/Users/yennthekid/Documents/Codex/2026-10-16/ak/outputs/pasla-material-2026-10-20/case-review-images/qanun-aceh-6-2014-8.png"
+    },
+    {
+      "key": "qanun6-order-limit",
+      "id": "qanun-aceh-6-2014",
+      "page": 8,
+      "section": "Pasal 11",
+      "quote": "Perintah jabatan yang diberikan tanpa wewenang tidak mengakibatkan hapusnya ‘Uqubat, kecuali jika orang yang diperintahkan dengan itikad baik mengira bahwa perintah tersebut diberikan dengan wewenang dan pelaksanaannya termasuk dalam lingkungan pekerjaannya.",
+      "quoteNormalization": "Spasi/baris dan bentuk apostrof tipografis dinormalisasi; makna dan seluruh pengecualian dipertahankan.",
+      "image": "case-review-images/qanun-aceh-6-2014-8.png",
+      "fileHash": "3b2b44006b625b7454f735322a8eb466238ac5dd40a8202f427b2bfa08a8dc71"
+    }
+  ],
+  "reviewBasis": "Primary pass: original image8 checked; leading quotation mark in Uqubat retained from image.",
+  "paidCalls": 0,
+  "notAnAzureResult": true,
+  "reconciliation": {
+    "at": "2026-10-21T08:07:15.384Z",
+    "findingFiles": [
+      "htn-qanun-pass2.json"
+    ],
+    "classification": "valid_actionable",
+    "resolution": "Koreksi kutipan/lokasi/istilah dan batas diterapkan; penelaah memeriksa ulang artefak final sebelum kelulusan materi."
+  }
+}

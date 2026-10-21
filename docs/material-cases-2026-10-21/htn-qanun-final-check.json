@@ -1,0 +1,176 @@
+{
+  "v": 1,
+  "reviewKind": "telaah AI berbasis sumber",
+  "reviewer": "independent source-review agent",
+  "reviewedAt": "2026-10-21T08:08:42.819784+00:00",
+  "status": "material_pass_runtime_unverified",
+  "certification": "Bukan sertifikasi ahli dan bukan verifikasi penerapan hukum terkini.",
+  "reviewMode": "Reconciliation only; no repeated visual work. Bound to exact reviewed file bytes below. Any subsequent file edit invalidates that file binding.",
+  "basis": {
+    "file": "htn-qanun-pass2.json",
+    "sha256": "16abbd0c5405ac4e6f74a8de4e5e59aef3e305af120e371f9367b7807b98cebd"
+  },
+  "paidCalls": 0,
+  "notAnAzureResult": true,
+  "cases": [
+    {
+      "id": "htn-langsung",
+      "file": "C:/Users/yennthekid/Documents/Codex/2026-10-16/ak/outputs/pasla-material-2026-10-20/case-reviews/htn-langsung.reviewed.json",
+      "sha256": "a65f9c139f6f8fe561aa4c45ab53f7fe6077bb9cbc2d5b0be6c86e6f4e5d40f9",
+      "decision": "material_pass_with_metadata_note",
+      "checks": [
+        {
+          "check": 1,
+          "name": "identitas_halaman_kutipan",
+          "result": "pass",
+          "finding": "Kutipan tambahan sama dengan bukti pass2; kutipan amar/Pasal 9 dipertahankan. Hash sumber tersedia dan semua lokasi citra dapat ditemukan relatif ke akar paket atau sebagai path absolut."
+        },
+        {
+          "check": 2,
+          "name": "cakupan_memadai",
+          "result": "pass",
+          "finding": "Penjelasan amar sekarang terhubung ke pertimbangan 38; seluruh amar 39 tetap ada."
+        },
+        {
+          "check": 3,
+          "name": "status_sumber_perubahan",
+          "result": "pass_with_metadata_note",
+          "finding": "Label sumber lama dan batas status terkini sudah jelas; tidak ada klaim putusan 2016 cukup menentukan hak PK kini atau pengubah 2025 merupakan seluruh hukum terbaru. Metadata reviewBasis masih menyimpan kalimat historis needs independent confirmation sebelum kalimat konfirmasi pass2; bersihkan agar tidak ambigu. Ini tidak mengubah ketepatan materi yang sudah terverifikasi."
+        },
+        {
+          "check": 4,
+          "name": "tanpa_simpulan_tambahan",
+          "result": "pass",
+          "finding": "Tidak ditemukan simpulan baru tentang hasil perkara, pencabutan seluruh Qanun 9/2019, kekebalan umum petugas, atau konsolidasi. Lokasi pencabutan Pasal I angka 25/Pasal 74A sudah tepat."
+        },
+        {
+          "check": 5,
+          "name": "bahasa_awam_batas_tindakan",
+          "result": "pass",
+          "finding": "Istilah PK/Uqubat dijelaskan pada kasus terkait. Batas dan tindakan baca spesifik sudah ada. Tidak ditemukan istilah terganda; pengulangan perluasan PK pada paragraf limits masih wajar. Klaim uji runtime belum dibuat; status tetap pending_runtime."
+        }
+      ],
+      "metadataCorrection": {
+        "field": "reviewBasis",
+        "severity": "nonblocking_metadata_cleanup",
+        "replacement": "Original images PDF1,38,39 and native text context checked in primary and independent source reviews. Case head and full amar verified; no private party identity copied."
+      }
+    },
+    {
+      "id": "htn-mendalam",
+      "file": "C:/Users/yennthekid/Documents/Codex/2026-10-16/ak/outputs/pasla-material-2026-10-20/case-reviews/htn-mendalam.reviewed.json",
+      "sha256": "714eaaa679ca5c6df411df80c34a9272a3ccd23a0fb9a62b7ff5120a82c65a5c",
+      "decision": "material_pass",
+      "checks": [
+        {
+          "check": 1,
+          "name": "identitas_halaman_kutipan",
+          "result": "pass",
+          "finding": "Kutipan tambahan sama dengan bukti pass2; kutipan amar/Pasal 9 dipertahankan. Hash sumber tersedia dan semua lokasi citra dapat ditemukan relatif ke akar paket atau sebagai path absolut."
+        },
+        {
+          "check": 2,
+          "name": "cakupan_memadai",
+          "result": "pass",
+          "finding": "Penanda [3.14] telah diganti kutipan substansial lengkap. Scope dua bagian dan batas bukan semua syarat PK tetap jelas."
+        },
+        {
+          "check": 3,
+          "name": "status_sumber_perubahan",
+          "result": "pass",
+          "finding": "Label sumber lama dan batas status terkini sudah jelas; tidak ada klaim putusan 2016 cukup menentukan hak PK kini atau pengubah 2025 merupakan seluruh hukum terbaru."
+        },
+        {
+          "check": 4,
+          "name": "tanpa_simpulan_tambahan",
+          "result": "pass",
+          "finding": "Tidak ditemukan simpulan baru tentang hasil perkara, pencabutan seluruh Qanun 9/2019, kekebalan umum petugas, atau konsolidasi. Lokasi pencabutan Pasal I angka 25/Pasal 74A sudah tepat."
+        },
+        {
+          "check": 5,
+          "name": "bahasa_awam_batas_tindakan",
+          "result": "pass",
+          "finding": "Istilah PK/Uqubat dijelaskan pada kasus terkait. Batas dan tindakan baca spesifik sudah ada. Tidak ditemukan istilah terganda; pengulangan perluasan PK pada paragraf limits masih wajar. Klaim uji runtime belum dibuat; status tetap pending_runtime."
+        }
+      ]
+    },
+    {
+      "id": "pidana-langsung",
+      "file": "C:/Users/yennthekid/Documents/Codex/2026-10-16/ak/outputs/pasla-material-2026-10-20/case-reviews/pidana-langsung.reviewed.json",
+      "sha256": "c96b208e15463343981c241bc936a0f298b34576e1eb760033c8b829995adc27",
+      "decision": "material_pass",
+      "checks": [
+        {
+          "check": 1,
+          "name": "identitas_halaman_kutipan",
+          "result": "pass",
+          "finding": "Kutipan tambahan sama dengan bukti pass2; kutipan amar/Pasal 9 dipertahankan. Hash sumber tersedia dan semua lokasi citra dapat ditemukan relatif ke akar paket atau sebagai path absolut."
+        },
+        {
+          "check": 2,
+          "name": "cakupan_memadai",
+          "result": "pass",
+          "finding": "Pasal 11 serta pengecualian itikad baik dan lingkup pekerjaan ikut dijelaskan dan dikutip."
+        },
+        {
+          "check": 3,
+          "name": "status_sumber_perubahan",
+          "result": "pass",
+          "finding": "Label sumber lama dan batas status terkini sudah jelas; tidak ada klaim putusan 2016 cukup menentukan hak PK kini atau pengubah 2025 merupakan seluruh hukum terbaru."
+        },
+        {
+          "check": 4,
+          "name": "tanpa_simpulan_tambahan",
+          "result": "pass",
+          "finding": "Tidak ditemukan simpulan baru tentang hasil perkara, pencabutan seluruh Qanun 9/2019, kekebalan umum petugas, atau konsolidasi. Lokasi pencabutan Pasal I angka 25/Pasal 74A sudah tepat."
+        },
+        {
+          "check": 5,
+          "name": "bahasa_awam_batas_tindakan",
+          "result": "pass",
+          "finding": "Istilah PK/Uqubat dijelaskan pada kasus terkait. Batas dan tindakan baca spesifik sudah ada. Tidak ditemukan istilah terganda; pengulangan perluasan PK pada paragraf limits masih wajar. Klaim uji runtime belum dibuat; status tetap pending_runtime."
+        }
+      ]
+    },
+    {
+      "id": "pidana-mendalam",
+      "file": "C:/Users/yennthekid/Documents/Codex/2026-10-16/ak/outputs/pasla-material-2026-10-20/case-reviews/pidana-mendalam.reviewed.json",
+      "sha256": "c23a7ea3cd20a505ee0c8464023027309360c125f44b28f98f30e6dae33119da",
+      "decision": "material_pass",
+      "checks": [
+        {
+          "check": 1,
+          "name": "identitas_halaman_kutipan",
+          "result": "pass",
+          "finding": "Kutipan tambahan sama dengan bukti pass2; kutipan amar/Pasal 9 dipertahankan. Hash sumber tersedia dan semua lokasi citra dapat ditemukan relatif ke akar paket atau sebagai path absolut."
+        },
+        {
+          "check": 2,
+          "name": "cakupan_memadai",
+          "result": "pass",
+          "finding": "Pasal I, angka 25/Pasal 74A, Pasal II dan kepala Penjelasan sekarang mempunyai bukti spesifik."
+        },
+        {
+          "check": 3,
+          "name": "status_sumber_perubahan",
+          "result": "pass",
+          "finding": "Label sumber lama dan batas status terkini sudah jelas; tidak ada klaim putusan 2016 cukup menentukan hak PK kini atau pengubah 2025 merupakan seluruh hukum terbaru."
+        },
+        {
+          "check": 4,
+          "name": "tanpa_simpulan_tambahan",
+          "result": "pass",
+          "finding": "Tidak ditemukan simpulan baru tentang hasil perkara, pencabutan seluruh Qanun 9/2019, kekebalan umum petugas, atau konsolidasi. Lokasi pencabutan Pasal I angka 25/Pasal 74A sudah tepat."
+        },
+        {
+          "check": 5,
+          "name": "bahasa_awam_batas_tindakan",
+          "result": "pass",
+          "finding": "Istilah PK/Uqubat dijelaskan pada kasus terkait. Batas dan tindakan baca spesifik sudah ada. Tidak ditemukan istilah terganda; pengulangan perluasan PK pada paragraf limits masih wajar. Klaim uji runtime belum dibuat; status tetap pending_runtime."
+        }
+      ]
+    }
+  ],
+  "remainingMaterialIssues": [],
+  "runtimeBoundary": "Tidak menjalankan Azure, model berbayar, atau UI/runtime dalam pemeriksaan ini."
+}

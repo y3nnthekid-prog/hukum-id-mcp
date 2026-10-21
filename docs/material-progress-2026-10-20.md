@@ -42,3 +42,17 @@ Turath: pencarian Arab menemukan kitab6228 halaman internal335 (cetak351) dan ki
 4. Periksa ledger sebelum setiap panggilan; jalankan enam sintesis melalui sesi sah hanya setelah sumber cukup. Maksimum tambahan mengikuti sisa aktual, tidak lebih12.
 
 Paket tetap **belum selesai**; tidak ada klaim12 kasus atau enam sintesis Azure telah lulus.
+
+## Pembaruan 21 Oktober 2026
+
+Catatan di atas adalah riwayat 20 Oktober; status berikut menggantikan butir yang sudah tertinggal:
+
+- Korpus tujuh dokumen sudah aktif pada mesin preview `a8a6dbe`. Empat sumber terkurasi berhasil ditemukan/dibuka melalui jalur publik; tanda tangan sah dan manipulasi provenance ditolak. Jadi penerapan korpus bukan lagi pekerjaan tertunda.
+- Verifikasi mesin terakhir:150 uji unit penuh, satu regresi tambahan pada paket korpus,14 fixture evaluasi, lint/typecheck/build dan worker PDF lulus. Tidak ada perubahan kode mesin pada21Oktober.
+- Tujuh catatan jawaban telah melewati telaah sumber kedua, koreksi, dan pemeriksaan final: hubungan UU12/13; PERMA langsung/mendalam; putusan langsung/mendalam; Qanun langsung/mendalam. Berkas dan binding SHA256 ada pada `material-cases-2026-10-21/`. Kelulusan ini hanya untuk materi yang dicatat, bukan kelulusan perjalanan runtime/Azure.
+- Tiga terjemahan pendamping dari dua halaman kitab sudah ditelaah; kata “tetap” diperjelas menjadi “berlaku”. Teks Arab, atribusi, metadata dan batas transkripsi digital tetap dipertahankan. Tidak dijadikan kutipan sumber baru untuk model.
+- KHI tetap terhambat. Kandidat PTAJambi404, buku alternatif PTAJambi tidak terjangkau, unduhan JDIH DPRD Sukoharjo404, BPHN403. Tidak ada tantangan akses diterobos atau perubahan importer. Dua kasus keluarga tetap belum lulus.
+- Alat browser akun berhasil dimulai kembali dan sesi sah teramati. Draf ekonomi syariah dibuat dan tersinkron lewat UI. Sambungan kemudian mengalami timeout CDP; tidak ada cookie/token diambil atau sesi pengganti dibuat. Sintesis nyata belum dinyatakan selesai.
+- Web menutup konflik ID kutipan duplikat pada pemulihan laporan: tanda tangan harus memeriksa teks yang sama dengan tampilan. Regresi gagal sebelum perbaikan dan lulus setelahnya. Terjemahan hanya tampil untuk identitas/edisi/halaman/teks yang persis cocok, sesudah pemeriksaan tanda tangan.
+
+Kewajiban tersisa: sumber KHI yang utuh, dua catatan keluarga, penyelesaian catatan langsung hukum dan dua catatan kitab, serta semua perjalanan runtime/sintesis nyata yang dipersyaratkan. Tidak ada penutupan rencana atau klaim penilaian ahli.
