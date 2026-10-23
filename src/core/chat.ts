@@ -3,7 +3,7 @@ import type { JsonModel } from '../ai/json-model.js';
 import type { TelusurService } from './telusur.js';
 import type { PotonganBertanda, SumberService } from './sumber.js';
 import { checkPassage } from './sintesis.js';
-import { findQuote } from './canonical.js';
+import { canonicalize,findQuote } from './canonical.js';
 import type { Signer } from './sign.js';
 import { azureChatWireBytes } from '../ai/azure.js';
 
@@ -42,11 +42,12 @@ export function validateChatAnswer(draft:ChatDraft,passages:PotonganBertanda[],v
     if(requestsUnavailableUpload(b.text))reason='Percakapan belum mendukung pemeriksaan berkas yang diunggah.';
     for(const citation of b.citations) {
       const matches=ids.get(citation.passageId)??[];const p=matches[0];
+      const sourceText=p?canonicalize(p.text).text:'',claimText=canonicalize(b.text).text;
       if(matches.length!==1||!p||checkPassage(p,keys)||!findQuote(p.text,citation.quote)||citation.quote.trim().split(/\s+/).length<8) reason='Kutipan atau asal sumber tidak cocok.';
-      if(scope?.matter==='consumer_goods'&&/\bjasa\b/i.test(p?.text??'')&&! /\bbarang\b/i.test(p?.text??''))reason='Kutipan tentang jasa belum mendukung penerapan pada barang.';
-      if(/\b(?:bertujuan|tujuan|asas)\b/i.test(p?.text??'')&&/\b(?:berwenang|berhak|wajib|kewajiban|harus|dapat menuntut|dasar.{0,80}(?:perbaikan|penukaran|pengembalian|ganti))\b/i.test(b.text))reason='Tujuan atau asas belum membuktikan hak, kewajiban, atau solusi khusus.';
-      if(/\byang memproduksi\b/i.test(p?.text??'')&&! /\b(?:produsen|memproduksi)\b/i.test(b.text))reason='Subjek produsen tidak boleh diperluas menjadi semua penjual atau pelaku usaha.';
-      if(/\bsejak barang dibeli\b/i.test(p?.text??'')&&/\b(?:tanggal|sejak|waktu)\s+(?:terima|penerimaan|diterima)\b/i.test(b.text))reason='Titik awal waktu pembelian tidak boleh diganti dengan penerimaan barang.';
+      if(scope?.matter==='consumer_goods'&&/\bjasa\b/i.test(sourceText)&&! /\bbarang\b/i.test(sourceText))reason='Kutipan tentang jasa belum mendukung penerapan pada barang.';
+      if(/\b(?:bertujuan|tujuan|asas)\b/i.test(sourceText)&&/\b(?:berwenang|berhak|wajib|kewajiban|harus|dapat menuntut|dasar.{0,80}(?:perbaikan|penukaran|pengembalian|ganti))\b/i.test(claimText))reason='Tujuan atau asas belum membuktikan hak, kewajiban, atau solusi khusus.';
+      if(/\byang memproduksi\b/i.test(sourceText)&&! /\b(?:produsen|memproduksi)\b/i.test(claimText))reason='Subjek produsen tidak boleh diperluas menjadi semua penjual atau pelaku usaha.';
+      if(/\bsejak barang dibeli\b/i.test(sourceText)&&/\b(?:tanggal|sejak|waktu)\s+(?:terima|penerimaan|diterima)\b/i.test(claimText))reason='Titik awal waktu pembelian tidak boleh diganti dengan penerimaan barang.';
       const match=p?findQuote(p.text,citation.quote):null;
       if(match&&p!.text.slice(match.start,match.end).length>350)reason='Kutipan asli melewati batas tampilan utuh.';
     }
@@ -75,7 +76,13 @@ export async function runChat(input:ChatInput,deps:{model:JsonModel;telusur:Telu
     return deps.model.generate({system,user,schema,effort:'low',allowRetries:false,maxOutputTokens:4096,signal:deps.signal});
   };
   await deps.progress('understanding');
-  const plan=await generate(common+' Buat maksimal dua kueri topik, masing-masing 2–5 kata, sasaran maksimum 80 karakter. Hindari kata umum seperti undang-undang, Indonesia, peraturan, dan jangan gabungkan banyak submasalah. Contoh bentuk kueri: perlindungan konsumen barang rusak; perjanjian kerja waktu tertentu; pinjam meminjam perjanjian. Temukan sumber primer yang relevan. Jangan masukkan rujukan yang tidak dinyatakan pengguna atau belum diketahui. Kata kunci topik cukup. focus satu frasa pendek, maksimal 120 karakter; bukan rangkuman masalah. needsContext true jika konteks minimum belum ada. Klasifikasikan matter menurut masalah TERBARU, jurisdiction hanya berdasarkan fakta pengguna (bukan asumsi). consumer_goods adalah pembelian barang, consumer_services pembelian jasa.',{messages:JSON.parse(context)},PlanSchema);
+  const plan=await generate(common+' Buat maksimal dua kueri topik, masing-masing 2–5 kata, sasaran maksimum 80 karakter. Hindari kata umum seperti undang-undang, Indonesia, peraturan, dan jangan gabungkan banyak submasalah. Contoh bentuk kueri: perlindungan konsumen barang rusak; perjanjian kerja waktu tertentu; pinjam meminjam perjanjian. Temukan sumber primer yang relevan. Jangan masukkan rujukan yang tidak dinyatakan pengguna atau belum diketahui. Kata kunci topik cukup. focus satu frasa pendek, maksimal 120 karakter; bukan rangkuman masalah. needsContext true hanya jika masalah dasarnya belum cukup jelas untuk bantuan awal; jangan true hanya karena rincian tambahan seperti garansi atau nama platform belum ada. Klasifikasikan matter menurut masalah TERBARU, jurisdiction hanya berdasarkan fakta pengguna (bukan asumsi). consumer_goods adalah pembelian barang, consumer_services pembelian jasa.',{messages:JSON.parse(context)},PlanSchema);
+  if(plan.needsContext){
+    const prompts:Record<string,string[]>={consumer_goods:['Apa masalah barangnya dan kapan kamu mengetahuinya?','Pembeliannya untuk dipakai sendiri atau dijual kembali?'],consumer_services:['Jasa apa yang disepakati dan apa yang tidak sesuai?','Apa penjelasan pihak penyedia sejauh ini?'],employment:['Hubungan kerjanya seperti apa: kontrak, pekerjaan tetap, atau pekerjaan lepas?','Apa yang terjadi dan apa yang ingin kamu pahami lebih dulu?'],rent:['Apa yang disepakati tentang masa sewa atau deposit?','Apa masalah yang terjadi sekarang?'],loan:['Uangnya disepakati sebagai pinjaman atau pemberian?','Apakah waktu pengembaliannya sudah disepakati?'],unknown:['Apa yang terjadi dan apa yang ingin kamu pahami lebih dulu?','Apa hubunganmu dengan pihak yang terlibat?']};
+    const questions=plan.jurisdiction==='unknown'?['Kejadiannya di Indonesia atau negara lain?',prompts[plan.matter]![0]!]:prompts[plan.matter]!;
+    const result={v:1 as const,conversationId:input.conversationId,turnId:input.turnId,version:input.version,blocks:[{id:'context',kind:'general' as const,text:'Supaya arah bantuannya tepat, kita urutkan fakta dasarnya dulu. Cukup ceritakan, tanpa nama atau data pribadi.',citations:[]}],questions,limits:[],sources:[],rejected:[],method:{searches:[],opened:0,passages:0,model:deps.model.model,review:'Pertanyaan awal baku tanpa klaim hukum. Model hanya memilih kebutuhan konteks; tidak ada draf jawaban hukum yang diterbitkan.'},createdAt:new Date().toISOString()};
+    return {...result,tanda:deps.signer.sign(result)};
+  }
   const passages:PotonganBertanda[]=[];const opened=new Set<string>();const searches:Array<{query:string;candidates:number}>=[];const failures:string[]=[];let textBytes=0;
   const rootQuery:Record<string,string>={consumer_goods:'perlindungan konsumen barang',consumer_services:'perlindungan konsumen jasa',employment:'hubungan kerja perjanjian kerja',rent:'sewa menyewa perjanjian',loan:'pinjam meminjam perjanjian'};
   if(plan.matter==='consumer_goods'&&/\b(?:rusak|retak|pecah|cacat|kerusakan|menyala|berfungsi)\b/i.test(plan.focus))rootQuery.consumer_goods='konsumen kerusakan barang ganti rugi';
