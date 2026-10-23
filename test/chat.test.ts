@@ -8,6 +8,23 @@ import { azureChatWireBytes } from '../src/ai/azure.js';
 import { createHmac } from 'node:crypto';
 import { verifyChatTicket } from '../src/core/chat-ticket.js';
 import { requestHash } from '../src/core/step-ticket.js';
+import { mergeDiscovery } from '../src/core/discovery.js';
+import { createTelusur } from '../src/core/telusur.js';
+
+test('generic local OR hits cannot crowd relevant publisher search hits out of discovery',()=>{
+ const local=Array.from({length:8},(_,i)=>({judul:'Peraturan Undang-Undang Perjanjian Lain',rujukan:'PP '+i+'/2099'}));
+ const real={judul:'Perlindungan Konsumen',rujukan:'UU 8/1999'};
+ assert.equal(mergeDiscovery('Undang-Undang perlindungan konsumen Indonesia',local,[real],8)[0],real);
+ assert.equal(mergeDiscovery('perlindungan konsumen',[real],[real],8).length,1);
+ const localPrivate={judul:'Kitab Undang-Undang Hukum Perdata',cuplikan:'Sewa menyewa adalah suatu persetujuan',rujukan:'KUH Perdata'};
+ const titleHits=Array.from({length:8},(_,i)=>({judul:'Perjanjian Sewa Barang Daerah '+i,rujukan:'Perda '+i+'/2099'}));
+ assert.ok(mergeDiscovery('perjanjian sewa menyewa',[localPrivate],titleHits,8).includes(localPrivate));
+});
+test('discovered Civil Code passages keep their canonical document and article identity',async()=>{
+ const search=createTelusur({peraturan:async()=>({hasil:[{judul:'Kitab Undang-Undang Hukum Perdata',rujukan:'KUH Perdata',pasal:'Pasal 1548',url:'https://jdih.mahkamahagung.go.id/legal-product/kitab-undang-undang-hukum-perdata/download/dokumen'}]})});
+ const result=await search({rumpun:'ilmu-hukum',query:'sewa menyewa',sumber:['peraturan']});
+ assert.deepEqual(result.kandidat[0]?.rujukan,{jenis:'peraturan',rujukan:'KUH Perdata',pasal:'Pasal 1548'});
+});
 
 test('managed chat tickets bind all context, profile, owner and lifetime',()=>{
  const secret='s'.repeat(43),aud='https://api.pasla.tech',input={conversationId:'c1',turnId:'t1',version:1,messages:[{id:'u1',role:'user',text:'Barang rusak'}]};
@@ -44,6 +61,15 @@ test('unknown/missing/duplicate verdicts and quote truncation fail closed',()=>{
 test('reviewer classification overrides model trying to disguise legal claims as general advice',()=>{
  const bad={...draft,blocks:[{...draft.blocks[0]!,kind:'general' as const,citations:[]}]};
  assert.equal(validateChatAnswer(bad,[],[{id:'b1',supported:true,kind:'legal',reason:'Kewajiban hukum'}],[signer.publicKeyPem]).blocks.length,0);
+});
+test('uncited referrals to named agencies and legal procedures cannot pass as preparation',()=>{
+ for(const text of ['Ajukan komplain ke LPSK/LK3 konsumen setempat atau mediasi.','Gugat penjual ke pengadilan dalam 30 hari.','Anda wajib menerima pesangon.']){
+  const value={...draft,blocks:[{id:'b1',kind:'preparation' as const,text,citations:[]}]};
+  assert.equal(validateChatAnswer(value,[],[{id:'b1',supported:true,reason:'Reviewer missed material claim',kind:'preparation'}],[signer.publicKeyPem]).blocks.length,0);
+ }
+ for(const text of ['Simpan SMS, foto kerusakan, kemasan, bukti pembayaran, dan percakapan penjual.','Jangan bagikan NIK atau nomor KTP di percakapan ini.']){
+ const neutral={...draft,blocks:[{id:'b1',kind:'preparation' as const,text,citations:[]}]};
+ assert.equal(validateChatAnswer(neutral,[],[{id:'b1',supported:true,reason:'Neutral evidence preservation',kind:'preparation'}],[signer.publicKeyPem]).blocks.length,1);}
 });
 test('orchestrator discovers sources before opening, uses three bounded calls and signs only checked output',async()=>{
  let calls=0,searches=0,opens=0;

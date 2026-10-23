@@ -22,6 +22,7 @@ import { halamanPdf } from "../pdf.js";
 import { cariTurats, bukaHalamanTurats } from "../turats.js";
 import { cariLiteratur } from "../scholar.js";
 import { createTelusur } from "../core/telusur.js";
+import { mergeDiscovery } from '../core/discovery.js';
 import { CorpusIndex } from "../indexing/corpus.js";
 import { cariQanun, cariMetadataPutusan, bukaQanun, bukaMkBpk } from "../sources/regional.js";
 import { mkdirSync } from "node:fs";
@@ -103,7 +104,7 @@ const telusur = createTelusur({
   },
   peraturan: async (query, limit) => {
     const local = corpus.search(query, "peraturan", limit).hasil;
-    try { return { hasil: [...local, ...(await cariPeraturan({ keywords: query, limit })).hasil].slice(0, limit) }; }
+    try { return { hasil: mergeDiscovery(query,local,(await cariPeraturan({ keywords: query, limit })).hasil,limit) }; }
     catch (cause) { if (local.length) return { hasil: local }; throw cause; }
   },
   fatwa: (query, limit) => cariFatwaDsn({ query, limit }),

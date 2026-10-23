@@ -1,0 +1,45 @@
+{
+  "checkedAt": "2026-10-23T16:45:48.413Z",
+  "note": "Original files retained. Whole-document extraction is not semantic legal review. Page/quote and amendment review still pending real journeys.",
+  "sources": [
+    {
+      "id": "chat-uu8-1999",
+      "rujukan": "UU 8/1999",
+      "judul": "Undang-Undang Nomor 8 Tahun 1999 tentang Perlindungan Konsumen",
+      "sourceUrl": "https://peraturan.go.id/files/uu8-1999.pdf",
+      "status": "Metadata penerbit: Berlaku. Snapshot naskah; perkembangan aturan dan putusan belum diperiksa menyeluruh.",
+      "retrievedAt": "2026-10-23T16:45:43.167Z",
+      "sha256": "df253c489e78e66d9da5337c85bebe1384c68763af2001335b4880b0f225d816",
+      "bytes": 192920,
+      "complete": false,
+      "fileHash": "df253c489e78e66d9da5337c85bebe1384c68763af2001335b4880b0f225d816",
+      "jumlahPotongan": 131
+    },
+    {
+      "id": "chat-pp35-2021",
+      "rujukan": "PP 35/2021",
+      "judul": "Peraturan Pemerintah Nomor 35 Tahun 2021 tentang Perjanjian Kerja Waktu Tertentu, Alih Daya, Waktu Kerja dan Waktu Istirahat, dan Pemutusan Hubungan Kerja",
+      "sourceUrl": "https://jdih.kemnaker.go.id/asset/data_puu/PP352021.pdf",
+      "status": "Naskah asli 2021, bukan konsolidasi. Perkembangan aturan dan putusan ketenagakerjaan belum diperiksa menyeluruh.",
+      "retrievedAt": "2026-10-23T16:45:45.230Z",
+      "sha256": "d1f40e0c2fe3410631b71241ca98ca071a2c87be5af3c412a8aae24223b7ec20",
+      "bytes": 2516999,
+      "complete": false,
+      "fileHash": "d1f40e0c2fe3410631b71241ca98ca071a2c87be5af3c412a8aae24223b7ec20",
+      "jumlahPotongan": 138
+    },
+    {
+      "id": "chat-kuh-perdata",
+      "rujukan": "KUH Perdata",
+      "judul": "Kitab Undang-Undang Hukum Perdata (Burgerlijk Wetboek voor Indonesie), salinan berbahasa Indonesia",
+      "sourceUrl": "https://jdih.mahkamahagung.go.id/legal-product/kitab-undang-undang-hukum-perdata/download/dokumen",
+      "status": "Salinan historis berbahasa Indonesia; identitas edisi terjemahan tidak tercantum. Bukan konsolidasi atau kepastian keberlakuan setiap pasal.",
+      "retrievedAt": "2026-10-23T16:45:46.054Z",
+      "sha256": "14fccf651236cb0c0ed0a922de5edf199f02a680a3c7064fe2174b5eb96071ea",
+      "bytes": 748100,
+      "complete": false,
+      "fileHash": "14fccf651236cb0c0ed0a922de5edf199f02a680a3c7064fe2174b5eb96071ea",
+      "jumlahPotongan": 1996
+    }
+  ]
+}

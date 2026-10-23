@@ -20,7 +20,7 @@ function reference(jenis: JenisTelusur, item: Raw): RujukanBuka | null {
   if (jenis === "qanun" && /^Qanun(?: Aceh)? \d{1,3}\/\d{4}$/i.test(text(item.rujukan))) return { jenis, rujukan: item.rujukan, ...(item.pasal ? { pasal: item.pasal } : {}) };
   if (jenis === "putusan" && item.tersedia === true && /^[a-zA-Z0-9:._-]{1,120}$/.test(text(item.id))) return { jenis, id: item.id };
   if (jenis === "peraturan") {
-    const rujukan = normalizeRegulation(text(item.rujukan)) || normalizeRegulation(`${text(item.jenis)} ${text(item.nomor)}/${text(item.tahun)}`);
+    const rujukan = /^KUH\s*Perdata$/i.test(text(item.rujukan)) ? 'KUH Perdata' : normalizeRegulation(text(item.rujukan)) || normalizeRegulation(`${text(item.jenis)} ${text(item.nomor)}/${text(item.tahun)}`);
     return rujukan ? { jenis, rujukan, ...(/^Pasal\s+(?:\d{1,4}[A-Z]?|[IVX]{1,6})$/i.test(text(item.pasal)) ? { pasal: text(item.pasal) } : {}) } : null;
   }
   if (jenis === "fatwa" && /^\d{1,3}\/DSN-MUI\/[IVX]+\/\d{4}$/.test(text(item.nomor))) return { jenis, nomor: item.nomor };
