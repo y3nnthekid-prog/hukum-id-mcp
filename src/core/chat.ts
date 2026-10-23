@@ -63,7 +63,7 @@ export async function runChat(input:ChatInput,deps:{model:JsonModel;telusur:Telu
     return deps.model.generate({system,user,schema,effort:'low',allowRetries:false,maxOutputTokens:4096,signal:deps.signal});
   };
   await deps.progress('understanding');
-  const plan=await generate(common+' Buat maksimal dua kueri topik, masing-masing 2–5 kata, sasaran maksimum 80 karakter. Hindari kata umum seperti undang-undang, Indonesia, peraturan, dan jangan gabungkan banyak submasalah. Contoh bentuk kueri: perlindungan konsumen barang rusak; perjanjian kerja waktu tertentu; pinjam meminjam perjanjian. Temukan sumber primer yang relevan. Jangan masukkan rujukan yang tidak dinyatakan pengguna atau belum diketahui. Kata kunci topik cukup. needsContext true jika konteks minimum belum ada.',{messages:JSON.parse(context)},PlanSchema);
+  const plan=await generate(common+' Buat maksimal dua kueri topik, masing-masing 2–5 kata, sasaran maksimum 80 karakter. Hindari kata umum seperti undang-undang, Indonesia, peraturan, dan jangan gabungkan banyak submasalah. Contoh bentuk kueri: perlindungan konsumen barang rusak; perjanjian kerja waktu tertentu; pinjam meminjam perjanjian. Temukan sumber primer yang relevan. Jangan masukkan rujukan yang tidak dinyatakan pengguna atau belum diketahui. Kata kunci topik cukup. focus satu frasa pendek, maksimal 120 karakter; bukan rangkuman masalah. needsContext true jika konteks minimum belum ada.',{messages:JSON.parse(context)},PlanSchema);
   const passages:PotonganBertanda[]=[];const opened=new Set<string>();const searches:Array<{query:string;candidates:number}>=[];const failures:string[]=[];let textBytes=0;
   for(const query of plan.queries) {
     deps.signal.throwIfAborted();await deps.progress('searching');

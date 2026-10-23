@@ -28,7 +28,7 @@ export function registerChat(app:Hono<Env>,deps:{chat?:ChatEngine|undefined;step
    const abort=new AbortController();output.onAbort(()=>abort.abort());
    const signal=AbortSignal.any([c.req.raw.signal,abort.signal,AbortSignal.timeout(330000)]);
    const send=(event:unknown)=>output.write(JSON.stringify(event)+'\n');
-   let calls=0;let inputTokens=0,outputTokens=0;const start=Date.now();
+   let calls=0;let inputTokens=0,outputTokens=0;const start=Date.now();let phase='understanding';let failureCode='CHAT_FAILED';let issues:unknown[]=[];
    const heartbeat=setInterval(()=>{void send({type:'progress',stage:'working'}).catch(()=>abort.abort());},10000);
    try{
     const model:JsonModel={provider:'openai',model:'azure:pasla-chat:gpt-5-mini:2025-08-07:low-4096',async generate(request){
@@ -40,11 +40,13 @@ export function registerChat(app:Hono<Env>,deps:{chat?:ChatEngine|undefined;step
      const interval=Math.max(1,Math.ceil(60/config.rpm),Math.ceil(24096*60/config.tpm));
      config.claims.claim(jti,Math.floor(Date.now()/1000)+120,interval);calls++;
      const azure=createAzureModel({apiKey:config.key,maxUsd:1,maxCalls:1,maxInputTokens:20000,profile:'low-4096'});
-     try{return await azure.model.generate({...request,signal});}finally{const summary=azure.summary(),usage=summary.usage;inputTokens+=usage.reduce((n,row)=>n+row.prompt_tokens,0);outputTokens+=usage.reduce((n,row)=>n+row.completion_tokens,0);if(summary.lastFailure===null||summary.lastFailure?.startsWith('HTTP_'))config.claims.finish(jti);}
+     try{return await azure.model.generate({...request,signal});}finally{const summary=azure.summary(),usage=summary.usage;inputTokens+=usage.reduce((n,row)=>n+row.prompt_tokens,0);outputTokens+=usage.reduce((n,row)=>n+row.completion_tokens,0);if(summary.lastFailure){failureCode=summary.lastFailure;issues=summary.validationIssues;}if(summary.lastFailure===null||summary.lastFailure?.startsWith('HTTP_'))config.claims.finish(jti);}
     }};
-    const result=await runChat(input,{model,telusur,sumber,signer,keys:[signer.publicKeyPem],signal,progress:stage=>send({type:'progress',stage}).then(()=>undefined)});
+    const result=await runChat(input,{model,telusur,sumber,signer,keys:[signer.publicKeyPem],signal,progress:stage=>{phase=stage;return send({type:'progress',stage}).then(()=>undefined);}});
     await send({type:'result',data:result,usage:{calls,inputTokens,outputTokens,elapsedMs:Date.now()-start}});
-   }catch{await send({type:'error',code:signal.aborted?'CHAT_INTERRUPTED':'CHAT_FAILED',usage:{calls,inputTokens,outputTokens,elapsedMs:Date.now()-start}}).catch(()=>undefined);}
+   }catch(cause){if(signal.aborted)failureCode='CHAT_INTERRUPTED';else if(cause instanceof Error&&['CHAT_WIRE_LIMIT','CHAT_CONTEXT_LIMIT','MANAGED_BUSY','MANAGED_RATE','MANAGED_REPLAY'].includes(cause.message))failureCode=cause.message;
+    console.warn(JSON.stringify({event:'chat_turn_failed',turnId:input.turnId,phase,code:failureCode,issues,calls,inputTokens,outputTokens,elapsedMs:Date.now()-start}));
+    await send({type:'error',code:failureCode,usage:{calls,inputTokens,outputTokens,elapsedMs:Date.now()-start}}).catch(()=>undefined);}
    finally{clearInterval(heartbeat);}
   },async()=>undefined);
  });
