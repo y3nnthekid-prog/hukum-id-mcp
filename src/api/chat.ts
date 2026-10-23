@@ -14,7 +14,7 @@ import type { SumberService } from '../core/sumber.js';
 export type ChatEngine={key:string;claims:ReturnType<typeof createManagedClaims>;rpm:number;tpm:number};
 type Env={Variables:{traceId:string;userId:string|null}};
 export function registerChat(app:Hono<Env>,deps:{chat?:ChatEngine|undefined;stepTickets?:{secret:string;audience:string}|undefined;telusur?:TelusurService|undefined;sumber?:SumberService|undefined;signer?:Signer|undefined}) {
- app.post('/v3/chat/turn',async c=>{
+ app.post('/v2/chat/turn',async c=>{
   const config=deps.chat;
   if(!config||!deps.stepTickets||!deps.telusur||!deps.sumber||!deps.signer)return c.json({error:{code:'CHAT_DISABLED'}},503);
   let size=0;const chunks:Uint8Array[]=[];const reader=c.req.raw.body?.getReader();

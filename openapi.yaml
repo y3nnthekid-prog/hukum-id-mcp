@@ -18,7 +18,7 @@ tags:
   - name: Operations
     description: Kesehatan layanan, sumber, dan status job.
 paths:
-  /v3/chat/turn:
+  /v2/chat/turn:
     post:
       summary: Private preview conversational turn through the authenticated Pages proxy
       operationId: chatTurnV3
