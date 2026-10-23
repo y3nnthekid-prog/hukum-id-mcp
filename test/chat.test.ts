@@ -5,6 +5,20 @@ import { createSigner, generateSigningKey } from '../src/core/sign.js';
 import { contentHash } from '../src/core/passages.js';
 import { signedPart,createSumberService,type PotonganBertanda } from '../src/core/sumber.js';
 import { azureChatWireBytes } from '../src/ai/azure.js';
+import { createHmac } from 'node:crypto';
+import { verifyChatTicket } from '../src/core/chat-ticket.js';
+import { requestHash } from '../src/core/step-ticket.js';
+
+test('managed chat tickets bind all context, profile, owner and lifetime',()=>{
+ const secret='s'.repeat(43),aud='https://api.pasla.tech',input={conversationId:'c1',turnId:'t1',version:1,messages:[{id:'u1',role:'user',text:'Barang rusak'}]};
+ const claims={v:3,iss:'https://riset.pasla.pages.dev',aud,sub:'owner1',conversationId:'c1',turnId:'t1',inputHash:requestHash(input),profile:'pasla-chat-low4096-v1',campaign:'chat-preview-20261023',maxCalls:3,maxInputTokens:20000,maxOutputTokens:4096,jti:'a'.repeat(43),iat:1000,exp:1360};
+ const encode=(value:unknown)=>{const body=Buffer.from(JSON.stringify(value)).toString('base64url');return body+'.'+createHmac('sha256',secret).update(body).digest('base64url');};
+ assert.equal(verifyChatTicket(encode(claims),secret,aud,input,()=>1001).sub,'owner1');
+ for(const changed of [{...input,version:2},{...input,turnId:'t2'},{...input,messages:[{...input.messages[0],text:'Fakta diubah'}]}])assert.throws(()=>verifyChatTicket(encode(claims),secret,aud,changed,()=>1001));
+ for(const changed of [{...claims,maxCalls:4},{...claims,profile:'other'},{...claims,campaign:'old-pilot'},{...claims,exp:1361}])assert.throws(()=>verifyChatTicket(encode(changed),secret,aud,input,()=>1001));
+ assert.throws(()=>verifyChatTicket(encode(claims),'x'.repeat(43),aud,input,()=>1001));
+ assert.throws(()=>verifyChatTicket(encode(claims),secret,aud,input,()=>1360));
+});
 
 const signer=createSigner(generateSigningKey());
 const raw={id:'p1',documentId:'d1',jenis:'peraturan',judul:'Aturan sintetis',rujukan:'UU 999/2099',locator:{halamanAwal:2},text:'Penjual wajib memberi informasi yang benar kepada pembeli sebelum transaksi dilakukan.',identitas:['UU 999/2099'],lapisan:['norma'],sumber:{nama:'Penerbit uji',url:'https://example.test/law',otoritas:'Penerbit uji',status:null,diubahDengan:[],dicabutDengan:[]},retrievedAt:new Date().toISOString(),verificationStatus:'verified_snapshot',mesin:'test'} as Omit<PotonganBertanda,'contentHash'|'tanda'>;
