@@ -11,6 +11,7 @@ import type { LegalResearchService, SearchSource } from "../core/service.js";
 import { observeApiRequest } from "../telemetry.js";
 import { HUKUM_ID_VERSION } from "../version.js";
 import { registerV2, type V2Dependencies } from "./v2.js";
+import { registerChat, type ChatEngine } from './chat.js';
 
 type ApiEnv = { Variables: { traceId: string; userId: string | null } };
 
@@ -37,6 +38,7 @@ export interface JobStore {
 }
 
 export type ApiDependencies = V2Dependencies & {
+  chat?: ChatEngine | undefined;
   service: LegalResearchService;
   uploadStore?: UploadStore;
   jobStore?: JobStore;
@@ -251,6 +253,7 @@ export function createApiApp({
   });
 
   app.get("/health", (c) => c.json({ status: "ok", service: "hukum-id-api", version: HUKUM_ID_VERSION }));
+  registerChat(app,v2Dependencies);
 
   app.get("/v1/search", async (c) => {
     const parsed = SearchQuerySchema.safeParse(c.req.query());

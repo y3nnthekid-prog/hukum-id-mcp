@@ -18,6 +18,51 @@ tags:
   - name: Operations
     description: Kesehatan layanan, sumber, dan status job.
 paths:
+  /v3/chat/turn:
+    post:
+      summary: Private preview conversational turn through the authenticated Pages proxy
+      operationId: chatTurnV3
+      tags: [Research]
+      parameters:
+        - in: header
+          name: x-pasla-chat-ticket
+          required: true
+          schema: { type: string, maxLength: 2500 }
+          description: Short-lived HMAC ticket bound to owner, conversation, turn, exact input and pinned Azure profile. Never issued to browsers.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [conversationId, turnId, version, messages]
+              properties:
+                conversationId: { type: string, maxLength: 100 }
+                turnId: { type: string, maxLength: 100 }
+                version: { type: integer, minimum: 1 }
+                messages:
+                  type: array
+                  minItems: 1
+                  maxItems: 30
+                  items:
+                    type: object
+                    additionalProperties: false
+                    required: [id, role, text]
+                    properties:
+                      id: { type: string, maxLength: 100 }
+                      role: { type: string, enum: [user, assistant] }
+                      text: { type: string, maxLength: 4000 }
+      responses:
+        '200':
+          description: NDJSON progress, signed checked result and safe usage or terminal error. No raw draft.
+          content:
+            application/x-ndjson:
+              schema: { type: string }
+        '401': { description: Invalid or expired chat ticket }
+        '413': { description: Request exceeds bounded input size }
+        '422': { description: Invalid conversational input }
+        '503': { description: Chat preview is disabled or incomplete }
   /v2/rumpun:
     get:
       summary: Profil enam rumpun dan batas cakupan

@@ -144,20 +144,30 @@ export function createSumberService(adapters: SumberAdapters, signer: Signer) {
     label: string,
     url: string,
     pasal: string | undefined,
-    mengubah?: string
+    mengubah?: string,
+    query?: string,
+    signal?: AbortSignal
   ): Promise<{ passages: Passage[]; timing: ReturnType<typeof provenanceTiming> }> {
+    signal?.throwIfAborted();
     const doc = await adapters.pdfPages({ url_pdf: url });
+    signal?.throwIfAborted();
     const pages: Page[] = Array.isArray(doc.halaman) ? doc.halaman : [];
     const all = segmentPages(`bpk:${label}`, pages);
     const timing = provenanceTiming(doc);
-    if (!pasal) return { passages: all.filter((item) => item.locator.bagian === "batang-tubuh").slice(0, 3), timing };
+    if (!pasal) {
+      const norma=all.filter((item)=>item.locator.bagian==='batang-tubuh');
+      const words=[...new Set((query??'').toLowerCase().match(/[\p{L}]{4,}/gu)??[])].filter(w=>!['yang','dari','untuk','dengan','atau','dalam','saya','sudah','belum','tentang','bagaimana'].includes(w));
+      const score=(item:Passage)=>words.reduce((n,w)=>n+Math.min(4,item.text.toLowerCase().split(w).length-1),0);
+      return {passages:(words.length?[...norma].sort((a,b)=>score(b)-score(a)):norma).slice(0,3),timing};
+    }
     const found = findArticle(all, pasal, mengubah);
     return { passages: [...found.norma, ...(mengubah ? [] : found.penjelasan)], timing };
   }
 
-  async function openRegulation(ref: Extract<RujukanBuka, { jenis: "peraturan" }>): Promise<HasilBuka> {
+  async function openRegulation(ref: Extract<RujukanBuka, { jenis: "peraturan" }>, query?:string,followAmendments=true,signal?:AbortSignal): Promise<HasilBuka> {
     const label = normalizeRegulation(ref.rujukan) ?? ref.rujukan;
     const raw = await adapters.inspectArticle({ peraturan: label, pasal: "", sertakan_putusan_mk: false });
+    signal?.throwIfAborted();
     if (raw.ditemukan === false || !raw.peraturan) {
       return {
         rujukan: ref,
@@ -188,7 +198,7 @@ export function createSumberService(adapters: SumberAdapters, signer: Signer) {
       dicabutDengan,
     };
 
-    const original = await regulationPassages(label, pdf, ref.pasal);
+    const original = await regulationPassages(label, pdf, ref.pasal,undefined,query,signal);
     const potongan: PotonganBertanda[] = original.passages.map((passage) =>
       finish({
         id: passage.id,
@@ -207,7 +217,7 @@ export function createSumberService(adapters: SumberAdapters, signer: Signer) {
 
     // Rantai perubahan: bunyi pasal sebagaimana diubah diambil dari undang-undang pengubahnya,
     // bukan dari naskah asli. Perubahan yang tidak menyentuh pasal ini tidak menghasilkan potongan.
-    if (ref.pasal) {
+    if (ref.pasal && followAmendments) {
       for (const relation of relationIds(raw, "Diubah dengan")) {
         try {
           const detail = await adapters.regulationDetail(relation.id);
@@ -439,13 +449,14 @@ export function createSumberService(adapters: SumberAdapters, signer: Signer) {
     };
   }
 
-  async function buka(ref: RujukanBuka): Promise<HasilBuka> {
+  async function buka(ref: RujukanBuka, options?:{query?:string;followAmendments?:boolean;signal?:AbortSignal}): Promise<HasilBuka> {
     try {
+      options?.signal?.throwIfAborted();
       const local = adapters.local?.(ref);
       if (local) return local;
       switch (ref.jenis) {
         case "peraturan":
-          return await openRegulation(ref);
+          return await openRegulation(ref,options?.query,options?.followAmendments,options?.signal);
         case "fatwa":
           return await openFatwa(ref);
         case "khes":

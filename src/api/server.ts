@@ -149,6 +149,11 @@ const ask = createAsk({
 });
 
 const server = createPlatformServer({
+  ...(process.env.PASLA_CHAT_ENABLED==='true'?{chat:(()=>{
+    const rpm=Number(process.env.PASLA_CHAT_AZURE_RPM),tpm=Number(process.env.PASLA_CHAT_AZURE_TPM);
+    if(!process.env.PASLA_AZURE_OPENAI_KEY||!process.env.PASLA_MANAGED_CLAIMS_FILE||process.env.PASLA_MANAGED_CLAIMS_FILE===':memory:'||!Number.isSafeInteger(rpm)||rpm<1||!Number.isSafeInteger(tpm)||tpm<24096)throw new Error('CHAT_CONFIG');
+    return {key:process.env.PASLA_AZURE_OPENAI_KEY,claims:createManagedClaims(process.env.PASLA_MANAGED_CLAIMS_FILE),rpm,tpm};
+  })()}:{}),
   ...(process.env.PASLA_MANAGED_AI_ENABLED === "true" ? { managedAi: (() => {
     if (!process.env.PASLA_AZURE_OPENAI_KEY || !process.env.PASLA_MANAGED_CLAIMS_FILE || process.env.PASLA_MANAGED_CLAIMS_FILE === ":memory:") throw new Error("MANAGED_CONFIG");
     return createManagedAzure({ apiKey: process.env.PASLA_AZURE_OPENAI_KEY, claims: createManagedClaims(process.env.PASLA_MANAGED_CLAIMS_FILE) });

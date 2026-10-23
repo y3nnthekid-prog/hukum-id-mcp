@@ -10,9 +10,10 @@ export function createManagedClaims(file: string, clock = () => Math.floor(Date.
   if (file !== ":memory:") chmodSync(file, 0o600);
   db.exec("PRAGMA busy_timeout=5000; CREATE TABLE IF NOT EXISTS claims(jti TEXT PRIMARY KEY, expires INTEGER NOT NULL); CREATE TABLE IF NOT EXISTS gate(id INTEGER PRIMARY KEY CHECK(id=1), next_start INTEGER NOT NULL, active_until INTEGER NOT NULL, active_jti TEXT); INSERT OR IGNORE INTO gate VALUES(1,0,0,NULL)");
   return {
-    claim(jti: string, expires: number) {
+    nextAllowedAt() { const row=db.prepare('SELECT next_start,active_until FROM gate WHERE id=1').get()!;return Math.max(Number(row.next_start),Number(row.active_until)); },
+    claim(jti: string, expires: number, interval = 65) {
       const time = clock();
-      if (!/^[\w-]{43}$/.test(jti) || !Number.isSafeInteger(expires) || expires <= time || expires > time + 120) throw new Error("MANAGED_TICKET");
+      if (!/^[\w-]{43}$/.test(jti) || !Number.isSafeInteger(expires) || expires <= time || expires > time + 120 || !Number.isSafeInteger(interval) || interval<1 || interval>3600) throw new Error("MANAGED_TICKET");
       db.exec("BEGIN IMMEDIATE");
       try {
         db.prepare("DELETE FROM claims WHERE expires<?").run(time - 86400);
@@ -21,7 +22,7 @@ export function createManagedClaims(file: string, clock = () => Math.floor(Date.
         if (Number(gate.active_until) > time) throw new Error("MANAGED_BUSY");
         if (Number(gate.next_start) > time) throw new Error("MANAGED_RATE");
         db.prepare("INSERT INTO claims VALUES(?,?)").run(jti, expires);
-        db.prepare("UPDATE gate SET next_start=?,active_until=?,active_jti=? WHERE id=1").run(time + 65, time + 120, jti);
+        db.prepare("UPDATE gate SET next_start=?,active_until=?,active_jti=? WHERE id=1").run(time + interval, time + 120, jti);
         db.exec("COMMIT");
       } catch (cause) { db.exec("ROLLBACK"); throw cause; }
     },

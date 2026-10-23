@@ -39,6 +39,11 @@ function azureSchema(node: unknown): unknown {
   return result;
 }
 
+/** Exact conservative wire bound for the pinned low/4096 chat profile. */
+export function azureChatWireBytes(input:{system:string;user:string;schema:z.ZodType}) {
+  const body={model:AZURE_PASLA.deployment,reasoning_effort:'low',max_completion_tokens:4096,response_format:{type:'json_schema',json_schema:{name:'pasla_pilot',strict:true,schema:azureSchema(z.toJSONSchema(input.schema))}},messages:[{role:'system',content:input.system},{role:'user',content:input.user}]};
+  return Buffer.byteLength(JSON.stringify(body),'utf8')+1024;
+}
 export function createAzureModel(input: { apiKey: string; maxUsd: number; maxCalls?: number; maxInputTokens?: number; profile?: "core" | "low-4096"; fetchImpl?: FetchLike }) {
   const maxCalls = input.maxCalls ?? 9;
   const profile = input.profile ?? "core";
