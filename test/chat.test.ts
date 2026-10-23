@@ -10,6 +10,14 @@ import { verifyChatTicket } from '../src/core/chat-ticket.js';
 import { requestHash } from '../src/core/step-ticket.js';
 import { mergeDiscovery } from '../src/core/discovery.js';
 import { createTelusur } from '../src/core/telusur.js';
+import { Hono } from 'hono';
+import { registerChat } from '../src/api/chat.js';
+
+test('disabled engine readiness is public metadata and never invokes a model',async()=>{
+ const app=new Hono();registerChat(app as any,{});
+ const status=await app.request('/v2/chat/status');assert.equal(status.status,200);assert.deepEqual(await status.json(),{available:false});
+ assert.equal((await app.request('/v2/chat/turn',{method:'POST'})).status,503);
+});
 
 test('generic local OR hits cannot crowd relevant publisher search hits out of discovery',()=>{
  const local=Array.from({length:8},(_,i)=>({judul:'Peraturan Undang-Undang Perjanjian Lain',rujukan:'PP '+i+'/2099'}));
@@ -92,6 +100,8 @@ test('purpose, producer subject, and purchase clock cannot be promoted into broa
   assert.equal(validateChatAnswer(answer,[source],[{id:'b1',supported:true,checks,kind:'legal',reason:'Missed scope'}],[signer.publicKeyPem]).blocks.length,0);
  }
  assert.equal(requestsUnavailableUpload('Bisa kirim 2–3 foto kerusakan dan tangkapan layar chat penjual?'),true);
+ const upload={...draft,blocks:[{id:'b1',kind:'preparation' as const,text:'Tolong kirim foto kerusakan di percakapan ini agar bisa saya periksa.',citations:[]}]};
+ assert.equal(validateChatAnswer(upload,[],[{id:'b1',supported:true,checks,kind:'preparation',reason:'Missed feature limitation'}],[signer.publicKeyPem]).blocks.length,0);
  assert.equal(requestsUnavailableUpload('Apakah ada foto kerusakan yang sudah kamu simpan?'),false);
  assert.equal(ungroundedPlatformProcedure('Ajukan klaim resmi lewat fitur pengaduan marketplace.'),true);
  assert.equal(ungroundedPlatformProcedure('Periksa apakah fitur keluhan tersedia; jika ada, baca syaratnya sebelum menggunakan.'),false);

@@ -39,6 +39,7 @@ export function validateChatAnswer(draft:ChatDraft,passages:PotonganBertanda[],v
     if(reviews.length!==1||!reviews[0]?.supported||!reviews[0]?.checks||Object.values(reviews[0].checks).some(value=>value!==true)) reason='Dukungan subjek, syarat, fakta, atau isi belum cukup.';
     if((b.kind==='legal'||reviews[0]?.kind==='legal'||needsLegalCitation(b.text))&&!b.citations.length) reason='Klaim hukum atau rujukan prosedur memerlukan kutipan yang diperiksa.';
     if(ungroundedPlatformProcedure(b.text))reason='Prosedur platform tertentu belum didukung kebijakan platform yang diperiksa.';
+    if(requestsUnavailableUpload(b.text))reason='Percakapan belum mendukung pemeriksaan berkas yang diunggah.';
     for(const citation of b.citations) {
       const matches=ids.get(citation.passageId)??[];const p=matches[0];
       if(matches.length!==1||!p||checkPassage(p,keys)||!findQuote(p.text,citation.quote)||citation.quote.trim().split(/\s+/).length<8) reason='Kutipan atau asal sumber tidak cocok.';
