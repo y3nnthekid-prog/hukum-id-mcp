@@ -8,9 +8,11 @@ import type { ManagedStepTicket } from "./step-ticket.js";
 export function createManagedClaims(file: string, clock = () => Math.floor(Date.now() / 1000)) {
   const db = new DatabaseSync(file, { allowExtension: false });
   if (file !== ":memory:") chmodSync(file, 0o600);
-  db.exec("PRAGMA busy_timeout=5000; CREATE TABLE IF NOT EXISTS claims(jti TEXT PRIMARY KEY, expires INTEGER NOT NULL); CREATE TABLE IF NOT EXISTS gate(id INTEGER PRIMARY KEY CHECK(id=1), next_start INTEGER NOT NULL, active_until INTEGER NOT NULL, active_jti TEXT); INSERT OR IGNORE INTO gate VALUES(1,0,0,NULL)");
+  db.exec("PRAGMA busy_timeout=5000; CREATE TABLE IF NOT EXISTS claims(jti TEXT PRIMARY KEY, expires INTEGER NOT NULL); CREATE TABLE IF NOT EXISTS gate(id INTEGER PRIMARY KEY CHECK(id=1), next_start INTEGER NOT NULL, active_until INTEGER NOT NULL, active_jti TEXT); INSERT OR IGNORE INTO gate VALUES(1,0,0,NULL); CREATE TABLE IF NOT EXISTS provider_cooldown(id INTEGER PRIMARY KEY CHECK(id=1), until_time INTEGER NOT NULL); INSERT OR IGNORE INTO provider_cooldown VALUES(1,0)");
   return {
-    nextAllowedAt() { const row=db.prepare('SELECT next_start,active_until FROM gate WHERE id=1').get()!;return Math.max(Number(row.next_start),Number(row.active_until)); },
+    nextAllowedAt() { const row=db.prepare('SELECT next_start,active_until,(SELECT until_time FROM provider_cooldown WHERE id=1) AS cooldown FROM gate WHERE id=1').get()!;return Math.max(Number(row.next_start),Number(row.active_until),Number(row.cooldown)); },
+    cooldownUntil() { return Number(db.prepare('SELECT until_time FROM provider_cooldown WHERE id=1').get()!.until_time); },
+    deferUntil(time:number) { if(!Number.isSafeInteger(time)||time<clock()||time>clock()+86400)throw new Error('MANAGED_WAIT');db.prepare('UPDATE provider_cooldown SET until_time=max(until_time,?) WHERE id=1').run(time); },
     claim(jti: string, expires: number, interval = 65) {
       const time = clock();
       if (!/^[\w-]{43}$/.test(jti) || !Number.isSafeInteger(expires) || expires <= time || expires > time + 120 || !Number.isSafeInteger(interval) || interval<1 || interval>3600) throw new Error("MANAGED_TICKET");
@@ -19,6 +21,7 @@ export function createManagedClaims(file: string, clock = () => Math.floor(Date.
         db.prepare("DELETE FROM claims WHERE expires<?").run(time - 86400);
         if (db.prepare("SELECT 1 FROM claims WHERE jti=?").get(jti)) throw new Error("MANAGED_REPLAY");
         const gate = db.prepare("SELECT next_start,active_until FROM gate WHERE id=1").get()!;
+        if(Number(db.prepare('SELECT until_time FROM provider_cooldown WHERE id=1').get()!.until_time)>time)throw new Error('MANAGED_RATE');
         if (Number(gate.active_until) > time) throw new Error("MANAGED_BUSY");
         if (Number(gate.next_start) > time) throw new Error("MANAGED_RATE");
         db.prepare("INSERT INTO claims VALUES(?,?)").run(jti, expires);

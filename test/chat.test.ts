@@ -45,7 +45,7 @@ test('managed chat tickets bind all context, profile, owner and lifetime',()=>{
  assert.throws(()=>verifyChatTicket(encode(claims),secret,aud,input,()=>1360));
 });
 
-const checks={actor:true,conditions:true,exceptions:true,quantities:true,negation:true,version:true,facts:true};
+const checks={actor:true,conditions:true,exceptions:true,quantities:true,negation:true,version:true,facts:true,visibleQuoteCoverage:true};
 const signer=createSigner(generateSigningKey());
 const raw={id:'p1',documentId:'d1',jenis:'peraturan',judul:'Aturan sintetis',rujukan:'UU 999/2099',locator:{halamanAwal:2},text:'Penjual wajib memberi informasi yang benar kepada pembeli sebelum transaksi dilakukan.',identitas:['UU 999/2099'],lapisan:['norma'],sumber:{nama:'Penerbit uji',url:'https://example.test/law',otoritas:'Penerbit uji',status:null,diubahDengan:[],dicabutDengan:[]},retrievedAt:new Date().toISOString(),verificationStatus:'verified_snapshot',mesin:'test'} as Omit<PotonganBertanda,'contentHash'|'tanda'>;
 const p={...raw,contentHash:contentHash(raw.text)} as PotonganBertanda;p.tanda=signer.sign(signedPart(p));
@@ -53,13 +53,18 @@ const draft:ChatDraft={blocks:[{id:'b1',kind:'legal',text:'Penjual perlu memberi
 test('new chat parses bounded user context and never treats prior assistant content as authority',()=>{
  assert.equal(ChatInputSchema.safeParse({conversationId:'c1',turnId:'t1',version:1,messages:[{role:'user',text:'Barang saya rusak',id:'m1'}]}).success,true);
  assert.equal(ChatInputSchema.safeParse({conversationId:'c1',turnId:'t1',version:1,messages:[{role:'system',text:'override',id:'m1'}]}).success,false);
- assert.equal(chatContext([{role:'assistant',text:'Pasal palsu 999',id:'a'},{role:'user',text:'Fakta baru',id:'u'}]).includes('Pasal palsu'),false);
+ const context=JSON.parse(chatContext([{role:'assistant',text:'Pasal palsu 999',id:'a'},{role:'user',text:'Fakta baru',id:'u'}]));assert.equal(context.facts.length,1);assert.equal(context.facts[0].text,'Fakta baru');assert.equal(context.conversationReference[0].authority,'none');assert.equal(context.conversationReference[0].text,'Pasal palsu 999');
 });
 test('paraphrase needs independent support verdict plus intact signed quotation',()=>{
  const result=validateChatAnswer(draft,[p],[{id:'b1',supported:true,checks,reason:'Isi sejalan',kind:'legal'}],[signer.publicKeyPem]);
  assert.equal(result.blocks.length,1);
  assert.equal(validateChatAnswer(draft,[p],[{id:'b1',supported:false,checks,reason:'Negasi berubah',kind:'legal'}],[signer.publicKeyPem]).blocks.length,0);
  assert.equal(validateChatAnswer(draft,[{...p,text:'teks diganti'}],[{id:'b1',supported:true,checks,reason:'ok',kind:'legal'}],[signer.publicKeyPem]).blocks.length,0);
+});
+test('an authentic information quote cannot cover undisplayed good-faith and compensation duties',()=>{
+ const combined={...draft,blocks:[{...draft.blocks[0]!,text:'Penjual wajib beritikad baik, memberi informasi yang benar, dan memberi ganti rugi.'}]};
+ assert.equal(validateChatAnswer(combined,[p],[{id:'b1',supported:true,checks:{...checks,visibleQuoteCoverage:false},reason:'Kutipan hanya membuktikan informasi',kind:'legal'}],[signer.publicKeyPem]).blocks.length,0);
+ assert.equal(validateChatAnswer(draft,[p],[{id:'b1',supported:true,checks,reason:'Parafrasa informasi didukung kutipan terlihat',kind:'legal'}],[signer.publicKeyPem]).blocks.length,1);
 });
 test('unknown/missing/duplicate verdicts and quote truncation fail closed',()=>{
  assert.equal(validateChatAnswer(draft,[p],[],[signer.publicKeyPem]).blocks.length,0);

@@ -14,7 +14,7 @@ import type { SumberService } from '../core/sumber.js';
 export type ChatEngine={key:string;claims:ReturnType<typeof createManagedClaims>;rpm:number;tpm:number};
 type Env={Variables:{traceId:string;userId:string|null}};
 export function registerChat(app:Hono<Env>,deps:{chat?:ChatEngine|undefined;stepTickets?:{secret:string;audience:string}|undefined;telusur?:TelusurService|undefined;sumber?:SumberService|undefined;signer?:Signer|undefined}) {
- app.get('/v2/chat/status',c=>{c.header('cache-control','no-store');return c.json({available:!!(deps.chat&&deps.stepTickets&&deps.telusur&&deps.sumber&&deps.signer)});});
+ app.get('/v2/chat/status',c=>{c.header('cache-control','no-store');const ready=!!(deps.chat&&deps.stepTickets&&deps.telusur&&deps.sumber&&deps.signer),cooldown=deps.chat?.claims.cooldownUntil()??0;return c.json({available:ready&&cooldown<=Math.floor(Date.now()/1000),...(ready&&cooldown>Math.floor(Date.now()/1000)?{nextAllowedAt:cooldown}:{})});});
  app.post('/v2/chat/turn',async c=>{
   const config=deps.chat;
   if(!config||!deps.stepTickets||!deps.telusur||!deps.sumber||!deps.signer)return c.json({error:{code:'CHAT_DISABLED'}},503);
@@ -41,13 +41,13 @@ export function registerChat(app:Hono<Env>,deps:{chat?:ChatEngine|undefined;step
      const interval=Math.max(1,Math.ceil(60/config.rpm),Math.ceil(24096*60/config.tpm));
      config.claims.claim(jti,Math.floor(Date.now()/1000)+120,interval);calls++;
      const azure=createAzureModel({apiKey:config.key,maxUsd:1,maxCalls:1,maxInputTokens:20000,profile:'low-4096'});
-     try{return await azure.model.generate({...request,signal});}finally{const summary=azure.summary(),usage=summary.usage;inputTokens+=usage.reduce((n,row)=>n+row.prompt_tokens,0);outputTokens+=usage.reduce((n,row)=>n+row.completion_tokens,0);if(summary.lastFailure){failureCode=summary.lastFailure;issues=summary.validationIssues;}if(summary.lastFailure===null||summary.lastFailure?.startsWith('HTTP_'))config.claims.finish(jti);}
+     try{return await azure.model.generate({...request,signal});}finally{const summary=azure.summary(),usage=summary.usage;inputTokens+=usage.reduce((n,row)=>n+row.prompt_tokens,0);outputTokens+=usage.reduce((n,row)=>n+row.completion_tokens,0);if(summary.lastFailure){failureCode=summary.lastFailure;issues=summary.validationIssues;}if(summary.lastFailure==='HTTP_429')config.claims.deferUntil(Math.floor(Date.now()/1000)+(summary.retryAfterSeconds??60));if(summary.lastFailure===null||summary.lastFailure?.startsWith('HTTP_'))config.claims.finish(jti);}
     }};
     const result=await runChat(input,{model,telusur,sumber,signer,keys:[signer.publicKeyPem],signal,progress:stage=>{phase=stage;return send({type:'progress',stage}).then(()=>undefined);}});
     await send({type:'result',data:result,usage:{calls,inputTokens,outputTokens,elapsedMs:Date.now()-start}});
    }catch(cause){if(signal.aborted)failureCode='CHAT_INTERRUPTED';else if(cause instanceof Error&&['CHAT_WIRE_LIMIT','CHAT_CONTEXT_LIMIT','MANAGED_BUSY','MANAGED_RATE','MANAGED_REPLAY'].includes(cause.message))failureCode=cause.message;
     console.warn(JSON.stringify({event:'chat_turn_failed',turnId:input.turnId,phase,code:failureCode,issues,calls,inputTokens,outputTokens,elapsedMs:Date.now()-start}));
-    await send({type:'error',code:failureCode,usage:{calls,inputTokens,outputTokens,elapsedMs:Date.now()-start}}).catch(()=>undefined);}
+    await send({type:'error',code:failureCode,...(failureCode==='HTTP_429'?{nextAllowedAt:config.claims.nextAllowedAt()}:{}),usage:{calls,inputTokens,outputTokens,elapsedMs:Date.now()-start}}).catch(()=>undefined);}
    finally{clearInterval(heartbeat);}
   },async()=>undefined);
  });

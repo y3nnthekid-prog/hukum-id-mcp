@@ -35,6 +35,12 @@ test("Azure pilot reserves failed requests without retries and never returns pro
   assert.equal(pilot.summary().lastFailure, "HTTP_429");
   assert.equal(JSON.stringify(pilot.summary()).includes("synthetic-key-only"), false);
 });
+test('Azure 429 exposes only a bounded wait hint and does not retry',async()=>{
+ for(const [headers,expected] of [[{'retry-after-ms':'1501'},2],[{'retry-after':'75'},75],[{'retry-after':'999999'},86400],[{'retry-after-ms':'invalid'},60]] as const){
+  let calls=0;const pilot=createAzurePilotModel({apiKey:'synthetic-key-only',maxUsd:1,fetchImpl:async()=>{calls++;return new Response('private provider response',{status:429,headers});}});
+  await assert.rejects(pilot.model.generate({system:'JSON',user:'Synthetic',schema,effort:'low'}));assert.equal(calls,1);assert.equal(pilot.summary().retryAfterSeconds,expected);assert.ok(!JSON.stringify(pilot.summary()).includes('private provider'));
+ }
+});
 
 test("Azure wire schemas omit unsupported constraints without removing property names or local validation", async () => {
   let body: any;

@@ -53,10 +53,11 @@ export function createAzureModel(input: { apiKey: string; maxUsd: number; maxCal
   if (!/^[\x21-\x7e]{8,512}$/.test(input.apiKey) || !Number.isFinite(input.maxUsd) || input.maxUsd <= 0 || input.maxUsd > 1 || !Number.isInteger(maxCalls) || maxCalls < 1 || maxCalls > 9) throw new Error("AZURE_PILOT_CONFIG");
   let calls = 0; let reservedUsd = 0;
   let lastFailure: string | null = null;
+  let retryAfterSeconds: number | null = null;
   let validationIssues: Array<{ code: string; path: Array<string | number> }> = [];
   const usage: Array<z.infer<typeof Usage>> = [];
   const doFetch: FetchLike = input.fetchImpl ?? ((url, init) => fetch(url, init));
-  const summary = () => ({ transport: "azure-openai", ...AZURE_PASLA, profile, maxUsd: input.maxUsd, maxCalls, calls, reservedUsd, lastFailure, validationIssues: validationIssues.map(row => ({ ...row, path: [...row.path] })), usage: usage.map(row => ({ ...row })), estimatedUsageUsd: usage.reduce((sum, row) => sum + row.prompt_tokens * INPUT_USD_PER_TOKEN + row.completion_tokens * OUTPUT_USD_PER_TOKEN, 0) });
+  const summary = () => ({ transport: "azure-openai", ...AZURE_PASLA, profile, maxUsd: input.maxUsd, maxCalls, calls, reservedUsd, lastFailure, retryAfterSeconds, validationIssues: validationIssues.map(row => ({ ...row, path: [...row.path] })), usage: usage.map(row => ({ ...row })), estimatedUsageUsd: usage.reduce((sum, row) => sum + row.prompt_tokens * INPUT_USD_PER_TOKEN + row.completion_tokens * OUTPUT_USD_PER_TOKEN, 0) });
   const model: JsonModel = {
     // OpenAI is the model vendor; the signed model name and trace identify Azure.
     provider: "openai", model: AZURE_PASLA.identity + (profile === "core" ? "" : ":low-4096"),
@@ -74,13 +75,19 @@ export function createAzureModel(input: { apiKey: string; maxUsd: number; maxCal
       if (calls >= maxCalls) throw new Error("AZURE_PILOT_CALL_LIMIT");
       if (reservedUsd + reserve > input.maxUsd) throw new Error("AZURE_PILOT_BUDGET");
       // Reservation precedes network and is retained even for errors/cancellation.
-      calls++; reservedUsd += reserve; lastFailure = null; validationIssues = [];
+      calls++; reservedUsd += reserve; lastFailure = null; retryAfterSeconds = null; validationIssues = [];
       let response: Response;
       try {
         response = await doFetch(AZURE_PASLA.endpoint, { method: "POST", redirect: "error", signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(90000)]) : AbortSignal.timeout(90000), headers: { "api-key": input.apiKey, "content-type": "application/json" }, body });
       } catch { lastFailure = "NETWORK"; throw new AiProviderError("Azure pilot tidak dapat dihubungi. Tidak ada percobaan ulang otomatis."); }
       if (!response.ok) {
         lastFailure = `HTTP_${response.status}`;
+        if(response.status===429){
+          const milliseconds=response.headers.get('retry-after-ms'),seconds=response.headers.get('retry-after');
+          const wait=milliseconds!==null&&/^\d+(?:\.\d+)?$/.test(milliseconds)?Number(milliseconds)/1000:seconds!==null&&/^\d+(?:\.\d+)?$/.test(seconds)?Number(seconds):seconds!==null?(Date.parse(seconds)-Date.now())/1000:NaN;
+          // Invalid/missing hints use a conservative minute. No provider body is logged.
+          retryAfterSeconds=Number.isFinite(wait)&&wait>0?Math.min(86400,Math.ceil(wait)):60;
+        }
         await response.body?.cancel().catch(() => undefined);
         throw new AiProviderError(`Azure pilot menolak permintaan (HTTP ${response.status}). Tidak ada percobaan ulang otomatis.`);
       }

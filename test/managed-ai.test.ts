@@ -42,6 +42,10 @@ test("managed claims survive restart, serialize requests and keep the 65-second 
     time = 1186; claims.claim("c".repeat(43), 1300);
   } finally { claims.close(); rmSync(directory, { recursive: true, force: true }); }
 });
+test('provider cooldown persists after restart and cannot shorten an existing wait',()=>{
+ const directory=mkdtempSync(path.join(tmpdir(),'pasla-cooldown-'));const file=path.join(directory,'claims.sqlite');let time=1000;let claims=createManagedClaims(file,()=>time);
+ try{claims.deferUntil(1100);claims.deferUntil(1050);assert.equal(claims.nextAllowedAt(),1100);claims.close();claims=createManagedClaims(file,()=>time);assert.equal(claims.nextAllowedAt(),1100);assert.throws(()=>claims.claim('d'.repeat(43),1120,15),/MANAGED_RATE/);time=1100;claims.claim('d'.repeat(43),1220,15);assert.throws(()=>claims.deferUntil(1100+86401),/MANAGED_WAIT/);}finally{claims.close();rmSync(directory,{recursive:true,force:true});}
+});
 
 test("v2 managed AI requires its signed profile and never falls back from BYOK", async () => {
   const input = { rumpun: "hes", pertanyaan: "Apa isi sumber sintetis?" };
