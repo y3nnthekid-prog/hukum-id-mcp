@@ -1,6 +1,6 @@
 import { strict as assert } from 'node:assert';
 import { test } from 'node:test';
-import { ChatInputSchema, validateChatAnswer, chatContext, runChat,type ChatDraft } from '../src/core/chat.js';
+import { ChatInputSchema, validateChatAnswer, chatContext, runChat,requestsUnavailableUpload,ungroundedPlatformProcedure,type ChatDraft } from '../src/core/chat.js';
 import { createSigner, generateSigningKey } from '../src/core/sign.js';
 import { contentHash } from '../src/core/passages.js';
 import { signedPart,createSumberService,type PotonganBertanda } from '../src/core/sumber.js';
@@ -80,6 +80,21 @@ test('each support dimension is mandatory and canonical matches publish the exac
  const result=validateChatAnswer(draft,[source],[{id:'b1',supported:true,checks,kind:'legal',reason:'Faithful raw text'}],[signer.publicKeyPem]);
  assert.equal(result.blocks[0]?.citations[0]?.quote,text);
  assert.equal(validateChatAnswer(draft,[p],[{id:'b1',supported:true,checks,kind:'legal',reason:'Norm from another jurisdiction'}],[signer.publicKeyPem],{matter:'unknown',jurisdiction:'foreign'}).blocks.length,0);
+});
+test('purpose, producer subject, and purchase clock cannot be promoted into broader case rights',()=>{
+ for(const [text,claim] of [
+  ['Perlindungan konsumen bertujuan meningkatkan kesadaran, kemampuan dan kemandirian konsumen untuk melindungi diri.','Ini dasar bahwa konsumen berwenang menuntut perbaikan.'],
+  ['Pelaku usaha yang memproduksi barang dibebaskan dari tanggung jawab atas kerugian yang diderita konsumen, apabila lewatnya jangka waktu penuntutan sejak barang dibeli.','Pelaku usaha dibebaskan; catat tanggal terima agar tidak melewati waktu klaim.'],
+  ['Pelaku usaha yang memproduksi barang dibebaskan dari tanggung jawab atas kerugian yang diderita konsumen, apabila lewatnya jangka waktu penuntutan sejak barang dibeli.','Produsen dapat dibebaskan setelah lewat waktu klaim sejak tanggal terima.'],
+ ]){
+  const unsigned={...p,text,contentHash:contentHash(text)},source={...unsigned,tanda:signer.sign(signedPart(unsigned))};
+  const answer={...draft,blocks:[{...draft.blocks[0]!,text:claim,citations:[{passageId:'p1',quote:text}]}]};
+  assert.equal(validateChatAnswer(answer,[source],[{id:'b1',supported:true,checks,kind:'legal',reason:'Missed scope'}],[signer.publicKeyPem]).blocks.length,0);
+ }
+ assert.equal(requestsUnavailableUpload('Bisa kirim 2–3 foto kerusakan dan tangkapan layar chat penjual?'),true);
+ assert.equal(requestsUnavailableUpload('Apakah ada foto kerusakan yang sudah kamu simpan?'),false);
+ assert.equal(ungroundedPlatformProcedure('Ajukan klaim resmi lewat fitur pengaduan marketplace.'),true);
+ assert.equal(ungroundedPlatformProcedure('Periksa apakah fitur keluhan tersedia; jika ada, baca syaratnya sebelum menggunakan.'),false);
 });
 test('uncited referrals to named agencies and legal procedures cannot pass as preparation',()=>{
  for(const text of ['Ajukan komplain ke LPSK/LK3 konsumen setempat atau mediasi.','Gugat penjual ke pengadilan dalam 30 hari.','Anda wajib menerima pesangon.']){
