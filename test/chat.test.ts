@@ -1,6 +1,6 @@
 import { strict as assert } from 'node:assert';
 import { test } from 'node:test';
-import { ChatInputSchema,ChatDraftSchema,ChatDraftWireSchema,normalizeChatDraft,ChatReviewSchema, validateChatAnswer, chatContext, runChat,requestsUnavailableUpload,ungroundedPlatformProcedure,missingSupportWitnesses,locateSupportWitnesses,incompleteListIntroduction,type ChatDraft } from '../src/core/chat.js';
+import { ChatInputSchema,ChatDraftSchema,ChatDraftWireSchema,normalizeChatDraft,ChatReviewSchema, validateChatAnswer, chatContext, runChat,requestsUnavailableUpload,ungroundedPlatformProcedure,missingSupportWitnesses,locateSupportWitnesses,incompleteListIntroduction,completeShortCitations,type ChatDraft } from '../src/core/chat.js';
 import { createSigner, generateSigningKey,verifySignature } from '../src/core/sign.js';
 import { createManagedClaims } from '../src/core/managed-ai.js';
 import { contentHash } from '../src/core/passages.js';
@@ -348,5 +348,38 @@ test('PDF page furniture cannot conceal an unquoted first list item',()=>{
   assert.equal(incompleteListIntroduction(text,header),true);
   assert.equal(incompleteListIntroduction(text,header+':'),true);
   assert.equal(incompleteListIntroduction(text,text),false);
+ }
+});
+
+
+test('short citations retain their entire signed source context before review without inventing or merging text',()=>{
+ const text='Pasal 999\nHak konsumen adalah:\na. hak atas informasi yang benar dan jelas mengenai kondisi serta jaminan barang;\nb. hak atas ganti rugi apabila barang tidak sesuai dengan perjanjian.';
+ const unsigned={...p,text,contentHash:contentHash(text)},source={...unsigned,tanda:signer.sign(signedPart(unsigned))};
+ const quote='hak atas informasi yang benar dan jelas mengenai kondisi serta jaminan barang;';
+ const value={...draft,blocks:[{...draft.blocks[0]!,text:'Naskah ini menyebut hak konsumen atas informasi yang benar dan jelas mengenai kondisi serta jaminan barang.',citations:[{passageId:'p1',quote}]}]};
+ const completed=completeShortCitations(value,[source],[signer.publicKeyPem]);assert.equal(completed.blocks[0]!.citations[0]!.quote,text);
+ assert.equal(value.blocks[0]!.citations[0]!.quote,quote);
+ assert.equal(validateChatAnswer(completed,[source],[{id:'b1',supported:true,checks,witnesses:[],reason:'Information right only, not compensation',kind:'legal'}],[signer.publicKeyPem]).blocks.length,1);
+ for(const bad of [quote+' fabricated','hak']){const badDraft={...value,blocks:[{...value.blocks[0]!,citations:[{passageId:'p1',quote:bad}]}]};assert.equal(completeShortCitations(badDraft,[source],[signer.publicKeyPem]).blocks[0]!.citations[0]!.quote,bad);}
+ assert.equal(completeShortCitations(value,[source,source],[signer.publicKeyPem]).blocks[0]!.citations[0]!.quote,quote);
+ assert.equal(completeShortCitations(value,[{...source,text:text+' tampered'}],[signer.publicKeyPem]).blocks[0]!.citations[0]!.quote,quote);
+ const longText=text+'x'.repeat(1001),longRaw={...source,text:longText,contentHash:contentHash(longText)},long={...longRaw,tanda:signer.sign(signedPart(longRaw))};
+ assert.equal(completeShortCitations(value,[long],[signer.publicKeyPem]).blocks[0]!.citations[0]!.quote,quote);
+});
+
+
+test('an information right never loses its own agreement condition or shared restrictions',()=>{
+ const claim='Konsumen berhak atas informasi tambahan.';
+ for(const text of [
+  'Konsumen berhak atas informasi tambahan apabila barang tidak sesuai dengan perjanjian.',
+  'Hak konsumen adalah:\na. hak atas informasi tambahan apabila barang tidak sesuai dengan perjanjian;\nb. hak atas ganti rugi.',
+  'Hak konsumen adalah:\na. hak atas informasi tambahan;\nb. seluruh hak termasuk ganti rugi berlaku apabila barang tidak sesuai dengan perjanjian.',
+  'Hak konsumen adalah:\na. hak atas informasi tambahan;\nb. hak atas ganti rugi. Ketentuan ini juga berlaku apabila barang tidak sesuai dengan perjanjian.',
+  'Hak konsumen adalah:\na. hak atas informasi tambahan;\nb. hak atas ganti rugi. Syarat ini juga berlaku bagi hak pada huruf a apabila barang tidak sesuai dengan perjanjian.',
+  'Hak konsumen adalah:\na. hak atas informasi tambahan;\nb. hak atas ganti rugi; hak pada huruf a berlaku apabila barang tidak sesuai dengan perjanjian.'
+ ]){
+  const rawSource={...p,text,contentHash:contentHash(text)},source={...rawSource,tanda:signer.sign(signedPart(rawSource))};
+  const value={...draft,blocks:[{...draft.blocks[0]!,text:claim,citations:[{passageId:'p1',quote:text}]}]};
+  assert.equal(validateChatAnswer(value,[source],[{id:'b1',supported:true,checks,witnesses:[],reason:'Reviewer missed condition',kind:'legal'}],[signer.publicKeyPem]).blocks.length,0);
  }
 });
