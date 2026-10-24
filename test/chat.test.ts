@@ -62,7 +62,7 @@ test('managed chat tickets bind all context, profile, owner and lifetime',()=>{
  assert.throws(()=>verifyChatTicket(encode(claims),secret,aud,input,()=>1360));
 });
 
-function wireDraft(value:ChatDraft){const draft=ChatDraftSchema.parse(value),block=(index:number)=>{const b=draft.blocks[index];return b?{id:b.id,kind:b.kind,text:b.text,citation:b.citations[0]??null}:null;};return {blocks:{a:block(0),b:block(1),c:block(2),d:block(3),e:block(4)},questions:{a:draft.questions[0]??null,b:draft.questions[1]??null},limits:{a:draft.limits[0]??null,b:draft.limits[1]??null,c:draft.limits[2]??null}};}
+function wireDraft(value:ChatDraft){const draft=ChatDraftSchema.parse(value),block=(index:number)=>{const b=draft.blocks[index];return b?{id:b.id,kind:b.kind,text:b.text,citation:b.citations[0]??null}:null;};return {blocks:{a:block(0),b:block(1),c:block(2),d:block(3),e:block(4)},questions:{a:draft.questions[0]??null,b:draft.questions[1]??null}};}
 const witnesses=[{element:'actor' as const,claimSpan:'Penjual',quoteSpan:'Penjual'}];
 const checks={actor:true,conditions:true,exceptions:true,quantities:true,negation:true,version:true,facts:true,visibleQuoteCoverage:true};
 const signer=createSigner(generateSigningKey());
@@ -74,6 +74,7 @@ test('nullable wire slots preserve every supported block and enforce cardinality
  assert.equal(ChatDraftWireSchema.safeParse({...wire,blocks:{...wire.blocks,f:wire.blocks.a}}).success,false);
  assert.throws(()=>normalizeChatDraft({...wire,blocks:{...wire.blocks,f:wire.blocks.a}}));
  assert.throws(()=>normalizeChatDraft({...wire,questions:{...wire.questions,c:'Unexpected third question'}}));
+ assert.throws(()=>normalizeChatDraft({...wire,limits:{a:'Anda belum mengunggah berkas',b:null,c:null}}));
  assert.throws(()=>normalizeChatDraft({...wire,blocks:{...wire.blocks,a:{...wire.blocks.a,text:'x'.repeat(281)}}}));
 });
 test('Azure chat transport uses five nullable draft slots then publishes the original signed answer contract',async(t)=>{
@@ -182,6 +183,9 @@ test('purpose, producer subject, and purchase clock cannot be promoted into broa
  const upload={...draft,blocks:[{id:'b1',kind:'preparation' as const,text:'Tolong kirim foto kerusakan di percakapan ini agar bisa saya periksa.',citations:[]}]};
  assert.equal(validateChatAnswer(upload,[],[{id:'b1',supported:true,checks,witnesses,kind:'preparation',reason:'Missed feature limitation'}],[signer.publicKeyPem]).blocks.length,0);
  assert.equal(requestsUnavailableUpload('Apakah ada foto kerusakan yang sudah kamu simpan?'),false);
+ assert.equal(requestsUnavailableUpload('Saya tidak bisa menilai bukti visual karena Anda belum mengunggahnya.'),true);
+ assert.equal(requestsUnavailableUpload('Saya tidak bisa menilai bukti visual karena Anda belum mengunggah berkas.'),true);
+ const provenance={...draft,blocks:[{id:'source',kind:'general' as const,text:'Saya hanya mengandalkan sumber yang Anda sertakan.',citations:[]}]};assert.equal(validateChatAnswer(provenance,[],[{id:'source',supported:true,checks,witnesses:[],kind:'general',reason:'Missed invented user source'}],[signer.publicKeyPem]).blocks.length,0);
  assert.equal(ungroundedPlatformProcedure('Ajukan klaim resmi lewat fitur pengaduan marketplace.'),true);
  assert.equal(ungroundedPlatformProcedure('Periksa apakah fitur keluhan tersedia; jika ada, baca syaratnya sebelum menggunakan.'),false);
 });
