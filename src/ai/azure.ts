@@ -113,7 +113,7 @@ export function createAzureModel(input: { apiKey: string; maxUsd: number; maxCal
         failureCode = "LOCAL_SCHEMA";
         const validated = schema.safeParse(parsed);
         if (!validated.success) {
-          const knownFields = new Set(["isu", "subpertanyaan", "penelusuran", "kueri", "sumber", "kriteria", "masukkan", "keluarkan", "sertakanHistoris", "bagian", "judul", "fokus", "pilihan", "id", "keputusan", "alasan", "potonganId", "kutipan", "kalimat", "teks", "lapisan", "potongan_id", "analisis", "merujuk", "queries", "focus", "needsContext", "blocks", "kind", "text", "citations", "passageId", "quote", "questions", "limits", "verdicts", "supported", "reason", "questionsSafe", "limitsSafe"]);
+          const knownFields = new Set(["isu", "subpertanyaan", "penelusuran", "kueri", "sumber", "kriteria", "masukkan", "keluarkan", "sertakanHistoris", "bagian", "judul", "fokus", "pilihan", "id", "keputusan", "alasan", "potonganId", "kutipan", "kalimat", "teks", "lapisan", "potongan_id", "analisis", "merujuk", "queries", "focus", "needsContext", "blocks", "kind", "text", "citations", "passageId", "quote", "questions", "limits", "verdicts", "supported", "reason", "questionsSafe", "limitsSafe", "witnesses", "element", "claimSpan", "quoteSpan"]);
           validationIssues = validated.error.issues.slice(0, 12).map(issue => ({ code: issue.code, path: issue.path.slice(0, 8).map(part => typeof part === "number" ? part : typeof part === "string" && knownFields.has(part) ? part : "[field]") }));
           throw new Error();
         }

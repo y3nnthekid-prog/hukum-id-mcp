@@ -1,6 +1,6 @@
 import { strict as assert } from 'node:assert';
 import { test } from 'node:test';
-import { ChatInputSchema, validateChatAnswer, chatContext, runChat,requestsUnavailableUpload,ungroundedPlatformProcedure,missingSupportWitnesses,type ChatDraft } from '../src/core/chat.js';
+import { ChatInputSchema,ChatReviewSchema, validateChatAnswer, chatContext, runChat,requestsUnavailableUpload,ungroundedPlatformProcedure,missingSupportWitnesses,type ChatDraft } from '../src/core/chat.js';
 import { createSigner, generateSigningKey,verifySignature } from '../src/core/sign.js';
 import { createManagedClaims } from '../src/core/managed-ai.js';
 import { contentHash } from '../src/core/passages.js';
@@ -118,6 +118,12 @@ test('support witnesses cannot substitute an unrelated span, actor, relation or 
  const unsigned={...p,text:quote,contentHash:contentHash(quote)},source={...unsigned,tanda:signer.sign(signedPart(unsigned))};
  const value={...draft,blocks:[{...draft.blocks[0]!,text:claim,citations:[{passageId:'p1',quote}]}]};
  assert.equal(validateChatAnswer(value,[source],[{id:'b1',supported:true,checks,witnesses:valid,kind:'legal',reason:'Missed consumption condition'}],[signer.publicKeyPem]).blocks.length,0);
+});
+
+test('support witnesses accept whole parent spans but never exceed the unchanged claim and quote bounds',()=>{
+ const verdict={id:'b1',supported:true,checks,kind:'legal',reason:'fixture',witnesses:[{element:'actor',claimSpan:'c'.repeat(280),quoteSpan:'q'.repeat(350)}]};
+ assert.equal(ChatReviewSchema.safeParse({verdicts:[verdict],questionsSafe:true,limitsSafe:true}).success,true);
+ for(const witness of [{...verdict.witnesses[0],claimSpan:'c'.repeat(281)},{...verdict.witnesses[0],quoteSpan:'q'.repeat(351)}])assert.equal(ChatReviewSchema.safeParse({verdicts:[{...verdict,witnesses:[witness]}],questionsSafe:true,limitsSafe:true}).success,false);
 });
 test('reviewer classification overrides model trying to disguise legal claims as general advice',()=>{
  const bad={...draft,blocks:[{...draft.blocks[0]!,kind:'general' as const,citations:[]}]};

@@ -31,7 +31,9 @@ export function missingMaterialQuoteSupport(claim:string,quote:string){
 export const ChatDraftSchema=z.object({blocks:z.array(z.object({id:Id,kind:Kind,text:z.string().min(1).max(280),citations:z.array(z.object({passageId:Id,quote:z.string().min(1).max(350)}).strict()).max(1)}).strict()).max(5),questions:z.array(z.string().min(1).max(150)).max(2),limits:z.array(z.string().min(1).max(200)).max(3)}).strict();
 export type ChatDraft=z.infer<typeof ChatDraftSchema>;
 const SupportChecks=z.object({actor:z.boolean(),conditions:z.boolean(),exceptions:z.boolean(),quantities:z.boolean(),negation:z.boolean(),version:z.boolean(),facts:z.boolean(),visibleQuoteCoverage:z.boolean()}).strict();
-const SupportWitness=z.object({element:z.enum(['actor','relation']),claimSpan:z.string().min(1).max(80),quoteSpan:z.string().min(1).max(100)}).strict();
+// A witness may contain its whole parent span; the exact-substring check below
+// still binds it to the 280-character claim and 350-character selected quote.
+const SupportWitness=z.object({element:z.enum(['actor','relation']),claimSpan:z.string().min(1).max(280),quoteSpan:z.string().min(1).max(350)}).strict();
 export const ChatReviewSchema=z.object({verdicts:z.array(z.object({id:Id,supported:z.boolean(),kind:Kind,checks:SupportChecks,witnesses:z.array(SupportWitness).max(6),reason:z.string().max(300)}).strict()).max(10),questionsSafe:z.boolean(),limitsSafe:z.boolean()}).strict();
 type Verdict=z.infer<typeof ChatReviewSchema>['verdicts'][number];
 // Witnesses are necessary locations for explicit roles, never a certificate of
