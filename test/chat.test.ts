@@ -142,10 +142,10 @@ test('support witnesses cannot substitute an unrelated span, actor, relation or 
  assert.equal(validateChatAnswer(value,[source],[{id:'b1',supported:true,checks,witnesses:valid,kind:'legal',reason:'Missed consumption condition'}],[signer.publicKeyPem]).blocks.length,0);
 });
 
-test('support witnesses accept whole parent spans but never exceed the unchanged claim and quote bounds',()=>{
- const verdict={id:'b1',supported:true,checks,kind:'legal',reason:'fixture',witnesses:[{element:'actor',claimSpan:'c'.repeat(280),quoteSpan:'q'.repeat(350)}]};
+test('support witnesses accept whole parent spans but never exceed the explicit claim and quote bounds',()=>{
+ const verdict={id:'b1',supported:true,checks,kind:'legal',reason:'fixture',witnesses:[{element:'actor',claimSpan:'c'.repeat(280),quoteSpan:'q'.repeat(1000)}]};
  assert.equal(ChatReviewSchema.safeParse({verdicts:[verdict],questionsSafe:true,limitsSafe:true}).success,true);
- for(const witness of [{...verdict.witnesses[0],claimSpan:'c'.repeat(281)},{...verdict.witnesses[0],quoteSpan:'q'.repeat(351)}])assert.equal(ChatReviewSchema.safeParse({verdicts:[{...verdict,witnesses:[witness]}],questionsSafe:true,limitsSafe:true}).success,false);
+ for(const witness of [{...verdict.witnesses[0],claimSpan:'c'.repeat(281)},{...verdict.witnesses[0],quoteSpan:'q'.repeat(1001)}])assert.equal(ChatReviewSchema.safeParse({verdicts:[{...verdict,witnesses:[witness]}],questionsSafe:true,limitsSafe:true}).success,false);
 });
 test('reviewer classification overrides model trying to disguise legal claims as general advice',()=>{
  const bad={...draft,blocks:[{...draft.blocks[0]!,kind:'general' as const,citations:[]}]};
@@ -250,15 +250,29 @@ test('neutral fallback prioritizes explicit and earlier danger, using only user 
  }
 });
 test('Unicode-heavy drafts fit the complete review wire by rejecting whole unchecked blocks, without retry',async()=>{
- let calls=0,reviewed=0;const quote='中'.repeat(60)+' '+'word '.repeat(57);
+ let calls=0,reviewed=0;const quote='中'.repeat(500)+' '+'word '.repeat(90);
  const unsigned={...p,text:quote+'中'.repeat(550),contentHash:contentHash(quote+'中'.repeat(550))};const source={...unsigned,tanda:signer.sign(signedPart(unsigned))};
  const large={blocks:Array.from({length:5},(_,i)=>({id:'b'+i,kind:'legal',text:'中'.repeat(280),citations:[{passageId:'p1',quote}]})),questions:['中'.repeat(150),'中'.repeat(150)],limits:['中'.repeat(200),'中'.repeat(200),'中'.repeat(200)]};
  const model={provider:'openai' as const,model:'fixture',async generate(input:any){calls++;assert.ok(azureChatWireBytes(input)<=20000);if(calls===1)return input.schema.parse({queries:['konsumen'],focus:'uji',needsContext:false,matter:'unknown',jurisdiction:'indonesia'});if(calls===2)return input.schema.parse(wireDraft(large as ChatDraft));const request=JSON.parse(input.user);reviewed=request.draft.blocks.length;return input.schema.parse({verdicts:large.blocks.map((b:any)=>({id:b.id,supported:true,checks,witnesses,kind:'legal',reason:'uji'})),questionsSafe:true,limitsSafe:true});}};
- const result=await runChat({conversationId:'c',turnId:'t',version:1,messages:[{id:'u',role:'user',text:'a'.repeat(4000)},{id:'v',role:'user',text:'b'.repeat(750)}]},{model,telusur:(async()=>({kandidat:[{rujukan:{jenis:'peraturan',rujukan:'UU 999/2099'}}]})) as any,sumber:{buka:async()=>({status:'dibuka',potongan:[source],peringatan:[]})} as any,signer,keys:[signer.publicKeyPem],signal:new AbortController().signal,progress:async()=>{}});
- assert.equal(calls,3);assert.ok(reviewed<5);assert.ok(result.blocks.length<=reviewed);assert.ok(result.rejected.some(row=>row.reason.includes('batas pemrosesan')));
+ const result=await runChat({conversationId:'c',turnId:'t',version:1,messages:[{id:'u',role:'user',text:'a'.repeat(1000)},{id:'v',role:'user',text:'b'.repeat(750)}]},{model,telusur:(async()=>({kandidat:[{rujukan:{jenis:'peraturan',rujukan:'UU 999/2099'}}]})) as any,sumber:{buka:async()=>({status:'dibuka',potongan:[source],peringatan:[]})} as any,signer,keys:[signer.publicKeyPem],signal:new AbortController().signal,progress:async()=>{}});
+ assert.equal(calls,3);assert.ok(reviewed<5);assert.ok(result.blocks.length<=reviewed);assert.ok(result.rejected.some(row=>row.reason.includes('batas pemrosesan')));assert.ok(result.blocks.some(block=>block.citations.some(c=>c.quote===quote.trimEnd())),JSON.stringify(result.rejected));
 });
 test('cancellation during metadata does not start a later PDF download',async()=>{
  const abort=new AbortController();let downloads=0;
  const service=createSumberService({inspectArticle:async()=>{abort.abort();return {};},pdfPages:async()=>{downloads++;return {};}} as any,signer);
  const result=await service.buka({jenis:'peraturan',rujukan:'UU 999/2099'},{signal:abort.signal,followAmendments:false});assert.equal(downloads,0);assert.equal(result.status,'tidak_dapat_diperiksa');
+});
+
+
+test('one contiguous quote can keep a governing heading and clause intact without combining excerpts',()=>{
+ const quote='Hak konsumen adalah: '+('bahan konteks sumber. '.repeat(20))+'hak atas informasi yang benar, jelas, dan jujur mengenai kondisi barang.';
+ assert.ok(quote.length>350&&quote.length<=1000);
+ const value={...draft,blocks:[{...draft.blocks[0]!,text:'Konsumen memiliki hak atas informasi kondisi barang.',citations:[{passageId:p.id,quote}]}]};
+ assert.deepEqual(normalizeChatDraft(wireDraft(value)),value);
+ assert.equal(ChatDraftSchema.safeParse({...value,blocks:[{...value.blocks[0]!,citations:[{passageId:p.id,quote:'q'.repeat(1001)}]}]}).success,false);
+ const unsigned={...p,text:quote,contentHash:contentHash(quote)},source={...unsigned,tanda:signer.sign(signedPart(unsigned))};
+ const witness=[{element:'actor' as const,claimSpan:'Konsumen',quoteSpan:'konsumen'},{element:'relation' as const,claimSpan:'hak',quoteSpan:'hak'}];
+ assert.equal(validateChatAnswer(value,[source],[{id:'b1',supported:true,checks,witnesses:witness,kind:'legal',reason:'Synthetic intact heading and clause'}],[signer.publicKeyPem]).blocks.length,1);
+ const changed={...value,blocks:[{...value.blocks[0]!,citations:[{passageId:p.id,quote:quote.replace('jujur','tidak jujur')}]}]};
+ assert.equal(validateChatAnswer(changed,[source],[{id:'b1',supported:true,checks,witnesses:witness,kind:'legal',reason:'Missed alteration'}],[signer.publicKeyPem]).blocks.length,0);
 });
