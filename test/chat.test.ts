@@ -285,3 +285,14 @@ test('one contiguous quote can keep a governing heading and clause intact withou
  const changed={...value,blocks:[{...value.blocks[0]!,citations:[{passageId:p.id,quote:quote.replace('jujur','tidak jujur')}]}]};
  assert.equal(validateChatAnswer(changed,[source],[{id:'b1',supported:true,checks,witnesses:witness,kind:'legal',reason:'Missed alteration'}],[signer.publicKeyPem]).blocks.length,0);
 });
+
+
+test('support witness locations accept PDF line wrapping without changing the actor or relation',()=>{
+ const claim='Pelaku usaha bertanggung jawab atas kerugian akibat penggunaan barang.';
+ const quote='Pelaku usaha bertanggung\njawab atas kerugian akibat penggunaan barang yang diperdagangkan.';
+ const w=[{element:'actor' as const,claimSpan:'pelaku usaha',quoteSpan:'pelaku usaha'},{element:'relation' as const,claimSpan:'bertanggung jawab',quoteSpan:'bertanggung jawab'}];
+ assert.equal(missingSupportWitnesses(claim,quote,w),false);
+ assert.equal(missingSupportWitnesses(claim,quote.replace('Pelaku usaha','Penjual'),w),true);
+ assert.equal(missingSupportWitnesses(claim,quote.replace('bertanggung\njawab','memberi informasi'),w),true);
+ assert.equal(missingSupportWitnesses(claim,quote,w.map(x=>({...x,quoteSpan:x.quoteSpan+' palsu'}))),true);
+});

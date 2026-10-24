@@ -64,10 +64,18 @@ type Verdict=z.infer<typeof ChatReviewSchema>['verdicts'][number];
 // entailment. Boolean review still checks conditions, exceptions and application.
 const roleAnchors:RegExp[]=['pelaku usaha','penjual','pembeli','konsumen','pekerja','buruh','karyawan','pengusaha','pemberi kerja','penyewa','pemberi sewa','yang menyewakan','peminjam','debitur','pemberi pinjaman','kreditur'].map(role=>new RegExp('\\b'+role+'\\b','iu'));
 const relationAnchors:RegExp[]=[/\b(?:bertanggung jawab|tanggung jawab|menanggung)\b/iu,/\b(?:wajib|kewajiban|harus)\b/iu,/\b(?:berhak|hak)\b/iu,/\b(?:dilarang|larangan|tidak boleh)\b/iu];
+/** Match witness locations with the same canonical mapping as signed quotes.
+ * Inspect the mapped raw parent spans: never invent an actor or relation alias.
+ */
 export function missingSupportWitnesses(claim:string,quote:string,witnesses:Verdict['witnesses']){
- const text=canonicalize(claim).text;
- return ([['actor',roleAnchors],['relation',relationAnchors]] as const).some(([element,anchors])=>anchors.some(pattern=>pattern.test(text)&&!witnesses.some(w=>w.element===element&&claim.includes(w.claimSpan)&&quote.includes(w.quoteSpan)&&pattern.test(canonicalize(w.claimSpan).text)&&pattern.test(canonicalize(w.quoteSpan).text))));
+ const text=canonicalize(claim).text,support=canonicalize(quote).text;
+ return ([['actor',roleAnchors],['relation',relationAnchors]] as const).some(([element,anchors])=>anchors.some(pattern=>pattern.test(text)&&!witnesses.some(w=>{
+  if(w.element!==element||!pattern.test(support))return false;
+  const c=findQuote(claim,w.claimSpan),q=findQuote(quote,w.quoteSpan);
+  return !!c&&!!q&&pattern.test(canonicalize(claim.slice(c.start,c.end)).text)&&pattern.test(canonicalize(quote.slice(q.start,q.end)).text);
+ })));
 }
+
 export function chatContext(messages:ChatInput['messages']) {
   // Prior wording can resolve "your second question", but only users supply case facts.
   const users=messages.filter(m=>m.role==='user');
