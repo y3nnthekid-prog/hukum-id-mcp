@@ -13,10 +13,11 @@ function tokens(query: string) {
   return [...new Set(canonicalize(query).text.match(/[\p{L}\p{N}]+/gu) ?? [])].slice(0, 12);
 }
 // Search-only vocabulary, never a legal equivalence or a substitution in evidence.
-const conceptVocabulary=[['informasi','keterangan','deskripsi'],['barang','produk']];
+const conceptVocabulary=[['informasi','keterangan','deskripsi'],['barang','produk'],['rusak','kerusakan']];
 function expandWord(word:string){
+  const vocabulary=conceptVocabulary.find(group=>group.includes(word));if(vocabulary)return vocabulary;
   const stem=word.length>6?word.replace(/^(?:meng|peng|ber|ter|per)/,'').replace(/(?:kan|nya|lah)$/,''):word;
-  return [...new Set([word,...(stem.length>=3&&stem!==word?[stem]:[]),...(conceptVocabulary.find(group=>group.includes(word))??[])])];
+  return [...new Set([word,...(stem.length>=3&&stem!==word?[stem]:[])])];
 }
 export function expandQuery(query: string) {
   return [...new Set(tokens(query).flatMap(expandWord))].slice(0,20);
@@ -39,7 +40,9 @@ function bodyConceptScore(query:string,{meta,passage}:Stored){
   const sectionBonus=meta.jenis==='peraturan'&&passage.locator.pasal?(asksExplanation?(passage.locator.bagian==='penjelasan'?24:0):(passage.locator.bagian==='batang-tubuh'?24:0)):0;
   const total=groups.reduce((score,group)=>{
     const inTitle=matches(title,group),inBody=matches(body,group);
-    return score+(inBody?2:0)+(inBody&&!inTitle?8:0)+(inTitle?1:0)+(matches(heading,group)?6:0);
+    // Coverage across distinct question concepts comes first. A lone body word
+    // must not outweigh the remaining question context carried by the title.
+    return score+(inBody||inTitle?20:0)+(inBody?2:0)+(inBody&&!inTitle?8:0)+(matches(heading,group)?6:0);
   },(identity?1000:0)+sectionBonus-penalty);
   return total;
 }

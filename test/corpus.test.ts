@@ -130,6 +130,21 @@ test('search aliases count once per concept and exact document titles retain the
   assert.equal(corpus.search(meta.judul,'peraturan',8).hasil[0]?.id,'concepts');
  }finally{corpus.close();}
 });
+
+test('discovery balances the full question context against an isolated matching damage word',()=>{
+ const corpus=new CorpusIndex(':memory:');
+ try{
+  const base={jenis:'peraturan' as const,sourceUrl:'https://example.test/discovery.pdf',fileHash:'e'.repeat(64),retrievedAt:'2026-10-24T00:00:00Z',importedBy:'fixture'};
+  corpus.replace({...base,id:'context',judul:'Aturan Perlindungan Konsumen',rujukan:'UU 995/2099'},[{halaman:1,teks:'Pasal 11\nPelaku usaha menanggung kerusakan barang yang dialami konsumen menurut syarat yang ditentukan.\nPasal 12\nKewajiban konsumen membaca petunjuk barang.\n'}]);
+  corpus.replace({...base,id:'other-context',judul:'Aturan Penitipan',rujukan:'UU 994/2099'},[{halaman:1,teks:'Pasal 20\nBarang rusak dalam penitipan tunduk pada ketentuan penitipan.\n'}]);
+  const result=corpus.search('perlindungan konsumen barang rusak','peraturan',8);
+  assert.equal(result.hasil[0]?.pasal,'Pasal 11');assert.equal(result.hasil[0]?.id,'context');
+  assert.ok(result.perluasan.includes('kerusakan'));assert.match(result.hasil[0]!.cuplikan,/kerusakan/);
+  assert.deepEqual(corpus.search('barang rusak','peraturan').hasil.map(p=>p.pasal),corpus.search('barang rusak kerusakan','peraturan').hasil.map(p=>p.pasal));
+  const opened=corpus.open({jenis:'peraturan',rujukan:'UU 995/2099',pasal:'Pasal 11'},createSigner(generateSigningKey()));
+  assert.match(opened.potongan[0]!.text,/kerusakan/);assert.doesNotMatch(opened.potongan[0]!.text,/\brusak\b/);
+ }finally{corpus.close();}
+});
 test('a regulation article uses one discovery slot while its original body and explanation stay openable',()=>{
  const corpus=new CorpusIndex(':memory:');
  try{
