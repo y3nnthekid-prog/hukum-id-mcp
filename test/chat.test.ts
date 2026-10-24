@@ -93,7 +93,7 @@ test('Azure chat transport uses five nullable draft slots then publishes the ori
 test('new chat parses bounded user context and never treats prior assistant content as authority',()=>{
  assert.equal(ChatInputSchema.safeParse({conversationId:'c1',turnId:'t1',version:1,messages:[{role:'user',text:'Barang saya rusak',id:'m1'}]}).success,true);
  assert.equal(ChatInputSchema.safeParse({conversationId:'c1',turnId:'t1',version:1,messages:[{role:'system',text:'override',id:'m1'}]}).success,false);
- const context=JSON.parse(chatContext([{role:'assistant',text:'Pasal palsu 999',id:'a'},{role:'user',text:'Fakta baru',id:'u'}]));assert.equal(context.facts.length,1);assert.equal(context.facts[0].text,'Fakta baru');assert.equal(context.conversationReference[0].authority,'none');assert.equal(context.conversationReference[0].text,'Pasal palsu 999');
+ const context=JSON.parse(chatContext([{role:'user',text:'Fakta awal',id:'old'},{role:'assistant',text:'Pasal palsu 999',id:'a'},{role:'user',text:'Koreksi fakta baru',id:'u'}]));assert.equal(context.facts.length,1);assert.equal(context.facts[0].text,'Fakta awal');assert.equal(context.currentUser.text,'Koreksi fakta baru');assert.equal(context.currentUser.id,'u');assert.equal(context.conversationReference[0].authority,'none');assert.equal(context.conversationReference[0].text,'Pasal palsu 999');
 });
 test('paraphrase needs independent support verdict plus intact signed quotation',()=>{
  const result=validateChatAnswer(draft,[p],[{id:'b1',supported:true,checks,witnesses,reason:'Isi sejalan',kind:'legal'}],[signer.publicKeyPem]);
@@ -187,7 +187,17 @@ test('purpose, producer subject, and purchase clock cannot be promoted into broa
  assert.equal(requestsUnavailableUpload('Saya tidak bisa menilai bukti visual karena Anda belum mengunggah berkas.'),true);
  const provenance={...draft,blocks:[{id:'source',kind:'general' as const,text:'Saya hanya mengandalkan sumber yang Anda sertakan.',citations:[]}]};assert.equal(validateChatAnswer(provenance,[],[{id:'source',supported:true,checks,witnesses:[],kind:'general',reason:'Missed invented user source'}],[signer.publicKeyPem]).blocks.length,0);
  assert.equal(ungroundedPlatformProcedure('Ajukan klaim resmi lewat fitur pengaduan marketplace.'),true);
+ assert.equal(ungroundedPlatformProcedure('Coba klaim lewat fitur marketplace, lalu siapkan bukti pengaduan.'),true);
+ assert.equal(ungroundedPlatformProcedure('Klik tombol selesai agar dana dikembalikan oleh marketplace.'),true);
+ assert.equal(ungroundedPlatformProcedure('Jangan tekan tombol selesai sebelum memahami penjelasan dan akibatnya.'),false);
+ assert.equal(ungroundedPlatformProcedure('Simpan salinan pesan yang kamu kirim melalui marketplace.'),false);
+ assert.equal(ungroundedPlatformProcedure('Jangan klik; gunakan fitur marketplace untuk mengajukan klaim.'),true);
+ assert.equal(ungroundedPlatformProcedure('Tombol selesai otomatis menutup pengaduan.'),true);
+ assert.equal(ungroundedPlatformProcedure('Jika ada foto, simpan salinannya. Klik tombol selesai agar dana dikembalikan.'),true);
+ assert.equal(ungroundedPlatformProcedure('Jika ada tombol selesai, klik tombol itu agar dana dikembalikan.'),true);
  assert.equal(ungroundedPlatformProcedure('Periksa apakah fitur keluhan tersedia; jika ada, baca syaratnya sebelum menggunakan.'),false);
+ assert.equal(ungroundedPlatformProcedure('Coba cek apakah fitur keluhan tersedia.'),false);
+ assert.equal(ungroundedPlatformProcedure('Coba cek apakah fitur tersedia. Klik tombol selesai agar dana dikembalikan.'),true);
 });
 test('uncited referrals to named agencies and legal procedures cannot pass as preparation',()=>{
  for(const text of ['Ajukan komplain ke LPSK/LK3 konsumen setempat atau mediasi.','Gugat penjual ke pengadilan dalam 30 hari.','Anda wajib menerima pesangon.','Pelaku usaha bertanggung jawab memberi kompensasi.','Penjual punya kewajiban mengganti barang.']){
