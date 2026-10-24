@@ -82,7 +82,7 @@ test('Azure chat transport uses five nullable draft slots then publishes the ori
  const time=Math.floor(Date.now()/1000),secret='s'.repeat(43),inputHash=requestHash(input);
  const payload={v:3,iss:'https://riset.pasla.pages.dev',aud:'https://api.pasla.tech',sub:'owner',conversationId:'cw',turnId:'tw',inputHash,profile:'pasla-chat-low4096-v1',campaign:'chat-preview-20261023',maxCalls:3,maxInputTokens:20000,maxOutputTokens:4096,jti:'w'.repeat(43),iat:time,exp:time+360};
  const body=Buffer.from(JSON.stringify(payload)).toString('base64url'),ticket=body+'.'+createHmac('sha256',secret).update(body).digest('base64url');
- let calls=0;t.mock.method(globalThis,'fetch',async(_url:any,init:any)=>{calls++;const request=JSON.parse(init.body);if(calls===2){const schema=request.response_format.json_schema.schema;assert.equal(schema.properties.blocks.type,'object');assert.equal(Object.keys(schema.properties.blocks.properties).length,5);assert.equal(schema.properties.blocks.additionalProperties,false);}
+ let calls=0;t.mock.method(globalThis,'fetch',async(_url:any,init:any)=>{calls++;const request=JSON.parse(init.body);if(calls===2){const schema=request.response_format.json_schema.schema;assert.equal(schema.properties.blocks.type,'object');assert.equal(Object.keys(schema.properties.blocks.properties).length,5);assert.equal(schema.properties.blocks.additionalProperties,false);assert.deepEqual(Object.keys(schema.properties.blocks.properties.a.anyOf[0].properties),['id','citation','kind','text']);}
   const content=calls===1?{queries:['informasi'],focus:'informasi',needsContext:false,matter:'unknown',jurisdiction:'indonesia'}:calls===2?wireDraft(draft):{verdicts:[{id:'b1',supported:true,checks,witnesses,kind:'legal',reason:'Faithful paraphrase'}],questionsSafe:true,limitsSafe:true};
   return Response.json({model:'gpt-5-mini-2025-08-07',choices:[{finish_reason:'stop',message:{content:JSON.stringify(content)}}],usage:{prompt_tokens:100,completion_tokens:20}});
  });
@@ -295,4 +295,11 @@ test('support witness locations accept PDF line wrapping without changing the ac
  assert.equal(missingSupportWitnesses(claim,quote.replace('Pelaku usaha','Penjual'),w),true);
  assert.equal(missingSupportWitnesses(claim,quote.replace('bertanggung\njawab','memberi informasi'),w),true);
  assert.equal(missingSupportWitnesses(claim,quote,w.map(x=>({...x,quoteSpan:x.quoteSpan+' palsu'}))),true);
+});
+
+
+test('review output locates supporting spans and checks before its final support decision',()=>{
+ const schema=ChatReviewSchema.toJSONSchema();
+ const verdict=(schema.properties!.verdicts as any).items;
+ assert.deepEqual(Object.keys(verdict.properties),['id','witnesses','checks','reason','kind','supported']);
 });
