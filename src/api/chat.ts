@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import type { Hono } from 'hono';
 import { stream } from 'hono/streaming';
 import { setTimeout as delay } from 'node:timers/promises';
+import { syntheticAudit } from '../core/chat-audit.js';
 import { ChatInputSchema, runChat } from '../core/chat.js';
 import { verifyChatTicket } from '../core/chat-ticket.js';
 import { createAzureModel } from '../ai/azure.js';
@@ -43,7 +44,7 @@ export function registerChat(app:Hono<Env>,deps:{chat?:ChatEngine|undefined;step
      const azure=createAzureModel({apiKey:config.key,maxUsd:1,maxCalls:1,maxInputTokens:20000,profile:'low-4096'});
      try{return await azure.model.generate({...request,signal});}finally{const summary=azure.summary(),usage=summary.usage;inputTokens+=usage.reduce((n,row)=>n+row.prompt_tokens,0);outputTokens+=usage.reduce((n,row)=>n+row.completion_tokens,0);if(summary.lastFailure){failureCode=summary.lastFailure;issues=summary.validationIssues;}if(summary.lastFailure==='HTTP_429')config.claims.deferUntil(Math.floor(Date.now()/1000)+(summary.retryAfterSeconds??60));if(summary.lastFailure===null||summary.lastFailure?.startsWith('HTTP_'))config.claims.finish(jti);}
     }};
-    const result=await runChat(input,{model,telusur,sumber,signer,keys:[signer.publicKeyPem],signal,progress:stage=>{phase=stage;return send({type:'progress',stage}).then(()=>undefined);}});
+    const result=await runChat(input,{audit:syntheticAudit(input,process.env.PASLA_CHAT_SYNTHETIC_AUDIT),model,telusur,sumber,signer,keys:[signer.publicKeyPem],signal,progress:stage=>{phase=stage;return send({type:'progress',stage}).then(()=>undefined);}});
     const usage={calls,inputTokens,outputTokens,elapsedMs:Date.now()-start};
     const receipt={v:1,kind:'chat_usage',profile:ticket.profile,campaign:ticket.campaign,conversationId:input.conversationId,turnId:input.turnId,version:input.version,inputHash:ticket.inputHash,...usage};
     await send({type:'result',data:result,usage,usageReceipt:{...receipt,tanda:signer.sign(receipt)}});
