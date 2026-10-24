@@ -369,8 +369,33 @@ test('short citations retain their entire signed source context before review wi
  for(const bad of [quote+' fabricated','hak']){const badDraft={...value,blocks:[{...value.blocks[0]!,citations:[{passageId:'p1',quote:bad}]}]};assert.equal(completeShortCitations(badDraft,[source],[signer.publicKeyPem]).blocks[0]!.citations[0]!.quote,bad);}
  assert.equal(completeShortCitations(value,[source,source],[signer.publicKeyPem]).blocks[0]!.citations[0]!.quote,quote);
  assert.equal(completeShortCitations(value,[{...source,text:text+' tampered'}],[signer.publicKeyPem]).blocks[0]!.citations[0]!.quote,quote);
- const longText=text+'x'.repeat(1001),longRaw={...source,text:longText,contentHash:contentHash(longText)},long={...longRaw,tanda:signer.sign(signedPart(longRaw))};
+ const longText='x'.repeat(1001)+text,longRaw={...source,text:longText,contentHash:contentHash(longText)},long={...longRaw,tanda:signer.sign(signedPart(longRaw))};
  assert.equal(completeShortCitations(value,[long],[signer.publicKeyPem]).blocks[0]!.citations[0]!.quote,quote);
+});
+
+test('a bounded contiguous list citation retains its governing actor and complete selected item',()=>{
+ const header='Pasal 999\nKewajiban pelaku usaha adalah:\na. beritikad baik dalam kegiatan usahanya;\nb. ';
+ const quote='memberikan informasi yang benar, jelas dan jujur mengenai kondisi dan jaminan barang';
+ const end=' serta memberi penjelasan penggunaan, perbaikan dan pemeliharaan;\n';
+ const text=header+quote+end+'c. '+('ketentuan lain yang berdiri sendiri; '.repeat(35));
+ const make=(text:string)=>{const u={...p,text,contentHash:contentHash(text)};return {...u,tanda:signer.sign(signedPart(u))};};
+ const value={...draft,blocks:[{...draft.blocks[0]!,text:'Kewajiban pelaku usaha mencakup memberikan informasi yang benar, jelas dan jujur mengenai kondisi dan jaminan barang.',citations:[{passageId:'p1',quote}]}]};
+ const completed=completeShortCitations(value,[make(text)],[signer.publicKeyPem]);
+ assert.equal(completed.blocks[0]!.citations[0]!.quote,header+quote+end);
+ assert.equal(value.blocks[0]!.citations[0]!.quote,quote);
+ assert.equal(validateChatAnswer(completed,[make(text)],[{id:'b1',supported:true,checks,witnesses:[],reason:'Synthetic semantic support',kind:'legal'}],[signer.publicKeyPem]).blocks.length,1);
+ assert.equal(validateChatAnswer(completed,[make(text)],[{id:'b1',supported:false,checks:{...checks,conditions:false},witnesses:[],reason:'A material condition is missing',kind:'legal'}],[signer.publicKeyPem]).blocks.length,0);
+ for(const bad of [text.replace('adalah:','adalah.'),('Catatan panjang. '.repeat(80))+text,text.replace(quote,quote+'\nPasal 1000\nAturan lain.'),text.replace(end,end+quote)]){
+  assert.equal(completeShortCitations(value,[make(bad)],[signer.publicKeyPem]).blocks[0]!.citations[0]!.quote,quote);
+ }
+ for(const bad of [
+  text.replace('a. beritikad','(1) Aturan pertama.\na. beritikad'),
+  text.replace('b. '+quote,'(2) Pihak lain menyatakan:\nb. '+quote),
+  text.replace('b. '+quote,'b. Rincian kewajiban:\n  a. '+quote),
+  text.replace('b. '+quote,'a. '+quote),
+  text.replace('b. '+quote,'  b. '+quote),
+  text.replace(end,end+'  a. Rincian nested;\n')
+ ])assert.equal(completeShortCitations(value,[make(bad)],[signer.publicKeyPem]).blocks[0]!.citations[0]!.quote,quote);
 });
 
 
