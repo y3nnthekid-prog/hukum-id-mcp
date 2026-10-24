@@ -12,12 +12,36 @@ type Stored = { meta: CorpusMeta; passage: Passage };
 function tokens(query: string) {
   return [...new Set(canonicalize(query).text.match(/[\p{L}\p{N}]+/gu) ?? [])].slice(0, 12);
 }
+// Search-only vocabulary, never a legal equivalence or a substitution in evidence.
+const conceptVocabulary=[['informasi','keterangan','deskripsi'],['barang','produk']];
+function expandWord(word:string){
+  const stem=word.length>6?word.replace(/^(?:meng|peng|ber|ter|per)/,'').replace(/(?:kan|nya|lah)$/,''):word;
+  return [...new Set([word,...(stem.length>=3&&stem!==word?[stem]:[]),...(conceptVocabulary.find(group=>group.includes(word))??[])])];
+}
 export function expandQuery(query: string) {
-  const expanded = tokens(query).flatMap((word) => {
-    const stem = word.length > 6 ? word.replace(/^(?:meng|peng|ber|ter|per)/, "").replace(/(?:kan|nya|lah)$/, "") : word;
-    return stem.length >= 3 && stem !== word ? [word, stem] : [word];
-  });
-  return [...new Set(expanded)].slice(0, 20);
+  return [...new Set(tokens(query).flatMap(expandWord))].slice(0,20);
+}
+function bodyConceptScore(query:string,{meta,passage}:Stored){
+  const words=(value:string)=>canonicalize(value).text.match(/[\p{L}\p{N}]+/gu)??[];
+  const body=words(passage.text),title=words(meta.judul),heading=words(passage.text.replace(/^Pasal[^\n]*\n/iu,'').split('\n')[0]??'');
+  const matches=(items:string[],group:string[])=>group.some(term=>items.some(word=>word===term||(term.length>=3&&word.startsWith(term))));
+  const groups=[...new Map(tokens(query).map(word=>{const group=expandWord(word);return [JSON.stringify([...group].sort()),group] as const;})).values()];
+  const identity=[meta.rujukan,meta.judul].map(value=>canonicalize(value).text).some(value=>value.length>=5&&canonicalize(query).text.includes(value));
+  const inquiry=canonicalize(query).text,opening=canonicalize(passage.text).text.slice(0,220);
+  const asksBackground=/\b(?:definisi|pengertian|arti|asas|tujuan|tugas|fungsi|lembaga|badan|apa itu|apa (?:yang )?dimaksud)\b/u.test(inquiry);
+  const productInquiry=groups.some(group=>group.some(term=>conceptVocabulary.flat().includes(term)));
+  const background=/\byang dimaksud dengan\b|\bbertujuan\b|\buntuk menjalankan fungsi\b|\bpemerintah mengakui\b|\bdibentuk\b.{0,80}\b(?:badan|lembaga|komisi|dewan)\b|^pasal \S+ (?:\(\d+\) )?(?:pengawasan|pembinaan)\b/u.test(opening);
+  // For product/information questions, a definition or institutional-purpose
+  // preamble remains discoverable but must not outrank operative clauses just
+  // by repeating the document title. Explicit background queries keep its rank.
+  const penalty=productInquiry&&!asksBackground&&background?24:0;
+  const asksExplanation=/\bpenjelasan\b/u.test(inquiry);
+  const sectionBonus=meta.jenis==='peraturan'&&passage.locator.pasal?(asksExplanation?(passage.locator.bagian==='penjelasan'?24:0):(passage.locator.bagian==='batang-tubuh'?24:0)):0;
+  const total=groups.reduce((score,group)=>{
+    const inTitle=matches(title,group),inBody=matches(body,group);
+    return score+(inBody?2:0)+(inBody&&!inTitle?8:0)+(inTitle?1:0)+(matches(heading,group)?6:0);
+  },(identity?1000:0)+sectionBonus-penalty);
+  return total;
 }
 
 /** Korpus publik lokal. Pertanyaan, akun, dan kunci AI tidak pernah ditulis di sini. */
@@ -61,8 +85,14 @@ export class CorpusIndex {
     const terms = expandQuery(query);
     if (!terms.length) return { tersedia: true, hasil: [], perluasan: [] };
     const expression = terms.map((word) => `"${word.replace(/"/g, '""')}"*`).join(" OR ");
-    const rows = this.db.prepare("SELECT passages.metadata FROM words JOIN passages ON passages.id=words.id WHERE words MATCH ? AND (? IS NULL OR json_extract(passages.metadata, '$.meta.jenis') = ?) ORDER BY bm25(words) LIMIT ?").all(expression, jenis ?? null, jenis ?? null, Math.min(50, Math.max(1, limit)));
-    const hasil = rows.map((row) => JSON.parse(String(row.metadata)) as Stored).filter((row) => !jenis || row.meta.jenis === jenis).slice(0, limit).map(({ meta, passage }) => ({ id: meta.id, judul: `${meta.judul}${passage.locator.pasal ? `, ${passage.locator.pasal}` : ""}`, rujukan: meta.rujukan, pasal: passage.locator.pasal, cuplikan: passage.text.slice(0, 600), url: meta.sourceUrl, status: meta.status ?? null, madzhab: meta.madzhab ?? null, fileHash: meta.fileHash }));
+    const rows = this.db.prepare("SELECT passages.metadata FROM words JOIN passages ON passages.id=words.id WHERE words MATCH ? AND (? IS NULL OR json_extract(passages.metadata, '$.meta.jenis') = ?) ORDER BY bm25(words) LIMIT ?").all(expression, jenis ?? null, jenis ?? null, 200);
+    const seen=new Map<string,string>();
+    const hasil = rows.map((row,index) => ({stored:JSON.parse(String(row.metadata)) as Stored,index})).filter(({stored}) => !jenis || stored.meta.jenis === jenis).map(row=>({...row,score:bodyConceptScore(query,row.stored)})).sort((a,b)=>b.score-a.score||a.index-b.index).filter(({stored})=>{
+      if(stored.meta.jenis!=='peraturan'||!stored.passage.locator.pasal)return true;
+      const key=JSON.stringify([stored.meta.id,stored.passage.locator.pasal,stored.passage.locator.mengubah??null]),section=stored.passage.locator.bagian,previous=seen.get(key);
+      if((previous==='batang-tubuh'&&section==='penjelasan')||(previous==='penjelasan'&&section==='batang-tubuh'))return false;
+      if(!previous)seen.set(key,section);return true;
+    }).slice(0,Math.min(50,Math.max(1,limit))).map(({stored})=>stored).map(({ meta, passage }) => ({ id: meta.id, judul: `${meta.judul}${passage.locator.pasal ? `, ${passage.locator.pasal}` : ""}`, rujukan: meta.rujukan, pasal: passage.locator.pasal, cuplikan: passage.text.slice(0, 600), url: meta.sourceUrl, status: meta.status ?? null, madzhab: meta.madzhab ?? null, fileHash: meta.fileHash }));
     return { tersedia: true, hasil, perluasan: terms };
   }
   byHash(hash: string): CorpusMeta | null {

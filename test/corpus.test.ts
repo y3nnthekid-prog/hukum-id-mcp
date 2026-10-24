@@ -108,6 +108,44 @@ test("FTS indexes originals, normalizes Arabic, binds hostile queries, and signs
     assert.equal(corpus.open({ jenis: "khi", pasal: "Pasal 9999" }, signer).status, "tidak_ditemukan");
   } finally { corpus.close(); }
 });
+test('source discovery ranks distinct body concepts above repeated document-title boilerplate',()=>{
+ const corpus=new CorpusIndex(':memory:');
+ try{
+  const boilerplate=Array.from({length:60},(_,i)=>`Pasal ${i+1}\nBadan perlindungan konsumen mengatur lembaga perlindungan konsumen dan pembinaan perlindungan konsumen.\n`).join('');
+  const operative='Pasal 61\nPelaku usaha memberi informasi tentang kondisi barang yang ditawarkan kepada konsumen.\n';
+  corpus.replace({id:'ranking-fixture',jenis:'peraturan',judul:'Peraturan Perlindungan Konsumen',rujukan:'UU 999/2099',sourceUrl:'https://example.test/fixture.pdf',fileHash:'e'.repeat(64),retrievedAt:'2026-10-24T00:00:00Z',importedBy:'fixture'},[{halaman:1,teks:boilerplate+operative}]);
+  const found=corpus.search('perlindungan konsumen keterangan produk','peraturan',8);
+  assert.equal(found.hasil[0]?.pasal,'Pasal 61');assert.ok(found.perluasan.includes('informasi'));assert.ok(found.perluasan.includes('barang'));assert.equal(found.hasil.length,8);
+  assert.ok(found.hasil[0]?.cuplikan.includes('informasi tentang kondisi barang'));assert.ok(!found.hasil[0]?.cuplikan.includes('keterangan produk'));
+  assert.equal(corpus.search('perlindungan konsumen barang berbeda','peraturan',8).hasil[0]?.pasal,'Pasal 61');
+ }finally{corpus.close();}
+});
+test('search aliases count once per concept and exact document titles retain their identity',()=>{
+ const corpus=new CorpusIndex(':memory:');
+ try{
+  const meta={id:'concepts',jenis:'peraturan' as const,judul:'Aturan Sintetis Pengujian',rujukan:'UU 998/2099',sourceUrl:'https://example.test/concepts.pdf',fileHash:'f'.repeat(64),retrievedAt:'2026-10-24T00:00:00Z',importedBy:'fixture'};
+  corpus.replace(meta,[{halaman:1,teks:'Pasal 1\nBarang.\nPasal 2\nInformasi.\n'}]);
+  const ids=(q:string)=>corpus.search(q,'peraturan',8).hasil.map(x=>x.pasal);
+  assert.deepEqual(ids('produk informasi'),ids('produk informasi keterangan deskripsi'));
+  assert.equal(corpus.search(meta.judul,'peraturan',8).hasil[0]?.id,'concepts');
+ }finally{corpus.close();}
+});
+test('a regulation article uses one discovery slot while its original body and explanation stay openable',()=>{
+ const corpus=new CorpusIndex(':memory:');
+ try{
+  corpus.replace({id:'layers-ranking',jenis:'peraturan',judul:'Peraturan Informasi Barang',rujukan:'UU 997/2099',sourceUrl:'https://example.test/layers.pdf',fileHash:'d'.repeat(64),retrievedAt:'2026-10-24T00:00:00Z',importedBy:'fixture',complete:true},[{halaman:1,teks:'Pasal 1\nHak konsumen adalah informasi mengenai barang.\nPasal 2\nPelaku usaha memberi keterangan produk.\n'},{halaman:2,teks:'PENJELASAN\nII. PASAL DEMI PASAL\nPasal 1\nInformasi barang informasi barang informasi barang adalah penjelasan sintetis.\nPasal 2\nKeterangan produk adalah penjelasan sintetis.\n'}]);
+  const found=corpus.search('informasi barang','peraturan',8).hasil;
+  const articleHits=found.filter(x=>x.pasal);assert.equal(new Set(articleHits.map(x=>x.pasal)).size,articleHits.length);assert.match(articleHits.find(x=>x.pasal==='Pasal 1')!.cuplikan,/Hak konsumen/);
+  const opened=corpus.open({jenis:'peraturan',rujukan:'UU 997/2099',pasal:'Pasal 1'},createSigner(generateSigningKey()));assert.ok(opened.potongan.some(p=>p.locator.bagian==='batang-tubuh'));assert.ok(opened.potongan.some(p=>p.locator.bagian==='penjelasan'));
+ }finally{corpus.close();}
+});
+test('discovery does not collapse separate amended-law owners sharing an article number',()=>{
+ const corpus=new CorpusIndex(':memory:');
+ try{
+  corpus.replace({id:'owners-ranking',jenis:'peraturan',judul:'Perubahan Sintetis',rujukan:'UU 996/2099',sourceUrl:'https://example.test/owners.pdf',fileHash:'c'.repeat(64),retrievedAt:'2026-10-24T00:00:00Z',importedBy:'fixture'},[{halaman:1,teks:'Pasal 15\nBeberapa ketentuan dalam Undang-Undang Nomor 999 Tahun 2099 tentang Satu diubah sebagai berikut:\n1. Ketentuan Pasal 26 diubah sehingga berbunyi sebagai berikut:\nPasal 26\nKegiatan perbankan sintetis.\n'},{halaman:2,teks:'Pasal 16\nBeberapa ketentuan dalam Undang-Undang Nomor 998 Tahun 2099 tentang Dua diubah sebagai berikut:\n1. Ketentuan Pasal 26 diubah sehingga berbunyi sebagai berikut:\nPasal 26\nKegiatan perdagangan sintetis.\n'}]);
+  const found=corpus.search('kegiatan sintetis','peraturan',8).hasil.filter(x=>x.pasal==='Pasal 26');assert.equal(found.length,2);assert.notEqual(found[0]!.cuplikan,found[1]!.cuplikan);
+ }finally{corpus.close();}
+});
 
 test("reviewed amendment relationships survive manifest import and are covered by the passage signature", () => {
   const manifest = CorpusManifest.parse({ id: "qanun-relasi", jenis: "qanun", judul: "Naskah sintetis historis", rujukan: "Qanun Aceh 6/2014", sourceUrl: "https://jdih.acehprov.go.id/uji.pdf", retrievedAt: "2026-10-18T00:00:00Z", importedBy: "fixture", file: "uji.pdf", status: "Diubah", diubahDengan: ["Qanun Aceh 12/2025"], dicabutDengan: [] });
