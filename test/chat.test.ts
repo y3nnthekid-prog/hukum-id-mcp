@@ -185,6 +185,20 @@ test('a clarified follow-up does not repeat the fixed opening even if the planne
  const result=await runChat({conversationId:'c',turnId:'t',version:2,messages:[{id:'u1',role:'user',text:'Barang saya bermasalah.'},{id:'u2',role:'user',text:'Saya di Indonesia, untuk dipakai sendiri, yang datang berbeda dari deskripsi dua hari lalu.'}]},{model,telusur:(async()=>{searches++;return {kandidat:[],peringatan:[]};}) as any,sumber:{buka:async()=>{throw Error('No candidate to open');}} as any,signer,keys:[signer.publicKeyPem],signal:new AbortController().signal,progress:async()=>{}});
  assert.equal(calls,3);assert.equal(searches,1);assert.equal(result.blocks[0]?.text,text);assert.deepEqual(result.questions,['Barang apa yang kamu beli?']);
 });
+
+test('rejected drafts still give authored neutral preparation without publishing failed legal claims',async()=>{
+ let calls=0;const model={provider:'openai' as const,model:'fixture',async generate(input:any){calls++;return input.schema.parse(calls===1?{queries:[],focus:'barang rusak',needsContext:false,matter:'consumer_goods',jurisdiction:'indonesia'}:calls===2?{blocks:[{id:'bad',kind:'legal',text:'Penjual wajib mengembalikan uang dalam tiga hari.',citations:[]}],questions:[],limits:[]}:{verdicts:[{id:'bad',supported:false,checks,witnesses:[],kind:'legal',reason:'No support'}],questionsSafe:true,limitsSafe:true});}};
+ const result=await runChat({conversationId:'c',turnId:'t',version:1,messages:[{id:'u',role:'user',text:'Barang belanja daring saya rusak, penjual menolak membantu.'}]},{model,telusur:(async()=>({kandidat:[],peringatan:[]})) as any,sumber:{} as any,signer,keys:[signer.publicKeyPem],signal:new AbortController().signal,progress:async()=>{}});
+ assert.equal(result.blocks.length,1);assert.equal(result.blocks[0]?.kind,'preparation');assert.match(result.blocks[0]!.text,/Simpan bukti/);assert.equal(result.blocks[0]?.citations.length,0);assert.ok(!JSON.stringify(result.blocks).includes('tiga hari'));assert.equal(result.sources.length,0);assert.equal(calls,3);assert.equal(result.rejected.length,1);
+});
+
+test('neutral fallback prioritizes explicit and earlier danger, using only user facts and no assumed current emergency',async()=>{
+ for(const messages of [[{id:'u1',role:'user' as const,text:'Penagih utang mau membunuh saya sekarang.'},{id:'u2',role:'user' as const,text:'Dia masih di depan rumah, harus bagaimana?'}],[{id:'u1',role:'user' as const,text:'Saya sedang dipukul.'}]]){
+  let calls=0;const model={provider:'openai' as const,model:'fixture',async generate(input:any){calls++;return input.schema.parse(calls===1?{queries:[],focus:'pinjaman',needsContext:false,matter:'loan',jurisdiction:'unknown'}:calls===2?{blocks:[],questions:[],limits:[]}:{verdicts:[],questionsSafe:true,limitsSafe:true});}};
+  const result=await runChat({conversationId:'c',turnId:'t',version:messages.length,messages},{model,telusur:(async()=>({kandidat:[],peringatan:[]})) as any,sumber:{} as any,signer,keys:[signer.publicKeyPem],signal:new AbortController().signal,progress:async()=>{}});
+  assert.match(result.blocks[0]!.text,/^Jika ada bahaya langsung, utamakan tempat aman/);assert.ok(!result.blocks[0]!.text.includes('sudah terbukti'));assert.equal(calls,3);
+ }
+});
 test('Unicode-heavy drafts fit the complete review wire by rejecting whole unchecked blocks, without retry',async()=>{
  let calls=0,reviewed=0;const quote='中'.repeat(60)+' '+'word '.repeat(57);
  const unsigned={...p,text:quote+'中'.repeat(550),contentHash:contentHash(quote+'中'.repeat(550))};const source={...unsigned,tanda:signer.sign(signedPart(unsigned))};
