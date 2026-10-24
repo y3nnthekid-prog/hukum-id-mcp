@@ -141,15 +141,20 @@ export async function runChat(input:ChatInput,deps:{model:JsonModel;telusur:Telu
   }
   const passages:PotonganBertanda[]=[];const opened=new Set<string>();const searches:Array<{query:string;candidates:number}>=[];const failures:string[]=[];let textBytes=0;
   const rootQuery:Record<string,string>={consumer_goods:'perlindungan konsumen barang',consumer_services:'perlindungan konsumen jasa',employment:'hubungan kerja perjanjian kerja',rent:'sewa menyewa perjanjian',loan:'pinjam meminjam perjanjian'};
-  if(plan.matter==='consumer_goods'&&/\b(?:rusak|retak|pecah|cacat|kerusakan|menyala|berfungsi)\b/i.test(plan.focus))rootQuery.consumer_goods='konsumen kerusakan barang ganti rugi';
-  if(plan.matter==='employment'&&/\b(?:phk|berhenti|pemutusan|dipecat|diberhentikan)\b/i.test(plan.focus))rootQuery.employment='pemutusan hubungan kerja';
-  const queries=plan.jurisdiction==='foreign'?[]:[...new Set(rootQuery[plan.matter]?[rootQuery[plan.matter]!,...plan.queries]:plan.queries)].slice(0,2);
+  // Current-question queries lead. The broad fallback must not inject a remedy
+  // or spend every opening slot before the other search is considered.
+  const queries=plan.jurisdiction==='foreign'?[]:[...new Set([...plan.queries,...(rootQuery[plan.matter]?[rootQuery[plan.matter]!]:[])])].slice(0,2);
+  const discoveries:Array<{query:string;result:Awaited<ReturnType<TelusurService>>}>=[];
   for(const query of queries) {
     deps.signal.throwIfAborted();await deps.progress('searching');
     let result:Awaited<ReturnType<TelusurService>>;
     try {result=await deps.telusur({rumpun:'ilmu-hukum',query,sumber:['peraturan'],limit:8});}catch{failures.push('Penelusuran sumber belum berhasil.');continue;}
-    searches.push({query,candidates:result.kandidat.length});
-    for(const candidate of result.kandidat) {
+    searches.push({query,candidates:result.kandidat.length});discoveries.push({query,result});
+  }
+  // Round-robin ranked hits: both searches can contribute to the six opens.
+  for(let rank=0;rank<Math.max(0,...discoveries.map(d=>d.result.kandidat.length));rank++) {
+    for(const {query,result} of discoveries) {
+      const candidate=result.kandidat[rank];if(!candidate)continue;
       if(!candidate.rujukan||opened.size>=6||passages.length>=12)continue;
       const ref=JSON.stringify(candidate.rujukan);if(opened.has(ref))continue;opened.add(ref);
       deps.signal.throwIfAborted();await deps.progress('opening');
