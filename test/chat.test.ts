@@ -1,6 +1,6 @@
 import { strict as assert } from 'node:assert';
 import { test } from 'node:test';
-import { ChatInputSchema, validateChatAnswer, chatContext, runChat,requestsUnavailableUpload,ungroundedPlatformProcedure,type ChatDraft } from '../src/core/chat.js';
+import { ChatInputSchema, validateChatAnswer, chatContext, runChat,requestsUnavailableUpload,ungroundedPlatformProcedure,missingSupportWitnesses,type ChatDraft } from '../src/core/chat.js';
 import { createSigner, generateSigningKey,verifySignature } from '../src/core/sign.js';
 import { createManagedClaims } from '../src/core/managed-ai.js';
 import { contentHash } from '../src/core/passages.js';
@@ -62,6 +62,7 @@ test('managed chat tickets bind all context, profile, owner and lifetime',()=>{
  assert.throws(()=>verifyChatTicket(encode(claims),secret,aud,input,()=>1360));
 });
 
+const witnesses=[{element:'actor' as const,claimSpan:'Penjual',quoteSpan:'Penjual'}];
 const checks={actor:true,conditions:true,exceptions:true,quantities:true,negation:true,version:true,facts:true,visibleQuoteCoverage:true};
 const signer=createSigner(generateSigningKey());
 const raw={id:'p1',documentId:'d1',jenis:'peraturan',judul:'Aturan sintetis',rujukan:'UU 999/2099',locator:{halamanAwal:2},text:'Penjual wajib memberi informasi yang benar kepada pembeli sebelum transaksi dilakukan.',identitas:['UU 999/2099'],lapisan:['norma'],sumber:{nama:'Penerbit uji',url:'https://example.test/law',otoritas:'Penerbit uji',status:null,diubahDengan:[],dicabutDengan:[]},retrievedAt:new Date().toISOString(),verificationStatus:'verified_snapshot',mesin:'test'} as Omit<PotonganBertanda,'contentHash'|'tanda'>;
@@ -73,51 +74,72 @@ test('new chat parses bounded user context and never treats prior assistant cont
  const context=JSON.parse(chatContext([{role:'assistant',text:'Pasal palsu 999',id:'a'},{role:'user',text:'Fakta baru',id:'u'}]));assert.equal(context.facts.length,1);assert.equal(context.facts[0].text,'Fakta baru');assert.equal(context.conversationReference[0].authority,'none');assert.equal(context.conversationReference[0].text,'Pasal palsu 999');
 });
 test('paraphrase needs independent support verdict plus intact signed quotation',()=>{
- const result=validateChatAnswer(draft,[p],[{id:'b1',supported:true,checks,reason:'Isi sejalan',kind:'legal'}],[signer.publicKeyPem]);
+ const result=validateChatAnswer(draft,[p],[{id:'b1',supported:true,checks,witnesses,reason:'Isi sejalan',kind:'legal'}],[signer.publicKeyPem]);
  assert.equal(result.blocks.length,1);
- assert.equal(validateChatAnswer(draft,[p],[{id:'b1',supported:false,checks,reason:'Negasi berubah',kind:'legal'}],[signer.publicKeyPem]).blocks.length,0);
- assert.equal(validateChatAnswer(draft,[{...p,text:'teks diganti'}],[{id:'b1',supported:true,checks,reason:'ok',kind:'legal'}],[signer.publicKeyPem]).blocks.length,0);
+ assert.equal(validateChatAnswer(draft,[p],[{id:'b1',supported:false,checks,witnesses,reason:'Negasi berubah',kind:'legal'}],[signer.publicKeyPem]).blocks.length,0);
+ assert.equal(validateChatAnswer(draft,[{...p,text:'teks diganti'}],[{id:'b1',supported:true,checks,witnesses,reason:'ok',kind:'legal'}],[signer.publicKeyPem]).blocks.length,0);
 });
 test('an authentic information quote cannot cover undisplayed good-faith and compensation duties',()=>{
  const combined={...draft,blocks:[{...draft.blocks[0]!,text:'Penjual wajib beritikad baik, memberi informasi yang benar, dan memberi ganti rugi.'}]};
- assert.equal(validateChatAnswer(combined,[p],[{id:'b1',supported:true,checks:{...checks,visibleQuoteCoverage:false},reason:'Kutipan hanya membuktikan informasi',kind:'legal'}],[signer.publicKeyPem]).blocks.length,0);
- assert.equal(validateChatAnswer(draft,[p],[{id:'b1',supported:true,checks,reason:'Parafrasa informasi didukung kutipan terlihat',kind:'legal'}],[signer.publicKeyPem]).blocks.length,1);
- assert.equal(validateChatAnswer(combined,[p],[{id:'b1',supported:true,checks,reason:'Reviewer incorrectly approves whole article',kind:'legal'}],[signer.publicKeyPem]).blocks.length,0);
- const disguised={...draft,blocks:[{...draft.blocks[0]!,kind:'general' as const,text:'Pelaku usaha bertanggung jawab memberi kompensasi berupa pengembalian uang.'}]};assert.equal(validateChatAnswer(disguised,[p],[{id:'b1',supported:true,checks,reason:'Both classifications are wrong',kind:'general'}],[signer.publicKeyPem]).blocks.length,0);
+ assert.equal(validateChatAnswer(combined,[p],[{id:'b1',supported:true,witnesses,checks:{...checks,witnesses,visibleQuoteCoverage:false},reason:'Kutipan hanya membuktikan informasi',kind:'legal'}],[signer.publicKeyPem]).blocks.length,0);
+ assert.equal(validateChatAnswer(draft,[p],[{id:'b1',supported:true,checks,witnesses,reason:'Parafrasa informasi didukung kutipan terlihat',kind:'legal'}],[signer.publicKeyPem]).blocks.length,1);
+ assert.equal(validateChatAnswer(combined,[p],[{id:'b1',supported:true,checks,witnesses,reason:'Reviewer incorrectly approves whole article',kind:'legal'}],[signer.publicKeyPem]).blocks.length,0);
+ const disguised={...draft,blocks:[{...draft.blocks[0]!,kind:'general' as const,text:'Pelaku usaha bertanggung jawab memberi kompensasi berupa pengembalian uang.'}]};assert.equal(validateChatAnswer(disguised,[p],[{id:'b1',supported:true,checks,witnesses,reason:'Both classifications are wrong',kind:'general'}],[signer.publicKeyPem]).blocks.length,0);
  const text='Pelaku usaha bertanggung jawab memberikan ganti rugi atas kerusakan, pencemaran, dan/atau kerugian konsumen akibat mengkonsumsi barang dan/atau jasa yang dihasilkan atau diperdagangkan.';
  const raw={...p,text,contentHash:contentHash(text)},liability={...raw,tanda:signer.sign(signedPart(raw))};
- for(const claim of ['Ganti rugi dapat berupa pengembalian uang.','Ganti rugi dapat berupa penggantian barang.']){const value={...draft,blocks:[{...draft.blocks[0]!,text:claim,citations:[{passageId:'p1',quote:text}]}]};assert.equal(validateChatAnswer(value,[liability],[{id:'b1',supported:true,checks,reason:'Reviewer misses selected clause',kind:'legal'}],[signer.publicKeyPem]).blocks.length,0);}
- const faithful={...draft,blocks:[{...draft.blocks[0]!,text:'Naskah ini membahas tanggung jawab pelaku usaha memberi kompensasi atas kerugian akibat pemakaian barang yang diperdagangkan.',citations:[{passageId:'p1',quote:text}]}]};assert.equal(validateChatAnswer(faithful,[liability],[{id:'b1',supported:true,checks,reason:'Synonymous compensation within scope',kind:'legal'}],[signer.publicKeyPem]).blocks.length,1);
+ for(const claim of ['Ganti rugi dapat berupa pengembalian uang.','Ganti rugi dapat berupa penggantian barang.']){const value={...draft,blocks:[{...draft.blocks[0]!,text:claim,citations:[{passageId:'p1',quote:text}]}]};assert.equal(validateChatAnswer(value,[liability],[{id:'b1',supported:true,checks,witnesses,reason:'Reviewer misses selected clause',kind:'legal'}],[signer.publicKeyPem]).blocks.length,0);}
+ const faithful={...draft,blocks:[{...draft.blocks[0]!,text:'Naskah ini membahas tanggung jawab pelaku usaha memberi kompensasi atas kerugian akibat pemakaian barang yang diperdagangkan.',citations:[{passageId:'p1',quote:text}]}]};assert.equal(validateChatAnswer(faithful,[liability],[{id:'b1',supported:true,checks,witnesses:[{element:'actor',claimSpan:'pelaku usaha',quoteSpan:'Pelaku usaha'},{element:'relation',claimSpan:'tanggung jawab',quoteSpan:'bertanggung jawab'}],reason:'Synonymous compensation within scope',kind:'legal'}],[signer.publicKeyPem]).blocks.length,1);
  const useText='memberi kompensasi, ganti rugi dan/atau penggantian atas kerugian akibat penggunaan, pemakaian dan pemanfaatan barang dan/atau jasa yang diperdagangkan;';const useRaw={...p,text:useText,contentHash:contentHash(useText)},useSource={...useRaw,tanda:signer.sign(signedPart(useRaw))};
- for(const claim of ['Pelaku usaha punya kewajiban memberi kompensasi atau ganti rugi bila barang rusak atau tidak sesuai.','Pelaku usaha memberi ganti rugi bila barang rusak.']){const value={...draft,blocks:[{...draft.blocks[0]!,text:claim,citations:[{passageId:'p1',quote:useText}]}]};assert.equal(validateChatAnswer(value,[useSource],[{id:'b1',supported:true,checks,reason:'Reviewer misses causal condition',kind:'legal'}],[signer.publicKeyPem]).blocks.length,0);}
+ for(const claim of ['Pelaku usaha punya kewajiban memberi kompensasi atau ganti rugi bila barang rusak atau tidak sesuai.','Pelaku usaha memberi ganti rugi bila barang rusak.']){const value={...draft,blocks:[{...draft.blocks[0]!,text:claim,citations:[{passageId:'p1',quote:useText}]}]};assert.equal(validateChatAnswer(value,[useSource],[{id:'b1',supported:true,checks,witnesses,reason:'Reviewer misses causal condition',kind:'legal'}],[signer.publicKeyPem]).blocks.length,0);}
 });
 test('unknown/missing/duplicate verdicts and quote truncation fail closed',()=>{
  assert.equal(validateChatAnswer(draft,[p],[],[signer.publicKeyPem]).blocks.length,0);
- assert.equal(validateChatAnswer(draft,[p],[{id:'b1',supported:true,checks,reason:'ok',kind:'legal'},{id:'b1',supported:false,checks,reason:'no',kind:'legal'}],[signer.publicKeyPem]).blocks.length,0);
+ assert.equal(validateChatAnswer(draft,[p],[{id:'b1',supported:true,checks,witnesses,reason:'ok',kind:'legal'},{id:'b1',supported:false,checks,witnesses,reason:'no',kind:'legal'}],[signer.publicKeyPem]).blocks.length,0);
  const bad={...draft,blocks:[{...draft.blocks[0]!,citations:[{passageId:'p1',quote:'Penjual wajib mengembalikan uang dalam 3 hari.'}]}]};
- assert.equal(validateChatAnswer(bad,[p],[{id:'b1',supported:true,checks,reason:'ok',kind:'legal'}],[signer.publicKeyPem]).blocks.length,0);
+ assert.equal(validateChatAnswer(bad,[p],[{id:'b1',supported:true,checks,witnesses,reason:'ok',kind:'legal'}],[signer.publicKeyPem]).blocks.length,0);
+});
+
+test('a timing clause cannot establish a missing actor or responsibility, even when every model check approves',()=>{
+ const quote='Pemberian ganti rugi dilaksanakan dalam tenggang waktu 7 (tujuh) hari setelah tanggal transaksi.';
+ const unsigned={...p,text:quote,contentHash:contentHash(quote)},source={...unsigned,tanda:signer.sign(signedPart(unsigned))};
+ for(const text of ['Undang-undang menyebutkan pelaku usaha bertanggung jawab memberi ganti rugi, dan ada tenggang waktu untuk pelaksanaannya.','Pelaku usaha memberi ganti rugi dalam tujuh hari setelah tanggal transaksi.','Ada tanggung jawab memberi ganti rugi.']){
+  const value={...draft,blocks:[{...draft.blocks[0]!,text,citations:[{passageId:'p1',quote}]}]};assert.equal(validateChatAnswer(value,[source],[{id:'b1',supported:true,checks,witnesses,kind:'legal',reason:'Reviewer incorrectly treats timing as liability'}],[signer.publicKeyPem]).blocks.length,0);
+ }
+ const faithful={...draft,blocks:[{...draft.blocks[0]!,text:'Kutipan ini menyebut waktu pemberian ganti rugi tujuh hari setelah tanggal transaksi.',citations:[{passageId:'p1',quote}]}]};
+ assert.equal(validateChatAnswer(faithful,[source],[{id:'b1',supported:true,checks,witnesses,kind:'legal',reason:'Timing paraphrase without inventing a subject'}],[signer.publicKeyPem]).blocks.length,1);
+});
+
+test('support witnesses cannot substitute an unrelated span, actor, relation or uncited source clause',()=>{
+ const claim='Pelaku usaha bertanggung jawab memberi ganti rugi.',quote='Pelaku usaha bertanggung jawab memberikan ganti rugi atas kerugian akibat mengkonsumsi barang.';
+ const valid=[{element:'actor' as const,claimSpan:'Pelaku usaha',quoteSpan:'Pelaku usaha'},{element:'relation' as const,claimSpan:'bertanggung jawab',quoteSpan:'bertanggung jawab'}];
+ assert.equal(missingSupportWitnesses(claim,quote,valid),false);
+ for(const witnesses of [[],[{...valid[0]!,quoteSpan:'ganti rugi'},valid[1]!],[valid[0]!,{...valid[1]!,quoteSpan:'dilaksanakan'}],[valid[0]!,{...valid[1]!,claimSpan:'wajib'}]])assert.equal(missingSupportWitnesses(claim,quote,witnesses),true);
+ assert.equal(missingSupportWitnesses('Penjual bertanggung jawab memberi ganti rugi.',quote,[{...valid[0]!,claimSpan:'Penjual'},valid[1]!]),true);
+ const unsigned={...p,text:quote,contentHash:contentHash(quote)},source={...unsigned,tanda:signer.sign(signedPart(unsigned))};
+ const value={...draft,blocks:[{...draft.blocks[0]!,text:claim,citations:[{passageId:'p1',quote}]}]};
+ assert.equal(validateChatAnswer(value,[source],[{id:'b1',supported:true,checks,witnesses:valid,kind:'legal',reason:'Missed consumption condition'}],[signer.publicKeyPem]).blocks.length,0);
 });
 test('reviewer classification overrides model trying to disguise legal claims as general advice',()=>{
  const bad={...draft,blocks:[{...draft.blocks[0]!,kind:'general' as const,citations:[]}]};
- assert.equal(validateChatAnswer(bad,[],[{id:'b1',supported:true,checks,kind:'legal',reason:'Kewajiban hukum'}],[signer.publicKeyPem]).blocks.length,0);
+ assert.equal(validateChatAnswer(bad,[],[{id:'b1',supported:true,checks,witnesses,kind:'legal',reason:'Kewajiban hukum'}],[signer.publicKeyPem]).blocks.length,0);
 });
 test('a goods question cannot reuse a service-only norm even when semantic review misses the actor mismatch',()=>{
  const text='Pelaku usaha yang memperdagangkan jasa wajib memenuhi jaminan dan/atau garansi yang disepakati dan/atau yang diperjanjikan.';
  const rawSource={...p,text,contentHash:contentHash(text)};const serviceSource={...rawSource,tanda:signer.sign(signedPart(rawSource))};
  const answer={...draft,blocks:[{...draft.blocks[0]!,text:'Pelaku usaha punya kewajiban garansi untuk blender rusak saat diterima.',citations:[{passageId:'p1',quote:text}]}]};
- assert.equal(validateChatAnswer(answer,[serviceSource],[{id:'b1',supported:true,checks,kind:'legal',reason:'Reviewer misses services qualifier'}],[signer.publicKeyPem],{matter:'consumer_goods'}).blocks.length,0);
+ assert.equal(validateChatAnswer(answer,[serviceSource],[{id:'b1',supported:true,checks,witnesses,kind:'legal',reason:'Reviewer misses services qualifier'}],[signer.publicKeyPem],{matter:'consumer_goods'}).blocks.length,0);
  const cropped={...answer,blocks:[{...answer.blocks[0]!,citations:[{passageId:'p1',quote:'wajib memenuhi jaminan dan/atau garansi yang disepakati dan/atau yang diperjanjikan.'}]}]};
- assert.equal(validateChatAnswer(cropped,[serviceSource],[{id:'b1',supported:true,checks,kind:'legal',reason:'Qualifier omitted from quote'}],[signer.publicKeyPem],{matter:'consumer_goods'}).blocks.length,0);
+ assert.equal(validateChatAnswer(cropped,[serviceSource],[{id:'b1',supported:true,checks,witnesses,kind:'legal',reason:'Qualifier omitted from quote'}],[signer.publicKeyPem],{matter:'consumer_goods'}).blocks.length,0);
 });
 test('each support dimension is mandatory and canonical matches publish the exact raw quote',()=>{
  for(const dimension of Object.keys(checks)){
-  const verdict={id:'b1',supported:true,kind:'legal' as const,reason:'One check failed',checks:{...checks,[dimension]:false}};
+  const verdict={id:'b1',supported:true,kind:'legal' as const,reason:'One check failed',witnesses,checks:{...checks,witnesses,[dimension]:false}};
   assert.equal(validateChatAnswer(draft,[p],[verdict],[signer.publicKeyPem]).blocks.length,0);
  }
  const text=raw.text.replace('informasi yang','informasi\nyang'),unsigned={...p,text,contentHash:contentHash(text)},source={...unsigned,tanda:signer.sign(signedPart(unsigned))};
- const result=validateChatAnswer(draft,[source],[{id:'b1',supported:true,checks,kind:'legal',reason:'Faithful raw text'}],[signer.publicKeyPem]);
+ const result=validateChatAnswer(draft,[source],[{id:'b1',supported:true,checks,witnesses,kind:'legal',reason:'Faithful raw text'}],[signer.publicKeyPem]);
  assert.equal(result.blocks[0]?.citations[0]?.quote,text);
- assert.equal(validateChatAnswer(draft,[p],[{id:'b1',supported:true,checks,kind:'legal',reason:'Norm from another jurisdiction'}],[signer.publicKeyPem],{matter:'unknown',jurisdiction:'foreign'}).blocks.length,0);
+ assert.equal(validateChatAnswer(draft,[p],[{id:'b1',supported:true,checks,witnesses,kind:'legal',reason:'Norm from another jurisdiction'}],[signer.publicKeyPem],{matter:'unknown',jurisdiction:'foreign'}).blocks.length,0);
 });
 test('purpose, producer subject, and purchase clock cannot be promoted into broader case rights',()=>{
  for(const [text,claim] of [
@@ -127,11 +149,11 @@ test('purpose, producer subject, and purchase clock cannot be promoted into broa
  ]){
   const unsigned={...p,text,contentHash:contentHash(text)},source={...unsigned,tanda:signer.sign(signedPart(unsigned))};
   const answer={...draft,blocks:[{...draft.blocks[0]!,text:claim,citations:[{passageId:'p1',quote:text}]}]};
-  assert.equal(validateChatAnswer(answer,[source],[{id:'b1',supported:true,checks,kind:'legal',reason:'Missed scope'}],[signer.publicKeyPem]).blocks.length,0);
+  assert.equal(validateChatAnswer(answer,[source],[{id:'b1',supported:true,checks,witnesses,kind:'legal',reason:'Missed scope'}],[signer.publicKeyPem]).blocks.length,0);
  }
  assert.equal(requestsUnavailableUpload('Bisa kirim 2–3 foto kerusakan dan tangkapan layar chat penjual?'),true);
  const upload={...draft,blocks:[{id:'b1',kind:'preparation' as const,text:'Tolong kirim foto kerusakan di percakapan ini agar bisa saya periksa.',citations:[]}]};
- assert.equal(validateChatAnswer(upload,[],[{id:'b1',supported:true,checks,kind:'preparation',reason:'Missed feature limitation'}],[signer.publicKeyPem]).blocks.length,0);
+ assert.equal(validateChatAnswer(upload,[],[{id:'b1',supported:true,checks,witnesses,kind:'preparation',reason:'Missed feature limitation'}],[signer.publicKeyPem]).blocks.length,0);
  assert.equal(requestsUnavailableUpload('Apakah ada foto kerusakan yang sudah kamu simpan?'),false);
  assert.equal(ungroundedPlatformProcedure('Ajukan klaim resmi lewat fitur pengaduan marketplace.'),true);
  assert.equal(ungroundedPlatformProcedure('Periksa apakah fitur keluhan tersedia; jika ada, baca syaratnya sebelum menggunakan.'),false);
@@ -139,15 +161,15 @@ test('purpose, producer subject, and purchase clock cannot be promoted into broa
 test('uncited referrals to named agencies and legal procedures cannot pass as preparation',()=>{
  for(const text of ['Ajukan komplain ke LPSK/LK3 konsumen setempat atau mediasi.','Gugat penjual ke pengadilan dalam 30 hari.','Anda wajib menerima pesangon.']){
   const value={...draft,blocks:[{id:'b1',kind:'preparation' as const,text,citations:[]}]};
-  assert.equal(validateChatAnswer(value,[],[{id:'b1',supported:true,checks,reason:'Reviewer missed material claim',kind:'preparation'}],[signer.publicKeyPem]).blocks.length,0);
+  assert.equal(validateChatAnswer(value,[],[{id:'b1',supported:true,checks,witnesses,reason:'Reviewer missed material claim',kind:'preparation'}],[signer.publicKeyPem]).blocks.length,0);
  }
  for(const text of ['Simpan SMS, foto kerusakan, kemasan, bukti pembayaran, dan percakapan penjual.','Jangan bagikan NIK atau nomor KTP di percakapan ini.']){
  const neutral={...draft,blocks:[{id:'b1',kind:'preparation' as const,text,citations:[]}]};
- assert.equal(validateChatAnswer(neutral,[],[{id:'b1',supported:true,checks,reason:'Neutral evidence preservation',kind:'preparation'}],[signer.publicKeyPem]).blocks.length,1);}
+ assert.equal(validateChatAnswer(neutral,[],[{id:'b1',supported:true,checks,witnesses,reason:'Neutral evidence preservation',kind:'preparation'}],[signer.publicKeyPem]).blocks.length,1);}
 });
 test('orchestrator discovers sources before opening, uses three bounded calls and signs only checked output',async()=>{
  let calls=0,searches=0,opens=0;
- const model={provider:'openai' as const,model:'fixture',async generate(input:any){calls++;if(calls===1)return input.schema.parse({queries:['perlindungan konsumen','barang rusak'],focus:'Hak pembeli',needsContext:false,matter:'unknown',jurisdiction:'indonesia'});if(calls===2){assert.ok(input.user.includes(p.text));return input.schema.parse(draft);}const reviewInput=JSON.parse(input.user);assert.equal(reviewInput.evidence[0].text,undefined);assert.equal(reviewInput.evidence[0].restrictionContext,p.text);assert.equal(reviewInput.evidence[0].selectedQuotes[0].blockId,'b1');return input.schema.parse({verdicts:[{id:'b1',supported:true,checks,reason:'Fixture faithful paraphrase',kind:'legal'}],questionsSafe:true,limitsSafe:true});}};
+ const model={provider:'openai' as const,model:'fixture',async generate(input:any){calls++;if(calls===1)return input.schema.parse({queries:['perlindungan konsumen','barang rusak'],focus:'Hak pembeli',needsContext:false,matter:'unknown',jurisdiction:'indonesia'});if(calls===2){assert.ok(input.user.includes(p.text));return input.schema.parse(draft);}const reviewInput=JSON.parse(input.user);assert.equal(reviewInput.evidence[0].text,undefined);assert.equal(reviewInput.evidence[0].restrictionContext,p.text);assert.equal(reviewInput.evidence[0].selectedQuotes[0].blockId,'b1');return input.schema.parse({verdicts:[{id:'b1',supported:true,checks,witnesses,reason:'Fixture faithful paraphrase',kind:'legal'}],questionsSafe:true,limitsSafe:true});}};
  const telusur=async()=>{searches++;return {kandidat:[{rujukan:{jenis:'peraturan',rujukan:'UU 999/2099'}}]};};
  const sumber={async buka(ref:any,options:any){opens++;assert.equal(searches>0,true);assert.equal(options.followAmendments,false);return {status:'dibuka',potongan:[p],peringatan:[],rujukan:ref};}};
  const result=await runChat({conversationId:'c1',turnId:'t1',version:1,messages:[{id:'u',role:'user',text:'Barang saya rusak, apa yang dapat saya pahami?'}]},{model,telusur:telusur as any,sumber:sumber as any,signer,keys:[signer.publicKeyPem],signal:new AbortController().signal,progress:async()=>{}});
@@ -159,7 +181,7 @@ test('a vague opening uses one planning call and only fixed safe questions, with
  assert.equal(calls,1);assert.equal(result.questions.length,2);assert.equal(result.method.opened,0);assert.equal(result.sources.length,0);assert.ok(!JSON.stringify(result).includes('demand a secret'));assert.equal(result.blocks[0]?.kind,'general');
 });
 test('a clarified follow-up does not repeat the fixed opening even if the planner still wants context',async()=>{
- let calls=0,searches=0;const text='Catat deskripsi penawaran dan perbedaan barang yang kamu lihat.';const model={provider:'openai' as const,model:'fixture',async generate(input:any){calls++;return input.schema.parse(calls===1?{queries:[],focus:'barang berbeda deskripsi',needsContext:true,matter:'consumer_goods',jurisdiction:'indonesia'}:calls===2?{blocks:[{id:'b1',kind:'preparation',text,citations:[]}],questions:['Barang apa yang kamu beli?'],limits:[]}:{verdicts:[{id:'b1',supported:true,checks,kind:'preparation',reason:'Neutral preparation only'}],questionsSafe:true,limitsSafe:true});}};
+ let calls=0,searches=0;const text='Catat deskripsi penawaran dan perbedaan barang yang kamu lihat.';const model={provider:'openai' as const,model:'fixture',async generate(input:any){calls++;return input.schema.parse(calls===1?{queries:[],focus:'barang berbeda deskripsi',needsContext:true,matter:'consumer_goods',jurisdiction:'indonesia'}:calls===2?{blocks:[{id:'b1',kind:'preparation',text,citations:[]}],questions:['Barang apa yang kamu beli?'],limits:[]}:{verdicts:[{id:'b1',supported:true,checks,witnesses,kind:'preparation',reason:'Neutral preparation only'}],questionsSafe:true,limitsSafe:true});}};
  const result=await runChat({conversationId:'c',turnId:'t',version:2,messages:[{id:'u1',role:'user',text:'Barang saya bermasalah.'},{id:'u2',role:'user',text:'Saya di Indonesia, untuk dipakai sendiri, yang datang berbeda dari deskripsi dua hari lalu.'}]},{model,telusur:(async()=>{searches++;return {kandidat:[],peringatan:[]};}) as any,sumber:{buka:async()=>{throw Error('No candidate to open');}} as any,signer,keys:[signer.publicKeyPem],signal:new AbortController().signal,progress:async()=>{}});
  assert.equal(calls,3);assert.equal(searches,1);assert.equal(result.blocks[0]?.text,text);assert.deepEqual(result.questions,['Barang apa yang kamu beli?']);
 });
@@ -167,7 +189,7 @@ test('Unicode-heavy drafts fit the complete review wire by rejecting whole unche
  let calls=0,reviewed=0;const quote='中'.repeat(60)+' '+'word '.repeat(57);
  const unsigned={...p,text:quote+'中'.repeat(550),contentHash:contentHash(quote+'中'.repeat(550))};const source={...unsigned,tanda:signer.sign(signedPart(unsigned))};
  const large={blocks:Array.from({length:5},(_,i)=>({id:'b'+i,kind:'legal',text:'中'.repeat(280),citations:[{passageId:'p1',quote}]})),questions:['中'.repeat(150),'中'.repeat(150)],limits:['中'.repeat(200),'中'.repeat(200),'中'.repeat(200)]};
- const model={provider:'openai' as const,model:'fixture',async generate(input:any){calls++;assert.ok(azureChatWireBytes(input)<=20000);if(calls===1)return input.schema.parse({queries:['konsumen'],focus:'uji',needsContext:false,matter:'unknown',jurisdiction:'indonesia'});if(calls===2)return input.schema.parse(large);const request=JSON.parse(input.user);reviewed=request.draft.blocks.length;return input.schema.parse({verdicts:large.blocks.map((b:any)=>({id:b.id,supported:true,checks,kind:'legal',reason:'uji'})),questionsSafe:true,limitsSafe:true});}};
+ const model={provider:'openai' as const,model:'fixture',async generate(input:any){calls++;assert.ok(azureChatWireBytes(input)<=20000);if(calls===1)return input.schema.parse({queries:['konsumen'],focus:'uji',needsContext:false,matter:'unknown',jurisdiction:'indonesia'});if(calls===2)return input.schema.parse(large);const request=JSON.parse(input.user);reviewed=request.draft.blocks.length;return input.schema.parse({verdicts:large.blocks.map((b:any)=>({id:b.id,supported:true,checks,witnesses,kind:'legal',reason:'uji'})),questionsSafe:true,limitsSafe:true});}};
  const result=await runChat({conversationId:'c',turnId:'t',version:1,messages:[{id:'u',role:'user',text:'a'.repeat(4000)},{id:'v',role:'user',text:'b'.repeat(750)}]},{model,telusur:(async()=>({kandidat:[{rujukan:{jenis:'peraturan',rujukan:'UU 999/2099'}}]})) as any,sumber:{buka:async()=>({status:'dibuka',potongan:[source],peringatan:[]})} as any,signer,keys:[signer.publicKeyPem],signal:new AbortController().signal,progress:async()=>{}});
  assert.equal(calls,3);assert.ok(reviewed<5);assert.ok(result.blocks.length<=reviewed);assert.ok(result.rejected.some(row=>row.reason.includes('batas pemrosesan')));
 });
