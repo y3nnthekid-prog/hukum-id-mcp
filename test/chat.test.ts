@@ -208,6 +208,15 @@ test('uncited referrals to named agencies and legal procedures cannot pass as pr
  const neutral={...draft,blocks:[{id:'b1',kind:'preparation' as const,text,citations:[]}]};
  assert.equal(validateChatAnswer(neutral,[],[{id:'b1',supported:true,checks,witnesses,reason:'Neutral evidence preservation',kind:'preparation'}],[signer.publicKeyPem]).blocks.length,1);}
 });
+test('an isolated compensation timing clause cannot become an actionable case deadline',()=>{
+ const quote='Pemberian ganti rugi dilaksanakan dalam tenggang waktu 7 (tujuh) hari setelah tanggal transaksi.';
+ const unsigned={...p,text:quote,contentHash:contentHash(quote)},source={...unsigned,tanda:signer.sign(signedPart(unsigned))};
+ const value={...draft,blocks:[{id:'b1',kind:'legal' as const,text:'Ada ketentuan tenggang waktu penggantian: ganti rugi disebutkan dilaksanakan dalam tenggang waktu 7 hari setelah transaksi — periksa apakah ini terpenuhi.',citations:[{passageId:source.id,quote}]}]};
+ const result=validateChatAnswer(value,[source],[{id:'b1',supported:true,checks,witnesses:[],reason:'Missed isolated applicability',kind:'legal'}],[signer.publicKeyPem]);
+ assert.equal(result.blocks.length,0);
+ const warning={...value,blocks:[{...value.blocks[0]!,text:'Kutipan ini hanya menyebut waktu pelaksanaan; belum membuktikan bahwa ketentuan tersebut berlaku untuk kasusmu.'}]};
+ assert.equal(validateChatAnswer(warning,[source],[{id:'b1',supported:true,checks,witnesses:[],reason:'Explicit applicability limit',kind:'legal'}],[signer.publicKeyPem]).blocks.length,1);
+});
 test('orchestrator discovers sources before opening, uses three bounded calls and signs only checked output',async()=>{
  let calls=0,searches=0,opens=0;
  const model={provider:'openai' as const,model:'fixture',async generate(input:any){calls++;if(calls===1)return input.schema.parse({queries:['perlindungan konsumen','barang rusak'],focus:'Hak pembeli',needsContext:false,matter:'unknown',jurisdiction:'indonesia'});if(calls===2){assert.ok(input.user.includes(p.text));return input.schema.parse(wireDraft(draft));}const reviewInput=JSON.parse(input.user);assert.equal(reviewInput.evidence[0].text,undefined);assert.equal(reviewInput.evidence[0].restrictionContext,p.text);assert.equal(reviewInput.evidence[0].selectedQuotes[0].blockId,'b1');return input.schema.parse({verdicts:[{id:'b1',supported:true,checks,witnesses,reason:'Fixture faithful paraphrase',kind:'legal'}],questionsSafe:true,limitsSafe:true});}};
