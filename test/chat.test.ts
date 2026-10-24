@@ -1,6 +1,6 @@
 import { strict as assert } from 'node:assert';
 import { test } from 'node:test';
-import { ChatInputSchema,ChatDraftSchema,ChatDraftWireSchema,normalizeChatDraft,ChatReviewSchema, validateChatAnswer, chatContext, runChat,requestsUnavailableUpload,ungroundedPlatformProcedure,missingSupportWitnesses,type ChatDraft } from '../src/core/chat.js';
+import { ChatInputSchema,ChatDraftSchema,ChatDraftWireSchema,normalizeChatDraft,ChatReviewSchema, validateChatAnswer, chatContext, runChat,requestsUnavailableUpload,ungroundedPlatformProcedure,missingSupportWitnesses,locateSupportWitnesses,incompleteListIntroduction,type ChatDraft } from '../src/core/chat.js';
 import { createSigner, generateSigningKey,verifySignature } from '../src/core/sign.js';
 import { createManagedClaims } from '../src/core/managed-ai.js';
 import { contentHash } from '../src/core/passages.js';
@@ -302,4 +302,51 @@ test('review output locates supporting spans and checks before its final support
  const schema=ChatReviewSchema.toJSONSchema();
  const verdict=(schema.properties!.verdicts as any).items;
  assert.deepEqual(Object.keys(verdict.properties),['id','witnesses','checks','reason','kind','supported']);
+});
+
+
+test('source coordinates are derived without model copying, but missing roles and negative semantic checks still reject',()=>{
+ const locations=locateSupportWitnesses(draft.blocks[0]!.text,raw.text);
+ assert.equal(missingSupportWitnesses(draft.blocks[0]!.text,raw.text,locations),false);
+ const verdict={id:'b1',supported:true,checks,witnesses:[],reason:'Locations omitted by model',kind:'legal' as const};
+ assert.equal(validateChatAnswer(draft,[p],[verdict],[signer.publicKeyPem]).blocks.length,1);
+ assert.equal(validateChatAnswer(draft,[p],[{...verdict,checks:{...checks,actor:false}}],[signer.publicKeyPem]).blocks.length,0);
+ const changed={...draft,blocks:[{...draft.blocks[0]!,text:'Konsumen wajib memberi informasi sebelum transaksi.'}]};
+ assert.equal(validateChatAnswer(changed,[p],[verdict],[signer.publicKeyPem]).blocks.length,0);
+ const noActor='wajib memberi informasi yang benar kepada pembeli sebelum transaksi dilakukan.';
+ const cropped={...draft,blocks:[{...draft.blocks[0]!,citations:[{passageId:'p1',quote:noActor}]}]};
+ assert.equal(validateChatAnswer(cropped,[p],[verdict],[signer.publicKeyPem]).blocks.length,0);
+});
+test('a list heading cannot stand for unquoted items even with its colon or newlines omitted',()=>{
+ const text='Pasal 999\nPelaku usaha dilarang memberi informasi menyesatkan mengenai:\na. harga;\nb. kondisi barang.';
+ const rawSource={...p,text,contentHash:contentHash(text)},source={...rawSource,tanda:signer.sign(signedPart(rawSource))};
+ const header='Pelaku usaha dilarang memberi informasi menyesatkan mengenai';
+ for(const quote of [header,header+':',header+': a.']){
+  assert.equal(incompleteListIntroduction(text,quote),true);
+  const value={...draft,blocks:[{...draft.blocks[0]!,text:'Pelaku usaha dilarang memberi informasi menyesatkan tentang kondisi barang.',citations:[{passageId:'p1',quote}]}]};
+  assert.equal(validateChatAnswer(value,[source],[{id:'b1',supported:true,checks,witnesses:[],reason:'Reviewer overlooked missing item',kind:'legal'}],[signer.publicKeyPem]).blocks.length,0);
+ }
+ assert.equal(incompleteListIntroduction(text,text),false);
+});
+
+
+test('list introductions inside numbered paragraphs and parenthesized items are scoped by mapped end position',()=>{
+ for(const marker of ['a.','(a)','1.','(1)']){
+  const header='Pelaku usaha dilarang memberi informasi menyesatkan mengenai';
+  const text='Pasal 999\n(1) Aturan sintetis lain berdiri sendiri.\n(2) '+header+':\n'+marker+' harga;\nb. kondisi barang.';
+  for(const quote of [header,header+':','(2) '+header+':','Pasal 999\n(1) Aturan sintetis lain berdiri sendiri.\n(2) '+header+':'])assert.equal(incompleteListIntroduction(text,quote),true);
+  assert.equal(incompleteListIntroduction(text,'Aturan sintetis lain berdiri sendiri.'),false);
+  assert.equal(incompleteListIntroduction(text,text),false);
+ }
+});
+
+
+test('PDF page furniture cannot conceal an unquoted first list item',()=>{
+ const header='Pelaku usaha dilarang memberi informasi menyesatkan mengenai';
+ for(const furniture of ['PRESIDEN\nREPUBLIK INDONESIA\n- 5 -\n','PRESIDEN REPUBLIK INDONESIA\r\n- 12 -\r\n']){
+  const text='Pasal 999\n(1) '+header+':\n'+furniture+'a. harga;\nb. kondisi barang.';
+  assert.equal(incompleteListIntroduction(text,header),true);
+  assert.equal(incompleteListIntroduction(text,header+':'),true);
+  assert.equal(incompleteListIntroduction(text,text),false);
+ }
 });
