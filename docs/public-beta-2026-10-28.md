@@ -85,3 +85,32 @@ Writing and support review receive the same grounded quotes. Review questionsSaf
 also rejects redundant questions whose answers are already in context. No extra
 model call, retry, token allowance or change to public signed answers.47focused
 chat tests/build/lint pass; fresh handoff review found no issue. Needs live retest.
+
+## Actual d846383 retest and exact whole-passage selection
+
+Owner browser control recovered. Exact first two belanja-01 questions were sent
+through the logged-in preview, conversation8f24abaf-c3bb-42bd-bfe3-d556256dbf42.
+Both completed and exported signed answers (70516ms/38804ms), but published only
+repetitive preparation. Source discovery worked: six opens with8/11 passages.
+Rejected legal blocks show quotation mismatch and missing visible actor/remedy
+support. The two-turn artifact and two-pass failed-usefulness review are retained
+outside Git. This is not an18-case acceptance pass; third turn was not sent.
+
+The internal draft wire now permits quote:null only to select an exact complete
+signed passage supplied to that draft, <=1000characters and at least8words.
+Unknown/duplicate IDs, tampered sources, missing trusted keys and long passages
+fail closed. The public draft/answer still contain actual quote strings; the full
+selected quote reaches the unchanged semantic review and deterministic gates.
+Existing nonnull quotation output remains compatible. No extra model call,
+truncation, automatic retry or entitlement inference is introduced.
+
+The new regression failed before implementation.48chat tests, full205unit tests,
+16eval tests, build and focused lint pass. Fresh adversarial review found no
+concrete issue in this bounded change. Live acceptance remains pending.
+Azure nullable-wire support follows [Microsoft structured outputs](https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/structured-outputs#all-fields-must-be-required).
+
+Ledger verified2026-10-28T16:36:53Z:151charged/159gross calls,2097528microUSD
+reserved; old research pilot unchanged. The two new turns cost6slots/79152micro
+in reservations. Known token usage18767input/3810output implies12312microUSD
+at the configured uncached tariff (estimate, not an Azure invoice). No public
+budget was used. Production configuration digest and v1PID816288 unchanged.

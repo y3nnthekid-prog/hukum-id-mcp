@@ -489,3 +489,14 @@ test('grounded user quotes reach writing and review; a fabricated planning fact 
   if(invented){await assert.rejects(pending,/CHAT_FACTS_SOURCE/);assert.equal(calls,1);assert.equal(searches,0);}else{await pending;assert.equal(calls,3);}
  }
 });
+
+test('a nullable wire quote selects the exact complete short signed passage without model recopying',()=>{
+ const wire=wireDraft(draft);wire.blocks.a!.citation={passageId:p.id,quote:null} as any;
+ const normalized=normalizeChatDraft(wire,[p],[signer.publicKeyPem]);
+ assert.equal(normalized.blocks[0]!.citations[0]!.quote,p.text);
+ assert.equal(validateChatAnswer(normalized,[p],[{id:'b1',supported:true,checks,witnesses:[],kind:'legal',reason:'Supported conditional explanation'}],[signer.publicKeyPem]).blocks.length,1);
+ for(const candidates of [[],[p,p],[{...p,text:'Tampered passage'}]])assert.throws(()=>normalizeChatDraft(wire,candidates,[signer.publicKeyPem]));
+ const text='Signed long passage '.repeat(65),unsigned={...p,text,contentHash:contentHash(text)},long={...unsigned,tanda:signer.sign(signedPart(unsigned))};
+ assert.throws(()=>normalizeChatDraft(wire,[long],[signer.publicKeyPem]));
+ assert.throws(()=>normalizeChatDraft(wire,[p],[]));
+});
