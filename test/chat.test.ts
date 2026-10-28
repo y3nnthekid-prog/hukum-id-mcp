@@ -71,7 +71,7 @@ function fixtureReviewWire(value:any,user:any){
 function fixtureResponse(input:any,value:any){return input.schema.parse(fixtureReviewWire(value,JSON.parse(input.user)));}
 function wireDraft(value:ChatDraft){const draft=ChatDraftSchema.parse(value),block=(index:number)=>{const b=draft.blocks[index],c=b?.citations[0];return b?{id:b.id,kind:b.kind,text:b.text,citation:c??null,reading:c?{subject:0,trigger:null,exception:null}:null}:null;};return {blocks:{a:block(0),b:block(1),c:block(2),d:block(3),e:block(4)},questions:{a:draft.questions[0]??null,b:draft.questions[1]??null}};}
 const witnesses=[{element:'actor' as const,claimSpan:'Penjual',quoteSpan:'Penjual'}];
-const checks={actor:true,conditions:true,exceptions:true,quantities:true,negation:true,version:true,facts:true,visibleQuoteCoverage:true};
+const checks={relevance:true,actor:true,conditions:true,exceptions:true,quantities:true,negation:true,version:true,facts:true,visibleQuoteCoverage:true};
 const signer=createSigner(generateSigningKey());
 const raw={id:'p1',documentId:'d1',jenis:'peraturan',judul:'Aturan sintetis',rujukan:'UU 999/2099',locator:{halamanAwal:2},text:'Penjual wajib memberi informasi yang benar kepada pembeli sebelum transaksi dilakukan.',identitas:['UU 999/2099'],lapisan:['norma'],sumber:{nama:'Penerbit uji',url:'https://example.test/law',otoritas:'Penerbit uji',status:null,diubahDengan:[],dicabutDengan:[]},retrievedAt:new Date().toISOString(),verificationStatus:'verified_snapshot',mesin:'test'} as Omit<PotonganBertanda,'contentHash'|'tanda'>;
 const p={...raw,contentHash:contentHash(raw.text)} as PotonganBertanda;p.tanda=signer.sign(signedPart(p));
@@ -466,6 +466,41 @@ test('wire reviews require semantic checks without generating an unbounded expla
  assert.ok(result.verdicts[0]!.reason.length<=300);
  const denied=normalizeChatReview({...wire,verdicts:{...wire.verdicts,a:{...verdict,supported:false,checks:{...checks,conditions:false}}}},['b1']);
  assert.equal(validateChatAnswer(draft,[p],denied.verdicts,[signer.publicKeyPem]).blocks.length,0);
+});
+
+test('source support cannot substitute current-question relevance after another legal block is rejected',()=>{
+ const causalQuote='Pelaku usaha bertanggung jawab memberikan ganti rugi atas kerugian konsumen akibat mengkonsumsi barang yang diperdagangkan.';
+ const unsigned={...p,id:'causal-source',text:causalQuote,contentHash:contentHash(causalQuote)},causalSource={...unsigned,tanda:signer.sign(signedPart(unsigned))};
+ const overbroad={id:'overbroad',kind:'legal' as const,text:'Pelaku usaha bertanggung jawab memberikan ganti rugi atas kerusakan barang yang diperdagangkan.',citations:[{passageId:causalSource.id,quote:causalQuote}]};
+ const supportedTangent={...draft.blocks[0]!,id:'tangent'};
+ const practical={id:'next',kind:'preparation' as const,text:'Urutkan arsip yang sudah ada menurut waktu kejadian dan tandai pesan terakhir yang belum dijawab.',citations:[]};
+ const verdict=(relevance:boolean,kind:'legal'|'preparation')=>({checks:{...checks,relevance},kind,supported:true});
+ const wire={verdicts:{a:verdict(false,'legal'),b:verdict(true,'preparation'),c:verdict(true,'legal'),d:null,e:null},questionsSafe:true,limitsSafe:true};
+ const normalized=normalizeChatReview(wire,['tangent','next','overbroad']);
+ const checked=validateChatAnswer({blocks:[overbroad,supportedTangent,practical],questions:[],limits:[]},[p,causalSource],normalized.verdicts,[signer.publicKeyPem]);
+ assert.deepEqual(checked.blocks.map(block=>block.id),['next']);
+ assert.ok(checked.rejected.some(block=>block.id==='tangent'&&block.reason.includes('relevance')));
+ assert.ok(checked.rejected.some(block=>block.id==='overbroad'));
+ for(const kind of ['general','preparation'] as const){
+  const value={...practical,kind};
+  assert.equal(validateChatAnswer({blocks:[value],questions:[],limits:[]},[],[{...normalized.verdicts[1]!,kind,checks:{...checks,relevance:false}}],[signer.publicKeyPem]).blocks.length,0);
+ }
+ const missing={...wire,verdicts:{...wire.verdicts,a:{...wire.verdicts.a,checks:Object.fromEntries(Object.entries(wire.verdicts.a.checks).filter(([key])=>key!=='relevance'))}}};
+ assert.throws(()=>normalizeChatReview(missing,['tangent','next','overbroad']));
+});
+
+test('repeated compound questions are removed without discarding useful preparation or making a repair call',async()=>{
+ let calls=0;
+ const useful={id:'next',kind:'preparation' as const,text:'Urutkan arsip yang sudah ada menurut waktu kejadian dan tandai pesan terakhir yang belum dijawab.',citations:[]};
+ const input={conversationId:'c',turnId:'t',version:2,messages:[{id:'u1',role:'user' as const,text:'Saya sudah memiliki video membuka paket dan foto kerusakan.'},{id:'u2',role:'user' as const,text:'Bagaimana menyusun langkah awal dari arsip tersebut?'}]};
+ const model={provider:'openai' as const,model:'fixture',async generate(request:any){calls++;assert.ok(azureChatWireBytes(request)<=20000);assert.equal(request.maxOutputTokens,4096);assert.equal(request.allowRetries,false);
+  if(calls===1)return fixtureResponse(request,{queries:['perlindungan konsumen'],focus:'susun arsip',needsContext:false,matter:'consumer_goods',jurisdiction:'indonesia'});
+  if(calls===2)return fixtureResponse(request,wireDraft({blocks:[useful],questions:['Ada resi dan video membuka paket?'],limits:[]}));
+  assert.ok(JSON.stringify(JSON.parse(request.user).context).includes(input.messages[0]!.text));
+  return fixtureResponse(request,{verdicts:[{id:'next',supported:true,checks,witnesses:[],reason:'Preparation answers latest request',kind:'preparation'}],questionsSafe:false,limitsSafe:true});
+ }};
+ const result=await runChat(input,{model,telusur:(async()=>({kandidat:[]})) as any,sumber:{buka:async()=>{throw Error('NO_DISCOVERY');}} as any,signer,keys:[signer.publicKeyPem],signal:new AbortController().signal,progress:async()=>{}});
+ assert.equal(calls,3);assert.deepEqual(result.blocks,[useful]);assert.deepEqual(result.questions,[]);
 });
 test('a consumer quotation cannot silently turn into this users personal entitlement even when AI approves',()=>{
  const text='Pasal 4\nHak konsumen adalah:\nh. hak untuk mendapatkan kompensasi, ganti rugi dan/atau penggantian, apabila barang dan/atau jasa yang diterima tidak sesuai dengan perjanjian atau tidak sebagaimana mestinya;';

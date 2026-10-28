@@ -183,3 +183,37 @@ cycles found no unresolved mechanical issue. No source-discovery aliases or
 fixture references were injected. A no-AI comparison showed adding generic
 rights/duties keywords worsened discovery; that proposed change was not made.
 Live usefulness is still pending; the18-case package remains unfinished.
+
+## Relevance is independent of authentic support
+
+Owner-session27b73d7 retest4da1cdb5-7513-4e94-beab-a2e3ffd4d8c8
+completed two exact shopping fixture turns, but failed usefulness. Turn1
+published only preparation. Turn2 published consumer duties instead of helping
+organize the evidence already described, and asked about an existing video.
+A temporary exact-message-hash audit captured only this synthetic second turn;
+the override was removed after retrieval. The model reviewer incorrectly
+approved a compensation statement missing its causal condition; the unchanged
+deterministic check rejected it before publication. An authentic but tangential
+second statement survived, showing that support alone cannot establish utility.
+
+Internal review now requires relevance for every legal/general/preparation
+block. Missing relevance fails normalization; false rejects a block even when
+supported is true. Filtering happens before the existing empty-answer fallback,
+so a rejected tangent cannot suppress it. Drafting no longer requires2–3blocks
+or limits the answer to two legal blocks: address the latest need first and
+prefer one complete relevant proposition to bundled legal consequences.
+The280character block limit, source integrity, causal guards, model/call limits,
+and no-retry behavior stay unchanged. Review instructions were consolidated
+to keep the Unicode budget regression passing without displacing all evidence.
+
+Regressions cover overbroad causal text despite semantic approval, a supported
+tangent, relevance rejection for neutral kinds, and removal of a repeated
+compound question while useful preparation survives.55focused chat tests pass;
+the full run before the final test-only addition passed211unit and16eval tests.
+Build and focused lint pass. Independent review found no blocking code issue;
+its two missing-regression findings were added and passed.
+
+This enforces review decisions, not automatic relevance truth. A model can
+still wrongly approve relevance; real owner-session acceptance remains required.
+Private ledger after this attempt:169charged slots,USD2.334984conservatively
+reserved,177gross with8proved unused. Public budget remains unused.
