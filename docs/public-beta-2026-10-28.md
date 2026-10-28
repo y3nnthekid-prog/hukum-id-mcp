@@ -33,3 +33,19 @@ Validation:43 chat tests pass, build and focused ESLint pass. The earlier full
 unit/evaluation run passed198+16 tests before the last retrieval refinements;
 do not treat that as a full-suite run of the final revision. Real acceptance must
 still be rerun through the signed-in preview after deployment.
+
+## Follow-up evidence
+
+a8eba8d deployed to preview only; production process/config digest unchanged.
+The new first-turn search included the actual damaged-goods query, but both legal
+blocks were rejected by material-support/actor checks. The second turn supplied
+useful evidence preparation but no legal explanation. These are not passes.
+
+A fenced synthetic diagnostic then failed in the third/checking call because
+the model-generated review reason exceeded300 characters (LOCAL_SCHEMA). All
+three dispatched calls remain charged; no retry. The debug environment override
+was removed. Wire review now generates only required checks/kind/supported;
+server derives the bounded reason. Local/public review schema remains unchanged,
+and every negative support dimension still rejects. Regression44 tests, build
+and focused lint pass. Fresh interface review found no issue. No acceptance
+credit is inferred from these transport fixes.

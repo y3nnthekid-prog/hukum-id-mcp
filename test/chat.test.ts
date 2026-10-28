@@ -64,7 +64,7 @@ test('managed chat tickets bind all context, profile, owner and lifetime',()=>{
 
 function fixtureReviewWire(value:any,user:any){
  if(!Array.isArray(value.verdicts)||!user.reviewSlots)return value;
- const verdicts=Object.fromEntries(['a','b','c','d','e'].map(slot=>{const id=user.reviewSlots[slot],v=value.verdicts.find((v:any)=>v.id===id);return [slot,id&&v?{checks:v.checks,reason:v.reason,kind:v.kind,supported:v.supported}:null];}));
+ const verdicts=Object.fromEntries(['a','b','c','d','e'].map(slot=>{const id=user.reviewSlots[slot],v=value.verdicts.find((v:any)=>v.id===id);return [slot,id&&v?{checks:v.checks,kind:v.kind,supported:v.supported}:null];}));
  return {verdicts,questionsSafe:value.questionsSafe,limitsSafe:value.limitsSafe};
 }
 function fixtureResponse(input:any,value:any){return input.schema.parse(fixtureReviewWire(value,JSON.parse(input.user)));}
@@ -446,7 +446,7 @@ test('an information right never loses its own agreement condition or shared res
 
 
 test('required review slots cannot omit, rename, duplicate, or reassign a block identity',()=>{
- const verdict={checks,reason:'Source-supported fixture',kind:'legal',supported:true};
+ const verdict={checks,kind:'legal',supported:true};
  const wire={verdicts:{a:verdict,b:verdict,c:null,d:null,e:null},questionsSafe:true,limitsSafe:true};
  const normalized=normalizeChatReview(wire,['legal_1','prep_1']);assert.deepEqual(normalized.verdicts.map(v=>v.id),['legal_1','prep_1']);
  assert.throws(()=>normalizeChatReview({...wire,verdicts:{...wire.verdicts,a:null}},['legal_1','prep_1']));
@@ -454,4 +454,15 @@ test('required review slots cannot omit, rename, duplicate, or reassign a block 
  assert.throws(()=>normalizeChatReview({...wire,verdicts:{...wire.verdicts,c:verdict}},['legal_1','prep_1']));
  assert.throws(()=>normalizeChatReview({...wire,verdicts:{...wire.verdicts,a:{...verdict,id:'other'}}},['legal_1','prep_1']));
  const schema=chatReviewWireSchema(5).toJSONSchema();assert.ok(schema.$defs);assert.ok(JSON.stringify(schema).includes('#/$defs/pasla_chat_review_record'));
+});
+test('wire reviews require semantic checks without generating an unbounded explanation that can discard a paid answer',()=>{
+ const schema=chatReviewWireSchema(1).toJSONSchema();
+ const record=schema.$defs?.pasla_chat_review_record as any;
+ assert.ok(record);assert.equal('reason' in record.properties,false);
+ const verdict={checks,kind:'legal',supported:true};
+ const wire={verdicts:{a:verdict,b:null,c:null,d:null,e:null},questionsSafe:true,limitsSafe:true};
+ const result=normalizeChatReview(wire,['b1']);assert.ok(ChatReviewSchema.safeParse(result).success);
+ assert.ok(result.verdicts[0]!.reason.length<=300);
+ const denied=normalizeChatReview({...wire,verdicts:{...wire.verdicts,a:{...verdict,supported:false,checks:{...checks,conditions:false}}}},['b1']);
+ assert.equal(validateChatAnswer(draft,[p],denied.verdicts,[signer.publicKeyPem]).blocks.length,0);
 });
