@@ -466,3 +466,11 @@ test('wire reviews require semantic checks without generating an unbounded expla
  const denied=normalizeChatReview({...wire,verdicts:{...wire.verdicts,a:{...verdict,supported:false,checks:{...checks,conditions:false}}}},['b1']);
  assert.equal(validateChatAnswer(draft,[p],denied.verdicts,[signer.publicKeyPem]).blocks.length,0);
 });
+test('a consumer quotation cannot silently turn into this users personal entitlement even when AI approves',()=>{
+ const text='Pasal 4\nHak konsumen adalah:\nh. hak untuk mendapatkan kompensasi, ganti rugi dan/atau penggantian, apabila barang dan/atau jasa yang diterima tidak sesuai dengan perjanjian atau tidak sebagaimana mestinya;';
+ const unsigned={...p,text,contentHash:contentHash(text)},source={...unsigned,tanda:signer.sign(signedPart(unsigned))};
+ const claims=['Anda memiliki hak untuk kompensasi, ganti rugi atau penggantian bila barang tidak sesuai perjanjian atau rusak saat diterima.','Kamu berhak mendapat ganti rugi bila barang tidak sesuai perjanjian.','Hakmu adalah mendapatkan penggantian bila barang tidak sesuai perjanjian.'];
+ for(const claim of claims){const value={...draft,blocks:[{id:'b1',kind:'legal' as const,text:claim,citations:[{passageId:'p1',quote:text}]}]};const result=validateChatAnswer(value,[source],[{id:'b1',supported:true,checks,witnesses:[],kind:'legal',reason:'Reviewer misses personal eligibility'}],[signer.publicKeyPem]);assert.equal(result.blocks.length,0);}
+ const value={...draft,blocks:[{id:'b1',kind:'legal' as const,text:'Dalam naskah ini, konsumen memiliki hak mendapat kompensasi bila barang yang diterima tidak sesuai perjanjian atau tidak sebagaimana mestinya.',citations:[{passageId:'p1',quote:text}]}]};
+ assert.equal(validateChatAnswer(value,[source],[{id:'b1',supported:true,checks,witnesses:[],kind:'legal',reason:'Conditional general norm, not a personal award'}],[signer.publicKeyPem]).blocks.length,1);
+});

@@ -49,3 +49,23 @@ server derives the bounded reason. Local/public review schema remains unchanged,
 and every negative support dimension still rejects. Regression44 tests, build
 and focused lint pass. Fresh interface review found no issue. No acceptance
 credit is inferred from these transport fixes.
+
+## Material application incident and containment
+
+A known synthetic diagnostic on5376cff published a conditional consumer-right
+paragraph as "Anda memiliki hak..." without establishing personal-use versus
+resale eligibility. Independent source review found the norm citation relevant
+but the direct personal application unsupported. AI preview was disabled and the
+engine unit rolled back to a8eba8d; health remained OK, chat status unavailable,
+production PID816288 unchanged. Replay/financial databases were not rolled back.
+The exact captured draft/review/source artifact is retained outside Git in the
+synthetic acceptance output directory. No private research was captured.
+
+New regression reproduces approval with every AI check true, rejects the observed
+personal-entitlement wording and two common variants, and keeps a faithful general
+consumer norm. The extra rejection gate is not a universal entailment checker.
+Draft instruction prioritizes a relevant source explanation using the source's
+subject, then conditions/factual questions, instead of generic repeated checklists.
+45 chat tests/build/focused lint pass; fresh narrow review found no defect.
+Re-enabling is only for controlled owner preview retesting after these checks,
+not public release or acceptance of the18-case package.
