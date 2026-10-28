@@ -1,6 +1,6 @@
 import { strict as assert } from 'node:assert';
 import { test } from 'node:test';
-import { ChatInputSchema,ChatDraftSchema,ChatDraftWireSchema,normalizeChatDraft,ChatReviewSchema, validateChatAnswer, chatContext, runChat,requestsUnavailableUpload,ungroundedPlatformProcedure,missingSupportWitnesses,locateSupportWitnesses,incompleteListIntroduction,completeShortCitations,chatReviewWireSchema,normalizeChatReview,groundUserFacts,type ChatDraft } from '../src/core/chat.js';
+import { ChatInputSchema,ChatDraftSchema,ChatDraftWireSchema,normalizeChatDraft,ChatReviewSchema, validateChatAnswer, chatContext, runChat,requestsUnavailableUpload,ungroundedPlatformProcedure,missingSupportWitnesses,locateSupportWitnesses,incompleteListIntroduction,completeShortCitations,chatReviewWireSchema,normalizeChatReview,groundUserFacts,sourceReadingParts,type ChatDraft } from '../src/core/chat.js';
 import { createSigner, generateSigningKey,verifySignature } from '../src/core/sign.js';
 import { createManagedClaims } from '../src/core/managed-ai.js';
 import { contentHash } from '../src/core/passages.js';
@@ -69,7 +69,7 @@ function fixtureReviewWire(value:any,user:any){
  return {verdicts,questionsSafe:value.questionsSafe,limitsSafe:value.limitsSafe};
 }
 function fixtureResponse(input:any,value:any){return input.schema.parse(fixtureReviewWire(value,JSON.parse(input.user)));}
-function wireDraft(value:ChatDraft){const draft=ChatDraftSchema.parse(value),block=(index:number)=>{const b=draft.blocks[index],c=b?.citations[0];return b?{id:b.id,kind:b.kind,text:b.text,citation:c??null,reading:c?{subject:c.quote.slice(0,200),trigger:null,exception:null}:null}:null;};return {blocks:{a:block(0),b:block(1),c:block(2),d:block(3),e:block(4)},questions:{a:draft.questions[0]??null,b:draft.questions[1]??null}};}
+function wireDraft(value:ChatDraft){const draft=ChatDraftSchema.parse(value),block=(index:number)=>{const b=draft.blocks[index],c=b?.citations[0];return b?{id:b.id,kind:b.kind,text:b.text,citation:c??null,reading:c?{subject:0,trigger:null,exception:null}:null}:null;};return {blocks:{a:block(0),b:block(1),c:block(2),d:block(3),e:block(4)},questions:{a:draft.questions[0]??null,b:draft.questions[1]??null}};}
 const witnesses=[{element:'actor' as const,claimSpan:'Penjual',quoteSpan:'Penjual'}];
 const checks={actor:true,conditions:true,exceptions:true,quantities:true,negation:true,version:true,facts:true,visibleQuoteCoverage:true};
 const signer=createSigner(generateSigningKey());
@@ -77,7 +77,7 @@ const raw={id:'p1',documentId:'d1',jenis:'peraturan',judul:'Aturan sintetis',ruj
 const p={...raw,contentHash:contentHash(raw.text)} as PotonganBertanda;p.tanda=signer.sign(signedPart(p));
 const draft:ChatDraft={blocks:[{id:'b1',kind:'legal',text:'Penjual perlu memberi informasi yang benar sebelum transaksi.',citations:[{passageId:'p1',quote:raw.text}]}],questions:[],limits:[]};
 test('nullable wire slots preserve every supported block and enforce cardinality without truncation',()=>{
- const wire=wireDraft(draft);assert.deepEqual(normalizeChatDraft(wire),draft);
+ const wire=wireDraft(draft);assert.deepEqual(normalizeChatDraft(wire,[p],[signer.publicKeyPem]),draft);
  assert.equal(ChatDraftWireSchema.safeParse({...wire,blocks:{...wire.blocks,f:wire.blocks.a}}).success,false);
  assert.throws(()=>normalizeChatDraft({...wire,blocks:{...wire.blocks,f:wire.blocks.a}}));
  assert.throws(()=>normalizeChatDraft({...wire,questions:{...wire.questions,c:'Unexpected third question'}}));
@@ -313,9 +313,9 @@ test('one contiguous quote can keep a governing heading and clause intact withou
  const quote='Hak konsumen adalah: '+('bahan konteks sumber. '.repeat(20))+'hak atas informasi yang benar, jelas, dan jujur mengenai kondisi barang.';
  assert.ok(quote.length>350&&quote.length<=1000);
  const value={...draft,blocks:[{...draft.blocks[0]!,text:'Konsumen memiliki hak atas informasi kondisi barang.',citations:[{passageId:p.id,quote}]}]};
- assert.deepEqual(normalizeChatDraft(wireDraft(value)),value);
- assert.equal(ChatDraftSchema.safeParse({...value,blocks:[{...value.blocks[0]!,citations:[{passageId:p.id,quote:'q'.repeat(1001)}]}]}).success,false);
  const unsigned={...p,text:quote,contentHash:contentHash(quote)},source={...unsigned,tanda:signer.sign(signedPart(unsigned))};
+ assert.deepEqual(normalizeChatDraft(wireDraft(value),[source],[signer.publicKeyPem]),value);
+ assert.equal(ChatDraftSchema.safeParse({...value,blocks:[{...value.blocks[0]!,citations:[{passageId:p.id,quote:'q'.repeat(1001)}]}]}).success,false);
  const witness=[{element:'actor' as const,claimSpan:'Konsumen',quoteSpan:'konsumen'},{element:'relation' as const,claimSpan:'hak',quoteSpan:'hak'}];
  assert.equal(validateChatAnswer(value,[source],[{id:'b1',supported:true,checks,witnesses:witness,kind:'legal',reason:'Synthetic intact heading and clause'}],[signer.publicKeyPem]).blocks.length,1);
  const changed={...value,blocks:[{...value.blocks[0]!,citations:[{passageId:p.id,quote:quote.replace('jujur','tidak jujur')}]}]};
@@ -505,12 +505,12 @@ test('legal reading excerpts must belong to the selected quotation and never est
  const text='Pelaku usaha bertanggung jawab memberikan ganti rugi atas kerugian konsumen akibat mengkonsumsi barang yang diperdagangkan. Ketentuan tidak berlaku apabila kesalahan merupakan kesalahan konsumen.';
  const unsigned={...p,text,contentHash:contentHash(text)},source={...unsigned,tanda:signer.sign(signedPart(unsigned))};
  const value={blocks:[{id:'b1',kind:'legal' as const,text:'Pelaku usaha bertanggung jawab atas kerusakan barang yang terkait transaksi.',citations:[{passageId:'p1',quote:text}]}],questions:[],limits:[]};
- const wire=wireDraft(value);wire.blocks.a!.reading={subject:'Pelaku usaha',trigger:'akibat mengkonsumsi barang yang diperdagangkan',exception:'apabila kesalahan merupakan kesalahan konsumen'};
+ const wire=wireDraft(value);wire.blocks.a!.reading={subject:0,trigger:0,exception:0};
  const result=normalizeChatDraft(wire,[source],[signer.publicKeyPem]);assert.equal('reading' in result.blocks[0]!,false);
  const denied=validateChatAnswer(result,[source],[{id:'b1',supported:false,checks:{...checks,conditions:false,facts:false},witnesses:[],kind:'legal',reason:'Trigger replaced with transaction'}],[signer.publicKeyPem]);assert.equal(denied.blocks.length,0);
  const mistaken=validateChatAnswer(result,[source],[{id:'b1',supported:true,checks,witnesses:[],kind:'legal',reason:'Reviewer misses substituted causal condition'}],[signer.publicKeyPem]);assert.equal(mistaken.blocks.length,0);
  assert.throws(()=>normalizeChatDraft({...wire,blocks:{...wire.blocks,a:{...wire.blocks.a,kind:'general',reading:null}}},[source],[signer.publicKeyPem]));
- for(const reading of [null,{subject:'Penjual',trigger:null,exception:null},{subject:'Pelaku usaha',trigger:'terkait transaksi',exception:null},{subject:'Pelaku usaha',trigger:null,exception:'Tidak ada pengecualian'}])assert.throws(()=>normalizeChatDraft({...wire,blocks:{...wire.blocks,a:{...wire.blocks.a,reading}}},[source],[signer.publicKeyPem]));
+ for(const reading of [null,{subject:1,trigger:null,exception:null},{subject:0,trigger:1,exception:null},{subject:0,trigger:null,exception:1}])assert.throws(()=>normalizeChatDraft({...wire,blocks:{...wire.blocks,a:{...wire.blocks.a,reading}}},[source],[signer.publicKeyPem]));
 });
 
 test('a failed source reading reports a bounded error without a retry or leaking its draft into the response',async(t)=>{
@@ -519,9 +519,35 @@ test('a failed source reading reports a bounded error without a retry or leaking
  const payload={v:3,iss:'https://riset.pasla.pages.dev',aud,sub:'owner',conversationId:'cr',turnId:'tr',inputHash:requestHash(input),profile:'pasla-chat-low4096-v1',campaign:'chat-preview-20261023',maxCalls:3,maxInputTokens:20000,maxOutputTokens:4096,jti:'r'.repeat(43),iat:time,exp:time+360};
  const encoded=Buffer.from(JSON.stringify(payload)).toString('base64url'),ticket=encoded+'.'+createHmac('sha256',secret).update(encoded).digest('base64url');
  let calls=0;const logs:unknown[]=[];t.mock.method(console,'warn',value=>{logs.push(value);});
- t.mock.method(globalThis,'fetch',async()=>{calls++;const wire=wireDraft(draft);wire.blocks.a!.reading!.trigger='invented source fragment';const value=calls===1?{knownFacts:{a:null,b:null,c:null,d:null,e:null,f:null},queries:['informasi'],focus:'informasi',needsContext:false,matter:'unknown',jurisdiction:'indonesia'}:wire;return Response.json({model:'gpt-5-mini-2025-08-07',choices:[{finish_reason:'stop',message:{content:JSON.stringify(value)}}],usage:{prompt_tokens:100,completion_tokens:20}});});
+ t.mock.method(globalThis,'fetch',async()=>{calls++;const wire=wireDraft(draft);wire.blocks.a!.reading!.trigger=9999;const value=calls===1?{knownFacts:{a:null,b:null,c:null,d:null,e:null,f:null},queries:['informasi'],focus:'informasi',needsContext:false,matter:'unknown',jurisdiction:'indonesia'}:wire;return Response.json({model:'gpt-5-mini-2025-08-07',choices:[{finish_reason:'stop',message:{content:JSON.stringify(value)}}],usage:{prompt_tokens:100,completion_tokens:20}});});
  const app=new Hono();registerChat(app as any,{chat:{key:'synthetic-key-only',claims:{nextAllowedAt:()=>0,claim:()=>{},finish:()=>{},deferUntil:()=>{}} as any,rpm:100,tpm:100000},stepTickets:{secret,audience:aud},telusur:(async()=>({kandidat:[{rujukan:{jenis:'peraturan',rujukan:'UU 999/2099'}}]})) as any,sumber:{buka:async()=>({status:'dibuka',potongan:[p],peringatan:[]})} as any,signer});
  const response=await app.request('/v2/chat/turn',{method:'POST',headers:{'content-type':'application/json','x-pasla-chat-ticket':ticket},body:JSON.stringify(input)}),body=await response.text();
  const error=body.trim().split('\n').map(line=>JSON.parse(line)).find(event=>event.type==='error');assert.equal(error.code,'CHAT_SOURCE_READING');assert.equal(calls,2);
  assert.ok(!body.includes('invented source fragment'));assert.ok(!JSON.stringify(logs).includes('synthetic-key-only'));assert.ok(!JSON.stringify(logs).includes('invented source fragment'));
+});
+
+test('source reading choices preserve original bytes, Unicode and enumerated boundaries without declaring semantic units',()=>{
+ const text='Pasal 19\r\n(1) Pihak α wajib melakukan hal tertentu.\r\n(2) Syarat akibat pemakaian.\r\n1. Butir pertama.\r\na. Pengecualian khusus.';
+ const parts=sourceReadingParts(text);assert.equal(parts.map(part=>part.text).join(''),text);assert.equal(parts.length,5);
+ for(const [index,part] of parts.entries()){assert.equal(part.index,index);assert.equal(text.slice(part.start,part.end),part.text);assert.equal(part.start,index===0?0:parts[index-1]!.end);}
+ assert.equal(sourceReadingParts('Satu paragraf biasa. Tidak dipotong.').length,1);
+});
+
+test('reading choices use the selected raw occurrence and reject non-contained or malformed part IDs',()=>{
+ const text='(1) Penjual wajib memberi informasi yang benar kepada pembeli sebelum transaksi dilakukan.\n(2) Penjual wajib memberi informasi yang benar kepada pembeli sebelum transaksi dilakukan.';
+ const unsigned={...p,text,contentHash:contentHash(text)},source={...unsigned,tanda:signer.sign(signedPart(unsigned))};
+ const quote='Penjual wajib memberi informasi yang benar kepada pembeli sebelum transaksi dilakukan.';
+ const wire=wireDraft({...draft,blocks:[{...draft.blocks[0]!,citations:[{passageId:'p1',quote}]}]});
+ assert.equal(normalizeChatDraft(wire,[source],[signer.publicKeyPem]).blocks.length,1);
+ for(const subject of [-1,0.5,1,9999])assert.throws(()=>normalizeChatDraft({...wire,blocks:{...wire.blocks,a:{...wire.blocks.a,reading:{subject,trigger:null,exception:null}}}},[source],[signer.publicKeyPem]));
+ const spanning=text.slice(45,sourceReadingParts(text)[1]!.start+30);
+ assert.throws(()=>normalizeChatDraft({...wire,blocks:{...wire.blocks,a:{...wire.blocks.a,citation:{passageId:'p1',quote:spanning}}}},[source],[signer.publicKeyPem]));
+});
+
+test('a whole multipart source keeps the raw final exception span including its trailing newline',()=>{
+ const text='Pasal 19\r\n(1) Pelaku usaha bertanggung jawab atas kerugian akibat penggunaan barang.\r\n(2) Ketentuan tidak berlaku apabila kesalahan konsumen terbukti.\r\n';
+ const unsigned={...p,text,contentHash:contentHash(text)},source={...unsigned,tanda:signer.sign(signedPart(unsigned))};
+ const wire=wireDraft({...draft,blocks:[{...draft.blocks[0]!,citations:[{passageId:'p1',quote:text}]}]});
+ wire.blocks.a!.reading={subject:1,trigger:1,exception:2};
+ for(const quote of [null,text]){wire.blocks.a!.citation!.quote=quote as any;assert.equal(normalizeChatDraft(wire,[source],[signer.publicKeyPem]).blocks[0]!.citations[0]!.quote,text);}
 });

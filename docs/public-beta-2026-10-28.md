@@ -156,3 +156,30 @@ now verifies bounded code, two calls, no retry and no draft/key disclosure.
 50chat tests plus the exact audit-fence test, full207unit/16eval tests, build and lint pass. Independent
 review found no blocking privacy/safety issue. This adds diagnosis, not a claim
 that the repeated failure or the18-case acceptance package has been resolved.
+
+## Lossless reading choices replace model-copied excerpts
+
+The fenced ce07fd9 normalization artifact proved the model paraphrased reading
+trigger/exception fields requested as exact excerpts. Those changes correctly
+failed binding but prevented the independent semantic review from running.
+The temporary audit override was removed after retrieval.
+
+Readings now select integer IDs from lossless server-split source parts instead
+of copying text. Draft-only projection replaces raw text with indexed parts;
+original source selection and the9000-byte evidence budget stay unchanged.
+The actual wire cap accounts for projection overhead and records delivered IDs;
+only delivered sources may resolve citations. Review retains the original full
+restrictionContext, with no readings or projection parts as extra positive proof.
+
+IDs must belong to the cited authentic source. Containment uses the first mapped
+raw quote occurrence; another repeated phrase cannot rescue a wrong selection.
+Whole-source citations use the exact raw interval, including trailing newlines.
+An independent review reproduced the final-exception whitespace boundary bug;
+the new failing regression was fixed before release. Coarse parts and null
+trigger/exception remain attention aids, never completeness/entailment proofs.
+
+53chat tests,210unit tests,16eval tests, build and lint pass. Two bounded review
+cycles found no unresolved mechanical issue. No source-discovery aliases or
+fixture references were injected. A no-AI comparison showed adding generic
+rights/duties keywords worsened discovery; that proposed change was not made.
+Live usefulness is still pending; the18-case package remains unfinished.
