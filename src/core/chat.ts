@@ -340,7 +340,9 @@ kind:legal untuk pasal, hak/kewajiban, larangan, tenggat/angka, status, prosedur
 Jawab inti terlebih dahulu. Setiap text sasaran220karakter, maksimal280. Gunakan knownUserQuotes dan konteks untuk tidak mengulang daftar atau pertanyaan yang sudah dijawab. Maksimal2pertanyaan penting, sasaran100karakter, maksimum150, tanpa klaim hukum atau permintaan unggah. Pertanyaan konsep tidak perlu diubah menjadi wawancara kasus. Bila bukti kurang, jelaskan batas spesifik dan langkah persiapan yang membantu, tanpa menyalahkan pengguna.
 Jangan mengaku sumber berasal dari unggahan/pemberian pengguna. Status/cakupan sumber ditulis server. Pencarian adalah tugas Pasla. Gunakan bahasa sehari-hari yang ramah, jelaskan istilah asing bila perlu.`,{date:new Date().toISOString().slice(0,10),context:preparedContext,matter:plan.matter,jurisdiction:plan.jurisdiction,focus:currentQuery??plan.focus,evidence,sourceFailures:[...new Set(failures)]},ChatDraftWireSchema);
   const draftReadings=Object.values(draftWire.blocks).filter(block=>block!==null&&block.reading!==null).map(block=>({id:block!.id,passageId:block!.citation?.passageId,reading:block!.reading}));
-  const draft=completeShortCitations(normalizeChatDraft(draftWire,passages.filter(p=>evidence.some(e=>e.id===p.id)),deps.keys),passages.filter(p=>evidence.some(e=>e.id===p.id)),deps.keys);
+  let draft:ChatDraft;
+  try{draft=completeShortCitations(normalizeChatDraft(draftWire,passages.filter(p=>evidence.some(e=>e.id===p.id)),deps.keys),passages.filter(p=>evidence.some(e=>e.id===p.id)),deps.keys);}
+  catch(cause){deps.audit?.({phase:'draft-normalization',draftWire,evidence});throw cause;}
   await deps.progress('checking');
   const citedIds=new Set(draft.blocks.flatMap(block=>block.citations.map(c=>c.passageId)));
   const reviewEvidence=evidence.filter(p=>citedIds.has(p.id)).map(p=>({...p,text:undefined,selectedQuotes:draft.blocks.flatMap(block=>block.citations.filter(c=>c.passageId===p.id).map(c=>({blockId:block.id,quote:c.quote}))),restrictionContext:p.text}));

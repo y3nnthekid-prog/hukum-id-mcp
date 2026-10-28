@@ -139,3 +139,20 @@ build and lint pass. Fresh two-cycle review found no unresolved safety defect.
 Tradeoff: one invalid excerpt fails the entire normalization rather than quietly
 dropping it; earlier stored answers remain, attempted usage counts, no retry.
 This is a drafting change awaiting owner UI validation, not acceptance evidence.
+
+## Bounded normalization-failure diagnosis
+
+fd3553c owner retest b1ce7590-4a50-4e3e-9813-968c76810d90 failed during drafting
+after two model calls; no draft was delivered or retried. The previous generic
+CHAT_FAILED log could not identify the local normalization failure. The API now
+whitelists fixed source-reading/whole-quote/fact-binding failure codes. Arbitrary
+exceptions, drafts, keys and user content remain absent from operational errors.
+
+Only the existing exact synthetic audit fence can capture a failed draft and
+its supplied evidence before normalization. It retains the same CID/version/
+full-message hash,15minute expiry, fixed path,0600 and exclusive-create limits;
+no global capture is enabled. The new regression failed before the change and
+now verifies bounded code, two calls, no retry and no draft/key disclosure.
+50chat tests plus the exact audit-fence test, full207unit/16eval tests, build and lint pass. Independent
+review found no blocking privacy/safety issue. This adds diagnosis, not a claim
+that the repeated failure or the18-case acceptance package has been resolved.

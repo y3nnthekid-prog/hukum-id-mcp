@@ -48,7 +48,7 @@ export function registerChat(app:Hono<Env>,deps:{chat?:ChatEngine|undefined;step
     const usage={calls,inputTokens,outputTokens,elapsedMs:Date.now()-start};
     const receipt={v:1,kind:'chat_usage',profile:ticket.profile,campaign:ticket.campaign,conversationId:input.conversationId,turnId:input.turnId,version:input.version,inputHash:ticket.inputHash,...usage};
     await send({type:'result',data:result,usage,usageReceipt:{...receipt,tanda:signer.sign(receipt)}});
-   }catch(cause){if(signal.aborted)failureCode='CHAT_INTERRUPTED';else if(cause instanceof Error&&['CHAT_WIRE_LIMIT','CHAT_CONTEXT_LIMIT','MANAGED_BUSY','MANAGED_RATE','MANAGED_REPLAY'].includes(cause.message))failureCode=cause.message;
+   }catch(cause){if(signal.aborted)failureCode='CHAT_INTERRUPTED';else if(cause instanceof Error&&['CHAT_WIRE_LIMIT','CHAT_CONTEXT_LIMIT','CHAT_WHOLE_QUOTE','CHAT_SOURCE_READING','CHAT_FACTS_SOURCE','MANAGED_BUSY','MANAGED_RATE','MANAGED_REPLAY'].includes(cause.message))failureCode=cause.message;
     console.warn(JSON.stringify({event:'chat_turn_failed',turnId:input.turnId,phase,code:failureCode,issues,calls,inputTokens,outputTokens,elapsedMs:Date.now()-start}));
     await send({type:'error',code:failureCode,...(failureCode==='HTTP_429'?{nextAllowedAt:config.claims.nextAllowedAt()}:{}),usage:{calls,inputTokens,outputTokens,elapsedMs:Date.now()-start}}).catch(()=>undefined);}
    finally{clearInterval(heartbeat);}

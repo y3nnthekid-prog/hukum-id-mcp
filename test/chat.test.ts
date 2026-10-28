@@ -512,3 +512,16 @@ test('legal reading excerpts must belong to the selected quotation and never est
  assert.throws(()=>normalizeChatDraft({...wire,blocks:{...wire.blocks,a:{...wire.blocks.a,kind:'general',reading:null}}},[source],[signer.publicKeyPem]));
  for(const reading of [null,{subject:'Penjual',trigger:null,exception:null},{subject:'Pelaku usaha',trigger:'terkait transaksi',exception:null},{subject:'Pelaku usaha',trigger:null,exception:'Tidak ada pengecualian'}])assert.throws(()=>normalizeChatDraft({...wire,blocks:{...wire.blocks,a:{...wire.blocks.a,reading}}},[source],[signer.publicKeyPem]));
 });
+
+test('a failed source reading reports a bounded error without a retry or leaking its draft into the response',async(t)=>{
+ const input={conversationId:'cr',turnId:'tr',version:1,messages:[{id:'u',role:'user',text:'Uji informasi sebelum transaksi.'}]};
+ const time=Math.floor(Date.now()/1000),secret='s'.repeat(43),aud='https://api.pasla.tech';
+ const payload={v:3,iss:'https://riset.pasla.pages.dev',aud,sub:'owner',conversationId:'cr',turnId:'tr',inputHash:requestHash(input),profile:'pasla-chat-low4096-v1',campaign:'chat-preview-20261023',maxCalls:3,maxInputTokens:20000,maxOutputTokens:4096,jti:'r'.repeat(43),iat:time,exp:time+360};
+ const encoded=Buffer.from(JSON.stringify(payload)).toString('base64url'),ticket=encoded+'.'+createHmac('sha256',secret).update(encoded).digest('base64url');
+ let calls=0;const logs:unknown[]=[];t.mock.method(console,'warn',value=>{logs.push(value);});
+ t.mock.method(globalThis,'fetch',async()=>{calls++;const wire=wireDraft(draft);wire.blocks.a!.reading!.trigger='invented source fragment';const value=calls===1?{knownFacts:{a:null,b:null,c:null,d:null,e:null,f:null},queries:['informasi'],focus:'informasi',needsContext:false,matter:'unknown',jurisdiction:'indonesia'}:wire;return Response.json({model:'gpt-5-mini-2025-08-07',choices:[{finish_reason:'stop',message:{content:JSON.stringify(value)}}],usage:{prompt_tokens:100,completion_tokens:20}});});
+ const app=new Hono();registerChat(app as any,{chat:{key:'synthetic-key-only',claims:{nextAllowedAt:()=>0,claim:()=>{},finish:()=>{},deferUntil:()=>{}} as any,rpm:100,tpm:100000},stepTickets:{secret,audience:aud},telusur:(async()=>({kandidat:[{rujukan:{jenis:'peraturan',rujukan:'UU 999/2099'}}]})) as any,sumber:{buka:async()=>({status:'dibuka',potongan:[p],peringatan:[]})} as any,signer});
+ const response=await app.request('/v2/chat/turn',{method:'POST',headers:{'content-type':'application/json','x-pasla-chat-ticket':ticket},body:JSON.stringify(input)}),body=await response.text();
+ const error=body.trim().split('\n').map(line=>JSON.parse(line)).find(event=>event.type==='error');assert.equal(error.code,'CHAT_SOURCE_READING');assert.equal(calls,2);
+ assert.ok(!body.includes('invented source fragment'));assert.ok(!JSON.stringify(logs).includes('synthetic-key-only'));assert.ok(!JSON.stringify(logs).includes('invented source fragment'));
+});
