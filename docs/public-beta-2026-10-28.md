@@ -114,3 +114,28 @@ reserved; old research pilot unchanged. The two new turns cost6slots/79152micro
 in reservations. Known token usage18767input/3810output implies12312microUSD
 at the configured uncached tariff (estimate, not an Azure invoice). No public
 budget was used. Production configuration digest and v1PID816288 unchanged.
+
+## Source reading before legal prose
+
+d7886f0 owner retest still failed usefulness. A fenced synthetic-only turn2 audit
+proved the selected whole quote was authentic, but drafting replaced its causal
+condition with a broader transaction relationship. Semantic review correctly
+rejected conditions/facts; budgetRejected was empty. The temporary audit override
+was removed after fetching the scoped artifact; no other research was captured.
+
+Internal draft blocks now order citation, reading, kind, text. Every cited block
+must extract short subject/trigger/exception spans that bind to its selected quote.
+Null trigger/exception means unextracted, never that no restriction exists. The
+fields are stripped before public output and kept only in fenced audit artifacts.
+They are not additional positive review evidence; full selectedQuotes and
+restrictionContext, including all existing validation gates, remain unchanged.
+Uncited legal claims still follow the existing rejection/authored-fallback path.
+
+Duplicating readings in review input initially displaced valid evidence in the
+Unicode budget regression. Readings now serve drafting/audit only, and repeated
+draft instructions were consolidated without raising any wire/token limit.
+49chat tests (including a wrongly approving reviewer),206unit tests,16eval tests,
+build and lint pass. Fresh two-cycle review found no unresolved safety defect.
+Tradeoff: one invalid excerpt fails the entire normalization rather than quietly
+dropping it; earlier stored answers remain, attempted usage counts, no retry.
+This is a drafting change awaiting owner UI validation, not acceptance evidence.
