@@ -69,3 +69,19 @@ subject, then conditions/factual questions, instead of generic repeated checklis
 45 chat tests/build/focused lint pass; fresh narrow review found no defect.
 Re-enabling is only for controlled owner preview retesting after these checks,
 not public release or acceptance of the18-case package.
+
+## Conversation comprehension increment
+
+The first fresh4140b6c answer still repeated whether the seller was contacted
+although the initial synthetic question already said the seller refused. This
+remains an acceptance failure. The understanding call now selects at most six
+short exact user quotations by indexed user message. Every selection is locally
+bound to that user's exact text; invented facts, assistant-derived assertions or
+wrong indices stop before search/drafting/additional model calls. The full ordered
+context remains available, with later corrections taking precedence; quotations
+are user reports, not independently established facts or legal evidence.
+
+Writing and support review receive the same grounded quotes. Review questionsSafe
+also rejects redundant questions whose answers are already in context. No extra
+model call, retry, token allowance or change to public signed answers.47focused
+chat tests/build/lint pass; fresh handoff review found no issue. Needs live retest.

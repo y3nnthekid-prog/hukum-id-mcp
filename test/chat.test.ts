@@ -1,6 +1,6 @@
 import { strict as assert } from 'node:assert';
 import { test } from 'node:test';
-import { ChatInputSchema,ChatDraftSchema,ChatDraftWireSchema,normalizeChatDraft,ChatReviewSchema, validateChatAnswer, chatContext, runChat,requestsUnavailableUpload,ungroundedPlatformProcedure,missingSupportWitnesses,locateSupportWitnesses,incompleteListIntroduction,completeShortCitations,chatReviewWireSchema,normalizeChatReview,type ChatDraft } from '../src/core/chat.js';
+import { ChatInputSchema,ChatDraftSchema,ChatDraftWireSchema,normalizeChatDraft,ChatReviewSchema, validateChatAnswer, chatContext, runChat,requestsUnavailableUpload,ungroundedPlatformProcedure,missingSupportWitnesses,locateSupportWitnesses,incompleteListIntroduction,completeShortCitations,chatReviewWireSchema,normalizeChatReview,groundUserFacts,type ChatDraft } from '../src/core/chat.js';
 import { createSigner, generateSigningKey,verifySignature } from '../src/core/sign.js';
 import { createManagedClaims } from '../src/core/managed-ai.js';
 import { contentHash } from '../src/core/passages.js';
@@ -26,7 +26,7 @@ test('successful chat signs its exact dispatch usage and binds the receipt to th
  const time=Math.floor(Date.now()/1000),secret='s'.repeat(43),inputHash=requestHash(input);
  const payload={v:3,iss:'https://riset.pasla.pages.dev',aud:'https://api.pasla.tech',sub:'owner',conversationId:'c',turnId:'t',inputHash,profile:'pasla-chat-low4096-v1',campaign:'chat-preview-20261023',maxCalls:3,maxInputTokens:20000,maxOutputTokens:4096,jti:'j'.repeat(43),iat:time,exp:time+360};
  const body=Buffer.from(JSON.stringify(payload)).toString('base64url'),ticket=body+'.'+createHmac('sha256',secret).update(body).digest('base64url');
- let dispatched=0;t.mock.method(globalThis,'fetch',async()=>{dispatched++;return Response.json({model:'gpt-5-mini-2025-08-07',choices:[{finish_reason:'stop',message:{content:JSON.stringify({queries:[],focus:'barang bermasalah',needsContext:true,matter:'consumer_goods',jurisdiction:'unknown'})}}],usage:{prompt_tokens:100,completion_tokens:20}});});
+ let dispatched=0;t.mock.method(globalThis,'fetch',async()=>{dispatched++;return Response.json({model:'gpt-5-mini-2025-08-07',choices:[{finish_reason:'stop',message:{content:JSON.stringify({knownFacts:{a:null,b:null,c:null,d:null,e:null,f:null},queries:[],focus:'barang bermasalah',needsContext:true,matter:'consumer_goods',jurisdiction:'unknown'})}}],usage:{prompt_tokens:100,completion_tokens:20}});});
  const app=new Hono();registerChat(app as any,{chat:{key:'synthetic-key-only',claims,rpm:100,tpm:100000},stepTickets:{secret,audience:payload.aud},telusur:(async()=>{throw Error('must not search');}) as any,sumber:{} as any,signer});
  try{
   const response=await app.request('/v2/chat/turn',{method:'POST',headers:{'content-type':'application/json','x-pasla-chat-ticket':ticket},body:JSON.stringify(input)});
@@ -63,6 +63,7 @@ test('managed chat tickets bind all context, profile, owner and lifetime',()=>{
 });
 
 function fixtureReviewWire(value:any,user:any){
+ if(Array.isArray(value.queries))return {knownFacts:{a:null,b:null,c:null,d:null,e:null,f:null},...value};
  if(!Array.isArray(value.verdicts)||!user.reviewSlots)return value;
  const verdicts=Object.fromEntries(['a','b','c','d','e'].map(slot=>{const id=user.reviewSlots[slot],v=value.verdicts.find((v:any)=>v.id===id);return [slot,id&&v?{checks:v.checks,kind:v.kind,supported:v.supported}:null];}));
  return {verdicts,questionsSafe:value.questionsSafe,limitsSafe:value.limitsSafe};
@@ -473,4 +474,18 @@ test('a consumer quotation cannot silently turn into this users personal entitle
  for(const claim of claims){const value={...draft,blocks:[{id:'b1',kind:'legal' as const,text:claim,citations:[{passageId:'p1',quote:text}]}]};const result=validateChatAnswer(value,[source],[{id:'b1',supported:true,checks,witnesses:[],kind:'legal',reason:'Reviewer misses personal eligibility'}],[signer.publicKeyPem]);assert.equal(result.blocks.length,0);}
  const value={...draft,blocks:[{id:'b1',kind:'legal' as const,text:'Dalam naskah ini, konsumen memiliki hak mendapat kompensasi bila barang yang diterima tidak sesuai perjanjian atau tidak sebagaimana mestinya.',citations:[{passageId:'p1',quote:text}]}]};
  assert.equal(validateChatAnswer(value,[source],[{id:'b1',supported:true,checks,witnesses:[],kind:'legal',reason:'Conditional general norm, not a personal award'}],[signer.publicKeyPem]).blocks.length,1);
+});
+test('understanding facts must point to exact user words; assistant assertions and invented status cannot become facts',()=>{
+ const messages=[{id:'u1',role:'user' as const,text:'Penjual menolak membantu. Barang retak.'},{id:'a1',role:'assistant' as const,text:'Pembelian untuk dipakai sendiri.'},{id:'u2',role:'user' as const,text:'Saya punya video membuka paket.'}];
+ const slots={a:{userIndex:0,quote:'Penjual menolak membantu.'},b:{userIndex:1,quote:'Saya punya video membuka paket.'},c:null,d:null,e:null,f:null};
+ assert.deepEqual(groundUserFacts(slots,messages),[{messageId:'u1',quote:'Penjual menolak membantu.'},{messageId:'u2',quote:'Saya punya video membuka paket.'}]);
+ for(const replacement of [{userIndex:0,quote:'Pembelian untuk dipakai sendiri.'},{userIndex:1,quote:'Penjual menolak membantu.'},{userIndex:2,quote:'Pembelian untuk dipakai sendiri.'}])assert.throws(()=>groundUserFacts({...slots,a:replacement},messages));
+});
+test('grounded user quotes reach writing and review; a fabricated planning fact stops before search or another paid call',async()=>{
+ for(const invented of [false,true]){
+  let calls=0,searches=0;const fact='Penjual menolak membantu.';
+  const model={provider:'openai' as const,model:'fixture',async generate(request:any){calls++;if(calls===1)return fixtureResponse(request,{knownFacts:{a:{userIndex:0,quote:invented?'Barang dibeli untuk dipakai sendiri.':fact},b:null,c:null,d:null,e:null,f:null},queries:['barang rusak'],focus:'barang rusak',needsContext:false,matter:'consumer_goods',jurisdiction:'indonesia'});const sent=JSON.parse(request.user);assert.deepEqual(sent.context.knownUserQuotes,[{messageId:'u1',quote:fact}]);return fixtureResponse(request,calls===2?wireDraft({blocks:[{id:'b1',kind:'preparation',text:'Simpan percakapan yang sudah ada.',citations:[]}],questions:[],limits:[]}):{verdicts:[{id:'b1',supported:true,checks,witnesses:[],kind:'preparation',reason:'Neutral preparation'}],questionsSafe:true,limitsSafe:true});}};
+  const pending=runChat({conversationId:'c',turnId:'t',version:1,messages:[{id:'u1',role:'user',text:'Barang retak. '+fact}]},{model,telusur:(async()=>{searches++;return {kandidat:[]};}) as any,sumber:{} as any,signer,keys:[signer.publicKeyPem],signal:new AbortController().signal,progress:async()=>{}});
+  if(invented){await assert.rejects(pending,/CHAT_FACTS_SOURCE/);assert.equal(calls,1);assert.equal(searches,0);}else{await pending;assert.equal(calls,3);}
+ }
 });
