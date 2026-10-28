@@ -217,3 +217,52 @@ This enforces review decisions, not automatic relevance truth. A model can
 still wrongly approve relevance; real owner-session acceptance remains required.
 Private ledger after this attempt:169charged slots,USD2.334984conservatively
 reserved,177gross with8proved unused. Public budget remains unused.
+
+## Bounded source groups and shared draft schema
+
+e2d2a8b owner UI attempt ed829a35-3081-4fc3-b2dd-b08f3d5e2b97
+still failed usefulness: both an unsupported platform procedure and an
+overbroad legal statement were rejected, leaving authored preparation.
+The first turn consumed3calls; no automatic repair call or public budget used.
+
+A no-AI replay of its two recorded searches exposed evidence crowding. A long
+definition from an early opened source displaced later discovered provisions.
+The replay uses the public source API; its whole-document opening cannot
+reproduce internal query ranking exactly. It is packing evidence, not live
+acceptance or proof of relevance. Search aliases were compared without AI;
+the proposed extra defect/mismatch words worsened ranking and were not added.
+
+Opened source groups now remain atomic through text, JSON and draft-wire
+budgets. Compact groups receive room first, in stable opening order. Invalid,
+oversized or over12unique-passage groups are omitted with an explicit coverage
+limit rather than partially retained. Overlapping opens merge into connected
+groups; independently verified duplicates may vary in retrieval time/signature,
+but stable content, locator and provenance must match. The first complete
+signed object is retained unchanged.
+
+For a cited passage, other delivered companions supply negative-only restriction
+context. They cannot supply positive support outside its selectedQuotes.
+Review pressure rejects whole claims while preserving companions for surviving
+claims. This preserves opened companions, not complete legal context across
+all external or referenced provisions. Compactness is not legal relevance.
+
+The five identical draft block schemas now share a named definition, using the
+same Azure-compatible reference mechanism as review records. No local field,
+quote, token or wire limit is relaxed. In the no-AI replay, the actual draft
+request now retains the later discovered Pasal4 body and explanation together.
+This is a budget improvement requiring a new real usefulness test.
+
+The previous preview activation also exposed a40-hop node_modules symlink
+chain: old release imports succeeded; new release returnedELOOP. Automatic
+rollback restored27b73d7. Deployment now resolves a direct canonical existing
+runtime link and probes imports before activation, without changing dependency
+contents, credentials, memory limits, corpus or replay history. Probe timeouts
+and HUP rollback were added after independent review. e2d2a8b then passed
+disabled health and unsigned-ticket rejection; productionv1PID816288 remained.
+
+Validation:60chat tests within217unit tests,16evaluation tests, build and focused
+lint pass. Independent review's duplicate-retrieval-time finding was reproduced
+as a failing regression and fixed by comparing stable verified metadata while
+retaining the original signature. Pressure cases explicitly prove group removal,
+and companion-heavy review tests prove surviving claims keep negative context.
+No additional paid model request was used to develop this packing change.

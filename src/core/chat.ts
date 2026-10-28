@@ -4,7 +4,7 @@ import type { TelusurService } from './telusur.js';
 import type { PotonganBertanda, SumberService } from './sumber.js';
 import { checkPassage } from './sintesis.js';
 import { canonicalize,findQuote } from './canonical.js';
-import type { Signer } from './sign.js';
+import { canonicalJson,type Signer } from './sign.js';
 import { azureChatWireBytes } from '../ai/azure.js';
 
 const Id=z.string().regex(/^[a-zA-Z0-9_-]{1,100}$/);
@@ -103,7 +103,7 @@ export function sourceReadingParts(text:string){
  return starts.map((start,index)=>({index,start,end:starts[index+1]??text.length,text:text.slice(start,starts[index+1]??text.length)}));
 }
 // Azure emits schema keys in order: select evidence before composing a claim.
-const WireBlock=z.object({id:Id,citation:WireCitation.nullable(),reading:SourceReading.nullable(),kind:Kind,text:z.string().min(1).max(280)}).strict();
+const WireBlock=z.object({id:Id,citation:WireCitation.nullable(),reading:SourceReading.nullable(),kind:Kind,text:z.string().min(1).max(280)}).strict().meta({id:'pasla_chat_draft_block'});
 // Azure's schema subset omits maxItems. Required nullable slots enforce count
 // without truncating a model response or relaxing the public local schema.
 export const ChatDraftWireSchema=z.object({blocks:z.object({a:WireBlock.nullable(),b:WireBlock.nullable(),c:WireBlock.nullable(),d:WireBlock.nullable(),e:WireBlock.nullable()}).strict(),questions:z.object({a:z.string().min(1).max(150).nullable(),b:z.string().min(1).max(150).nullable()}).strict()}).strict();
@@ -280,6 +280,9 @@ export async function runChat(input:ChatInput,deps:{model:JsonModel;telusur:Telu
   const budgetRejected=new Set<string>();
   let auditedReviewEvidenceIds:string[]=[];
   let draftEvidenceIds:string[]=[];
+  const companionIds=new Map<string,Set<string>>();
+  const materialLimit='Sebagian sumber yang dibuka tidak masuk batas bahan jawaban; cakupannya belum lengkap.';
+  const dropLastGroup=(items:Array<{id:string}>)=>{const last=items.at(-1);if(!last)return;const group=companionIds.get(last.id)??new Set([last.id]);for(let i=items.length-1;i>=0;i--)if(group.has(items[i]!.id))items.splice(i,1);};
   const generate=async<T>(system:string,value:unknown,schema:z.ZodType<T>):Promise<T>=>{
     deps.signal.throwIfAborted();
     let payload=value,requestSchema:z.ZodType=schema,reviewIds:string[]=[];
@@ -301,7 +304,9 @@ export async function runChat(input:ChatInput,deps:{model:JsonModel;telusur:Telu
       }
     }
     const supplied=payload as {evidence?:unknown[]};
-    while(azureChatWireBytes({system,user:JSON.stringify(payload),schema:requestSchema})>20000&&supplied?.evidence?.length)supplied.evidence.pop();
+    while(azureChatWireBytes({system,user:JSON.stringify(payload),schema:requestSchema})>20000&&supplied?.evidence?.length){
+     if(Object.is(schema,ChatDraftWireSchema)){dropLastGroup(supplied.evidence as Array<{id:string}>);failures.push(materialLimit);const sourceFailures=(payload as {sourceFailures:string[]}).sourceFailures;if(!sourceFailures.includes(materialLimit))sourceFailures.push(materialLimit);}else supplied.evidence.pop();
+    }
     const user=JSON.stringify(payload);
     if(azureChatWireBytes({system,user,schema:requestSchema})>20000)throw new Error('CHAT_WIRE_LIMIT');
     if(Object.is(schema,ChatReviewSchema))auditedReviewEvidenceIds=((payload as {evidence:Array<{id:string}>}).evidence??[]).map(p=>p.id);
@@ -318,7 +323,7 @@ export async function runChat(input:ChatInput,deps:{model:JsonModel;telusur:Telu
     const result={v:1 as const,conversationId:input.conversationId,turnId:input.turnId,version:input.version,blocks:[{id:'context',kind:'general' as const,text:danger.test(userFacts)?neutralPreparation(plan.matter,userFacts):'Supaya arah bantuannya tepat, kita urutkan fakta dasarnya dulu. Cukup ceritakan, tanpa nama atau data pribadi.',citations:[]}],questions,limits:[],sources:[],rejected:[],method:{searches:[],opened:0,passages:0,model:deps.model.model,review:'Pertanyaan awal baku tanpa klaim hukum. Model hanya memilih kebutuhan konteks; tidak ada draf jawaban hukum yang diterbitkan.'},createdAt:new Date().toISOString()};
     return {...result,tanda:deps.signer.sign(result)};
   }
-  const passages:PotonganBertanda[]=[];const opened=new Set<string>();const searches:Array<{query:string;candidates:number}>=[];const failures:string[]=[];let textBytes=0;
+  const passages:PotonganBertanda[]=[];const groups:PotonganBertanda[][]=[];const opened=new Set<string>();const searches:Array<{query:string;candidates:number}>=[];const failures:string[]=[];let textBytes=0;
   const topic=caseTopicQuery(plan.matter,input.messages);
   const users=input.messages.filter(m=>m.role==='user'),correction=correctionIndex(users);
   const currentQuery=boundedSearch(correction>=0?withoutDeniedDefects(users.at(-1)!.text):plan.focus)||plan.queries[0];
@@ -336,21 +341,43 @@ export async function runChat(input:ChatInput,deps:{model:JsonModel;telusur:Telu
   for(let rank=0;rank<Math.max(0,...discoveries.map(d=>d.result.kandidat.length));rank++) {
     for(const {query,result} of discoveries) {
       const candidate=result.kandidat[rank];if(!candidate)continue;
-      if(!candidate.rujukan||opened.size>=6||passages.length>=12)continue;
+      if(!candidate.rujukan||opened.size>=6)continue;
       const ref=JSON.stringify(candidate.rujukan);if(opened.has(ref))continue;opened.add(ref);
       deps.signal.throwIfAborted();await deps.progress('opening');
       const source=await deps.sumber.buka(candidate.rujukan,{query:(currentQuery??'')+' '+query,followAmendments:false,signal:deps.signal});
       failures.push(...source.peringatan.slice(0,2).map(value=>value.slice(0,200)));
       if(source.status!=='dibuka'){failures.push('Sebagian sumber belum dapat dibuka.');continue;}
-      for(const p of source.potongan) {
-        const bytes=Buffer.byteLength(p.text);
-        if(passages.length>=12||textBytes+bytes>7000||passages.some(x=>x.id===p.id)||checkPassage(p,deps.keys))continue;
-        passages.push(p);textBytes+=bytes;
+      const group:PotonganBertanda[]=[];let incomplete=false;
+      for(const p of source.potongan){
+       if(Buffer.byteLength(p.text)>7000||checkPassage(p,deps.keys)){incomplete=true;break;}
+       const repeated=groups.flat().concat(group).find(x=>x.id===p.id);
+       // Both signatures were independently verified. Retrieval time/key changes
+       // alone do not change source identity; retain the original signed object.
+       const identity=(value:PotonganBertanda)=>canonicalJson({...value,retrievedAt:undefined,tanda:undefined});
+       if(repeated&&identity(repeated)!==identity(p))throw new Error('CHAT_SOURCE_IDENTITY');
+       if(!group.some(x=>x.id===p.id))group.push(p);
+       if(group.length>12){incomplete=true;break;}
       }
+      if(incomplete)failures.push(materialLimit);else if(group.length)groups.push(group);
     }
   }
+  // Give compact opened sources room before large definitions. A source-open
+  // group is an indivisible budget unit: never separate a norm from its opened
+  // explanation, truncate raw text, or mistake compactness for legal relevance.
+  // Overlapping article/whole-document opens form one component, so an ID can
+  // never acquire contradictory owners or lose companions during later trimming.
+  let merged=true;
+  while(merged){merged=false;outer:for(let i=0;i<groups.length;i++)for(let j=i+1;j<groups.length;j++)if(groups[i]!.some(p=>groups[j]!.some(other=>other.id===p.id))){groups[i]!.push(...groups[j]!.filter(p=>!groups[i]!.some(other=>other.id===p.id)));groups.splice(j,1);merged=true;break outer;}}
+  const size=(group:PotonganBertanda[])=>group.reduce((bytes,p)=>bytes+Buffer.byteLength(p.text),0);
+  for(const original of groups.sort((a,b)=>Number(size(a)>2000)-Number(size(b)>2000))){
+   const group=original.filter(p=>!passages.some(existing=>existing.id===p.id));
+   if(!group.length)continue;
+   if(passages.length+group.length>12||textBytes+size(group)>7000){failures.push(materialLimit);continue;}
+   const ids=new Set(group.map(p=>p.id));for(const p of group)companionIds.set(p.id,ids);
+   passages.push(...group);textBytes+=size(group);
+  }
   const evidence=passages.map(p=>({id:p.id,title:p.judul.slice(0,160),reference:p.rujukan,status:p.sumber.status,amendedBy:p.sumber.diubahDengan.slice(0,3),revokedBy:p.sumber.dicabutDengan.slice(0,3),locator:p.locator,retrievedAt:p.retrievedAt,verificationStatus:p.verificationStatus,transcription:p.transkripsi?{kind:p.transkripsi.reviewKind,sourcePages:p.transkripsi.sourcePages}:null,wholeQuoteAvailable:p.text.length<=1000&&p.text.trim().split(/\s+/).length>=8,text:p.text}));
-  while(Buffer.byteLength(JSON.stringify(evidence))>9000)evidence.pop();
+  while(Buffer.byteLength(JSON.stringify(evidence))>9000){dropLastGroup(evidence);failures.push(materialLimit);}
   await deps.progress('drafting');
   const draftWire=await generate(common+`Tugas: bantu kebutuhan pada currentUser lebih dulu. Blok pertama langsung menjawab permintaan terbaru atau menjelaskan batas bukti yang spesifik; jangan mulai dengan daftar norma yang hanya setopik. Tidak ada jumlah blok minimum: tulis hanya yang diperlukan, maksimal5. Slot blocks a–e dan questions a–b yang tidak diperlukan harus null.
 Pisahkan kebutuhan praktis dari penjelasan hukum. Jika pengguna meminta menata informasi yang sudah dimiliki, jelaskan cara memakainya; jangan menggantinya dengan daftar kewajiban umum atau meminta bahan yang sama lagi. Jika pengguna mengoreksi fakta, jelaskan pengaruh koreksi itu sejauh bukti mendukung. Penjelasan hukum hanya bila membantu permintaan terbaru, bukan agar jawaban terlihat bersumber. Satu gagasan lengkap dan relevan lebih baik daripada merangkum banyak akibat hukum. Pilih satu hubungan/syarat yang dapat dijelaskan utuh; tidak perlu memuat sekaligus bentuk pemulihan, tenggat dan pengecualian.
@@ -367,7 +394,10 @@ Jangan mengaku sumber berasal dari unggahan/pemberian pengguna. Status/cakupan s
   catch(cause){deps.audit?.({phase:'draft-normalization',draftWire,evidence,draftEvidenceIds});throw cause;}
   await deps.progress('checking');
   const citedIds=new Set(draft.blocks.flatMap(block=>block.citations.map(c=>c.passageId)));
-  const reviewEvidence=evidence.filter(p=>citedIds.has(p.id)&&draftEvidenceIds.includes(p.id)).map(p=>({...p,text:undefined,selectedQuotes:draft.blocks.flatMap(block=>block.citations.filter(c=>c.passageId===p.id).map(c=>({blockId:block.id,quote:c.quote}))),restrictionContext:p.text}));
+  const reviewEvidence=evidence.filter(p=>citedIds.has(p.id)&&draftEvidenceIds.includes(p.id)).map(p=>{
+   const siblings=evidence.filter(other=>other.id!==p.id&&companionIds.get(p.id)?.has(other.id)&&draftEvidenceIds.includes(other.id));
+   return {...p,text:undefined,selectedQuotes:draft.blocks.flatMap(block=>block.citations.filter(c=>c.passageId===p.id).map(c=>({blockId:block.id,quote:c.quote}))),restrictionContext:p.text+(siblings.length?'\n\nKonteks pendamping dari pembukaan sumber yang sama (hanya untuk pembatasan):\n'+siblings.map(other=>other.reference+'\n'+other.text).join('\n\n'):'')};
+  });
   const review=await generate(common+`Anda pemeriksa adversarial, bukan penulis. Nilai setiap slot sesuai reviewSlots; slot tanpa id=null. Jangan menyalin id, lokasi kata atau reason. Lokasi mekanis dihitung server, bukan bukti makna.
 Periksa relevance terlebih dahulu untuk SEMUA kind: apakah blok membantu permintaan terbaru context.currentUser, koreksi fakta, atau alasan/batas langkah yang diminta? Kutipan benar tetapi hanya setopik tidak cukup. Daftar kewajiban umum yang tidak menjawab permintaan langkah, atau persiapan yang hanya mengulang bahan yang sudah dimiliki, relevance=false.
 Bukti positif HANYA selectedQuotes dengan blockId sama. restrictionContext hanya menggugurkan karena syarat/pengecualian/kontradiksi, tidak menambah dukungan. Parafrasa boleh jika subjek, cakupan, syarat dan akibat sama; kesamaan kata tidak membuktikan dukungan. Contoh bukan definisi resmi, fakta kasus, syarat tambahan atau kepastian hasil.
@@ -384,6 +414,7 @@ questionsSafe=true hanya jika SEMUA pertanyaan relevan dan belum dijawab dalam c
   const used=new Set(checked.blocks.flatMap(b=>b.citations.map(c=>c.passageId)));
   const limits=plan.jurisdiction==='foreign'?['Dasar hukum di luar Indonesia belum diperiksa. Bantuan ini sebatas menata masalah dan persiapan umum.']:fallback?['Aku belum bisa memberi kesimpulan hukum dari bahan yang berhasil diperiksa. Bantuan di atas sebatas menata fakta dan bahan yang sudah ada.']:!used.size?['Belum ada dasar hukum khusus yang cukup untuk memberi kesimpulan kasusmu.']:checked.rejected.length?['Ada bagian yang belum bisa kupastikan dari sumber yang dibuka.']:[];
   if(fallback&&asksTransactionConfirmation(plan.matter,currentUser)&&!danger.test(userFacts))limits.splice(plan.jurisdiction==='foreign'?1:0,limits.length,'Kebijakan konfirmasi pada platform tersebut belum diperiksa, jadi akibat tombol itu belum bisa kupastikan. Bantuan ini sebatas persiapan komunikasi.');
+  if(failures.includes(materialLimit)&&!limits.includes(materialLimit))limits.push(materialLimit);
   const result={v:1 as const,conversationId:input.conversationId,turnId:input.turnId,version:input.version,blocks:checked.blocks,questions:review.questionsSafe?draft.questions.filter(question=>!requestsUnavailableUpload(question)):[],limits,sources:passages.filter(p=>used.has(p.id)),rejected:checked.rejected,method:{searches,opened:opened.size,passages:passages.length,model:deps.model.model,review:'Telaah AI berbasis sumber; bukan sertifikasi mutu hukum.'+(fallback?' Persiapan umum memakai teks baku tanpa klaim hukum; draf yang tidak didukung tidak diterbitkan.':'')},createdAt:new Date().toISOString()};
   return {...result,tanda:deps.signer.sign(result)};
 }

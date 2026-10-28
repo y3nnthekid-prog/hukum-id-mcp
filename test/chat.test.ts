@@ -84,12 +84,18 @@ test('nullable wire slots preserve every supported block and enforce cardinality
  assert.throws(()=>normalizeChatDraft({...wire,limits:{a:'Anda belum mengunggah berkas',b:null,c:null}}));
  assert.throws(()=>normalizeChatDraft({...wire,blocks:{...wire.blocks,a:{...wire.blocks.a,text:'x'.repeat(281)}}}));
 });
+
+test('draft wire reuses one block definition instead of spending input space on five identical schemas',()=>{
+ const schema=ChatDraftWireSchema.toJSONSchema(),record=schema.$defs?.pasla_chat_draft_block as any;
+ assert.ok(record);assert.equal(record.properties.text.maxLength,280);
+ assert.ok(JSON.stringify(schema).includes('#/$defs/pasla_chat_draft_block'));
+});
 test('Azure chat transport uses five nullable draft slots then publishes the original signed answer contract',async(t)=>{
  const input={conversationId:'cw',turnId:'tw',version:1,messages:[{id:'u',role:'user',text:'Uji informasi sebelum transaksi.'}]};
  const time=Math.floor(Date.now()/1000),secret='s'.repeat(43),inputHash=requestHash(input);
  const payload={v:3,iss:'https://riset.pasla.pages.dev',aud:'https://api.pasla.tech',sub:'owner',conversationId:'cw',turnId:'tw',inputHash,profile:'pasla-chat-low4096-v1',campaign:'chat-preview-20261023',maxCalls:3,maxInputTokens:20000,maxOutputTokens:4096,jti:'w'.repeat(43),iat:time,exp:time+360};
  const body=Buffer.from(JSON.stringify(payload)).toString('base64url'),ticket=body+'.'+createHmac('sha256',secret).update(body).digest('base64url');
- let calls=0;t.mock.method(globalThis,'fetch',async(_url:any,init:any)=>{calls++;const request=JSON.parse(init.body);if(calls===2){const schema=request.response_format.json_schema.schema;assert.equal(schema.properties.blocks.type,'object');assert.equal(Object.keys(schema.properties.blocks.properties).length,5);assert.equal(schema.properties.blocks.additionalProperties,false);assert.deepEqual(Object.keys(schema.properties.blocks.properties.a.anyOf[0].properties),['id','citation','reading','kind','text']);}
+ let calls=0;t.mock.method(globalThis,'fetch',async(_url:any,init:any)=>{calls++;const request=JSON.parse(init.body);if(calls===2){const schema=request.response_format.json_schema.schema;assert.equal(schema.properties.blocks.type,'object');assert.equal(Object.keys(schema.properties.blocks.properties).length,5);assert.equal(schema.properties.blocks.additionalProperties,false);assert.equal(schema.properties.blocks.properties.a.anyOf[0].$ref,'#/$defs/pasla_chat_draft_block');assert.deepEqual(Object.keys(schema.$defs.pasla_chat_draft_block.properties),['id','citation','reading','kind','text']);assert.equal(schema.$defs.pasla_chat_draft_block.additionalProperties,false);}
   const content=calls===1?{queries:['informasi'],focus:'informasi',needsContext:false,matter:'unknown',jurisdiction:'indonesia'}:calls===2?wireDraft(draft):{verdicts:[{id:'b1',supported:true,checks,witnesses,kind:'legal',reason:'Faithful paraphrase'}],questionsSafe:true,limitsSafe:true};
   return Response.json({model:'gpt-5-mini-2025-08-07',choices:[{finish_reason:'stop',message:{content:JSON.stringify(fixtureReviewWire(content,JSON.parse(request.messages[1].content)))}}],usage:{prompt_tokens:100,completion_tokens:20}});
  });
@@ -231,6 +237,46 @@ test('orchestrator discovers sources before opening, uses three bounded calls an
  const sumber={async buka(ref:any,options:any){opens++;assert.equal(searches>0,true);assert.equal(options.followAmendments,false);return {status:'dibuka',potongan:[p],peringatan:[],rujukan:ref};}};
  const result=await runChat({conversationId:'c1',turnId:'t1',version:1,messages:[{id:'u',role:'user',text:'Barang saya rusak, apa yang dapat saya pahami?'}]},{model,telusur:telusur as any,sumber:sumber as any,signer,keys:[signer.publicKeyPem],signal:new AbortController().signal,progress:async()=>{}});
  assert.equal(calls,3);assert.equal(searches,2);assert.equal(opens,1);assert.equal(result.blocks.length,1);assert.equal(result.sources[0]?.id,p.id);
+});
+
+test('early long passages cannot crowd compact passages from later opened sources out of the draft budget',async()=>{
+ const make=(id:string,text:string,bagian='batang-tubuh')=>{const rawSource={...p,id,documentId:id,locator:{bagian,halamanAwal:1},text,contentHash:contentHash(text)};return {...rawSource,tanda:signer.sign(signedPart(rawSource))};};
+ const compact=Array.from({length:6},(_,i)=>make('compact-'+i,'Penjual wajib memberi informasi yang benar kepada pembeli sebelum transaksi dilakukan.'));
+ const long=make('long-early','Definisi '.repeat(480));
+ let calls=0,opens=0;
+ const model={provider:'openai' as const,model:'fixture',async generate(request:any){calls++;assert.ok(azureChatWireBytes(request)<=20000);if(calls===1)return fixtureResponse(request,{queries:['uji pencarian'],focus:'uji sumber',needsContext:false,matter:'unknown',jurisdiction:'indonesia'});if(calls===2){const evidence=JSON.parse(request.user).evidence;assert.ok(evidence.some((source:any)=>source.id==='compact-5'));assert.ok(evidence.findIndex((source:any)=>source.id==='compact-5')<evidence.findIndex((source:any)=>source.id==='long-early')||!evidence.some((source:any)=>source.id==='long-early'));return fixtureResponse(request,wireDraft({blocks:[],questions:[],limits:[]}));}return fixtureResponse(request,{verdicts:[],questionsSafe:true,limitsSafe:true});}};
+ const result=await runChat({conversationId:'packing',turnId:'packing-turn',version:1,messages:[{id:'u',role:'user',text:'Uji pemilihan bahan dari sumber yang ditemukan.'}]},{model,telusur:(async()=>({kandidat:compact.map((_,i)=>({rujukan:{jenis:'peraturan',rujukan:'UU '+i+'/2099'}}))})) as any,sumber:{buka:async()=>{const current=opens++;return {status:'dibuka',potongan:current===0?[long,compact[current]]:[compact[current]],peringatan:[]};}} as any,signer,keys:[signer.publicKeyPem],signal:new AbortController().signal,progress:async()=>{}});
+ assert.equal(opens,6);assert.equal(calls,3);assert.ok(result.method.passages<=12);
+});
+
+test('overlapping source opens retain all companions as negative context, never as extra positive quotes',async()=>{
+ const make=(id:string,text:string)=>{const rawSource={...p,id,text,contentHash:contentHash(text)};return {...rawSource,tanda:signer.sign(signedPart(rawSource))};};
+ const a=make('explanation-a','Pengecualian dalam sumber pendamping ini hanya berlaku jika keadaan tertentu terbukti.'),b=make('explanation-b','Syarat dalam sumber pendamping lain harus diperiksa sebelum menerapkan norma pada kasus.');
+ const refreshedRaw={...p,retrievedAt:new Date(Date.parse(p.retrievedAt)+1000).toISOString()},refreshed={...refreshedRaw,tanda:signer.sign(signedPart(refreshedRaw))};
+ let calls=0,opens=0;
+ const model={provider:'openai' as const,model:'fixture',async generate(request:any){calls++;assert.ok(azureChatWireBytes(request)<=20000);if(calls===1)return fixtureResponse(request,{queries:['uji sumber'],focus:'uji pendamping',needsContext:false,matter:'unknown',jurisdiction:'indonesia'});if(calls===2){const ids=JSON.parse(request.user).evidence.map((source:any)=>source.id);assert.deepEqual(new Set(ids),new Set([p.id,a.id,b.id]));return fixtureResponse(request,wireDraft(draft));}const evidence=JSON.parse(request.user).evidence;assert.equal(evidence.length,1);assert.deepEqual(evidence[0].selectedQuotes,[{blockId:'b1',quote:p.text}]);assert.ok(evidence[0].restrictionContext.includes(a.text));assert.ok(evidence[0].restrictionContext.includes(b.text));return fixtureResponse(request,{verdicts:[{id:'b1',supported:false,checks:{...checks,exceptions:false},witnesses:[],reason:'Companion restriction blocks application',kind:'legal'}],questionsSafe:true,limitsSafe:true});}};
+ const result=await runChat({conversationId:'overlap',turnId:'overlap-turn',version:1,messages:[{id:'u',role:'user',text:'Uji norma dan konteks pembatasannya.'}]},{model,telusur:(async()=>({kandidat:[{rujukan:{jenis:'peraturan',rujukan:'UU 1/2099'}},{rujukan:{jenis:'peraturan',rujukan:'UU 2/2099'}}]})) as any,sumber:{buka:async()=>({status:'dibuka',potongan:opens++===0?[p,a]:[refreshed,b],peringatan:[]})} as any,signer,keys:[signer.publicKeyPem],signal:new AbortController().signal,progress:async()=>{}});
+ assert.equal(calls,3);assert.ok(result.rejected.some(row=>row.id==='b1'));assert.ok(result.blocks.every(block=>block.kind!=='legal'));
+});
+
+test('metadata and draft-wire pressure remove whole companion groups, and oversized groups never become partial evidence',async()=>{
+ const make=(id:string,status:string,text=p.text)=>{const rawSource={...p,id,sumber:{...p.sumber,status},text,contentHash:contentHash(text)};return {...rawSource,tanda:signer.sign(signedPart(rawSource))};};
+ for(const [status,contextSize] of [['中'.repeat(1700),100],['中'.repeat(1000),2000],['',100]] as const){
+  const group=status?[make('group-a',status),make('group-b',status)]:[make('group-a',''),make('group-b','','z'.repeat(7001))];let calls=0,opens=0;
+  const model={provider:'openai' as const,model:'fixture',async generate(request:any){calls++;assert.ok(azureChatWireBytes(request)<=20000);if(calls===1)return fixtureResponse(request,{queries:['uji sumber'],focus:'uji ruang',needsContext:false,matter:'unknown',jurisdiction:'indonesia'});if(calls===2){const ids=JSON.parse(request.user).evidence.map((source:any)=>source.id);assert.equal(ids.includes('group-a'),ids.includes('group-b'));assert.equal(ids.includes('group-a'),false);return fixtureResponse(request,wireDraft({blocks:[],questions:[],limits:[]}));}return fixtureResponse(request,{verdicts:[],questionsSafe:true,limitsSafe:true});}};
+  await runChat({conversationId:'pressure',turnId:'pressure-turn',version:2,messages:[{id:'u1',role:'user',text:'a'.repeat(contextSize)},{id:'u2',role:'user',text:'b'.repeat(contextSize)}]},{model,telusur:(async()=>({kandidat:[{rujukan:{jenis:'peraturan',rujukan:'UU 1/2099'}},{rujukan:{jenis:'peraturan',rujukan:'UU 2/2099'}}]})) as any,sumber:{buka:async()=>({status:'dibuka',potongan:opens++===0?[p]:group,peringatan:[]})} as any,signer,keys:[signer.publicKeyPem],signal:new AbortController().signal,progress:async()=>{}});
+  assert.equal(calls,3);
+ }
+});
+
+test('companion-heavy review pressure rejects complete blocks and keeps all negative context for surviving claims',async()=>{
+ const make=(id:string,text:string)=>{const rawSource={...p,id,text,contentHash:contentHash(text)};return {...rawSource,tanda:signer.sign(signedPart(rawSource))};};
+ const norms=Array.from({length:5},(_,i)=>make('norm-'+i,p.text)),companion=make('long-companion','條'.repeat(1000));
+ const blocks=norms.map((source,i)=>({...draft.blocks[0]!,id:'claim-'+i,citations:[{passageId:source.id,quote:source.text}]}));
+ let calls=0,reviewed=0;
+ const model={provider:'openai' as const,model:'fixture',async generate(request:any){calls++;assert.ok(azureChatWireBytes(request)<=20000);if(calls===1)return fixtureResponse(request,{queries:['uji sumber'],focus:'uji penjelasan',needsContext:false,matter:'unknown',jurisdiction:'indonesia'});if(calls===2){assert.equal(JSON.parse(request.user).evidence.length,6);return fixtureResponse(request,wireDraft({blocks,questions:[],limits:[]}));}const input=JSON.parse(request.user);reviewed=input.draft.blocks.length;assert.ok(reviewed>0&&reviewed<5);for(const source of input.evidence){assert.ok(source.restrictionContext.includes(companion.text));assert.ok(source.selectedQuotes.every((quote:any)=>input.draft.blocks.some((block:any)=>block.id===quote.blockId)));}return fixtureResponse(request,{verdicts:blocks.map(block=>({id:block.id,supported:true,checks,witnesses:[],reason:'Grounded general norm',kind:'legal'})),questionsSafe:true,limitsSafe:true});}};
+ const result=await runChat({conversationId:'review-pressure',turnId:'review-pressure-turn',version:2,messages:[{id:'u1',role:'user',text:'a'.repeat(1200)},{id:'u2',role:'user',text:'b'.repeat(1200)}]},{model,telusur:(async()=>({kandidat:[{rujukan:{jenis:'peraturan',rujukan:'UU 1/2099'}}]})) as any,sumber:{buka:async()=>({status:'dibuka',potongan:[...norms,companion],peringatan:[]})} as any,signer,keys:[signer.publicKeyPem],signal:new AbortController().signal,progress:async()=>{}});
+ assert.equal(calls,3);assert.equal(result.blocks.length,reviewed);assert.ok(result.rejected.some(row=>row.reason.includes('batas pemrosesan')));
 });
 test('current question searches and the broad fallback share opening slots without injected compensation intent',async()=>{
  let calls=0;const queries:string[]=[],opened:string[]=[];
