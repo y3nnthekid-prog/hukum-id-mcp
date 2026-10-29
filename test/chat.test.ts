@@ -200,6 +200,11 @@ test('purpose, producer subject, and purchase clock cannot be promoted into broa
  assert.equal(requestsUnavailableUpload('Saya tidak bisa menilai bukti visual karena Anda belum mengunggah berkas.'),true);
  const provenance={...draft,blocks:[{id:'source',kind:'general' as const,text:'Saya hanya mengandalkan sumber yang Anda sertakan.',citations:[]}]};assert.equal(validateChatAnswer(provenance,[],[{id:'source',supported:true,checks,witnesses:[],kind:'general',reason:'Missed invented user source'}],[signer.publicKeyPem]).blocks.length,0);
  assert.equal(ungroundedPlatformProcedure('Ajukan klaim resmi lewat fitur pengaduan marketplace.'),true);
+ assert.equal(ungroundedPlatformProcedure('Cek di aplikasinya apakah masih ada tombol komplain/pengembalian. Kalau ada: ajukan komplain resmi, jelaskan blender retak dan tidak menyala sejak datang, lampirkan foto/video, dan minta pengembalian dana atau ganti barang lewat fitur itu.'),true);
+ assert.equal(ungroundedPlatformProcedure('Jika fitur marketplace tersedia, ajukan komplain resmi dan minta pengembalian dana.'),true);
+ assert.equal(ungroundedPlatformProcedure('Periksa fitur marketplace. Jangan ajukan komplain sebelum membaca syaratnya.'),false);
+ assert.equal(ungroundedPlatformProcedure('Periksa fitur marketplace. Jangan terburu-buru ajukan komplain sebelum membaca syaratnya.'),false);
+ assert.equal(ungroundedPlatformProcedure('Periksa fitur marketplace. Jangan buru-buru minta pengembalian dana sebelum membaca syaratnya.'),false);
  assert.equal(ungroundedPlatformProcedure('Coba klaim lewat fitur marketplace, lalu siapkan bukti pengaduan.'),true);
  assert.equal(ungroundedPlatformProcedure('Klik tombol selesai agar dana dikembalikan oleh marketplace.'),true);
  assert.equal(ungroundedPlatformProcedure('Jangan tekan tombol selesai sebelum memahami penjelasan dan akibatnya.'),false);

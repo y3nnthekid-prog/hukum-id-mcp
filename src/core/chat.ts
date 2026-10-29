@@ -43,6 +43,13 @@ function inventedAppProvenance(text:string){return /\b(?:pasal|sumber|dokumen|pe
 function assertsPersonalNorm(text:string){return /\b(?:anda|kamu|kalian)\s+(?:(?:memiliki|mempunyai|punya)\s+hak|berhak|wajib|berkewajiban|harus|bertanggung\s+jawab)\b|\b(?:hakmu|kewajibanmu)\b|\b(?:hak|kewajiban)(?:\s+[\p{L}-]+){0,3}\s+(?:anda|kamu)\b/iu.test(text);}
 export function ungroundedPlatformProcedure(text:string){
  if(/\b(?:tombol|fitur)\b.{0,60}\b(?:akan|otomatis|mencairkan|menutup|mengakhiri|menyebabkan)\b/iu.test(text))return true;
+ // A conditional button check does not establish the subsequent workflow.
+ // The platform may precede the imperative or be farther than the old
+ // 100-character forward window, as in the actual comparison failure.
+ if(/\b(?:fitur|marketplace|platform|tombol|aplikasi(?:nya)?)\b/iu.test(text))for(const match of text.matchAll(/\b(?:ajukan|gunakan|kirim|minta)\s+(?:komplain|keluhan|pengaduan|klaim|pengembalian|penggantian)\b/giu)){
+  const before=text.slice(Math.max(0,match.index-45),match.index).split(/[.;!?\n,]/u).at(-1)!;
+  if(!/\b(?:jangan|hindari|tidak perlu|tak perlu|belum perlu|tidak usah)\s+(?:(?:terburu(?:-buru)?|buru-buru)\s+)?$/iu.test(before)&&! /\b(?:sudah|telah|pernah)\s+(?:(?:kamu|anda|saya)\s+)?$/iu.test(before))return true;
+ }
  const actions=/\b(?:ajukan|gunakan|laporkan|klik|coba|klaim|kirim|tekan|menekan|pilih|selesaikan)\b(?=.{0,100}\b(?:fitur|pusat resolusi|marketplace|platform|tombol)\b)/giu;
  for(const match of text.matchAll(actions)){
   if(/^coba\s+(?:cek|periksa)\s+apakah\b/iu.test(text.slice(match.index)))continue;
