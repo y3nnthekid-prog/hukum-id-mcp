@@ -50,9 +50,9 @@ function bodyConceptScore(query:string,{meta,passage}:Stored){
 /** Korpus publik lokal. Pertanyaan, akun, dan kunci AI tidak pernah ditulis di sini. */
 export class CorpusIndex {
   private db: DatabaseSync;
-  constructor(filename: string) {
-    this.db = new DatabaseSync(filename);
-    this.db.exec(`PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON;
+  constructor(filename: string, options: {readOnly?:boolean} = {}) {
+    this.db = new DatabaseSync(filename,{readOnly:options.readOnly??false});
+    if(!options.readOnly)this.db.exec(`PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON;
       CREATE TABLE IF NOT EXISTS documents(id TEXT PRIMARY KEY, sha256 TEXT NOT NULL, metadata TEXT NOT NULL);
       CREATE INDEX IF NOT EXISTS documents_hash ON documents(sha256);
       CREATE TABLE IF NOT EXISTS passages(id TEXT PRIMARY KEY, document_id TEXT NOT NULL REFERENCES documents(id) ON DELETE CASCADE, metadata TEXT NOT NULL);
