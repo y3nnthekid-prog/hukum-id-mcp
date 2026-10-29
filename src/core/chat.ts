@@ -18,6 +18,23 @@ export function needsLegalCitation(text:string){
  return /\b(?:pasal|undang[ -]undang|peraturan|wajib|kewajiban|berkewajiban|bertanggung\s+jawab|tanggung\s+jawab|dilarang|larangan|berhak|hak(?:nya|mu)?|tenggat|pesangon|gugat\w*|pengadilan|pidana|perdata|mediasi|arbitrase|somasi|sengketa|polisi|kepolisian|bpsk|lpsk|lk3|disnaker|ombudsman|lembaga pengaduan)\b/i.test(text)||/\b\d+(?:[.,]\d+)?\s*(?:hari|minggu|bulan|tahun|persen|%|rupiah)\b/i.test(text)||/\b(?:ke|melalui|lewat|hubungi|lapor(?:kan)?|pengaduan)\s+(?:lembaga\s+)?[A-Z][A-Z0-9]{2,9}\b/.test(text);
 }
 export function requestsUnavailableUpload(text:string){return /\b(?:unggah|mengunggah|diunggah|unggahan|upload)(?:nya)?\b|\b(?:bisa|tolong|silakan|mohon)\b.{0,45}\b(?:kirim|lampirkan)\b.{0,70}\b(?:foto|gambar|berkas|dokumen|video|tangkapan layar)\b/iu.test(text);}
+/** Evidence preparation must use existing records, not a new physical
+ * experiment. A later caution cannot erase an earlier positive instruction. */
+export function suggestsPhysicalExperiment(text:string){
+ for(const match of text.matchAll(/\b(?:nyalakan|menyalakan|hidupkan|menghidupkan|uji|menguji|tes|mengetes)\b/giu)){
+  const before=text.slice(Math.max(0,match.index-100),match.index).split(/[.;!?\n,]/u).at(-1)!;
+  const sentenceStart=Math.max(...['.',';','!','?','\n'].map(mark=>text.lastIndexOf(mark,match.index-1)))+1;
+  const following=text.slice(match.index).search(/[.;!?\n]/u),sentence=text.slice(sentenceStart,following<0?text.length:match.index+following+1);
+  if(/\b(?:jangan|hindari|tidak perlu|tak perlu|tidak usah|tak usah|tidak menyarankan)\s+(?:(?:coba|mencoba|lagi)\s+){0,2}$/iu.test(before))continue;
+  if(/\b(?:sudah|telah|pernah)\s+(?:(?:mencoba|coba)\s+)?$/iu.test(before))continue;
+  if(/^(?:meng|meny)/iu.test(match[0])&&/^\s*(?:kapan|apakah)\b/iu.test(sentence)&&/\?\s*$/u.test(sentence)&&/\b(?:terakhir|tadi|kemarin|sebelumnya|pernah|sudah)\b/iu.test(sentence)&&! /\b(?:bisa|dapat|mau|bersedia|tolong|silakan|mohon|coba|cobalah)\b/iu.test(sentence))continue;
+  if(/\b(?:hasil|petunjuk|cara|metode|prosedur)\s*$/iu.test(before)&&! /\b(?:coba|silakan|tolong|rekam|buktikan)\b/iu.test(before))continue;
+  if(/^meng/iu.test(match[0])&&!/\b(?:kamu|anda|silakan|tolong|video|rekam|buktikan|coba|cobalah)\b/iu.test(before))continue;
+  if(/^(?:uji|menguji|tes|mengetes)$/iu.test(match[0])&&!/\b(?:barang|produk|alat|perangkat|mesin|listrik|baterai)\b/iu.test(text.slice(match.index,match.index+65).split(/[.;!?\n,]/u)[0]!))continue;
+  return true;
+ }
+ return false;
+}
 function inventedAppProvenance(text:string){return /\b(?:pasal|sumber|dokumen|peraturan|uu)\b.{0,40}\b(?:anda|kamu|pengguna)\b.{0,20}\b(?:sertakan|berikan|unggah)\b/iu.test(text);}
 /** An extra rejection gate, not proof of entitlement. Read the norm using its
  * actual subject; a consumer/worker/tenant quote alone cannot establish that
@@ -215,6 +232,7 @@ export function validateChatAnswer(draft:ChatDraft,passages:PotonganBertanda[],v
     if((b.kind==='legal'||reviews[0]?.kind==='legal'||needsLegalCitation(b.text))&&assertsPersonalNorm(b.text))reason='Kedudukan dan syarat penerapan pribadi belum dibuktikan hanya oleh kutipan norma. Jelaskan norma dengan subjek aslinya.';
     if(ungroundedPlatformProcedure(b.text))reason='Prosedur platform tertentu belum didukung kebijakan platform yang diperiksa.';
     if(requestsUnavailableUpload(b.text))reason='Percakapan belum mendukung pemeriksaan berkas yang diunggah.';
+    if(scope?.matter==='consumer_goods'&&suggestsPhysicalExperiment(b.text))reason='Gunakan catatan yang sudah ada; jangan meminta percobaan fisik baru pada barang untuk membuat bukti.';
     if(inventedAppProvenance(b.text))reason='Keterangan asal sumber ditentukan oleh pembukaan sumber oleh mesin.';
     for(const citation of b.citations) {
       const matches=ids.get(citation.passageId)??[];const p=matches[0];
@@ -415,6 +433,6 @@ questionsSafe=true hanya jika SEMUA pertanyaan relevan dan belum dijawab dalam c
   const limits=plan.jurisdiction==='foreign'?['Dasar hukum di luar Indonesia belum diperiksa. Bantuan ini sebatas menata masalah dan persiapan umum.']:fallback?['Aku belum bisa memberi kesimpulan hukum dari bahan yang berhasil diperiksa. Bantuan di atas sebatas menata fakta dan bahan yang sudah ada.']:!used.size?['Belum ada dasar hukum khusus yang cukup untuk memberi kesimpulan kasusmu.']:checked.rejected.length?['Ada bagian yang belum bisa kupastikan dari sumber yang dibuka.']:[];
   if(fallback&&asksTransactionConfirmation(plan.matter,currentUser)&&!danger.test(userFacts))limits.splice(plan.jurisdiction==='foreign'?1:0,limits.length,'Kebijakan konfirmasi pada platform tersebut belum diperiksa, jadi akibat tombol itu belum bisa kupastikan. Bantuan ini sebatas persiapan komunikasi.');
   if(failures.includes(materialLimit)&&!limits.includes(materialLimit))limits.push(materialLimit);
-  const result={v:1 as const,conversationId:input.conversationId,turnId:input.turnId,version:input.version,blocks:checked.blocks,questions:review.questionsSafe?draft.questions.filter(question=>!requestsUnavailableUpload(question)):[],limits,sources:passages.filter(p=>used.has(p.id)),rejected:checked.rejected,method:{searches,opened:opened.size,passages:passages.length,model:deps.model.model,review:'Telaah AI berbasis sumber; bukan sertifikasi mutu hukum.'+(fallback?' Persiapan umum memakai teks baku tanpa klaim hukum; draf yang tidak didukung tidak diterbitkan.':'')},createdAt:new Date().toISOString()};
+  const result={v:1 as const,conversationId:input.conversationId,turnId:input.turnId,version:input.version,blocks:checked.blocks,questions:review.questionsSafe?draft.questions.filter(question=>!requestsUnavailableUpload(question)&&!(plan.matter==='consumer_goods'&&suggestsPhysicalExperiment(question))):[],limits,sources:passages.filter(p=>used.has(p.id)),rejected:checked.rejected,method:{searches,opened:opened.size,passages:passages.length,model:deps.model.model,review:'Telaah AI berbasis sumber; bukan sertifikasi mutu hukum.'+(fallback?' Persiapan umum memakai teks baku tanpa klaim hukum; draf yang tidak didukung tidak diterbitkan.':'')},createdAt:new Date().toISOString()};
   return {...result,tanda:deps.signer.sign(result)};
 }

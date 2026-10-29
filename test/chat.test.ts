@@ -221,6 +221,20 @@ test('uncited referrals to named agencies and legal procedures cannot pass as pr
  const neutral={...draft,blocks:[{id:'b1',kind:'preparation' as const,text,citations:[]}]};
  assert.equal(validateChatAnswer(neutral,[],[{id:'b1',supported:true,checks,witnesses,reason:'Neutral evidence preservation',kind:'preparation'}],[signer.publicKeyPem]).blocks.length,1);}
 });
+
+test('a reviewer cannot approve instructions to power or physically test goods to create evidence',()=>{
+ const unsafe=['Langsung kumpulkan bukti: video coba nyalakan (jangan nyalakan lagi bila berisiko), nota dan chat penjual.','Coba nyalakan blender untuk merekam kerusakannya.','Jika aman, uji barang itu dan rekam hasilnya.','Bisa kamu menghidupkan alatnya untuk membuktikan keluhan?','Jangan lupa nyalakan blender untuk merekam kerusakannya.','Jika sudah siap silakan nyalakan barang dan rekam hasilnya.','Tidak perlu video lama cukup nyalakan barang dan rekam lagi.','Coba menghidupkan alatnya untuk membuktikan keluhan.'];
+ const safe=['Jangan coba menyalakan barang yang rusak. Pakai foto yang sudah ada.','Simpan video ketika barang pernah dinyalakan sebelumnya.','Coba cek apakah fitur keluhan tersedia dan baca syaratnya.','Simpan petunjuk yang menjelaskan cara menguji barang; tidak perlu melakukan pengujian baru.','Kapan terakhir Anda menyalakan barang itu?','Apakah kamu menyalakan alat tadi?','Simpan hasil uji barang yang sudah ada.','Baca petunjuk uji barang dari produsen.','Petunjuk menjelaskan cara menyalakan alat.'];
+ unsafe.push('Coba nyalakan barang dan rekam hasilnya. Kapan terakhir barang berfungsi?','Coba nyalakan blender untuk merekam kerusakannya. Apakah kemarin barang juga bermasalah?');
+ for(const text of [...unsafe,...safe]){const value={blocks:[{id:'physical',kind:'general' as const,text,citations:[]}],questions:[],limits:[]};const result=validateChatAnswer(value,[],[{id:'physical',supported:true,checks,witnesses:[],kind:'general',reason:'Reviewer missed risky evidence creation'}],[signer.publicKeyPem],{matter:'consumer_goods'});assert.equal(result.blocks.length,safe.includes(text)?1:0,text);}
+});
+
+test('risky physical experiments are removed from follow-up questions even when the reviewer approves them',async()=>{
+ let calls=0;const useful={id:'existing',kind:'preparation' as const,text:'Urutkan foto dan pesan yang sudah ada berdasarkan waktu kejadian.',citations:[]};
+ const model={provider:'openai' as const,model:'fixture',async generate(request:any){calls++;if(calls===1)return fixtureResponse(request,{queries:['barang rusak'],focus:'bukti yang sudah ada',needsContext:false,matter:'consumer_goods',jurisdiction:'indonesia'});if(calls===2)return fixtureResponse(request,wireDraft({blocks:[useful],questions:['Bisa kamu menyalakan alatnya untuk merekam bukti?','Kapan terakhir Anda menyalakan barang itu?'],limits:[]}));return fixtureResponse(request,{verdicts:[{id:'existing',supported:true,checks,witnesses:[],reason:'Existing records only',kind:'preparation'}],questionsSafe:true,limitsSafe:true});}};
+ const result=await runChat({conversationId:'physical',turnId:'physical-turn',version:1,messages:[{id:'u',role:'user',text:'Barang elektronik tiba rusak dan tidak menyala.'}]},{model,telusur:(async()=>({kandidat:[]})) as any,sumber:{buka:async()=>{throw Error('NO_SOURCE');}} as any,signer,keys:[signer.publicKeyPem],signal:new AbortController().signal,progress:async()=>{}});
+ assert.equal(calls,3);assert.deepEqual(result.blocks,[useful]);assert.deepEqual(result.questions,['Kapan terakhir Anda menyalakan barang itu?']);
+});
 test('an isolated compensation timing clause cannot become an actionable case deadline',()=>{
  const quote='Pemberian ganti rugi dilaksanakan dalam tenggang waktu 7 (tujuh) hari setelah tanggal transaksi.';
  const unsigned={...p,text:quote,contentHash:contentHash(quote)},source={...unsigned,tanda:signer.sign(signedPart(unsigned))};

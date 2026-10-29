@@ -12,6 +12,7 @@ export const AZURE_PASLA = Object.freeze({
 // Conservative uncached estimates, not an Azure billing statement or account cap.
 const INPUT_USD_PER_TOKEN = 0.25 / 1_000_000;
 const OUTPUT_USD_PER_TOKEN = 2 / 1_000_000;
+const AZURE_COMPARISON_51=Object.freeze({endpoint:AZURE_PASLA.endpoint,deployment:'pasla-compare-51',model:'gpt-5.1-2025-11-13',identity:'azure:pasla-compare-51:gpt-5.1:2025-11-13'});
 const Usage = z.object({ prompt_tokens: z.number().int().nonnegative(), completion_tokens: z.number().int().nonnegative() });
 type FetchLike = (url: string, init: RequestInit) => Promise<Response>;
 
@@ -44,7 +45,15 @@ export function azureChatWireBytes(input:{system:string;user:string;schema:z.Zod
   const body={model:AZURE_PASLA.deployment,reasoning_effort:'low',max_completion_tokens:4096,response_format:{type:'json_schema',json_schema:{name:'pasla_pilot',strict:true,schema:azureSchema(z.toJSONSchema(input.schema))}},messages:[{role:'system',content:input.system},{role:'user',content:input.user}]};
   return Buffer.byteLength(JSON.stringify(body),'utf8')+1024;
 }
-export function createAzureModel(input: { apiKey: string; maxUsd: number; maxCalls?: number; maxInputTokens?: number; profile?: "core" | "low-4096"; fetchImpl?: FetchLike }) {
+type AzureModelOptions={apiKey:string;maxUsd:number;maxCalls?:number;maxInputTokens?:number;profile?:'core'|'low-4096';fetchImpl?:FetchLike};
+export function createAzureModel(input:AzureModelOptions){return createPinnedAzureModel(input,AZURE_PASLA,INPUT_USD_PER_TOKEN,OUTPUT_USD_PER_TOKEN);}
+/** Explicit operator diagnostic only. No public ticket or visitor selects this
+ * profile; its stronger tariff must first be reserved in the shared campaign. */
+export function createAzureComparisonModel(input:Omit<AzureModelOptions,'profile'>){
+ if(input.maxCalls!==undefined&&(!Number.isInteger(input.maxCalls)||input.maxCalls<1||input.maxCalls>3))throw new Error('AZURE_COMPARISON_CONFIG');
+ return createPinnedAzureModel({...input,maxCalls:input.maxCalls??3,profile:'low-4096'},AZURE_COMPARISON_51,1.25/1_000_000,10/1_000_000);
+}
+function createPinnedAzureModel(input:AzureModelOptions,pin:{endpoint:string;deployment:string;model:string;identity:string},inputPrice:number,outputPrice:number) {
   const maxCalls = input.maxCalls ?? 9;
   const profile = input.profile ?? "core";
   if (!["core", "low-4096"].includes(profile)) throw new Error("AZURE_PILOT_CONFIG");
@@ -57,10 +66,10 @@ export function createAzureModel(input: { apiKey: string; maxUsd: number; maxCal
   let validationIssues: Array<{ code: string; path: Array<string | number> }> = [];
   const usage: Array<z.infer<typeof Usage>> = [];
   const doFetch: FetchLike = input.fetchImpl ?? ((url, init) => fetch(url, init));
-  const summary = () => ({ transport: "azure-openai", ...AZURE_PASLA, profile, maxUsd: input.maxUsd, maxCalls, calls, reservedUsd, lastFailure, retryAfterSeconds, validationIssues: validationIssues.map(row => ({ ...row, path: [...row.path] })), usage: usage.map(row => ({ ...row })), estimatedUsageUsd: usage.reduce((sum, row) => sum + row.prompt_tokens * INPUT_USD_PER_TOKEN + row.completion_tokens * OUTPUT_USD_PER_TOKEN, 0) });
+  const summary = () => ({ transport: "azure-openai", ...pin, profile, maxUsd: input.maxUsd, maxCalls, calls, reservedUsd, lastFailure, retryAfterSeconds, validationIssues: validationIssues.map(row => ({ ...row, path: [...row.path] })), usage: usage.map(row => ({ ...row })), estimatedUsageUsd: usage.reduce((sum, row) => sum + row.prompt_tokens * inputPrice + row.completion_tokens * outputPrice, 0) });
   const model: JsonModel = {
     // OpenAI is the model vendor; the signed model name and trace identify Azure.
-    provider: "openai", model: AZURE_PASLA.identity + (profile === "core" ? "" : ":low-4096"),
+    provider: "openai", model: pin.identity + (profile === "core" ? "" : ":low-4096"),
     async generate({ system, user, schema, effort, signal, maxOutputTokens }) {
       signal?.throwIfAborted();
       const requestedCap = maxOutputTokens ?? 4096;
@@ -68,17 +77,17 @@ export function createAzureModel(input: { apiKey: string; maxUsd: number; maxCal
       // Explicit operator profile for reasoning models; reflected in trace and signed identity.
       const cap = profile === "low-4096" ? 4096 : requestedCap;
       const jsonSchema = azureSchema(z.toJSONSchema(schema));
-      const body = JSON.stringify({ model: AZURE_PASLA.deployment, reasoning_effort: profile === "low-4096" ? "low" : effort, max_completion_tokens: cap, response_format: { type: "json_schema", json_schema: { name: "pasla_pilot", strict: true, schema: jsonSchema } }, messages: [{ role: "system", content: system }, { role: "user", content: user }] });
+      const body = JSON.stringify({ model: pin.deployment, reasoning_effort: profile === "low-4096" ? "low" : effort, max_completion_tokens: cap, response_format: { type: "json_schema", json_schema: { name: "pasla_pilot", strict: true, schema: jsonSchema } }, messages: [{ role: "system", content: system }, { role: "user", content: user }] });
       const inputUpperBound = Buffer.byteLength(body, "utf8") + 1024;
       if (inputUpperBound > inputLimit) throw new Error("AZURE_PILOT_INPUT_LIMIT");
-      const reserve = inputUpperBound * INPUT_USD_PER_TOKEN + cap * OUTPUT_USD_PER_TOKEN;
+      const reserve = inputUpperBound * inputPrice + cap * outputPrice;
       if (calls >= maxCalls) throw new Error("AZURE_PILOT_CALL_LIMIT");
       if (reservedUsd + reserve > input.maxUsd) throw new Error("AZURE_PILOT_BUDGET");
       // Reservation precedes network and is retained even for errors/cancellation.
       calls++; reservedUsd += reserve; lastFailure = null; retryAfterSeconds = null; validationIssues = [];
       let response: Response;
       try {
-        response = await doFetch(AZURE_PASLA.endpoint, { method: "POST", redirect: "error", signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(90000)]) : AbortSignal.timeout(90000), headers: { "api-key": input.apiKey, "content-type": "application/json" }, body });
+        response = await doFetch(pin.endpoint, { method: "POST", redirect: "error", signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(90000)]) : AbortSignal.timeout(90000), headers: { "api-key": input.apiKey, "content-type": "application/json" }, body });
       } catch { lastFailure = "NETWORK"; throw new AiProviderError("Azure pilot tidak dapat dihubungi. Tidak ada percobaan ulang otomatis."); }
       if (!response.ok) {
         lastFailure = `HTTP_${response.status}`;
@@ -105,7 +114,7 @@ export function createAzureModel(input: { apiKey: string; maxUsd: number; maxCal
         } finally { reader.releaseLock(); }
         const data = JSON.parse(Buffer.concat(chunks).toString("utf8"));
         const measured = Usage.parse(data.usage); usage.push(measured);
-        if (data.model !== AZURE_PASLA.model) { failureCode = "MODEL_DRIFT"; throw new Error(); }
+        if (data.model !== pin.model) { failureCode = "MODEL_DRIFT"; throw new Error(); }
         if (measured.prompt_tokens > inputUpperBound || measured.completion_tokens > cap) throw new Error();
         if (data.choices?.length !== 1 || data.choices[0].finish_reason !== "stop" || typeof data.choices[0].message?.content !== "string") { failureCode = data.choices?.[0]?.finish_reason === "length" ? "OUTPUT_LENGTH" : "CHOICE_INVALID"; throw new Error(); }
         failureCode = "CONTENT_JSON";
