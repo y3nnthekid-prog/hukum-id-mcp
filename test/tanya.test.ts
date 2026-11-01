@@ -154,3 +154,10 @@ test('a status that merely mentions an earlier revoked law is not treated as rev
   assert.equal(dicabut(s('JDIH BPK: Dicabut oleh UU 8/1999')), true);
   assert.equal(dicabut(s('Berlaku', ['UU 1/2026'])), true);
 });
+
+test('garbled Arabic presentation forms from fatwa PDFs are never quoted', async () => {
+  const rusak = passage('p-arab', 'UU 8/1999', 'Hadis: ﻣﻄﻞ ﺍﻟｻ ﻣﻨﻮ ﻯﻦ penundaan oleh orang mampu adalah kezaliman yang dilarang.', {}, 'Pasal 5');
+  const fake = fakeModel({ intinya: 'Kalau barang tidak sesuai, konsumen dapat meminta ganti rugi.', poin: [{ passageId: 'p-arab', kutipan: rusak.text.slice(0, 40), teks: 'Kutipan hadis.' }], langkah: [], tanyaBalik: [] });
+  const result = await runTanya(input('Barang saya rusak, penjual menolak refund'), deps([rusak], fake.model));
+  assert.equal(result.poin.length, 0);
+});

@@ -249,6 +249,8 @@ export async function runTanya(input: ChatInput, deps: Deps) {
     if (!at) continue;
     const quote = p.text.slice(at.start, at.end).trim();
     if (wordCount(quote) < 5 || quote.length > 1200 || quotes.has(quote)) continue;
+    // Teks Arab dari PDF fatwa DSN memakai font non-Unicode dan keluar sebagai bentuk sajian rusak; jangan dikutip.
+    if (/[\uFB50-\uFDFF\uFE70-\uFEFF]/u.test(quote)) continue;
     const teks = potongPanjang(saringKalimat(item.teks, izin), 450);
     if (!teks) continue;
     quotes.add(quote);
