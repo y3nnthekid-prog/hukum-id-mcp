@@ -123,9 +123,15 @@ export function findQuote(sourceRaw: string, quoteRaw: string): QuoteMatch | nul
   // Bila tidak cocok persis, bandingkan tanpa spasi. Rentang yang dikembalikan tetap teks mentah sumber.
   const rapatSumber = tanpaSpasi(source), rapatKutipan = quote.replace(/ /g, "");
   const di = rapatSumber.text.indexOf(rapatKutipan);
-  if (di === -1) return null;
-  return { start: rapatSumber.map[di]!, end: rapatSumber.map[di + rapatKutipan.length - 1]! + 1 };
+  if (di !== -1) return { start: rapatSumber.map[di]!, end: rapatSumber.map[di + rapatKutipan.length - 1]! + 1 };
+  // Naskah hasil OCR tertukar pada huruf yang bentuknya mirip: "(21" untuk "(2)", "a-" untuk "a.", "I (satu)"
+  // untuk "1 (satu)". Hanya pasangan mirip bentuk ini yang dimaafkan; angka yang berbeda tetap ditolak.
+  const ocr = new RegExp([...rapatKutipan].map((c) => OCR_MIRIP[c] ?? c.replace(/[\\^$.*+?()[\]{}|/-]/g, "\\$&")).join(""), "u").exec(rapatSumber.text);
+  if (!ocr) return null;
+  return { start: rapatSumber.map[ocr.index]!, end: rapatSumber.map[ocr.index + ocr[0].length - 1]! + 1 };
 }
+
+const OCR_MIRIP: Record<string, string> = { "1": "[1li|]", l: "[l1i|]", i: "[il1|]", "0": "[0o]", o: "[o0]", ")": "[)1lij]", ".": "[.,-]?", ",": "[,.]?" };
 
 function tanpaSpasi(c: Canonical): Canonical {
   const text: string[] = [];

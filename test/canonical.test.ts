@@ -49,3 +49,13 @@ test("stray spaces from the PDF text layer and gazette page footers do not block
   // Angka yang berbeda tetap ditolak walau spasi diabaikan.
   assert.equal(findQuote(raw, "tidak boleh melebihi 60% (enam puluh persen)"), null);
 });
+
+test("OCR glyph confusions are forgiven but a different number is not", () => {
+  const raw = "Pasal 79\n(1) Pengusaha wajib memberi:\na- waktu istirahat; dan\nb. cuti.\n(21 Waktu istirahat wajib diberikan paling sedikit 1 (satu) hari untuk 6\n(enam) hari kerja dalam I (satu) minggu.";
+  const match = findQuote(raw, "(2) Waktu istirahat wajib diberikan paling sedikit 1 (satu) hari untuk 6 (enam) hari kerja dalam 1 (satu) minggu.");
+  assert.ok(match);
+  assert.ok(raw.slice(match.start, match.end).startsWith("(21 Waktu"));
+  assert.ok(findQuote(raw, "(1) Pengusaha wajib memberi: a. waktu istirahat; dan b. cuti."));
+  assert.equal(findQuote(raw, "paling sedikit 2 (dua) hari untuk 6 (enam) hari kerja"), null);
+  assert.equal(findQuote(raw, "(3) Waktu istirahat wajib diberikan paling sedikit"), null);
+});
