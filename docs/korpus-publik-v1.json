@@ -782,20 +782,38 @@
       ],
       "sourceUrl": "https://perpustakaan.bldk.mahkamahagung.go.id/index.php?p=fstream&fid=4276&bid=3122&fname=kompilasi+hukum+ekonomi+syariah.pdf",
       "detailUrl": null,
-      "berkas": null,
+      "berkas": "khes.pdf",
       "status": "Berlaku sebagai hukum materiil Pengadilan Agama",
-      "statusKorpus": "Lampiran PERMA 2/2008.",
+      "statusKorpus": "Lampiran PERMA 2/2008; pedoman hakim pengadilan agama dalam perkara ekonomi syariah. Salinan Edisi Revisi 2011 diserahkan pemilik Pasla.",
       "amendedBy": [],
       "revokedBy": [],
       "ujiMateri": [],
       "impor": {
-        "hasil": "perlu-unduh-manual"
+        "hasil": "masuk",
+        "jumlahPotongan": 788,
+        "kesehatanEkstraksi": "degraded",
+        "complete": false,
+        "cakupanPasal": {
+          "jumlah": 782,
+          "berurutan": false,
+          "terakhir": "Pasal 790",
+          "tidakTerpisah": [
+            286,
+            589,
+            590,
+            591,
+            592,
+            593,
+            594,
+            595
+          ]
+        }
       },
-      "catatanKelengkapan": "1 Nov 2026: host perpustakaan.bldk.mahkamahagung.go.id tidak dapat di-resolve dari PC. Salinan lokal C:/Users/yennthekid/Downloads/khes.pdf (SHA-256 799b4548...d5dc, 285 halaman, 779 pasal terbaca oleh cari_pasal_khes) asal-usulnya tidak terverifikasi ke URL go.id, jadi tidak diimpor. Unduh manual dari sumber resmi MA, cocokkan sidiknya, lalu impor dengan jenis khes.",
-      "checkedAt": "2026-11-01",
-      "sha256": null,
-      "bytes": null,
-      "retrievedAt": null
+      "catatanKelengkapan": "2 Nov 2026: diimpor dari salinan yang diserahkan pemilik Pasla (Downloads/khes.pdf, SHA-256 799b45482a9d11d5d00477233d3871bb44b207d303d98b736437cb88a5f9d5dc, 285 halaman, Edisi Revisi 2011 Ditjen Badilag MA). Host perpustakaan.bldk.mahkamahagung.go.id tidak dapat dijangkau dari PC, jadi sidik belum dicocokkan ke unduhan resmi; asal-usul dijamin pemilik. retrievedAt adalah tanggal berkas salinan.",
+      "checkedAt": "2026-11-02",
+      "sha256": "799b45482a9d11d5d00477233d3871bb44b207d303d98b736437cb88a5f9d5dc",
+      "bytes": 4910827,
+      "retrievedAt": "2026-09-04T17:10:17.080Z"
     },
     {
       "id": "fatwa-dsn-111",

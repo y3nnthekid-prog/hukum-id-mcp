@@ -14,6 +14,7 @@ export type JenisSumberTopik = "peraturan" | "fatwa" | "khes";
 /** pasal: rujukan kunci yang dibuka langsung. Nomornya diperiksa ke teks korpus atau indeks DSN (1-2 Nov 2026). */
 type Entri = { pola: RegExp; kueri: string; pasal?: RujukanBuka[] };
 const uu = (rujukan: string, ...pasal: string[]): RujukanBuka[] => pasal.map((p) => ({ jenis: "peraturan", rujukan, pasal: `Pasal ${p}` }));
+const khes = (...pasal: string[]): RujukanBuka[] => pasal.map((p) => ({ jenis: "khes", pasal: `Pasal ${p}` }));
 const fatwa = (...nomor: string[]): RujukanBuka[] => nomor.map((n) => ({ jenis: "fatwa", nomor: n }));
 type Profil = {
   label: string;
@@ -115,7 +116,7 @@ export const PROFIL_TOPIK: Record<Topik, Profil> = {
       { pola: /\b(?:rahn|gadai syariah|pegadaian)\b/iu, kueri: "rahn" },
       { pola: /\bqardh\b/iu, kueri: "qardh" },
       { pola: /\b(?:tidak mampu|tak mampu|gak mampu|kesulitan bayar|bangkrut|usaha (?:sepi|rugi))\b/iu, kueri: "nasabah tidak mampu membayar penyelesaian", pasal: fatwa("47/DSN-MUI/II/2005", "48/DSN-MUI/II/2005") },
-      { pola: /\b(?:telat|terlambat|tunggakan|menunggak|denda|ta'?zir)\b/iu, kueri: "sanksi nasabah mampu menunda pembayaran", pasal: fatwa("17/DSN-MUI/IX/2000") },
+      { pola: /\b(?:telat|terlambat|tunggakan|menunggak|denda|ta'?zir)\b/iu, kueri: "sanksi nasabah mampu menunda pembayaran", pasal: [...fatwa("17/DSN-MUI/IX/2000"), ...khes("36", "38")] },
       { pola: /\b(?:ganti rugi|ta'?widh)\b/iu, kueri: "ganti rugi ta'widh", pasal: fatwa("43/DSN-MUI/VIII/2004") },
       { pola: /\b(?:riba|bunga)\b/iu, kueri: "riba" },
       { pola: /\b(?:bagi hasil|nisbah)\b/iu, kueri: "nisbah bagi hasil" },

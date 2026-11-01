@@ -109,7 +109,11 @@ const telusur = createTelusur({
     catch (cause) { if (local.length) return { hasil: local }; throw cause; }
   },
   fatwa: (query, limit) => cariFatwaDsn({ query, limit }),
-  khes: (query, limit) => cariPasalKhes({ query, maks_temuan: limit }),
+  // KHES di korpus lebih dulu; cache naskah lokal hanya untuk mesin yang belum mengimpornya.
+  khes: async (query, limit) => {
+    const local = corpus.search(query, "khes", limit);
+    return local.tersedia ? local : cariPasalKhes({ query, maks_temuan: limit });
+  },
   ayat: (query, limit) => cariAyat({ query, limit }),
   hadis: (query, limit) => cariHadisBerderajat({ query, limit } as any),
   turats: (query, limit) => cariTurats({ query, limit }),

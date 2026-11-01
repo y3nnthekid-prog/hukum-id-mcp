@@ -296,7 +296,7 @@ export async function runTanya(input: ChatInput, deps: Deps) {
   await deps.progress("drafting");
   // Potongan dari rujukan eksplisit atau pasal kunci ditandai utama untuk model.
   const pilihan = [...refs, ...kunci].map(versiTerbaru).filter((r): r is RujukanBuka => r !== null);
-  const utama = new Set(passages.filter((p) => pilihan.some((r) => "rujukan" in r && r.rujukan.toLowerCase() === p.identitas[0]?.toLowerCase() && (!("pasal" in r) || !r.pasal || p.locator.pasal?.toLowerCase() === r.pasal.toLowerCase()) || "nomor" in r && p.rujukan.includes(r.nomor))).map((p) => p.id));
+  const utama = new Set(passages.filter((p) => pilihan.some((r) => "rujukan" in r && r.rujukan.toLowerCase() === p.identitas[0]?.toLowerCase() && (!("pasal" in r) || !r.pasal || p.locator.pasal?.toLowerCase() === r.pasal.toLowerCase()) || "nomor" in r && p.rujukan.includes(r.nomor) || r.jenis === "khes" && p.jenis === "khes" && p.locator.pasal?.toLowerCase() === r.pasal.toLowerCase())).map((p) => p.id));
   const lastAssistant = input.messages.filter((m) => m.role === "assistant").at(-1);
   const payload = {
     tanggal: new Date().toISOString().slice(0, 10),

@@ -154,7 +154,7 @@ test('v4 public ticket runs one GPT-5.1 call and signs a settled usage receipt',
 test('situations open verified key articles before search results', () => {
   assert.deepEqual(pasalKunci('sewa-utang', 'Teman meminjam uang dan tidak mau membayar').map((r: any) => r.pasal), ['Pasal 1754', 'Pasal 1763', 'Pasal 1238', 'Pasal 1243']);
   assert.deepEqual(pasalKunci('pekerjaan', 'Saya di-PHK, berapa pesangon saya?'), [{ jenis: 'peraturan', rujukan: 'PP 35/2021', pasal: 'Pasal 40' }, { jenis: 'peraturan', rujukan: 'UU 6/2023', pasal: 'Pasal 151' }]);
-  assert.deepEqual(pasalKunci('syariah', 'Saya terlambat bayar cicilan murabahah'), [{ jenis: 'fatwa', nomor: '04/DSN-MUI/IV/2000' }, { jenis: 'fatwa', nomor: '17/DSN-MUI/IX/2000' }]);
+  assert.deepEqual(pasalKunci('syariah', 'Saya terlambat bayar cicilan murabahah'), [{ jenis: 'fatwa', nomor: '04/DSN-MUI/IV/2000' }, { jenis: 'fatwa', nomor: '17/DSN-MUI/IX/2000' }, { jenis: 'khes', pasal: 'Pasal 36' }, { jenis: 'khes', pasal: 'Pasal 38' }]);
 });
 
 test('a status that merely mentions an earlier revoked law is not treated as revoked', () => {

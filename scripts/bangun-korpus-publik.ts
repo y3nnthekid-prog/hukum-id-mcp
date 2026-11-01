@@ -12,7 +12,7 @@ import { importCorpusPdf } from "../src/indexing/import.js";
  * Pakai: npx tsx scripts/bangun-korpus-publik.ts [manifest] [--tulis]
  */
 type Entri = {
-  id: string; rujukan: string; judul: string; jenis: "peraturan" | "putusan-mk"; sourceUrl: string;
+  id: string; rujukan: string; judul: string; jenis: "peraturan" | "putusan-mk" | "khes"; sourceUrl: string;
   sha256: string | null; berkas: string | null; retrievedAt: string | null; statusKorpus: string;
   amendedBy: string[]; revokedBy: string[]; anonim?: boolean; pasalPenutup?: string;
   impor: { hasil: string; jumlahPotongan?: number; kesehatanEkstraksi?: string; complete?: boolean; cakupanPasal?: unknown };
