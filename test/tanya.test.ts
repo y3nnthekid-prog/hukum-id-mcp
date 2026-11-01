@@ -144,7 +144,7 @@ test('v4 public ticket runs one GPT-5.1 call and signs a settled usage receipt',
 test('situations open verified key articles before search results', () => {
   assert.deepEqual(pasalKunci('sewa-utang', 'Teman meminjam uang dan tidak mau membayar').map((r: any) => r.pasal), ['Pasal 1754', 'Pasal 1763', 'Pasal 1238', 'Pasal 1243']);
   assert.deepEqual(pasalKunci('pekerjaan', 'Saya di-PHK, berapa pesangon saya?'), [{ jenis: 'peraturan', rujukan: 'PP 35/2021', pasal: 'Pasal 40' }]);
-  assert.deepEqual(pasalKunci('syariah', 'Saya terlambat bayar cicilan murabahah'), [{ jenis: 'fatwa', nomor: '17/DSN-MUI/IX/2000' }]);
+  assert.deepEqual(pasalKunci('syariah', 'Saya terlambat bayar cicilan murabahah'), [{ jenis: 'fatwa', nomor: '04/DSN-MUI/IV/2000' }, { jenis: 'fatwa', nomor: '17/DSN-MUI/IX/2000' }]);
 });
 
 test('a status that merely mentions an earlier revoked law is not treated as revoked', () => {
@@ -195,4 +195,26 @@ test('precheck refuses before searching and public status hides budget numbers',
   const pemantau = await (await app.request('/v2/chat/status', { headers: { 'x-pasla-pemantau': 'rahasia-pemantau' } })).json() as any;
   assert.equal(typeof pemantau.tanya.dayRemainingMicro, 'number');
   ledger.close();
+});
+
+test('everyday wording reaches the right topic, weak words never pick sharia', () => {
+  const kasus: Array<[string, string | null]> = [
+    ['Gajiku sudah dua bulan belum dibayar, aku karyawan toko', 'pekerjaan'],
+    ['Saya dirumahkan tanpa kejelasan', 'pekerjaan'],
+    ['Kosan saya depositnya tidak dikembalikan', 'sewa-utang'],
+    ['Temen minjem duit 2 juta ga mau balikin', 'sewa-utang'],
+    ['Kredit motor telat bayar, didenda besar', 'sewa-utang'],
+    ['Nasabah bank, kartu kredit kena denda', 'sewa-utang'],
+    ['Salam, saya mau tanya soal warisan', null],
+    ['Bagaimana akad nikah yang sah?', null],
+    ['Cicilan murabahah saya menunggak', 'syariah'],
+  ];
+  for (const [teks, harap] of kasus) assert.equal(tentukanTopik(teks), harap, teks);
+});
+
+test('new verified key articles open for common situations', () => {
+  assert.deepEqual(pasalKunci('pekerjaan', 'THR saya belum dibayar').map((r: any) => r.rujukan + ' ' + r.pasal), ['PP 36/2021 Pasal 9', 'PP 36/2021 Pasal 62']);
+  assert.deepEqual(pasalKunci('pekerjaan', 'Saya mau resign, dapat apa?').map((r: any) => r.pasal), ['Pasal 50']);
+  assert.deepEqual(pasalKunci('sewa-utang', 'Pinjol neror dan menyebar data saya, penagih kasar').map((r: any) => r.rujukan + ' ' + r.pasal), ['POJK 10/POJK.05/2022 Pasal 102']);
+  assert.deepEqual(pasalKunci('konsumen', 'Barang belum dikirim padahal sudah bayar').map((r: any) => r.pasal), ['Pasal 16']);
 });

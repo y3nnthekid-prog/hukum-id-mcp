@@ -63,7 +63,7 @@ Isi kolom:
 - poin: 0 sampai 5 poin hukum, masing-masing SATU gagasan dari SATU sumber. passageId persis id sumber. kutipan disalin PERSIS dari teks sumber itu, satu rentang utuh tanpa elipsis dan tanpa mengubah kata, 8 sampai 80 kata. teks menjelaskan isi kutipan dengan bahasa sederhana, memakai subjek seperti dalam sumber (konsumen, pelaku usaha, pekerja, pengusaha, penyewa, debitur, nasabah). Jangan tulis "kamu berhak" atau "kamu wajib". Masukkan HANYA poin yang langsung membantu menjawab pertanyaanTerbaru. Sumber yang hanya setopik (misalnya soal gadai, pengalihan piutang, atau pelunasan dipercepat padahal yang ditanya hal lain) jangan dijadikan poin; poin kosong lebih baik daripada poin yang tidak menjawab. Sumber yang berstatus dicabut tidak boleh dipakai sebagai dasar yang berlaku.
 - langkah: 2 sampai 4 langkah praktis yang aman dan umum, misalnya menyimpan bukti yang sudah ada, mencatat tanggal, menghubungi pihak lain secara tertulis dengan sopan. Jangan menebak fitur atau tombol aplikasi, jangan menyuruh menguji barang yang rusak, jangan meminta mengunggah berkas, jangan meminta data pribadi.
 - tanyaBalik: paling banyak 2 pertanyaan singkat tentang fakta penting yang belum diketahui dan belum pernah dijawab.
-Bila sumber berisi daftar atau tabel (misalnya besaran menurut masa kerja), cari butir yang cocok dengan fakta pengguna dan kutip butir itu saja beserta pengantarnya yang pendek; jangan menyalin seluruh daftar. Sumber dengan utama:true dipilih Pasla karena paling sesuai dengan situasinya; utamakan sumber itu dan jangan memakai sumber lain yang subjeknya berbeda (misalnya aturan untuk pejabat atau lembaga tertentu). faktaSebelumnya adalah pesan pengguna sebelumnya; koreksi yang lebih baru menggantikannya. jawabanSebelumnya hanya untuk memahami rujukan percakapan, bukan bukti.
+Bila sumber berisi daftar atau tabel (misalnya besaran menurut masa kerja), cari butir yang cocok dengan fakta pengguna dan kutip butir itu saja sebagai satu rentang bersambung, tanpa pengantarnya; jangan menyalin seluruh daftar. Sumber dengan utama:true dipilih Pasla karena biasanya paling sesuai dengan situasinya; utamakan sumber itu bila isinya memang menjawab pertanyaanTerbaru, dan jangan memakai sumber lain yang subjeknya berbeda (misalnya aturan untuk pejabat atau lembaga tertentu). faktaSebelumnya adalah pesan pengguna sebelumnya; koreksi yang lebih baru menggantikannya. jawabanSebelumnya hanya untuk memahami rujukan percakapan, bukan bukti.
 Jangan memakai tanda pisah panjang. Tulis dalam bahasa Indonesia.`;
 
 export function rapikan(text: string) {
@@ -203,12 +203,14 @@ export async function runTanya(input: ChatInput, deps: Deps) {
 
   await deps.progress("searching");
   // Rujukan eksplisit pengguna, lalu pasal kunci situasi, lalu hasil pencarian.
-  const kunci = topik ? pasalKunci(topik, semuaPengguna) : [];
+  // Pasal kunci dari pesan terbaru lebih dulu; percakapan sebelumnya hanya bila pesan terbaru tidak cocok apa pun.
+  const kunciTerbaru = topik ? pasalKunci(topik, current.text) : [];
+  const kunci = kunciTerbaru.length ? kunciTerbaru : topik ? pasalKunci(topik, semuaPengguna) : [];
   const toOpen: RujukanBuka[] = [...refs, ...kunci];
   if (topik) {
     const profil = PROFIL_TOPIK[topik];
     const discoveries: RujukanBuka[][] = [];
-    for (const query of susunKueri(topik, semuaPengguna)) {
+    for (const query of susunKueri(topik, semuaPengguna, 3, current.text)) {
       deps.signal.throwIfAborted();
       try {
         const result = await deps.telusur({ rumpun: topik === "syariah" ? "hes" : "ilmu-hukum", query, sumber: profil.sumber, limit: 8 });
@@ -220,23 +222,32 @@ export async function runTanya(input: ChatInput, deps: Deps) {
     }
     // Bergiliran supaya setiap kueri ikut menyumbang sumber.
     // Bila pasal kunci sudah ada, hasil pencarian hanya pelengkap: paling banyak tiga, supaya AI tidak teralihkan.
+    // Di-dedup dulu terhadap yang sudah akan dibuka, baru dibatasi, supaya slot pelengkap tidak terbuang.
+    const kunciKey = new Set(toOpen.map((r) => JSON.stringify(r).toLowerCase()));
     const tambahan: RujukanBuka[] = [];
-    for (let rank = 0; rank < 8; rank++) for (const list of discoveries) if (list[rank]) tambahan.push(list[rank]!);
+    for (let rank = 0; rank < 8; rank++) for (const list of discoveries) {
+      const ref = list[rank];
+      const key = ref && JSON.stringify(ref).toLowerCase();
+      if (ref && key && !kunciKey.has(key)) { kunciKey.add(key); tambahan.push(ref); }
+    }
     toOpen.push(...(kunci.length ? tambahan.slice(0, 3) : tambahan));
   }
 
   await deps.progress("opening");
   const passages: PotonganBertanda[] = [];
   const opened = new Set<string>();
+  const dicoba = new Set<string>();
   let bytes = 0;
+  // Hanya rujukan yang benar-benar terbuka yang menghabiskan jatah buka; yang gagal tidak menghalangi sumber lain.
   for (const ref of toOpen) {
-    if (opened.size >= LIMIT.opened || passages.length >= LIMIT.passages) break;
+    if (opened.size >= LIMIT.opened || passages.length >= LIMIT.passages || dicoba.size >= LIMIT.opened * 2) break;
     const key = JSON.stringify(ref).toLowerCase();
-    if (opened.has(key)) continue;
-    opened.add(key);
+    if (dicoba.has(key)) continue;
+    dicoba.add(key);
     deps.signal.throwIfAborted();
     let result: Awaited<ReturnType<SumberService["buka"]>>;
     try { result = await deps.sumber.buka(ref, { followAmendments: false, signal: deps.signal }); } catch { peringatan.push("Sebagian sumber belum dapat dibuka."); continue; }
+    if (result.status === "dibuka") opened.add(key);
     if (result.status !== "dibuka") { if (refs.includes(ref)) peringatan.push(`${"rujukan" in ref ? ref.rujukan : "Rujukan"} ${"pasal" in ref && ref.pasal ? ref.pasal + " " : ""}belum dapat dibuka dari sumber resmi.`); continue; }
     for (const p of result.potongan) {
       const size = Buffer.byteLength(p.text);
