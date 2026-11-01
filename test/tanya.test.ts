@@ -75,7 +75,7 @@ test('only exact quotes from opened sources survive; invented rules and uncondit
     langkah: ['Simpan bukti pembayaran dan percakapan dengan penjual.', 'Coba nyalakan lagi barangnya untuk membuktikan rusak.', 'Ajukan komplain lewat fitur marketplace, dana otomatis cair.'],
     tanyaBalik: ['Kapan barangnya kamu terima?'],
   });
-  const result = await runTanya(input('Barang belanja online saya datang rusak, penjual menolak refund'), deps([hak, lama], fake.model));
+  const result = await runTanya(input('Barang belanja online saya datang rusak, penjual menolak refund'), deps([lama, hak], fake.model));
   assert.equal(fake.calls(), 1);
   assert.equal(result.topik, 'konsumen');
   assert.deepEqual(result.poin.map((p) => p.kutipan.passageId), ['p-hak']);

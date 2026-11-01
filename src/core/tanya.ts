@@ -63,7 +63,7 @@ Isi kolom:
 - poin: 0 sampai 5 poin hukum, masing-masing SATU gagasan dari SATU sumber. passageId persis id sumber. kutipan disalin PERSIS dari teks sumber itu, satu rentang utuh tanpa elipsis dan tanpa mengubah kata, 8 sampai 80 kata. teks menjelaskan isi kutipan dengan bahasa sederhana, memakai subjek seperti dalam sumber (konsumen, pelaku usaha, pekerja, pengusaha, penyewa, debitur, nasabah). Jangan tulis "kamu berhak" atau "kamu wajib". Masukkan HANYA poin yang langsung membantu menjawab pertanyaanTerbaru. Sumber yang hanya setopik (misalnya soal gadai, pengalihan piutang, atau pelunasan dipercepat padahal yang ditanya hal lain) jangan dijadikan poin; poin kosong lebih baik daripada poin yang tidak menjawab. Sumber yang berstatus dicabut tidak boleh dipakai sebagai dasar yang berlaku.
 - langkah: 2 sampai 4 langkah praktis yang aman dan umum, misalnya menyimpan bukti yang sudah ada, mencatat tanggal, menghubungi pihak lain secara tertulis dengan sopan. Jangan menebak fitur atau tombol aplikasi, jangan menyuruh menguji barang yang rusak, jangan meminta mengunggah berkas, jangan meminta data pribadi.
 - tanyaBalik: paling banyak 2 pertanyaan singkat tentang fakta penting yang belum diketahui dan belum pernah dijawab.
-faktaSebelumnya adalah pesan pengguna sebelumnya; koreksi yang lebih baru menggantikannya. jawabanSebelumnya hanya untuk memahami rujukan percakapan, bukan bukti.
+Sumber dengan utama:true dipilih Pasla karena paling sesuai dengan situasinya; utamakan sumber itu dan jangan memakai sumber lain yang subjeknya berbeda (misalnya aturan untuk pejabat atau lembaga tertentu). faktaSebelumnya adalah pesan pengguna sebelumnya; koreksi yang lebih baru menggantikannya. jawabanSebelumnya hanya untuk memahami rujukan percakapan, bukan bukti.
 Jangan memakai tanda pisah panjang. Tulis dalam bahasa Indonesia.`;
 
 function rapikan(text: string) {
@@ -170,7 +170,8 @@ export async function runTanya(input: ChatInput, deps: Deps) {
 
   await deps.progress("searching");
   // Rujukan eksplisit pengguna, lalu pasal kunci situasi, lalu hasil pencarian.
-  const toOpen: RujukanBuka[] = [...refs, ...(topik ? pasalKunci(topik, semuaPengguna) : [])];
+  const kunci = topik ? pasalKunci(topik, semuaPengguna) : [];
+  const toOpen: RujukanBuka[] = [...refs, ...kunci];
   if (topik) {
     const profil = PROFIL_TOPIK[topik];
     const discoveries: RujukanBuka[][] = [];
@@ -185,7 +186,10 @@ export async function runTanya(input: ChatInput, deps: Deps) {
       }
     }
     // Bergiliran supaya setiap kueri ikut menyumbang sumber.
-    for (let rank = 0; rank < 8; rank++) for (const list of discoveries) if (list[rank]) toOpen.push(list[rank]!);
+    // Bila pasal kunci sudah ada, hasil pencarian hanya pelengkap: paling banyak tiga, supaya AI tidak teralihkan.
+    const tambahan: RujukanBuka[] = [];
+    for (let rank = 0; rank < 8; rank++) for (const list of discoveries) if (list[rank]) tambahan.push(list[rank]!);
+    toOpen.push(...(kunci.length ? tambahan.slice(0, 3) : tambahan));
   }
 
   await deps.progress("opening");
@@ -216,6 +220,8 @@ export async function runTanya(input: ChatInput, deps: Deps) {
   }
 
   await deps.progress("drafting");
+  // Potongan dari rujukan eksplisit atau pasal kunci ditandai utama untuk model.
+  const utama = new Set(passages.filter((p) => [...refs, ...kunci].some((r) => "rujukan" in r && r.rujukan.toLowerCase() === p.identitas[0]?.toLowerCase() && (!("pasal" in r) || !r.pasal || p.locator.pasal?.toLowerCase() === r.pasal.toLowerCase()) || "nomor" in r && p.rujukan.includes(r.nomor))).map((p) => p.id));
   const lastAssistant = input.messages.filter((m) => m.role === "assistant").at(-1);
   const payload = {
     tanggal: new Date().toISOString().slice(0, 10),
@@ -223,7 +229,7 @@ export async function runTanya(input: ChatInput, deps: Deps) {
     pertanyaanTerbaru: current.text,
     faktaSebelumnya: users.slice(0, -1).map((m) => m.text).join("\n").slice(-3000),
     jawabanSebelumnya: lastAssistant ? lastAssistant.text.slice(0, 1200) : null,
-    sumber: passages.map((p) => ({ id: p.id, rujukan: p.rujukan, judul: p.judul.slice(0, 200), status: dicabut(p) ? "dicabut" : p.sumber.status, diubahDengan: p.sumber.diubahDengan.slice(0, 3), dicabutDengan: p.sumber.dicabutDengan.slice(0, 3), teks: p.text })),
+    sumber: passages.map((p) => ({ utama: utama.has(p.id), id: p.id, rujukan: p.rujukan, judul: p.judul.slice(0, 200), status: dicabut(p) ? "dicabut" : p.sumber.status, diubahDengan: p.sumber.diubahDengan.slice(0, 3), dicabutDengan: p.sumber.dicabutDengan.slice(0, 3), teks: p.text })),
   };
   const wire = await deps.model.generate({ system: SYSTEM, user: JSON.stringify(payload), schema: TanyaWireSchema, effort: "low", allowRetries: false, maxOutputTokens: 4096, signal: deps.signal });
 
