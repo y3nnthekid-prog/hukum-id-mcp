@@ -60,10 +60,10 @@ Jawab HANYA dari potongan "sumber". Jangan menambah pasal, nomor aturan, angka, 
 
 Isi kolom:
 - intinya: 2 sampai 4 kalimat yang langsung menanggapi pertanyaanTerbaru. Bahasa sehari-hari, ramah, tanpa istilah asing yang tidak dijelaskan. Gunakan bentuk bersyarat ("kalau ..., menurut aturan ...") karena fakta lengkap belum diketahui. Jangan menjanjikan hasil. Kalau sumber tidak menjawab pertanyaannya, katakan terus terang.
-- poin: 0 sampai 5 poin hukum, masing-masing SATU gagasan dari SATU sumber. passageId persis id sumber. kutipan disalin PERSIS dari teks sumber itu, satu rentang utuh tanpa elipsis dan tanpa mengubah kata, 8 sampai 80 kata. teks menjelaskan isi kutipan dengan bahasa sederhana, memakai subjek seperti dalam sumber (konsumen, pelaku usaha, pekerja, pengusaha, penyewa, debitur, nasabah). Jangan tulis "kamu berhak" atau "kamu wajib". Masukkan HANYA poin yang langsung membantu menjawab pertanyaanTerbaru. Sumber yang hanya setopik (misalnya soal gadai, pengalihan piutang, atau pelunasan dipercepat padahal yang ditanya hal lain) jangan dijadikan poin; poin kosong lebih baik daripada poin yang tidak menjawab. Sumber yang berstatus dicabut tidak boleh dipakai sebagai dasar yang berlaku.
+- poin: 0 sampai 5 poin hukum, masing-masing SATU gagasan dari SATU sumber. passageId persis id sumber. kutipan disalin PERSIS dari teks sumber itu, satu rentang utuh tanpa elipsis dan tanpa mengubah kata, 8 sampai 80 kata; salah ketik atau spasi aneh di sumber dibiarkan apa adanya, jangan dibetulkan. teks menjelaskan isi kutipan dengan bahasa sederhana, memakai subjek seperti dalam sumber (konsumen, pelaku usaha, pekerja, pengusaha, penyewa, debitur, nasabah). Jangan tulis "kamu berhak" atau "kamu wajib". Masukkan HANYA poin yang langsung membantu menjawab pertanyaanTerbaru. Sumber yang hanya setopik (misalnya soal gadai, pengalihan piutang, atau pelunasan dipercepat padahal yang ditanya hal lain) jangan dijadikan poin; poin kosong lebih baik daripada poin yang tidak menjawab. Sumber yang berstatus dicabut tidak boleh dipakai sebagai dasar yang berlaku.
 - langkah: 2 sampai 4 langkah praktis yang aman dan umum, misalnya menyimpan bukti yang sudah ada, mencatat tanggal, menghubungi pihak lain secara tertulis dengan sopan. Jangan menebak fitur atau tombol aplikasi, jangan menyuruh menguji barang yang rusak, jangan meminta mengunggah berkas, jangan meminta data pribadi.
 - tanyaBalik: paling banyak 2 pertanyaan singkat tentang fakta penting yang belum diketahui dan belum pernah dijawab.
-Bila sumber berisi daftar atau tabel (misalnya besaran menurut masa kerja), cari butir yang cocok dengan fakta pengguna dan kutip butir itu saja sebagai satu rentang bersambung, tanpa pengantarnya; jangan menyalin seluruh daftar. Sumber dengan utama:true dipilih Pasla karena biasanya paling sesuai dengan situasinya; utamakan sumber itu bila isinya memang menjawab pertanyaanTerbaru, dan jangan memakai sumber lain yang subjeknya berbeda (misalnya aturan untuk pejabat atau lembaga tertentu). faktaSebelumnya adalah pesan pengguna sebelumnya; koreksi yang lebih baru menggantikannya. jawabanSebelumnya hanya untuk memahami rujukan percakapan, bukan bukti.
+Bila sumber berisi daftar atau tabel (misalnya besaran menurut masa kerja), cari butir yang cocok dengan fakta pengguna dan kutip butir itu saja sebagai satu rentang bersambung, tanpa pengantarnya; jangan menyalin seluruh daftar. Sumber dengan utama:true dipilih Pasla karena biasanya paling sesuai dengan situasinya; bila isinya memang menjawab pertanyaanTerbaru, jadikan sumber itu poin pertama dan dasar intinya, lalu pakai sumber lain hanya sebagai pelengkap. Jangan memakai sumber lain yang subjeknya berbeda (misalnya aturan untuk pejabat atau lembaga tertentu). faktaSebelumnya adalah pesan pengguna sebelumnya; koreksi yang lebih baru menggantikannya. jawabanSebelumnya hanya untuk memahami rujukan percakapan, bukan bukti.
 Jangan memakai tanda pisah panjang. Tulis dalam bahasa Indonesia.`;
 
 export function rapikan(text: string) {
@@ -91,6 +91,23 @@ export function kalimat(text: string) {
   }
   if (t.slice(awal).trim()) hasil.push(t.slice(awal).trim());
   return hasil.filter(Boolean);
+}
+/** Model kadang menyambung ayat yang berjauhan dengan elipsis ("(1) ... (4) ..."). Bila setiap bagian ada
+ * berurutan di sumber, kutipannya menjadi rentang asli dari awal bagian pertama sampai akhir bagian terakhir,
+ * sehingga yang tampil tetap teks sumber yang bersambung. */
+export function cariKutipan(text: string, kutipan: string) {
+  const persis = findQuote(text, kutipan);
+  if (persis) return persis;
+  const bagian = kutipan.split(/\s*(?:\.{3}|…)\s*/u).map((s) => s.trim()).filter((s) => wordCount(s) >= 3);
+  if (bagian.length < 2) return null;
+  let start = -1, end = 0;
+  for (const b of bagian) {
+    const at = findQuote(text.slice(end), b);
+    if (!at) return null;
+    if (start === -1) start = end + at.start;
+    end += at.end;
+  }
+  return { start, end };
 }
 /** Ambil kalimat utuh sampai batas; kalimat pertama yang terlalu panjang dipotong di batas kata. */
 export function potongPanjang(text: string, max: number) {
@@ -288,6 +305,7 @@ export async function runTanya(input: ChatInput, deps: Deps) {
     const buang = payload.sumber.map((x) => x.utama).lastIndexOf(false);
     payload.sumber.splice(buang >= 0 ? buang : payload.sumber.length - 1, 1);
   }
+  if (process.env.PASLA_TANYA_DIAG === "1") console.warn(JSON.stringify({ event: "tanya_diag_sumber", kunci, toOpen, sumber: payload.sumber.map((s) => ({ rujukan: s.rujukan, utama: s.utama, panjang: s.teks.length })) }));
   const wire = await deps.model.generate({ system: SYSTEM, user: JSON.stringify(payload), schema: TanyaWireSchema, effort: "low", allowRetries: false, maxOutputTokens: 4096, signal: deps.signal });
 
   await deps.progress("checking");
@@ -303,8 +321,13 @@ export async function runTanya(input: ChatInput, deps: Deps) {
     const p = passages.find((x) => x.id === item.passageId);
     if (!p) { buang("?", "id-sumber"); continue; }
     if (dicabut(p)) { batas.push(`${p.rujukan} sudah dicabut, jadi tidak dipakai sebagai dasar.`); buang(p.rujukan, "dicabut"); continue; }
-    const at = findQuote(p.text, item.kutipan);
-    if (!at) { buang(p.rujukan, "kutipan-tidak-cocok"); continue; }
+    const at = cariKutipan(p.text, item.kutipan);
+    if (!at) {
+      buang(p.rujukan, "kutipan-tidak-cocok");
+      // Diagnosis sementara oleh operator saja (bawaan mati): kutipan model dibanding teks sumber.
+      if (process.env.PASLA_TANYA_DIAG === "1") console.warn(JSON.stringify({ event: "tanya_diag_kutipan", rujukan: p.rujukan, kutipan: item.kutipan.slice(0, 400), sumber: p.text.slice(0, 600) }));
+      continue;
+    }
     const quote = p.text.slice(at.start, at.end).trim();
     if (wordCount(quote) < 5 || quote.length > 1200 || quotes.has(quote)) { buang(p.rujukan, "kutipan-ukuran-atau-ganda"); continue; }
     // Teks Arab dari PDF fatwa DSN memakai font non-Unicode dan keluar sebagai bentuk sajian rusak; jangan dikutip.

@@ -57,7 +57,7 @@ export const PROFIL_TOPIK: Record<Topik, Profil> = {
     entri: [
       { pola: /\b(?:dipecat|pecat|diberhentikan|di-?phk|phk|pemutusan|disuruh berhenti|diminta berhenti|dirumahkan)\b/iu, kueri: "pemutusan hubungan kerja", pasal: uu("PP 35/2021", "40") },
       { pola: /\b(?:pesangon|uang (?:pisah|penghargaan))\b/iu, kueri: "uang pesangon penghargaan masa kerja", pasal: uu("PP 35/2021", "40") },
-      { pola: /\b(?:gaji\w*|upah\w*)\b.{0,40}\b(?:(?:belum|tidak|tak|ga|gak|nggak|enggak)\s+(?:di)?(?:bayar\w*|kasih|keluar|cair|turun)|ditahan|nunggak|dicicil|telat|terlambat)\b|\b(?:telat|terlambat|belum)\s+(?:gajian|digaji)\b/iu, kueri: "pembayaran upah terlambat denda", pasal: uu("PP 36/2021", "55", "61") },
+      { pola: /\b(?:gaji\w*|upah\w*)\b.{0,40}\b(?:(?:belum|tidak|tak|ga|gak|nggak|enggak)\s+(?:di)?(?:bayar\w*|kasih|keluar|cair|turun)|ditahan|nunggak|dicicil|telat|terlambat)\b|\b(?:telat|terlambat|belum)\s+(?:gajian|digaji)\b|\b(?:telat|terlambat|belum|tidak|tak|ga|gak|nggak|enggak)\s+(?:bayar|membayar|dibayar|kasih|ngasih)\s+(?:gaji|upah)|\blewat\s+(?:dari\s+)?(?:tanggal\s+)?gajian\b/iu, kueri: "pembayaran upah terlambat denda", pasal: uu("PP 36/2021", "55", "61") },
       { pola: /\b(?:gaji\w*|upah\w*)\b/iu, kueri: "pembayaran upah pekerja" },
       { pola: /\blembur\b/iu, kueri: "waktu kerja lembur upah lembur", pasal: uu("PP 35/2021", "27") },
       { pola: /\b(?:habis kontrak|kontrak (?:habis|selesai|berakhir))\b/iu, kueri: "berakhirnya perjanjian kerja waktu tertentu kompensasi", pasal: uu("PP 35/2021", "15") },

@@ -7,7 +7,7 @@ import { contentHash } from '../src/core/passages.js';
 import { signedPart, type PotonganBertanda } from '../src/core/sumber.js';
 import { requestHash } from '../src/core/step-ticket.js';
 import { tentukanTopik, susunKueri, pasalKunci } from '../src/core/kamus-awam.js';
-import { runTanya, rujukanEksplisit, sebutanAturan, dicabut, kalimat, potongPanjang, rapikan } from '../src/core/tanya.js';
+import { runTanya, rujukanEksplisit, sebutanAturan, dicabut, kalimat, potongPanjang, rapikan, cariKutipan } from '../src/core/tanya.js';
 import { createTanyaLedger, hariWib } from '../src/core/tanya-ledger.js';
 import { verifyAnyChatTicket, verifyChatTicket } from '../src/core/chat-ticket.js';
 import { registerChat, TANYA_RESERVE_MICRO } from '../src/api/chat.js';
@@ -234,8 +234,22 @@ test('new verified key articles open for common situations', () => {
   assert.deepEqual(pasalKunci('pekerjaan', 'Saya mau resign, dapat apa?').map((r: any) => r.pasal), ['Pasal 50']);
   assert.deepEqual(pasalKunci('pekerjaan', 'Gajiku sudah dua bulan belum dibayar').map((r: any) => r.rujukan + ' ' + r.pasal), ['PP 36/2021 Pasal 55', 'PP 36/2021 Pasal 61']);
   assert.deepEqual(pasalKunci('pekerjaan', 'Bos telat gajian terus tiap bulan').map((r: any) => r.pasal), ['Pasal 55', 'Pasal 61']);
+  assert.deepEqual(pasalKunci('pekerjaan', 'Bos telat bayar gaji terus, ada dendanya nggak?').map((r: any) => r.pasal), ['Pasal 55', 'Pasal 61']);
+  assert.deepEqual(pasalKunci('pekerjaan', 'Sudah lewat tanggal gajian 10 hari').map((r: any) => r.pasal), ['Pasal 55', 'Pasal 61']);
   assert.deepEqual(pasalKunci('pekerjaan', 'Kapan kenaikan gaji wajib diberikan?'), []);
   assert.deepEqual(pasalKunci('sewa-utang', 'Pinjol neror dan menyebar data saya, penagih kasar').map((r: any) => r.rujukan + ' ' + r.pasal), ['POJK 10/POJK.05/2022 Pasal 102']);
   assert.deepEqual(pasalKunci('konsumen', 'Barang belum dikirim padahal sudah bayar').map((r: any) => r.pasal), ['Pasal 16']);
   assert.deepEqual(pasalKunci('konsumen', 'Barang datang rusak, penjual menolak mengembalikan uang').map((r: any) => r.pasal), ['Pasal 19', 'Pasal 4']);
+});
+
+test('a quote that joins distant clauses with an ellipsis becomes the original continuous span', () => {
+  const text = 'Pasal 55\n(1) Pengusaha wajib membayar Upah pada waktu yang\ntelah diperjanjikan antara Pengusaha dengan\nPekerja/Buruh.\n(2) Dalam hal hari libur , pelaksanaan pembayara n Upah\ndiatur dalam Perjanjian Kerja.\n(4) Jangka waktu pembayaran Upah oleh Pengusaha tidak\nboleh lebih dari 1 (satu) bulan.\n';
+  const at = cariKutipan(text, '(1) Pengusaha wajib membayar Upah pada waktu yang telah diperjanjikan antara Pengusaha dengan Pekerja/Buruh.\n...\n(4) Jangka waktu pembayaran Upah oleh Pengusaha tidak boleh lebih dari 1 (satu) bulan.');
+  assert.ok(at);
+  const quote = text.slice(at.start, at.end);
+  assert.ok(quote.startsWith('(1) Pengusaha wajib') && quote.endsWith('1 (satu) bulan.') && quote.includes('(2) Dalam hal'));
+  // Urutan terbalik, kata yang diubah, atau bagian yang tidak ada tetap ditolak.
+  assert.equal(cariKutipan(text, '(4) Jangka waktu pembayaran Upah oleh Pengusaha … (1) Pengusaha wajib membayar Upah'), null);
+  assert.equal(cariKutipan(text, '(1) Pengusaha wajib membayar Upah pada waktu yang telah diperjanjian … tidak boleh lebih dari 1 (satu) bulan'), null);
+  assert.equal(cariKutipan(text, 'Pengusaha wajib membayar Upah … tidak boleh lebih dari 2 (dua) bulan'), null);
 });
