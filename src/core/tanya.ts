@@ -91,8 +91,10 @@ export function rujukanEksplisit(text: string): RujukanBuka[] {
   return refs.filter((r) => { const key = JSON.stringify(r).toLowerCase(); if (seen.has(key)) return false; seen.add(key); return true; }).slice(0, 3);
 }
 
-function dicabut(p: PotonganBertanda) {
-  return p.sumber.dicabutDengan.length > 0 || /\b(?:dicabut|tidak berlaku)\b/iu.test(p.sumber.status ?? "");
+/** Dicabut hanya bila ada pencabutnya atau statusnya diawali "Tidak Berlaku"/"Dicabut".
+ * Status seperti "Berlaku; dibentuk atas UU 11/2020 yang kini dicabut" tetap berlaku. */
+export function dicabut(p: Pick<PotonganBertanda, "sumber">) {
+  return p.sumber.dicabutDengan.length > 0 || /^(?:[^:;]{0,40}:\s*)?(?:tidak berlaku|dicabut)\b/iu.test((p.sumber.status ?? "").trim());
 }
 
 /** Nomor aturan dan pasal yang disebut dalam teks, dalam bentuk ternormalisasi huruf kecil. */

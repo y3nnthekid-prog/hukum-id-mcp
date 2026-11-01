@@ -7,7 +7,7 @@ import { contentHash } from '../src/core/passages.js';
 import { signedPart, type PotonganBertanda } from '../src/core/sumber.js';
 import { requestHash } from '../src/core/step-ticket.js';
 import { tentukanTopik, susunKueri, pasalKunci } from '../src/core/kamus-awam.js';
-import { runTanya, rujukanEksplisit, sebutanAturan } from '../src/core/tanya.js';
+import { runTanya, rujukanEksplisit, sebutanAturan, dicabut } from '../src/core/tanya.js';
 import { createTanyaLedger, hariWib } from '../src/core/tanya-ledger.js';
 import { verifyAnyChatTicket, verifyChatTicket } from '../src/core/chat-ticket.js';
 import { registerChat, TANYA_RESERVE_MICRO } from '../src/api/chat.js';
@@ -145,4 +145,12 @@ test('situations open verified key articles before search results', () => {
   assert.deepEqual(pasalKunci('sewa-utang', 'Teman meminjam uang dan tidak mau membayar').map((r: any) => r.pasal), ['Pasal 1754', 'Pasal 1763', 'Pasal 1238', 'Pasal 1243']);
   assert.deepEqual(pasalKunci('pekerjaan', 'Saya di-PHK, berapa pesangon saya?'), [{ jenis: 'peraturan', rujukan: 'PP 35/2021', pasal: 'Pasal 40' }]);
   assert.deepEqual(pasalKunci('syariah', 'Saya terlambat bayar cicilan murabahah'), [{ jenis: 'fatwa', nomor: '17/DSN-MUI/IX/2000' }]);
+});
+
+test('a status that merely mentions an earlier revoked law is not treated as revoked', () => {
+  const s = (status: string, dicabutDengan: string[] = []) => ({ sumber: { status, dicabutDengan } } as any);
+  assert.equal(dicabut(s('JDIH BPK 1 Nov 2026: Berlaku; dibentuk atas UU 11/2020 yang kini dicabut UU 6/2023.')), false);
+  assert.equal(dicabut(s('Tidak Berlaku')), true);
+  assert.equal(dicabut(s('JDIH BPK: Dicabut oleh UU 8/1999')), true);
+  assert.equal(dicabut(s('Berlaku', ['UU 1/2026'])), true);
 });
