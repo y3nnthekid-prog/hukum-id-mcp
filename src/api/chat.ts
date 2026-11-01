@@ -4,7 +4,7 @@ import { stream } from 'hono/streaming';
 import { setTimeout as delay } from 'node:timers/promises';
 import { syntheticAudit } from '../core/chat-audit.js';
 import { ChatInputSchema, runChat } from '../core/chat.js';
-import { verifyAnyChatTicket, type ChatTicket, type TanyaTicket } from '../core/chat-ticket.js';
+import { verifyAnyChatTicket, verifyTanyaReadTicket, type ChatTicket, type TanyaTicket } from '../core/chat-ticket.js';
 import { createAzureModel, createAzureTanyaModel, TANYA_PRICE } from '../ai/azure.js';
 import { runTanya } from '../core/tanya.js';
 import type { TanyaLedger } from '../core/tanya-ledger.js';
@@ -26,6 +26,17 @@ export function registerChat(app:Hono<Env>,deps:{chat?:ChatEngine|undefined;tany
   return c.json({available:ready&&cooldown<=Math.floor(Date.now()/1000),...(ready&&cooldown>Math.floor(Date.now()/1000)?{nextAllowedAt:cooldown}:{}),...(tanya?{tanya:{available:tanya.nextAllowedAt===null&&tanya.dayRemainingMicro>=TANYA_RESERVE_MICRO&&tanya.monthRemainingMicro>=TANYA_RESERVE_MICRO,nextAllowedAt:tanya.nextAllowedAt,
    // Sisa anggaran hanya untuk pemantau yang membawa token rahasia.
    ...(deps.tanya?.monitorToken&&c.req.header('x-pasla-pemantau')===deps.tanya.monitorToken?{dayRemainingMicro:tanya.dayRemainingMicro,monthRemainingMicro:tanya.monthRemainingMicro}:{})}}:{})});});
+ // Hasil giliran yang selesai setelah browser terputus; dibaca dengan tiket v4 yang terikat turnId.
+ app.get('/v2/chat/hasil/:turnId',c=>{
+  c.header('cache-control','no-store');
+  const tanya=deps.tanya,turnId=c.req.param('turnId');
+  if(!tanya||!deps.stepTickets)return c.json({error:{code:'CHAT_DISABLED'}},503);
+  if(!/^[a-zA-Z0-9_-]{1,100}$/.test(turnId))return c.json({error:{code:'CHAT_INPUT'}},422);
+  let ticket:TanyaTicket;
+  try{ticket=verifyTanyaReadTicket(c.req.header('x-pasla-chat-ticket')??'',deps.stepTickets.secret,deps.stepTickets.audience,turnId);}catch{return c.json({error:{code:'CHAT_TICKET'}},401);}
+  const hasil=tanya.ledger.ambilHasil(turnId,ticket.inputHash);
+  return hasil?c.json({data:hasil}):c.json({error:{code:'TANYA_BELUM_ADA'}},404);
+ });
  app.post('/v2/chat/turn',async c=>{
   if(!(deps.chat||deps.tanya)||!deps.stepTickets||!deps.telusur||!deps.sumber||!deps.signer)return c.json({error:{code:'CHAT_DISABLED'}},503);
   let size=0;const chunks:Uint8Array[]=[];const reader=c.req.raw.body?.getReader();
@@ -103,10 +114,13 @@ function tanyaTurn(c:any,{input,ticket,tanya,signer,telusur,sumber}:TanyaTurn){
    // Penuh, sibuk atau dibatasi: tolak sebelum mencari sumber supaya pengguna tidak menunggu sia-sia.
    const penolakan=tanya.ledger.precheck(TANYA_RESERVE_MICRO);if(penolakan)throw new Error(penolakan);
    const result=await runTanya(input,{model,telusur,sumber,signer,keys:[signer.publicKeyPem],signal,progress:stage=>{phase=stage;return send({type:'progress',stage}).then(()=>undefined);}});
-   await send({type:'result',data:result,usage:usage(),usageReceipt:receipt()});
+   const akhir={type:'result',data:result,usage:usage(),usageReceipt:receipt()};
+   tanya.ledger.simpanHasil(input.turnId,ticket.inputHash,akhir);
+   await send(akhir);
   }catch(cause){
    if(signal.aborted)failureCode='CHAT_INTERRUPTED';else if(cause instanceof Error&&/^(?:TANYA_|CHAT_)/.test(cause.message))failureCode=cause.message;
    console.warn(JSON.stringify({event:'tanya_turn_failed',turnId:input.turnId,phase,code:failureCode,...usage()}));
+   if(failureCode!=='TANYA_BUSY'&&failureCode!=='TANYA_RATE')tanya.ledger.simpanHasil(input.turnId,ticket.inputHash,{type:'error',code:failureCode,usage:usage(),usageReceipt:receipt()});
    await send({type:'error',code:failureCode,usage:usage(),usageReceipt:receipt(),...(failureCode==='TANYA_RATE'||failureCode==='HTTP_429'?{nextAllowedAt:tanya.ledger.status().nextAllowedAt}:{})}).catch(()=>undefined);
   }finally{clearInterval(heartbeat);}
  },async()=>undefined);

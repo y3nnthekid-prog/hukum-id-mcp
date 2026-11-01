@@ -138,6 +138,16 @@ test('v4 public ticket runs one GPT-5.1 call and signs a settled usage receipt',
     assert.equal(receipt.costMicro, 3000 * 1.25 + 500 * 10);
     assert.equal(ledger.status().dayRemainingMicro, 3_000_000 - receipt.costMicro);
     assert.ok(TANYA_RESERVE_MICRO > receipt.costMicro);
+    // Browser terputus: web mengambil hasil yang sama lewat tiket baca yang terikat turnId.
+    const baca = ticket(secret, { ...body, jti: 'r'.repeat(43) });
+    const ulang = await app.request('/v2/chat/hasil/t1', { headers: { 'x-pasla-chat-ticket': baca } });
+    assert.equal(ulang.status, 200);
+    const simpan = (await ulang.json() as any).data;
+    assert.equal(simpan.type, 'result');
+    assert.deepEqual(simpan.data.poin, result.data.poin);
+    assert.equal((await app.request('/v2/chat/hasil/t2', { headers: { 'x-pasla-chat-ticket': baca } })).status, 401);
+    const lain = ticket(secret, { ...body, inputHash: 'f'.repeat(64) });
+    assert.equal((await app.request('/v2/chat/hasil/t1', { headers: { 'x-pasla-chat-ticket': lain } })).status, 404);
   } finally { ledger.close(); }
 });
 

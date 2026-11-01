@@ -20,6 +20,16 @@ function verifyAny(encoded:string,secret:string,aud:string,input:{conversationId
 export function verifyChatTicket(encoded:string,secret:string,aud:string,input:{conversationId:string;turnId:string},clock=()=>Math.floor(Date.now()/1000)):ChatTicket {
  const t=verifyAny(encoded,secret,aud,input,clock);if(t.v!==3)throw new Error('CHAT_TICKET');return t;
 }
+/** Tiket v4 untuk membaca hasil giliran yang sudah selesai. Isi pertanyaan tidak ikut dikirim,
+ * jadi yang dicocokkan: tanda HMAC, audiens, masa berlaku, dan turnId; inputHash dicocokkan ke hasil tersimpan. */
+export function verifyTanyaReadTicket(encoded:string,secret:string,aud:string,turnId:string,clock=()=>Math.floor(Date.now()/1000)):TanyaTicket {
+ if(secret.length<43||encoded.length>2500)throw new Error('CHAT_TICKET');
+ const parts=encoded.split('.');if(parts.length!==2||parts.some(p=>! /^[\w-]+$/.test(p)))throw new Error('CHAT_TICKET');
+ const expected=createHmac('sha256',secret).update(parts[0]!).digest();const actual=Buffer.from(parts[1]!,'base64url');
+ if(actual.length!==expected.length||!timingSafeEqual(actual,expected))throw new Error('CHAT_TICKET');
+ const t=TanyaSchema.parse(JSON.parse(Buffer.from(parts[0]!,'base64url').toString('utf8')));const now=clock();
+ if(t.aud!==aud||t.turnId!==turnId||t.exp<=now||t.iat>now+5||t.exp-t.iat>360)throw new Error('CHAT_TICKET');return t;
+}
 export function verifyAnyChatTicket(encoded:string,secret:string,aud:string,input:{conversationId:string;turnId:string},clock=()=>Math.floor(Date.now()/1000)) {
  return verifyAny(encoded,secret,aud,input,clock);
 }

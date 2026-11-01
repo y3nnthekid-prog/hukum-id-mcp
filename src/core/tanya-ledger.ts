@@ -31,6 +31,7 @@ export function createTanyaLedger(
     CREATE TABLE IF NOT EXISTS holds(jti TEXT PRIMARY KEY, day TEXT NOT NULL, reserved INTEGER NOT NULL, settled INTEGER, active_until INTEGER NOT NULL);
     CREATE INDEX IF NOT EXISTS holds_day ON holds(day);
     CREATE TABLE IF NOT EXISTS cooldown(id INTEGER PRIMARY KEY CHECK(id=1), until_time INTEGER NOT NULL);
+    CREATE TABLE IF NOT EXISTS hasil(turn_id TEXT PRIMARY KEY, input_hash TEXT NOT NULL, body TEXT NOT NULL, created_at INTEGER NOT NULL);
     INSERT OR IGNORE INTO cooldown VALUES(1,0);`);
 
   const spent = (pattern: string) =>
@@ -89,6 +90,16 @@ export function createTanyaLedger(
       const now = clock();
       if (!Number.isSafeInteger(time) || time < now || time > now + 86400) throw new Error("TANYA_WAIT");
       db.prepare("UPDATE cooldown SET until_time=max(until_time,?) WHERE id=1").run(time);
+    },
+    /** Hasil akhir giliran (jawaban atau galat, beserta tanda terima) disimpan 15 menit untuk diambil ulang web. */
+    simpanHasil(turnId: string, inputHash: string, event: unknown) {
+      const now = clock();
+      db.prepare("DELETE FROM hasil WHERE created_at<?").run(now - 900);
+      db.prepare("INSERT OR REPLACE INTO hasil VALUES(?,?,?,?)").run(turnId, inputHash, JSON.stringify(event), now);
+    },
+    ambilHasil(turnId: string, inputHash: string): unknown | null {
+      const row = db.prepare("SELECT body FROM hasil WHERE turn_id=? AND input_hash=? AND created_at>=?").get(turnId, inputHash, clock() - 900);
+      return row ? JSON.parse(String(row.body)) : null;
     },
     close() {
       db.close();
