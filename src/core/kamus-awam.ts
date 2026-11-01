@@ -34,7 +34,7 @@ export const PROFIL_TOPIK: Record<Topik, Profil> = {
     ],
     entri: [
       { pola: /\b(?:rusak|cacat|pecah|retak|mati|tidak berfungsi|tak berfungsi|bekas)\b/iu, kueri: "barang cacat rusak ganti rugi", pasal: uu("UU 8/1999", "19", "4") },
-      { pola: /\b(?:refund|uang kembali|pengembalian (?:dana|uang)|balikin uang|minta uang)\b/iu, kueri: "pengembalian uang ganti rugi konsumen", pasal: uu("UU 8/1999", "19") },
+      { pola: /\b(?:refund|uang kembali|pengembalian (?:dana|uang)|balikin uang|minta uang|mengembalikan uang|uang\w* (?:tidak|belum|ga|gak|nggak) dikembalikan)\b/iu, kueri: "pengembalian uang ganti rugi konsumen", pasal: uu("UU 8/1999", "19") },
       { pola: /\b(?:tidak sesuai|tak sesuai|beda|berbeda|palsu|kw|tiruan|salah kirim)\b/iu, kueri: "barang tidak sesuai dengan yang dijanjikan", pasal: uu("UU 8/1999", "4", "7") },
       { pola: /\bgaransi\b/iu, kueri: "jaminan garansi purna jual", pasal: uu("UU 8/1999", "25", "26") },
       { pola: /\b(?:tidak (?:dikirim|sampai|datang)|belum (?:dikirim|sampai|datang)|hilang|telat (?:dikirim|sampai))\b/iu, kueri: "barang tidak dikirim pelaku usaha", pasal: uu("UU 8/1999", "16") },

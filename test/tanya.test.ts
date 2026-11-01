@@ -237,4 +237,5 @@ test('new verified key articles open for common situations', () => {
   assert.deepEqual(pasalKunci('pekerjaan', 'Kapan kenaikan gaji wajib diberikan?'), []);
   assert.deepEqual(pasalKunci('sewa-utang', 'Pinjol neror dan menyebar data saya, penagih kasar').map((r: any) => r.rujukan + ' ' + r.pasal), ['POJK 10/POJK.05/2022 Pasal 102']);
   assert.deepEqual(pasalKunci('konsumen', 'Barang belum dikirim padahal sudah bayar').map((r: any) => r.pasal), ['Pasal 16']);
+  assert.deepEqual(pasalKunci('konsumen', 'Barang datang rusak, penjual menolak mengembalikan uang').map((r: any) => r.pasal), ['Pasal 19', 'Pasal 4']);
 });
