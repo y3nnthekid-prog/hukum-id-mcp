@@ -7,7 +7,7 @@ import { contentHash } from '../src/core/passages.js';
 import { signedPart, type PotonganBertanda } from '../src/core/sumber.js';
 import { requestHash } from '../src/core/step-ticket.js';
 import { tentukanTopik, susunKueri, pasalKunci } from '../src/core/kamus-awam.js';
-import { runTanya, rujukanEksplisit, sebutanAturan, dicabut } from '../src/core/tanya.js';
+import { runTanya, rujukanEksplisit, sebutanAturan, dicabut, kalimat, potongPanjang, rapikan } from '../src/core/tanya.js';
 import { createTanyaLedger, hariWib } from '../src/core/tanya-ledger.js';
 import { verifyAnyChatTicket, verifyChatTicket } from '../src/core/chat-ticket.js';
 import { registerChat, TANYA_RESERVE_MICRO } from '../src/api/chat.js';
@@ -160,4 +160,39 @@ test('garbled Arabic presentation forms from fatwa PDFs are never quoted', async
   const fake = fakeModel({ intinya: 'Kalau barang tidak sesuai, konsumen dapat meminta ganti rugi.', poin: [{ passageId: 'p-arab', kutipan: rusak.text.slice(0, 40), teks: 'Kutipan hadis.' }], langkah: [], tanyaBalik: [] });
   const result = await runTanya(input('Barang saya rusak, penjual menolak refund'), deps([rusak], fake.model));
   assert.equal(result.poin.length, 0);
+});
+
+test('sentence splitting survives abbreviations, money and web addresses', () => {
+  assert.deepEqual(kalimat('Menurut UU No. 13 Tahun 2003 pekerja berhak pesangon. Lalu hubungi Disnaker.'), ['Menurut UU No. 13 Tahun 2003 pekerja berhak pesangon.', 'Lalu hubungi Disnaker.']);
+  assert.deepEqual(kalimat('Gajinya Rp5.000.000 per bulan. Cek di ojk.go.id ya.'), ['Gajinya Rp5.000.000 per bulan.', 'Cek di ojk.go.id ya.']);
+  assert.equal(rapikan('Masa kerja 1–3 tahun — dapat 2 bulan upah.'), 'Masa kerja 1-3 tahun, dapat 2 bulan upah.');
+  assert.deepEqual(sebutanAturan('Menurut UU No. 13 Tahun 2003, Permenaker No. 6 Tahun 2016 dan POJK Nomor 10/POJK.05/2022.').regs, ['uu 13/2003', 'permenaker 6/2016', 'pojk 10/2022']);
+  assert.match(potongPanjang('Satu kalimat panjang sekali tanpa titik yang terus berlanjut melewati batas yang ditentukan', 40), /…$/);
+});
+
+test('an unopened regulation hidden behind "No." is still removed', async () => {
+  const fake = fakeModel({ intinya: 'Kalau barang tidak sesuai, konsumen dapat meminta ganti rugi. Menurut UU No. 13 Tahun 2003 penjual wajib membayar dua kali lipat.', poin: [], langkah: [], tanyaBalik: [] });
+  const result = await runTanya(input('Barang saya rusak, penjual menolak refund'), deps([hak], fake.model));
+  assert.doesNotMatch(result.intinya, /13 Tahun 2003|dua kali/);
+});
+
+test('revocation is read from the start of any status segment, partial revocation is not total', () => {
+  const s = (status: string) => ({ sumber: { status, dicabutDengan: [] } } as any);
+  assert.equal(dicabut(s('JDIH BPK 1 Nov 2026 pukul 10:00 WIB: Dicabut oleh UU 1/2026')), true);
+  assert.equal(dicabut(s('Dicabut sebagian oleh KUHP')), false);
+});
+
+test('precheck refuses before searching and public status hides budget numbers', async () => {
+  const ledger = createTanyaLedger(':memory:', { dayMicro: 1000, monthMicro: 5000, concurrent: 1 });
+  assert.equal(ledger.precheck(100), null);
+  ledger.admit('k'.repeat(43), 100);
+  assert.equal(ledger.precheck(100), 'TANYA_BUSY');
+  const app = new Hono();
+  const svc = services([hak]);
+  registerChat(app as any, { tanya: { key: 'k', ledger, monitorToken: 'rahasia-pemantau' }, stepTickets: { secret: 's'.repeat(43), audience: 'https://api.pasla.tech' }, telusur: svc.telusur, sumber: svc.sumber, signer });
+  const publik = await (await app.request('/v2/chat/status')).json() as any;
+  assert.equal('dayRemainingMicro' in publik.tanya, false);
+  const pemantau = await (await app.request('/v2/chat/status', { headers: { 'x-pasla-pemantau': 'rahasia-pemantau' } })).json() as any;
+  assert.equal(typeof pemantau.tanya.dayRemainingMicro, 'number');
+  ledger.close();
 });

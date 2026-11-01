@@ -50,6 +50,16 @@ export function createTanyaLedger(
         nextAllowedAt: until > now ? until : null,
       };
     },
+    /** Pemeriksaan tanpa menulis, sebelum pencarian. Mengembalikan kode penolakan atau null. */
+    precheck(reserveMicro: number): string | null {
+      const now = clock();
+      const day = hariWib(now);
+      if (cooldownUntil() > now) return "TANYA_RATE";
+      if (Number(db.prepare("SELECT count(*) AS n FROM holds WHERE active_until>?").get(now)!.n) >= limits.concurrent) return "TANYA_BUSY";
+      if (spent(day) + reserveMicro > limits.dayMicro) return "TANYA_BUDGET_DAY";
+      if (spent(day.slice(0, 7) + "%") + reserveMicro > limits.monthMicro) return "TANYA_BUDGET_MONTH";
+      return null;
+    },
     /** Menahan anggaran tepat sebelum panggilan model. Melempar bila tidak boleh. */
     admit(jti: string, reserveMicro: number, holdSeconds = 360) {
       const now = clock();

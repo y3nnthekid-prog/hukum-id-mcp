@@ -156,7 +156,7 @@ const server = createPlatformServer({
     const file = process.env.PASLA_TANYA_LEDGER_FILE;
     if (!process.env.PASLA_AZURE_OPENAI_KEY || !file || file === ":memory:") throw new Error("TANYA_CONFIG");
     const number = (name: string, fallback: number) => { const value = Number(process.env[name] ?? fallback); if (!Number.isSafeInteger(value) || value < 1) throw new Error("TANYA_CONFIG"); return value; };
-    return { key: process.env.PASLA_AZURE_OPENAI_KEY, ledger: createTanyaLedger(file, { dayMicro: number("PASLA_TANYA_DAY_MICRO", 3_000_000), monthMicro: number("PASLA_TANYA_MONTH_MICRO", 30_000_000), concurrent: number("PASLA_TANYA_CONCURRENT", 3) }) };
+    return { key: process.env.PASLA_AZURE_OPENAI_KEY, monitorToken: process.env.PASLA_MONITOR_TOKEN?.trim() || undefined, ledger: createTanyaLedger(file, { dayMicro: number("PASLA_TANYA_DAY_MICRO", 3_000_000), monthMicro: number("PASLA_TANYA_MONTH_MICRO", 30_000_000), concurrent: number("PASLA_TANYA_CONCURRENT", 3) }) };
   })() } : {}),
   ...(process.env.PASLA_CHAT_ENABLED==='true'?{chat:(()=>{
     const rpm=Number(process.env.PASLA_CHAT_AZURE_RPM),tpm=Number(process.env.PASLA_CHAT_AZURE_TPM);

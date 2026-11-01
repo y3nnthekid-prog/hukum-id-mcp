@@ -66,16 +66,40 @@ Isi kolom:
 Bila sumber berisi daftar atau tabel (misalnya besaran menurut masa kerja), cari butir yang cocok dengan fakta pengguna dan kutip butir itu saja beserta pengantarnya yang pendek; jangan menyalin seluruh daftar. Sumber dengan utama:true dipilih Pasla karena paling sesuai dengan situasinya; utamakan sumber itu dan jangan memakai sumber lain yang subjeknya berbeda (misalnya aturan untuk pejabat atau lembaga tertentu). faktaSebelumnya adalah pesan pengguna sebelumnya; koreksi yang lebih baru menggantikannya. jawabanSebelumnya hanya untuk memahami rujukan percakapan, bukan bukti.
 Jangan memakai tanda pisah panjang. Tulis dalam bahasa Indonesia.`;
 
-function rapikan(text: string) {
-  return text.replace(/\s*[—–]\s*/g, ", ").replace(/\s+/g, " ").trim();
+export function rapikan(text: string) {
+  // Tanda pisah di antara angka adalah rentang ("1–3 tahun"); selain itu jadi koma.
+  return text.replace(/(\d)\s*[—–]\s*(\d)/g, "$1-$2").replace(/\s*[—–]\s*/g, ", ").replace(/\s+/g, " ").trim();
 }
-function kalimat(text: string) {
-  return (rapikan(text).match(/[^.!?]+(?:[.!?]+|$)/g) ?? []).map((s) => s.trim()).filter(Boolean);
+// Singkatan yang diikuti titik tetapi bukan akhir kalimat.
+const SINGKATAN = /(?:^|\s)(?:no|nomor|rp|hlm|hal|dll|dsb|dkk|tbk|pt|cv|jl|bpk|ibu|sdr|kab|kec|prov|ayat|huruf|angka|butir|pasal|a\.n|u\.p|s\.d|[a-z])$/iu;
+/** Memecah teks menjadi kalimat tanpa terkecoh singkatan ("UU No. 13"), angka ("Rp5.000.000") atau alamat web. */
+export function kalimat(text: string) {
+  const t = rapikan(text);
+  const hasil: string[] = [];
+  let awal = 0;
+  for (let i = 0; i < t.length; i++) {
+    if (!".!?".includes(t[i]!)) continue;
+    let j = i;
+    while (j + 1 < t.length && ".!?".includes(t[j + 1]!)) j++;
+    const setelah = t.slice(j + 1);
+    // Batas kalimat hanya bila diikuti spasi lalu huruf besar, angka, tanda kutip, atau akhir teks.
+    const batas = setelah === "" || /^\s+["“'(]?[\p{Lu}\d]/u.test(setelah);
+    if (!batas || (t[i] === "." && SINGKATAN.test(t.slice(awal, i)))) { i = j; continue; }
+    hasil.push(t.slice(awal, j + 1).trim());
+    awal = j + 1;
+    i = j;
+  }
+  if (t.slice(awal).trim()) hasil.push(t.slice(awal).trim());
+  return hasil.filter(Boolean);
 }
-function potongPanjang(text: string, max: number) {
+/** Ambil kalimat utuh sampai batas; kalimat pertama yang terlalu panjang dipotong di batas kata. */
+export function potongPanjang(text: string, max: number) {
   let hasil = "";
   for (const s of kalimat(text)) {
-    if ((hasil + " " + s).trim().length > max) break;
+    if ((hasil + " " + s).trim().length > max) {
+      if (!hasil) { const potong = s.slice(0, max - 1); hasil = potong.slice(0, Math.max(potong.lastIndexOf(" "), Math.floor(max / 2))).replace(/[,;:]$/, "") + "…"; }
+      break;
+    }
     hasil = (hasil + " " + s).trim();
   }
   return hasil;
@@ -94,14 +118,20 @@ export function rujukanEksplisit(text: string): RujukanBuka[] {
 /** Dicabut hanya bila ada pencabutnya atau statusnya diawali "Tidak Berlaku"/"Dicabut".
  * Status seperti "Berlaku; dibentuk atas UU 11/2020 yang kini dicabut" tetap berlaku. */
 export function dicabut(p: Pick<PotonganBertanda, "sumber">) {
-  return p.sumber.dicabutDengan.length > 0 || /^(?:[^:;]{0,40}:\s*)?(?:tidak berlaku|dicabut)\b/iu.test((p.sumber.status ?? "").trim());
+  if (p.sumber.dicabutDengan.length > 0) return true;
+  const status = (p.sumber.status ?? "").trim();
+  // Status bisa diawali sumber, tanggal dan jam ("JDIH BPK 1 Nov 2026 10:00 WIB: Dicabut ..."): periksa awal setiap segmen.
+  return status.split(":").some((b) => /^(?:tidak berlaku|dicabut)\b(?!\s+sebagian)/iu.test(b.trim()));
 }
 
 /** Nomor aturan dan pasal yang disebut dalam teks, dalam bentuk ternormalisasi huruf kecil. */
 export function sebutanAturan(text: string) {
   const regs: string[] = [];
-  for (const m of text.matchAll(/\b(UU|Undang-Undang|Perppu|PP|Peraturan Pemerintah|Perpres|Permen[A-Za-z]{0,20}|POJK|PBI)\s*(?:No(?:mor)?\.?\s*)?(\d{1,4})\s*(?:\/|\s+Tahun\s+)\s*(\d{4})\b/giu)) {
-    const jenis = /^undang/i.test(m[1]!) ? "UU" : /^peraturan pemerintah/i.test(m[1]!) ? "PP" : m[1]!;
+  const pola = /\b(UU|Undang-Undang|Perppu|Perpu|PP|Peraturan Pemerintah|Perpres|Peraturan Presiden|Keppres|Permen[A-Za-z]{0,20}|Peraturan Menteri(?:\s+[A-Z][a-z]+){1,3}|POJK|Peraturan OJK|Peraturan Otoritas Jasa Keuangan|PBI|Peraturan Bank Indonesia)\s*(?:No(?:mor)?\.?\s*)?(\d{1,4})(?:\/[A-Z]{2,6}\.\d{1,2})?\s*(?:\/|\s+Tahun\s+)\s*(\d{4})\b/gu;
+  for (const m of text.matchAll(pola)) {
+    const asli = m[1]!;
+    const jenis = /^undang/i.test(asli) ? "UU" : /^peraturan pemerintah/i.test(asli) ? "PP" : /^peraturan presiden/i.test(asli) ? "Perpres"
+      : /^(?:peraturan ojk|peraturan otoritas)/i.test(asli) ? "POJK" : /^peraturan bank/i.test(asli) ? "PBI" : asli.replace(/\s+/g, " ");
     regs.push((normalizeRegulation(`${jenis} ${m[2]}/${m[3]}`) ?? `${jenis} ${m[2]}/${m[3]}`).toLowerCase());
   }
   const pasal = [...text.matchAll(/\bPasal\s+(\d{1,4}[A-Z]?)\b/giu)].map((m) => `pasal ${m[1]!.toLowerCase()}`);
@@ -110,7 +140,8 @@ export function sebutanAturan(text: string) {
 }
 
 function izinSebutan(passages: PotonganBertanda[]) {
-  const teks = passages.map((p) => [p.rujukan, p.judul, ...p.identitas, p.locator.pasal ?? "", p.locator.mengubah ?? ""].join(" ")).join(" \n ");
+  // Aturan pengubah dan pencabut ikut diizinkan: model memang diberi daftar itu bersama sumbernya.
+  const teks = passages.map((p) => [p.rujukan, p.judul, ...p.identitas, p.locator.pasal ?? "", p.locator.mengubah ?? "", ...p.sumber.diubahDengan, ...p.sumber.dicabutDengan].join(" ")).join(" \n ");
   const tersedia = sebutanAturan(teks);
   const judul = canonicalize(passages.map((p) => p.judul + " " + p.rujukan).join(" ")).text;
   return {
@@ -233,6 +264,13 @@ export async function runTanya(input: ChatInput, deps: Deps) {
     jawabanSebelumnya: lastAssistant ? lastAssistant.text.slice(0, 1200) : null,
     sumber: passages.map((p) => ({ utama: utama.has(p.id), id: p.id, rujukan: p.rujukan, judul: p.judul.slice(0, 200), status: dicabut(p) ? "dicabut" : p.sumber.status, diubahDengan: p.sumber.diubahDengan.slice(0, 3), dicabutDengan: p.sumber.dicabutDengan.slice(0, 3), teks: p.text })),
   };
+  // Batas transport 40.000 byte memuat prompt, skema dan isi. Sisakan ruang dengan membuang
+  // potongan pelengkap terakhir lebih dulu, lalu potongan utama, sehingga panggilan tidak pernah ditolak lokal.
+  const BATAS_ISI = 34_000;
+  while (Buffer.byteLength(SYSTEM) + Buffer.byteLength(JSON.stringify(payload)) > BATAS_ISI && payload.sumber.length > 1) {
+    const buang = payload.sumber.map((x) => x.utama).lastIndexOf(false);
+    payload.sumber.splice(buang >= 0 ? buang : payload.sumber.length - 1, 1);
+  }
   const wire = await deps.model.generate({ system: SYSTEM, user: JSON.stringify(payload), schema: TanyaWireSchema, effort: "low", allowRetries: false, maxOutputTokens: 4096, signal: deps.signal });
 
   await deps.progress("checking");
@@ -259,7 +297,7 @@ export async function runTanya(input: ChatInput, deps: Deps) {
   const intinyaAsli = potongPanjang(saringKalimat(wire.intinya, izin), 800);
   const intinya = intinyaAsli || (poin.length ? "Pasla menemukan aturan yang berkaitan. Baca poin dan kutipan aslinya di bawah." : "Pasla membuka beberapa aturan, tetapi belum bisa menyimpulkan jawaban yang aman dari sumber itu.");
   const langkah = wire.langkah.map((s) => potongPanjang(saringKalimat(s, izin, { langkah: true }), 260)).filter(Boolean).slice(0, LIMIT.langkah);
-  const tanyaBalik = wire.tanyaBalik.map((s) => rapikan(s)).filter((s) => s.length <= 200 && !requestsUnavailableUpload(s)).slice(0, LIMIT.tanyaBalik);
+  const tanyaBalik = wire.tanyaBalik.map((s) => saringKalimat(s, izin)).filter((s) => s && s.length <= 200 && !requestsUnavailableUpload(s)).slice(0, LIMIT.tanyaBalik);
   if (!poin.length) batas.push("Belum ada kutipan aturan yang lolos pemeriksaan, jadi anggap ini penjelasan umum.");
   if (passages.some((p) => p.verificationStatus === "verified_snapshot")) batas.push("Sebagian sumber adalah salinan tersimpan. Status terbarunya tetap perlu dicek di situs resmi.");
   batas.push(...peringatan);

@@ -15,7 +15,7 @@ import type { TelusurService } from '../core/telusur.js';
 import type { SumberService } from '../core/sumber.js';
 
 export type ChatEngine={key:string;claims:ReturnType<typeof createManagedClaims>;rpm:number;tpm:number};
-export type TanyaEngine={key:string;ledger:TanyaLedger};
+export type TanyaEngine={key:string;ledger:TanyaLedger;monitorToken?:string|undefined};
 // Worst case for one call: 40k input bytes (>= tokens) and 4096 output tokens.
 export const TANYA_RESERVE_MICRO=Math.ceil(40000*TANYA_PRICE.inputMicroPerToken+4096*TANYA_PRICE.outputMicroPerToken);
 const tanyaCost=(input:number,output:number)=>Math.ceil(input*TANYA_PRICE.inputMicroPerToken+output*TANYA_PRICE.outputMicroPerToken);
@@ -23,7 +23,9 @@ type Env={Variables:{traceId:string;userId:string|null}};
 export function registerChat(app:Hono<Env>,deps:{chat?:ChatEngine|undefined;tanya?:TanyaEngine|undefined;stepTickets?:{secret:string;audience:string}|undefined;telusur?:TelusurService|undefined;sumber?:SumberService|undefined;signer?:Signer|undefined}) {
  app.get('/v2/chat/status',c=>{c.header('cache-control','no-store');const ready=!!(deps.chat&&deps.stepTickets&&deps.telusur&&deps.sumber&&deps.signer),cooldown=deps.chat?.claims.cooldownUntil()??0;
   const services=!!(deps.stepTickets&&deps.telusur&&deps.sumber&&deps.signer),tanya=deps.tanya&&services?deps.tanya.ledger.status():null;
-  return c.json({available:ready&&cooldown<=Math.floor(Date.now()/1000),...(ready&&cooldown>Math.floor(Date.now()/1000)?{nextAllowedAt:cooldown}:{}),...(tanya?{tanya:{...tanya,available:tanya.nextAllowedAt===null&&tanya.dayRemainingMicro>=TANYA_RESERVE_MICRO&&tanya.monthRemainingMicro>=TANYA_RESERVE_MICRO}}:{})});});
+  return c.json({available:ready&&cooldown<=Math.floor(Date.now()/1000),...(ready&&cooldown>Math.floor(Date.now()/1000)?{nextAllowedAt:cooldown}:{}),...(tanya?{tanya:{available:tanya.nextAllowedAt===null&&tanya.dayRemainingMicro>=TANYA_RESERVE_MICRO&&tanya.monthRemainingMicro>=TANYA_RESERVE_MICRO,nextAllowedAt:tanya.nextAllowedAt,
+   // Sisa anggaran hanya untuk pemantau yang membawa token rahasia.
+   ...(deps.tanya?.monitorToken&&c.req.header('x-pasla-pemantau')===deps.tanya.monitorToken?{dayRemainingMicro:tanya.dayRemainingMicro,monthRemainingMicro:tanya.monthRemainingMicro}:{})}}:{})});});
  app.post('/v2/chat/turn',async c=>{
   if(!(deps.chat||deps.tanya)||!deps.stepTickets||!deps.telusur||!deps.sumber||!deps.signer)return c.json({error:{code:'CHAT_DISABLED'}},503);
   let size=0;const chunks:Uint8Array[]=[];const reader=c.req.raw.body?.getReader();
@@ -93,10 +95,13 @@ function tanyaTurn(c:any,{input,ticket,tanya,signer,telusur,sumber}:TanyaTurn){
      if(summary.lastFailure)failureCode=summary.lastFailure;
      if(summary.lastFailure==='HTTP_429')tanya.ledger.deferUntil(Math.floor(Date.now()/1000)+(summary.retryAfterSeconds??60));
      // Measured usage settles exactly. A rejected HTTP call is not billed; an unknown network outcome keeps the full hold.
-     costMicro=summary.usage.length?tanyaCost(inputTokens,outputTokens):summary.lastFailure?.startsWith('HTTP_')?0:TANYA_RESERVE_MICRO;
+     // Tidak pernah dikirim (mis. batas input lokal) atau ditolak HTTP: tidak ditagih. Hasil jaringan tak pasti: tahan penuh.
+     costMicro=summary.usage.length?tanyaCost(inputTokens,outputTokens):summary.calls===0||summary.lastFailure?.startsWith('HTTP_')?0:TANYA_RESERVE_MICRO;
      tanya.ledger.settle(ticket.jti,costMicro);
     }
    }};
+   // Penuh, sibuk atau dibatasi: tolak sebelum mencari sumber supaya pengguna tidak menunggu sia-sia.
+   const penolakan=tanya.ledger.precheck(TANYA_RESERVE_MICRO);if(penolakan)throw new Error(penolakan);
    const result=await runTanya(input,{model,telusur,sumber,signer,keys:[signer.publicKeyPem],signal,progress:stage=>{phase=stage;return send({type:'progress',stage}).then(()=>undefined);}});
    await send({type:'result',data:result,usage:usage(),usageReceipt:receipt()});
   }catch(cause){
