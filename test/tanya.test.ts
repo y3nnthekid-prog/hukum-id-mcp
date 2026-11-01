@@ -163,6 +163,13 @@ test('a status that merely mentions an earlier revoked law is not treated as rev
   assert.equal(dicabut(s('Tidak Berlaku')), true);
   assert.equal(dicabut(s('JDIH BPK: Dicabut oleh UU 8/1999')), true);
   assert.equal(dicabut(s('Berlaku', ['UU 1/2026'])), true);
+  // UU ITE: hanya pasal yang disebut dalam pencabutan sebagian yang dianggap dicabut.
+  const ite = (pasal: string) => ({ ...s('Naskah asli; sebagian pasal dicabut KUHP.', ['Sebagian oleh UU 1/2023 (KUHP, berlaku 2 Jan 2026): Pasal 27(1), 27(3), 28(2), 30, 31(1)-(2), 45A(2)']), locator: { pasal } });
+  assert.equal(dicabut(ite('Pasal 9')), false);
+  assert.equal(dicabut(ite('Pasal 3')), false);
+  assert.equal(dicabut(ite('Pasal 45')), false);
+  assert.equal(dicabut(ite('Pasal 27')), true);
+  assert.equal(dicabut(ite('Pasal 45A')), true);
 });
 
 test('garbled Arabic presentation forms from fatwa PDFs are never quoted', async () => {

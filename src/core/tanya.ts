@@ -115,10 +115,16 @@ export function rujukanEksplisit(text: string): RujukanBuka[] {
   return refs.filter((r) => { const key = JSON.stringify(r).toLowerCase(); if (seen.has(key)) return false; seen.add(key); return true; }).slice(0, 3);
 }
 
+/** Pencabutan sebagian ("Sebagian oleh UU 1/2023 (KUHP): Pasal 27(1), 30") hanya mengenai pasal yang disebut. */
+function cabutMengenai(pencabut: string, pasal: string | undefined) {
+  if (!/^sebagian\b/iu.test(pencabut.trim())) return true;
+  const nomor = pasal?.match(/\d+[A-Z]?/u)?.[0];
+  return !!nomor && new RegExp(`(?:^|[\\s,])${nomor}(?![\\dA-Z])`, "u").test(pencabut.slice(pencabut.indexOf(":") + 1));
+}
 /** Dicabut hanya bila ada pencabutnya atau statusnya diawali "Tidak Berlaku"/"Dicabut".
  * Status seperti "Berlaku; dibentuk atas UU 11/2020 yang kini dicabut" tetap berlaku. */
-export function dicabut(p: Pick<PotonganBertanda, "sumber">) {
-  if (p.sumber.dicabutDengan.length > 0) return true;
+export function dicabut(p: Pick<PotonganBertanda, "sumber"> & { locator?: { pasal?: string } }) {
+  if (p.sumber.dicabutDengan.some((d) => cabutMengenai(d, p.locator?.pasal))) return true;
   const status = (p.sumber.status ?? "").trim();
   // Status bisa diawali sumber, tanggal dan jam ("JDIH BPK 1 Nov 2026 10:00 WIB: Dicabut ..."): periksa awal setiap segmen.
   return status.split(":").some((b) => /^(?:tidak berlaku|dicabut)\b(?!\s+sebagian)/iu.test(b.trim()));
