@@ -153,7 +153,7 @@ test('v4 public ticket runs one GPT-5.1 call and signs a settled usage receipt',
 
 test('situations open verified key articles before search results', () => {
   assert.deepEqual(pasalKunci('sewa-utang', 'Teman meminjam uang dan tidak mau membayar').map((r: any) => r.pasal), ['Pasal 1754', 'Pasal 1763', 'Pasal 1238', 'Pasal 1243']);
-  assert.deepEqual(pasalKunci('pekerjaan', 'Saya di-PHK, berapa pesangon saya?'), [{ jenis: 'peraturan', rujukan: 'PP 35/2021', pasal: 'Pasal 40' }]);
+  assert.deepEqual(pasalKunci('pekerjaan', 'Saya di-PHK, berapa pesangon saya?'), [{ jenis: 'peraturan', rujukan: 'PP 35/2021', pasal: 'Pasal 40' }, { jenis: 'peraturan', rujukan: 'UU 6/2023', pasal: 'Pasal 151' }]);
   assert.deepEqual(pasalKunci('syariah', 'Saya terlambat bayar cicilan murabahah'), [{ jenis: 'fatwa', nomor: '04/DSN-MUI/IV/2000' }, { jenis: 'fatwa', nomor: '17/DSN-MUI/IX/2000' }]);
 });
 
@@ -252,4 +252,17 @@ test('a quote that joins distant clauses with an ellipsis becomes the original c
   assert.equal(cariKutipan(text, '(4) Jangka waktu pembayaran Upah oleh Pengusaha … (1) Pengusaha wajib membayar Upah'), null);
   assert.equal(cariKutipan(text, '(1) Pengusaha wajib membayar Upah pada waktu yang telah diperjanjian … tidak boleh lebih dari 1 (satu) bulan'), null);
   assert.equal(cariKutipan(text, 'Pengusaha wajib membayar Upah … tidak boleh lebih dari 2 (dua) bulan'), null);
+});
+
+test('UU 13/2003 articles changed by UU 6/2023 open from the amending law, deleted ones are not used', async () => {
+  const { versiTerbaru, naskahUsang, catatanMk168 } = await import('../src/core/perubahan.js');
+  assert.deepEqual(versiTerbaru({ jenis: 'peraturan', rujukan: 'UU 13/2003', pasal: 'Pasal 156' }), { jenis: 'peraturan', rujukan: 'UU 6/2023', pasal: 'Pasal 156' });
+  assert.deepEqual(versiTerbaru({ jenis: 'peraturan', rujukan: 'UU 13/2003', pasal: 'Pasal 88a' }), { jenis: 'peraturan', rujukan: 'UU 6/2023', pasal: 'Pasal 88A' });
+  assert.equal(versiTerbaru({ jenis: 'peraturan', rujukan: 'UU 13/2003', pasal: 'Pasal 164' }), null);
+  assert.deepEqual(versiTerbaru({ jenis: 'peraturan', rujukan: 'UU 13/2003', pasal: 'Pasal 134' }), { jenis: 'peraturan', rujukan: 'UU 13/2003', pasal: 'Pasal 134' });
+  assert.deepEqual(versiTerbaru({ jenis: 'peraturan', rujukan: 'PP 35/2021', pasal: 'Pasal 40' }), { jenis: 'peraturan', rujukan: 'PP 35/2021', pasal: 'Pasal 40' });
+  assert.equal(naskahUsang({ identitas: ['UU 13/2003', 'Pasal 59'], locator: { pasal: 'Pasal 59' } }), true);
+  assert.equal(naskahUsang({ identitas: ['UU 13/2003', 'Pasal 6'], locator: { pasal: 'Pasal 6' } }), false);
+  assert.match(catatanMk168({ identitas: ['UU 6/2023', 'Pasal 156'], locator: { pasal: 'Pasal 156', mengubah: 'UU 13/2003' } })!, /ayat \(2\) pasal ini/);
+  assert.equal(catatanMk168({ identitas: ['UU 6/2023', 'Pasal 59'], locator: { pasal: 'Pasal 59', mengubah: 'UU 13/2003' } }), undefined);
 });

@@ -4,6 +4,7 @@ import { heuristicPlan, normalizeRegulation } from "../ai/planner.js";
 import { canonicalize, findQuote, wordCount } from "./canonical.js";
 import { assertsPersonalNorm, requestsUnavailableUpload, suggestsPhysicalExperiment, ungroundedPlatformProcedure, type ChatInput } from "./chat.js";
 import { PROFIL_TOPIK, pasalKunci, susunKueri, tentukanTopik, type Topik } from "./kamus-awam.js";
+import { catatanMk168, naskahUsang, versiTerbaru } from "./perubahan.js";
 import { checkPassage } from "./sintesis.js";
 import type { Signer } from "./sign.js";
 import type { PotonganBertanda, RujukanBuka, SumberService } from "./sumber.js";
@@ -262,8 +263,14 @@ export async function runTanya(input: ChatInput, deps: Deps) {
   const dicoba = new Set<string>();
   let bytes = 0;
   // Hanya rujukan yang benar-benar terbuka yang menghabiskan jatah buka; yang gagal tidak menghalangi sumber lain.
-  for (const ref of toOpen) {
+  for (const asli of toOpen) {
     if (opened.size >= LIMIT.opened || passages.length >= LIMIT.passages || dicoba.size >= LIMIT.opened * 2) break;
+    // Pasal UU 13/2003 yang diubah UU 6/2023 dibuka dari bunyi terbarunya; yang sudah dihapus tidak dipakai.
+    const ref = versiTerbaru(asli);
+    if (!ref) {
+      if (refs.includes(asli) && "rujukan" in asli) peringatan.push(`${asli.rujukan} ${"pasal" in asli ? asli.pasal ?? "" : ""} sudah dihapus oleh UU 6/2023, jadi tidak dipakai sebagai dasar.`.replace(/\s+/g, " "));
+      continue;
+    }
     const key = JSON.stringify(ref).toLowerCase();
     if (dicoba.has(key)) continue;
     dicoba.add(key);
@@ -275,7 +282,7 @@ export async function runTanya(input: ChatInput, deps: Deps) {
     for (const p of result.potongan) {
       const size = Buffer.byteLength(p.text);
       if (size > LIMIT.passageBytes || bytes + size > LIMIT.totalBytes || passages.length >= LIMIT.passages) continue;
-      if (checkPassage(p, deps.keys) || passages.some((x) => x.id === p.id)) continue;
+      if (checkPassage(p, deps.keys) || passages.some((x) => x.id === p.id) || naskahUsang(p)) continue;
       passages.push(p);
       bytes += size;
     }
@@ -288,7 +295,8 @@ export async function runTanya(input: ChatInput, deps: Deps) {
 
   await deps.progress("drafting");
   // Potongan dari rujukan eksplisit atau pasal kunci ditandai utama untuk model.
-  const utama = new Set(passages.filter((p) => [...refs, ...kunci].some((r) => "rujukan" in r && r.rujukan.toLowerCase() === p.identitas[0]?.toLowerCase() && (!("pasal" in r) || !r.pasal || p.locator.pasal?.toLowerCase() === r.pasal.toLowerCase()) || "nomor" in r && p.rujukan.includes(r.nomor))).map((p) => p.id));
+  const pilihan = [...refs, ...kunci].map(versiTerbaru).filter((r): r is RujukanBuka => r !== null);
+  const utama = new Set(passages.filter((p) => pilihan.some((r) => "rujukan" in r && r.rujukan.toLowerCase() === p.identitas[0]?.toLowerCase() && (!("pasal" in r) || !r.pasal || p.locator.pasal?.toLowerCase() === r.pasal.toLowerCase()) || "nomor" in r && p.rujukan.includes(r.nomor))).map((p) => p.id));
   const lastAssistant = input.messages.filter((m) => m.role === "assistant").at(-1);
   const payload = {
     tanggal: new Date().toISOString().slice(0, 10),
@@ -296,7 +304,7 @@ export async function runTanya(input: ChatInput, deps: Deps) {
     pertanyaanTerbaru: current.text,
     faktaSebelumnya: users.slice(0, -1).map((m) => m.text).join("\n").slice(-3000),
     jawabanSebelumnya: lastAssistant ? lastAssistant.text.slice(0, 1200) : null,
-    sumber: passages.map((p) => ({ utama: utama.has(p.id), id: p.id, rujukan: p.rujukan, judul: p.judul.slice(0, 200), status: dicabut(p) ? "dicabut" : p.sumber.status, diubahDengan: p.sumber.diubahDengan.slice(0, 3), dicabutDengan: p.sumber.dicabutDengan.slice(0, 3), teks: p.text })),
+    sumber: passages.map((p) => ({ utama: utama.has(p.id), id: p.id, rujukan: p.rujukan, judul: p.judul.slice(0, 200), status: dicabut(p) ? "dicabut" : p.sumber.status, diubahDengan: p.sumber.diubahDengan.slice(0, 3), dicabutDengan: p.sumber.dicabutDengan.slice(0, 3), ...(catatanMk168(p) ? { catatan: catatanMk168(p) } : {}), teks: p.text })),
   };
   // Batas transport 40.000 byte memuat prompt, skema dan isi. Sisakan ruang dengan membuang
   // potongan pelengkap terakhir lebih dulu, lalu potongan utama, sehingga panggilan tidak pernah ditolak lokal.

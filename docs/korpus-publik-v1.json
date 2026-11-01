@@ -414,11 +414,49 @@
       "impor": {
         "hasil": "gagal"
       },
-      "catatanKelengkapan": "Tidak dapat diimpor: PDF resmi 85,4 MB dan 1127 halaman, melampaui PDF_LIMITS importer (16 MB, 600 halaman). Klaster ketenagakerjaan ada di Pasal 81 lampiran. Perubahan yang tercatat di amendedBy menyentuh klaster lain (Polri, BUMN, minerba, dst.), bukan ketenagakerjaan. Butuh keputusan: menaikkan batas khusus impor, atau impor potongan halaman Pasal 81 dengan sidik turunan yang dicatat terpisah.",
+      "catatanKelengkapan": "Tidak dapat diimpor: PDF resmi 85,4 MB dan 1127 halaman, melampaui PDF_LIMITS importer (16 MB, 600 halaman). Klaster ketenagakerjaan ada di Pasal 81 lampiran. Perubahan yang tercatat di amendedBy menyentuh klaster lain (Polri, BUMN, minerba, dst.), bukan ketenagakerjaan. Butuh keputusan: menaikkan batas khusus impor, atau impor potongan halaman Pasal 81 dengan sidik turunan yang dicatat terpisah. 2 Nov 2026: klaster ketenagakerjaan diimpor sebagai entri uu-6-2023-ketenagakerjaan (potongan halaman 548-579).",
       "checkedAt": "2026-11-01",
       "sha256": "de73c84f11d4e721a4c0e66cadadac7f698941ec8adff5934e70f32dc885fdae",
       "bytes": 85354383,
       "retrievedAt": "2026-11-01T07:30:00.331Z"
+    },
+    {
+      "id": "uu-6-2023-ketenagakerjaan",
+      "rujukan": "UU 6/2023",
+      "judul": "Undang-Undang Nomor 6 Tahun 2023 tentang Penetapan Perpu 2/2022 tentang Cipta Kerja menjadi Undang-Undang (Lampiran BAB IV Ketenagakerjaan: Pasal 80 dan Pasal 81)",
+      "jenis": "peraturan",
+      "topik": [
+        "pekerjaan"
+      ],
+      "sourceUrl": "https://peraturan.bpk.go.id/Download/302681/UU%20Nomor%206%20Tahun%202023.pdf",
+      "detailUrl": "https://peraturan.bpk.go.id/Details/246523",
+      "berkas": "uu-6-2023-ketenagakerjaan.pdf",
+      "status": "Berlaku",
+      "statusKorpus": "JDIH BPK 1 Nov 2026: Berlaku. Potongan Lampiran BAB IV Ketenagakerjaan (Pasal 81 mengubah UU 13/2003); sebagian ayat dimaknai ulang Putusan MK 168/PUU-XXI/2023.",
+      "amendedBy": [
+        "Putusan MK 168/PUU-XXI/2023 (sebagian ayat Pasal 81)"
+      ],
+      "revokedBy": [],
+      "ujiMateri": [
+        "168/PUU-XXI/2023"
+      ],
+      "catatanKelengkapan": "Potongan halaman 548-579 dari PDF resmi UU 6/2023 (1127 halaman, SHA-256 asli de73c84f11d4e721a4c0e66cadadac7f698941ec8adff5934e70f32dc885fdae), dipotong di PC dengan pymupdf karena PDF utuh melampaui PDF_LIMITS. Berisi Pasal 80, Pasal 81 angka 1 sampai 71 (34 pasal UU 13/2003 diubah, 14 disisipkan, 28 dihapus) dan awal Pasal 82. Lapisan teksnya hasil OCR dengan salah baca seperti 'tedadi' dan '(21'; kutipan yang tidak persis ditolak pemeriksa. Amar Putusan MK 168/PUU-XXI/2023 belum diimpor; ayat yang terdampak tercatat di amarRingkas entri putusan. Nomor halaman di korpus relatif terhadap potongan: halaman 1 = halaman 548 PDF resmi.",
+      "checkedAt": "2026-11-02",
+      "impor": {
+        "hasil": "masuk",
+        "jumlahPotongan": 54,
+        "kesehatanEkstraksi": "ok",
+        "complete": false,
+        "cakupanPasal": {
+          "jumlah": 3,
+          "berurutan": false,
+          "terakhir": "Pasal 82"
+        }
+      },
+      "sha256": "19a2fa7608e48b94386c0591689715c3ee8e6651eaf0964bb8ccf68908d5f06a",
+      "bytes": 2722276,
+      "retrievedAt": "2026-11-01T07:30:00.331Z",
+      "halamanSumber": "548-579"
     },
     {
       "id": "putusan-mk-168-puu-xxi-2023",
