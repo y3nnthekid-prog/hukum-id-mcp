@@ -39,3 +39,13 @@ test("canonical map points every character back into the raw text", () => {
   assert.equal(canonical.text.length, canonical.map.length);
   assert.ok(canonical.map.every((index) => index >= 0 && index < raw.length));
 });
+
+test("stray spaces from the PDF text layer and gazette page footers do not block a quote", () => {
+  const raw = "(2) Dalam hal tanggal jatuh pada hari libur , pelaksanaan pembayara n Upah\ndiatur dalam Perjanjian Kerja.\nb. sesudah hari kedelapan ditambah 1% (satu persen) untuk setiap hari keterlambatan\n2021, No.46\n- 30 -\ndengan ketentuan 1 (satu) bulan tidak boleh melebihi 50% (lima puluh persen) dari ya ng seharusnya";
+  const match = findQuote(raw, "jatuh pada hari libur, pelaksanaan pembayaran Upah diatur dalam Perjanjian Kerja.");
+  assert.ok(match);
+  assert.equal(raw.slice(match.start, match.end), "jatuh pada hari libur , pelaksanaan pembayara n Upah\ndiatur dalam Perjanjian Kerja.");
+  assert.ok(findQuote(raw, "untuk setiap hari keterlambatan dengan ketentuan 1 (satu) bulan tidak boleh melebihi 50% (lima puluh persen) dari yang seharusnya"));
+  // Angka yang berbeda tetap ditolak walau spasi diabaikan.
+  assert.equal(findQuote(raw, "tidak boleh melebihi 60% (enam puluh persen)"), null);
+});

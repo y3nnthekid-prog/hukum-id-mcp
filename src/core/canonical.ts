@@ -17,7 +17,7 @@
 export type Canonical = { text: string; map: number[] };
 
 const HEADER_LINE =
-  /^[ \t]*(?:PRESIDEN|REPUBLIK INDONESIA|PRESIDEN REPUBLIK INDONESIA|-\s*\d{1,4}\s*-|SK\s+No\.?\s*[\w.-]+)[ \t]*$/i;
+  /^[ \t]*(?:PRESIDEN|REPUBLIK INDONESIA|PRESIDEN REPUBLIK INDONESIA|-\s*\d{1,4}\s*-|SK\s+No\.?\s*[\w.-]+|\d{4},\s*No\.\s*\d{1,4})[ \t]*$/i;
 
 const ARABIC_MARKS = /[ؐ-ًؚ-ٰٟۖ-ۭـ]/u;
 const CHAR_MAP: Record<string, string> = {
@@ -118,9 +118,24 @@ export function findQuote(sourceRaw: string, quoteRaw: string): QuoteMatch | nul
   if (!quote) return null;
   const source = canonicalize(sourceRaw);
   const at = source.text.indexOf(quote);
-  if (at === -1) return null;
-  const last = at + quote.length - 1;
-  return { start: source.map[at]!, end: source.map[last]! + 1 };
+  if (at !== -1) return { start: source.map[at]!, end: source.map[at + quote.length - 1]! + 1 };
+  // Lapisan teks PDF kadang menyisipkan spasi di tengah kata ("pembayara n Upah", "libur , hari").
+  // Bila tidak cocok persis, bandingkan tanpa spasi. Rentang yang dikembalikan tetap teks mentah sumber.
+  const rapatSumber = tanpaSpasi(source), rapatKutipan = quote.replace(/ /g, "");
+  const di = rapatSumber.text.indexOf(rapatKutipan);
+  if (di === -1) return null;
+  return { start: rapatSumber.map[di]!, end: rapatSumber.map[di + rapatKutipan.length - 1]! + 1 };
+}
+
+function tanpaSpasi(c: Canonical): Canonical {
+  const text: string[] = [];
+  const map: number[] = [];
+  for (let i = 0; i < c.text.length; i += 1) {
+    if (c.text[i] === " ") continue;
+    text.push(c.text[i]!);
+    map.push(c.map[i]!);
+  }
+  return { text: text.join(""), map };
 }
 
 export function wordCount(text: string) {
