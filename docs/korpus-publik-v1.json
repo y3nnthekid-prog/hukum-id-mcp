@@ -1,0 +1,1138 @@
+{
+  "versi": "korpus-publik-v1",
+  "diperiksaPada": "2026-11-01",
+  "alatPemeriksa": "MCP hukum-id: cari_peraturan, detail_peraturan, cari_putusan_mk, cari_fatwa_dsn, cari_pasal_khes (metadata JDIH BPK dan indeks DSN-MUI per 1 November 2026)",
+  "berkasKorpus": "~/.cache/hukum-id-mcp/korpus-publik-v1.sqlite",
+  "berkasPdf": "~/.cache/hukum-id-mcp/korpus-publik-v1/pdf",
+  "catatan": [
+    "Status, amendedBy dan revokedBy disalin dari relasi JDIH BPK pada tanggal pemeriksaan. Ini bukan konsolidasi: pasal naskah asli bisa sudah diubah oleh peraturan di amendedBy.",
+    "Ekstraksi PDF dijalankan di PC. Korpus tidak memuat teks yang dikonsolidasi dan tidak menilai penafsiran.",
+    "complete=true hanya bila pasal batang tubuh terbaca berurutan dari Pasal 1 sampai pasal penutup naskah. Selain itu complete=false, sehingga pasal yang tidak ditemukan belum membuktikan ketidakadaan.",
+    "impor.hasil: masuk = terindeks di korpus; perlu-unduh-manual = sumber resmi memblokir klien otomatis atau tidak dapat dijangkau; tidak-diimpor = sengaja tidak dimasukkan (alasan di catatanKelengkapan)."
+  ],
+  "dokumen": [
+    {
+      "id": "uu-8-1999",
+      "rujukan": "UU 8/1999",
+      "judul": "Undang-Undang Nomor 8 Tahun 1999 tentang Perlindungan Konsumen",
+      "jenis": "peraturan",
+      "topik": [
+        "konsumen"
+      ],
+      "sourceUrl": "https://peraturan.bpk.go.id/Download/33784/UU%20Nomor%208%20Tahun%201999.pdf",
+      "detailUrl": "https://peraturan.bpk.go.id/Details/45288",
+      "berkas": "uu-8-1999.pdf",
+      "status": "Berlaku",
+      "statusKorpus": "JDIH BPK 1 Nov 2026: Berlaku sejak 20 April 2000; tanpa relasi perubahan.",
+      "amendedBy": [],
+      "revokedBy": [],
+      "ujiMateri": [
+        "235/PUU-XXIII/2025"
+      ],
+      "catatanKelengkapan": "Naskah asli. JDIH BPK mencatat uji materi 235/PUU-XXIII/2025; amarnya belum dibaca untuk korpus ini.",
+      "checkedAt": "2026-11-01",
+      "impor": {
+        "hasil": "masuk",
+        "jumlahPotongan": 131,
+        "kesehatanEkstraksi": "ok",
+        "complete": true,
+        "cakupanPasal": {
+          "jumlah": 65,
+          "berurutan": true,
+          "terakhir": "Pasal 65"
+        }
+      },
+      "sha256": "df253c489e78e66d9da5337c85bebe1384c68763af2001335b4880b0f225d816",
+      "bytes": 192920,
+      "retrievedAt": "2026-11-01T07:28:28.323Z",
+      "pasalPenutup": "Pasal 65"
+    },
+    {
+      "id": "pp-80-2019",
+      "rujukan": "PP 80/2019",
+      "judul": "Peraturan Pemerintah Nomor 80 Tahun 2019 tentang Perdagangan Melalui Sistem Elektronik",
+      "jenis": "peraturan",
+      "topik": [
+        "konsumen"
+      ],
+      "sourceUrl": "https://peraturan.bpk.go.id/Download/117172/PP%20Nomor%2080%20Tahun%202019.pdf",
+      "detailUrl": "https://peraturan.bpk.go.id/Details/126143",
+      "berkas": "pp-80-2019.pdf",
+      "status": "Berlaku",
+      "statusKorpus": "JDIH BPK 1 Nov 2026: Berlaku sejak 25 November 2019; tanpa relasi perubahan.",
+      "amendedBy": [],
+      "revokedBy": [],
+      "ujiMateri": [],
+      "catatanKelengkapan": "Naskah asli.",
+      "checkedAt": "2026-11-01",
+      "impor": {
+        "hasil": "masuk",
+        "jumlahPotongan": 166,
+        "kesehatanEkstraksi": "ok",
+        "complete": true,
+        "cakupanPasal": {
+          "jumlah": 82,
+          "berurutan": true,
+          "terakhir": "Pasal 82"
+        }
+      },
+      "sha256": "f0daaea7cbca497ace602bcb10d83ff54a2a9d162985a0dc8a7f4f8694452b0b",
+      "bytes": 5931253,
+      "retrievedAt": "2026-11-01T07:28:49.709Z",
+      "pasalPenutup": "Pasal 82"
+    },
+    {
+      "id": "permendag-19-2026",
+      "rujukan": "Permendag 19/2026",
+      "judul": "Peraturan Menteri Perdagangan Nomor 19 Tahun 2026 tentang Penyelenggaraan Usaha Perdagangan Melalui Sistem Elektronik",
+      "jenis": "peraturan",
+      "topik": [
+        "konsumen"
+      ],
+      "sourceUrl": "https://peraturan.bpk.go.id/Download/415514/permendag-no-19-tahun-2026.pdf",
+      "detailUrl": "https://peraturan.bpk.go.id/Details/351720",
+      "berkas": "permendag-19-2026.pdf",
+      "status": "Berlaku",
+      "statusKorpus": "JDIH BPK 1 Nov 2026: Berlaku sejak 8 Juni 2026; mencabut Permendag 31/2023.",
+      "amendedBy": [],
+      "revokedBy": [],
+      "ujiMateri": [],
+      "catatanKelengkapan": "Naskah asli. Menggantikan Permendag 31/2023 sebagai Permendag niaga elektronik yang berlaku.",
+      "checkedAt": "2026-11-01",
+      "impor": {
+        "hasil": "masuk",
+        "jumlahPotongan": 78,
+        "kesehatanEkstraksi": "ok",
+        "complete": true,
+        "cakupanPasal": {
+          "jumlah": 76,
+          "berurutan": true,
+          "terakhir": "Pasal 76"
+        }
+      },
+      "sha256": "98cc1d59b706da0dd27768ac7c58a3bbd4b515596dc083415cdfe2902ef27009",
+      "bytes": 3241564,
+      "retrievedAt": "2026-11-01T07:28:59.587Z",
+      "pasalPenutup": "Pasal 76"
+    },
+    {
+      "id": "permendag-31-2023",
+      "rujukan": "Permendag 31/2023",
+      "judul": "Peraturan Menteri Perdagangan Nomor 31 Tahun 2023 tentang Perizinan Berusaha, Periklanan, Pembinaan, dan Pengawasan Pelaku Usaha dalam Perdagangan melalui Sistem Elektronik",
+      "jenis": "peraturan",
+      "topik": [
+        "konsumen"
+      ],
+      "sourceUrl": "https://peraturan.bpk.go.id/Download/322371/Permendag%2031%20Tahun%202023.pdf",
+      "detailUrl": "https://peraturan.bpk.go.id/Details/265202",
+      "berkas": null,
+      "status": "Tidak Berlaku",
+      "statusKorpus": "JDIH BPK 1 Nov 2026: Tidak Berlaku; dicabut Permendag 19/2026.",
+      "amendedBy": [],
+      "revokedBy": [
+        "Permendag 19/2026"
+      ],
+      "ujiMateri": [],
+      "impor": {
+        "hasil": "tidak-diimpor"
+      },
+      "catatanKelengkapan": "Sengaja tidak diimpor karena sudah dicabut sejak 8 Juni 2026. Dicatat agar pipeline tidak memakainya sebagai aturan berlaku.",
+      "checkedAt": "2026-11-01",
+      "sha256": null,
+      "bytes": null,
+      "retrievedAt": null
+    },
+    {
+      "id": "uu-11-2008",
+      "rujukan": "UU 11/2008",
+      "judul": "Undang-Undang Nomor 11 Tahun 2008 tentang Informasi dan Transaksi Elektronik",
+      "jenis": "peraturan",
+      "topik": [
+        "konsumen"
+      ],
+      "sourceUrl": "https://peraturan.bpk.go.id/Download/26683/UU%20Nomor%2011%20Tahun%202008.pdf",
+      "detailUrl": "https://peraturan.bpk.go.id/Details/37589",
+      "berkas": "uu-11-2008.pdf",
+      "status": "Berlaku",
+      "statusKorpus": "Naskah asli; diubah UU 19/2016 dan UU 1/2024; sebagian pasal dicabut KUHP.",
+      "amendedBy": [
+        "UU 19/2016",
+        "UU 1/2024"
+      ],
+      "revokedBy": [
+        "Sebagian oleh UU 1/2023 (KUHP, berlaku 2 Jan 2026): Pasal 27(1), 27(3), 28(2), 30, 31(1)-(2), 36, 45(1), 45(3), 45A(2), 46, 47, 51(2)"
+      ],
+      "ujiMateri": [
+        "20/PUU-XIV/2016",
+        "5/PUU-VIII/2010"
+      ],
+      "catatanKelengkapan": "Naskah asli 2008, bukan konsolidasi. Banyak pasal sudah diubah dua kali; kutipan pasal wajib diperiksa terhadap UU 19/2016 dan UU 1/2024.",
+      "checkedAt": "2026-11-01",
+      "impor": {
+        "hasil": "masuk",
+        "jumlahPotongan": 59,
+        "kesehatanEkstraksi": "ok",
+        "complete": true,
+        "cakupanPasal": {
+          "jumlah": 54,
+          "berurutan": true,
+          "terakhir": "Pasal 54"
+        }
+      },
+      "sha256": "3c174f55b4a7982af268a24316e3353c8e712fc8a57e87a9fdf0502da4ea0af3",
+      "bytes": 273973,
+      "retrievedAt": "2026-11-01T07:29:00.773Z",
+      "pasalPenutup": "Pasal 54"
+    },
+    {
+      "id": "uu-19-2016",
+      "rujukan": "UU 19/2016",
+      "judul": "Undang-Undang Nomor 19 Tahun 2016 tentang Perubahan atas Undang-Undang Nomor 11 Tahun 2008 tentang Informasi dan Transaksi Elektronik",
+      "jenis": "peraturan",
+      "topik": [
+        "konsumen"
+      ],
+      "sourceUrl": "https://peraturan.bpk.go.id/Download/26676/UU%20Nomor%20%2019%20Tahun%202016.pdf",
+      "detailUrl": "https://peraturan.bpk.go.id/Details/37582",
+      "berkas": "uu-19-2016.pdf",
+      "status": "Berlaku",
+      "statusKorpus": "UU perubahan pertama ITE; diubah UU 1/2024; sebagian pasal dicabut KUHP.",
+      "amendedBy": [
+        "UU 1/2024"
+      ],
+      "revokedBy": [
+        "Sebagian oleh UU 1/2023 (KUHP, berlaku 2 Jan 2026): Pasal 27(1), 27(3), 28(2), 30, 31(1)-(2), 36, 45(1), 45(3), 45A(2), 46, 47, 51(2)"
+      ],
+      "ujiMateri": [],
+      "catatanKelengkapan": "Undang-undang perubahan (Pasal I dan II); isinya hanya pasal UU 11/2008 yang diubah.",
+      "checkedAt": "2026-11-01",
+      "impor": {
+        "hasil": "masuk",
+        "jumlahPotongan": 21,
+        "kesehatanEkstraksi": "ok",
+        "complete": false,
+        "cakupanPasal": {
+          "jumlah": 5,
+          "berurutan": false,
+          "terakhir": "Pasal 45"
+        }
+      },
+      "sha256": "1ecbeed2f762355a13b31691d19b474cb02b4912b445762c4f354c9a4ba5a1d0",
+      "bytes": 1625026,
+      "retrievedAt": "2026-11-01T07:29:03.968Z"
+    },
+    {
+      "id": "uu-1-2024",
+      "rujukan": "UU 1/2024",
+      "judul": "Undang-Undang Nomor 1 Tahun 2024 tentang Perubahan Kedua atas Undang-Undang Nomor 11 Tahun 2008 tentang Informasi dan Transaksi Elektronik",
+      "jenis": "peraturan",
+      "topik": [
+        "konsumen"
+      ],
+      "sourceUrl": "https://peraturan.bpk.go.id/Download/332870/UU%20Nomor%201%20Tahun%202024.pdf",
+      "detailUrl": "https://peraturan.bpk.go.id/Details/274494",
+      "berkas": "uu-1-2024.pdf",
+      "status": "Berlaku",
+      "statusKorpus": "JDIH BPK 1 Nov 2026: Berlaku sejak 2 Januari 2024; perubahan kedua UU ITE.",
+      "amendedBy": [],
+      "revokedBy": [],
+      "ujiMateri": [
+        "115/PUU-XXII/2024",
+        "105/PUU-XXII/2024"
+      ],
+      "catatanKelengkapan": "Undang-undang perubahan (Pasal I dan II). Dua uji materi tercatat; amarnya belum dibaca untuk korpus ini.",
+      "checkedAt": "2026-11-01",
+      "impor": {
+        "hasil": "masuk",
+        "jumlahPotongan": 42,
+        "kesehatanEkstraksi": "ok",
+        "complete": false,
+        "cakupanPasal": {
+          "jumlah": 0,
+          "berurutan": false,
+          "terakhir": null
+        }
+      },
+      "sha256": "8cdb6721dd5f46e45f13e8a3588c6c1efc614ea4361ce94efebe40e8e4289d5f",
+      "bytes": 2178368,
+      "retrievedAt": "2026-11-01T07:29:07.512Z"
+    },
+    {
+      "id": "uu-27-2022",
+      "rujukan": "UU 27/2022",
+      "judul": "Undang-Undang Nomor 27 Tahun 2022 tentang Pelindungan Data Pribadi",
+      "jenis": "peraturan",
+      "topik": [
+        "konsumen"
+      ],
+      "sourceUrl": "https://peraturan.bpk.go.id/Download/224884/UU%20Nomor%2027%20Tahun%202022.pdf",
+      "detailUrl": "https://peraturan.bpk.go.id/Details/229798",
+      "berkas": "uu-27-2022.pdf",
+      "status": "Berlaku",
+      "statusKorpus": "JDIH BPK 1 Nov 2026: Berlaku sejak 17 Oktober 2022; tanpa relasi perubahan.",
+      "amendedBy": [],
+      "revokedBy": [],
+      "ujiMateri": [
+        "151/PUU-XXII/2024"
+      ],
+      "catatanKelengkapan": "Naskah asli. Sidik sama dengan salinan yang pada 20 Oktober perlu transkripsi untuk Pasal 46 (docs/corpus-reviewed); kualitas lapisan teks perlu diperhatikan. Pada lapisan teks, judul Pasal 1 terbaca sebagai “Pasal I” dan judul Pasal 22, 23, 27, 29, 72 rusak (mis. “' Pasal 23”), sehingga pasal itu menyatu dengan pasal sebelumnya.",
+      "checkedAt": "2026-11-01",
+      "impor": {
+        "hasil": "masuk",
+        "jumlahPotongan": 144,
+        "kesehatanEkstraksi": "ok",
+        "complete": false,
+        "cakupanPasal": {
+          "jumlah": 70,
+          "berurutan": false,
+          "terakhir": "Pasal 76",
+          "tidakTerpisah": [
+            1,
+            22,
+            23,
+            27,
+            29,
+            72
+          ]
+        }
+      },
+      "sha256": "ed952dea04b87d14ecf037f9f324a65d50b396ddd34fc28ddf9ff014391971f6",
+      "bytes": 2977828,
+      "retrievedAt": "2026-11-01T07:29:10.494Z"
+    },
+    {
+      "id": "kuh-perdata",
+      "rujukan": "KUH Perdata",
+      "judul": "Kitab Undang-Undang Hukum Perdata (Burgerlijk Wetboek voor Indonesie), salinan berbahasa Indonesia",
+      "jenis": "peraturan",
+      "topik": [
+        "konsumen",
+        "sewa-utang"
+      ],
+      "sourceUrl": "https://jdih.mahkamahagung.go.id/legal-product/kitab-undang-undang-hukum-perdata/download/dokumen",
+      "detailUrl": "https://jdih.mahkamahagung.go.id/legal-product/kitab-undang-undang-hukum-perdata",
+      "berkas": "kuh-perdata.pdf",
+      "retrievedAt": "2026-10-23T16:45:46.054Z",
+      "status": "Salinan historis",
+      "statusKorpus": "Salinan historis berbahasa Indonesia; bukan konsolidasi atau kepastian keberlakuan setiap pasal.",
+      "amendedBy": [],
+      "revokedBy": [],
+      "ujiMateri": [],
+      "catatanKelengkapan": "Unduhan ulang 1 Nov 2026 dari JDIH MA dijawab HTTP 403 dengan tantangan Cloudflare dan tidak ditembus. Yang diimpor adalah salinan unduhan 23 Oktober 2026 (register chat-source-register-2026-10-23.json) yang masih ada di PC; SHA-256-nya sama persis dengan register. Identitas edisi terjemahan tidak tercantum. Bagian yang dibutuhkan: Buku III tentang jual beli, sewa-menyewa, pinjam-meminjam, dan wanprestasi (Pasal 1238 dst.). JDIH BPK tidak mengindeks KUH Perdata. Lapisan teks membaca “lalai” sebagai “Ialai” (huruf I besar), termasuk di Pasal 1238 dan 1243; pencarian kata lalai tidak menemukan pasal wanprestasi tanpa padanan ejaan ini.",
+      "checkedAt": "2026-11-01",
+      "impor": {
+        "hasil": "masuk",
+        "jumlahPotongan": 1996,
+        "kesehatanEkstraksi": "ok",
+        "complete": false,
+        "cakupanPasal": {
+          "jumlah": 1994,
+          "berurutan": false,
+          "terakhir": "Pasal 1993"
+        }
+      },
+      "sha256": "14fccf651236cb0c0ed0a922de5edf199f02a680a3c7064fe2174b5eb96071ea",
+      "bytes": 748100
+    },
+    {
+      "id": "uu-13-2003",
+      "rujukan": "UU 13/2003",
+      "judul": "Undang-Undang Nomor 13 Tahun 2003 tentang Ketenagakerjaan",
+      "jenis": "peraturan",
+      "topik": [
+        "pekerjaan"
+      ],
+      "sourceUrl": "https://peraturan.bpk.go.id/Download/31128/UU%20Nomor%2013%20Tahun%202003.pdf",
+      "detailUrl": "https://peraturan.bpk.go.id/Details/43013",
+      "berkas": "uu-13-2003.pdf",
+      "status": "Berlaku",
+      "statusKorpus": "Naskah asli 2003; banyak pasal diubah/dihapus UU 6/2023 (Cipta Kerja) dan putusan MK 168/PUU-XXI/2023.",
+      "amendedBy": [
+        "UU 11/2020 (dicabut UU 6/2023)",
+        "Perpu 2/2022",
+        "UU 6/2023",
+        "Putusan MK 168/PUU-XXI/2023 (atas norma UU 6/2023 klaster ketenagakerjaan)"
+      ],
+      "revokedBy": [],
+      "ujiMateri": [
+        "13/PUU-XV/2017",
+        "72/PUU-XIII/2015",
+        "7/PUU-XII/2014",
+        "100/PUU-X/2012",
+        "012/PUU-I/2003"
+      ],
+      "catatanKelengkapan": "Naskah asli 2003, BUKAN konsolidasi. Pasal PKWT, alih daya, upah, PHK dan pesangon (mis. Pasal 59, 64-66, 88-98, 151-172) telah diubah atau dihapus Pasal 81 UU 6/2023, yang tidak ada di korpus. Mengutip pasal-pasal ini dari naskah asli berisiko keliru. Belum ada UU Ketenagakerjaan baru per 1 Nov 2026 (JDIH BPK: tidak ada UU 2025-2026 tentang ketenagakerjaan). Uji pencarian: kueri pesangon dan PKWT menempatkan Pasal 59, 163, 165 naskah asli di urutan teratas, padahal pasal-pasal ini sudah diubah atau dihapus UU 6/2023.",
+      "checkedAt": "2026-11-01",
+      "impor": {
+        "hasil": "masuk",
+        "jumlahPotongan": 388,
+        "kesehatanEkstraksi": "ok",
+        "complete": true,
+        "cakupanPasal": {
+          "jumlah": 193,
+          "berurutan": true,
+          "terakhir": "Pasal 193"
+        }
+      },
+      "sha256": "0d3868d19082be34c875a376729998b4d948cac745b1e613d90e6f257d5bf273",
+      "bytes": 297503,
+      "retrievedAt": "2026-11-01T07:29:11.136Z",
+      "pasalPenutup": "Pasal 193"
+    },
+    {
+      "id": "uu-6-2023",
+      "rujukan": "UU 6/2023",
+      "judul": "Undang-Undang Nomor 6 Tahun 2023 tentang Penetapan Peraturan Pemerintah Pengganti Undang-Undang Nomor 2 Tahun 2022 tentang Cipta Kerja menjadi Undang-Undang",
+      "jenis": "peraturan",
+      "topik": [
+        "pekerjaan"
+      ],
+      "sourceUrl": "https://peraturan.bpk.go.id/Download/302681/UU%20Nomor%206%20Tahun%202023.pdf",
+      "detailUrl": "https://peraturan.bpk.go.id/Details/246523",
+      "berkas": "uu-6-2023.pdf",
+      "status": "Berlaku",
+      "statusKorpus": "JDIH BPK 1 Nov 2026: Berlaku; klaster ketenagakerjaan diuji MK 168/PUU-XXI/2023.",
+      "amendedBy": [
+        "UU 3/2024",
+        "UU 63/2024",
+        "UU 65/2024",
+        "UU 66/2024",
+        "UU 1/2025",
+        "UU 2/2025",
+        "UU 14/2025",
+        "UU 16/2025",
+        "UU 18/2025",
+        "UU 1/2026",
+        "UU 5/2026"
+      ],
+      "revokedBy": [],
+      "ujiMateri": [
+        "273/PUU-XXIII/2025",
+        "168/PUU-XXI/2023",
+        "39/PUU-XXI/2023"
+      ],
+      "impor": {
+        "hasil": "gagal"
+      },
+      "catatanKelengkapan": "Tidak dapat diimpor: PDF resmi 85,4 MB dan 1127 halaman, melampaui PDF_LIMITS importer (16 MB, 600 halaman). Klaster ketenagakerjaan ada di Pasal 81 lampiran. Perubahan yang tercatat di amendedBy menyentuh klaster lain (Polri, BUMN, minerba, dst.), bukan ketenagakerjaan. Butuh keputusan: menaikkan batas khusus impor, atau impor potongan halaman Pasal 81 dengan sidik turunan yang dicatat terpisah.",
+      "checkedAt": "2026-11-01",
+      "sha256": "de73c84f11d4e721a4c0e66cadadac7f698941ec8adff5934e70f32dc885fdae",
+      "bytes": 85354383,
+      "retrievedAt": "2026-11-01T07:30:00.331Z"
+    },
+    {
+      "id": "putusan-mk-168-puu-xxi-2023",
+      "rujukan": "168/PUU-XXI/2023",
+      "judul": "Putusan Mahkamah Konstitusi Nomor 168/PUU-XXI/2023 (pengujian UU 6/2023, klaster ketenagakerjaan)",
+      "jenis": "putusan-mk",
+      "topik": [
+        "pekerjaan"
+      ],
+      "sourceUrl": "https://peraturan.bpk.go.id/DownloadUjiMateri/223/putusan_mkri_168_PUU-XXI_2023.pdf",
+      "detailUrl": "https://peraturan.bpk.go.id/Details/246523",
+      "berkas": "putusan-mk-168-2023.pdf",
+      "status": "Putusan, diucapkan 31 Oktober 2024",
+      "statusKorpus": "Putusan MK atas klaster ketenagakerjaan UU 6/2023.",
+      "amendedBy": [],
+      "revokedBy": [],
+      "ujiMateri": [],
+      "impor": {
+        "hasil": "gagal"
+      },
+      "amarRingkas": "Mengabulkan sebagian. Norma bersyarat atau tidak mengikat: Pasal 42 ayat (1) dan (4), 56 ayat (3), 57 ayat (1), 64 ayat (2), 79 ayat (2) huruf b dan ayat (5), 88 ayat (1), (2), (3) huruf b, 88C, 88D ayat (2), 88F, 90A, 92 ayat (1), 95 ayat (3), 98 ayat (1), 151 ayat (3) dan (4), 156 ayat (2), 157A ayat (3), semuanya dalam Pasal 81 Lampiran UU 6/2023. Permohonan atas Pasal 156 ayat (4) tidak dapat diterima; selebihnya ditolak.",
+      "catatanKelengkapan": "Diambil dari JDIH BPK karena mkri.id memasang tantangan Cloudflare untuk klien otomatis. Tidak diimpor: 687 halaman, melampaui batas 600 halaman importer; selain itu identitas pemohon memuat alamat rumah perorangan, sehingga syarat anonim importer putusan tidak terpenuhi tanpa telaah. amarRingkas dibaca langsung dari halaman 679-687 PDF ini, bukan dari ingatan.",
+      "checkedAt": "2026-11-01",
+      "sha256": "135545754041bac9be95e52e6d6534fe5811d050a4a7389a630af941a136cb63",
+      "bytes": 3635613,
+      "retrievedAt": "2026-11-01T07:30:02.410Z"
+    },
+    {
+      "id": "pp-35-2021",
+      "rujukan": "PP 35/2021",
+      "judul": "Peraturan Pemerintah Nomor 35 Tahun 2021 tentang Perjanjian Kerja Waktu Tertentu, Alih Daya, Waktu Kerja dan Waktu Istirahat, dan Pemutusan Hubungan Kerja",
+      "jenis": "peraturan",
+      "topik": [
+        "pekerjaan"
+      ],
+      "sourceUrl": "https://peraturan.bpk.go.id/Download/154582/PP%20Nomor%2035%20Tahun%202021.pdf",
+      "detailUrl": "https://peraturan.bpk.go.id/Details/161904",
+      "berkas": "pp-35-2021.pdf",
+      "status": "Berlaku",
+      "statusKorpus": "JDIH BPK 1 Nov 2026: Berlaku; dibentuk atas UU 11/2020 yang kini dicabut UU 6/2023.",
+      "amendedBy": [],
+      "revokedBy": [],
+      "ujiMateri": [],
+      "catatanKelengkapan": "Naskah asli 2021. JDIH BPK tidak mencatat perubahan, tetapi dasar hukumnya UU 11/2020 (dicabut UU 6/2023) dan sebagian normanya terdampak putusan MK 168/PUU-XXI/2023. Sidik sama dengan salinan Kemnaker di register 23 Oktober.",
+      "checkedAt": "2026-11-01",
+      "impor": {
+        "hasil": "masuk",
+        "jumlahPotongan": 138,
+        "kesehatanEkstraksi": "ok",
+        "complete": false,
+        "cakupanPasal": {
+          "jumlah": 65,
+          "berurutan": false,
+          "terakhir": "Pasal 66",
+          "tidakTerpisah": [
+            47
+          ]
+        }
+      },
+      "sha256": "d1f40e0c2fe3410631b71241ca98ca071a2c87be5af3c412a8aae24223b7ec20",
+      "bytes": 2516999,
+      "retrievedAt": "2026-11-01T07:30:05.073Z"
+    },
+    {
+      "id": "pp-36-2021",
+      "rujukan": "PP 36/2021",
+      "judul": "Peraturan Pemerintah Nomor 36 Tahun 2021 tentang Pengupahan",
+      "jenis": "peraturan",
+      "topik": [
+        "pekerjaan"
+      ],
+      "sourceUrl": "https://peraturan.go.id/files/pp36-2021bt.pdf",
+      "detailUrl": "https://peraturan.bpk.go.id/Details/161909",
+      "berkas": "pp-36-2021-bt.pdf",
+      "status": "Berlaku",
+      "statusKorpus": "Naskah asli 2021; diubah PP 51/2023 dan PP 49/2025.",
+      "amendedBy": [
+        "PP 51/2023",
+        "PP 49/2025"
+      ],
+      "revokedBy": [],
+      "ujiMateri": [],
+      "catatanKelengkapan": "Naskah asli, bukan konsolidasi; ketentuan upah minimum telah diubah dua kali. Hanya batang tubuh (salinan Ditjen PP, 44 halaman). Salinan JDIH BPK dan JDIH Kemnaker (SHA-256 fc5c7671...9373920, 75 halaman) hanya punya lapisan teks di halaman 1 sehingga tidak dipakai. Penjelasan (peraturan.go.id/files/pp36-2021pjl.pdf) tidak diimpor: berkas penjelasan terpisah akan terbaca sebagai batang tubuh oleh pemecah pasal.",
+      "checkedAt": "2026-11-01",
+      "impor": {
+        "hasil": "masuk",
+        "jumlahPotongan": 86,
+        "kesehatanEkstraksi": "ok",
+        "complete": false,
+        "cakupanPasal": {
+          "jumlah": 85,
+          "berurutan": false,
+          "terakhir": "Pasal 86",
+          "tidakTerpisah": [
+            7
+          ]
+        }
+      },
+      "sha256": "1b28e8963588041acd4de87cb34ffee798dda7dbd142829b113012951e681c40",
+      "bytes": 441724,
+      "retrievedAt": "2026-11-01T07:47:25.484Z"
+    },
+    {
+      "id": "pp-51-2023",
+      "rujukan": "PP 51/2023",
+      "judul": "Peraturan Pemerintah Nomor 51 Tahun 2023 tentang Perubahan atas Peraturan Pemerintah Nomor 36 Tahun 2021 tentang Pengupahan",
+      "jenis": "peraturan",
+      "topik": [
+        "pekerjaan"
+      ],
+      "sourceUrl": "https://peraturan.bpk.go.id/Download/328142/PP%20Nomor%2051%20Tahun%202023.pdf",
+      "detailUrl": "https://peraturan.bpk.go.id/Details/270269",
+      "berkas": "pp-51-2023.pdf",
+      "status": "Berlaku",
+      "statusKorpus": "Perubahan pertama PP 36/2021; diubah lagi PP 49/2025.",
+      "amendedBy": [
+        "PP 49/2025"
+      ],
+      "revokedBy": [],
+      "ujiMateri": [],
+      "catatanKelengkapan": "Peraturan perubahan (Pasal I dan II).",
+      "checkedAt": "2026-11-01",
+      "impor": {
+        "hasil": "masuk",
+        "jumlahPotongan": 52,
+        "kesehatanEkstraksi": "ok",
+        "complete": false,
+        "cakupanPasal": {
+          "jumlah": 0,
+          "berurutan": false,
+          "terakhir": null
+        }
+      },
+      "sha256": "44de8376b488f4cf0f910660c05ac6e6044282b4c7c23b4e0e0b0e0881d349b8",
+      "bytes": 2769139,
+      "retrievedAt": "2026-11-01T07:30:07.852Z"
+    },
+    {
+      "id": "pp-49-2025",
+      "rujukan": "PP 49/2025",
+      "judul": "Peraturan Pemerintah Nomor 49 Tahun 2025 tentang Perubahan Kedua atas Peraturan Pemerintah Nomor 36 Tahun 2021 tentang Pengupahan",
+      "jenis": "peraturan",
+      "topik": [
+        "pekerjaan"
+      ],
+      "sourceUrl": "https://peraturan.bpk.go.id/Download/402111/PP%20Nomor%2049%20Tahun%202025.pdf",
+      "detailUrl": "https://peraturan.bpk.go.id/Details/339037",
+      "berkas": "pp-49-2025.pdf",
+      "status": "Berlaku",
+      "statusKorpus": "JDIH BPK 1 Nov 2026: Berlaku sejak 17 Desember 2025; menindaklanjuti putusan MK 168/PUU-XXI/2023.",
+      "amendedBy": [],
+      "revokedBy": [],
+      "ujiMateri": [],
+      "catatanKelengkapan": "Peraturan perubahan kedua (Pasal I dan II).",
+      "checkedAt": "2026-11-01",
+      "impor": {
+        "hasil": "masuk",
+        "jumlahPotongan": 53,
+        "kesehatanEkstraksi": "ok",
+        "complete": false,
+        "cakupanPasal": {
+          "jumlah": 4,
+          "berurutan": false,
+          "terakhir": "Pasal 71"
+        }
+      },
+      "sha256": "9170d0e027d70fa516b522c766681cf1e2d45bda06aa4552e738a5573378c300",
+      "bytes": 1503137,
+      "retrievedAt": "2026-11-01T07:30:08.766Z"
+    },
+    {
+      "id": "uu-2-2004",
+      "rujukan": "UU 2/2004",
+      "judul": "Undang-Undang Nomor 2 Tahun 2004 tentang Penyelesaian Perselisihan Hubungan Industrial",
+      "jenis": "peraturan",
+      "topik": [
+        "pekerjaan"
+      ],
+      "sourceUrl": "https://peraturan.bpk.go.id/Download/30131/UU%20Nomor%202%20Tahun%202004.pdf",
+      "detailUrl": "https://peraturan.bpk.go.id/Details/40452",
+      "berkas": "uu-2-2004.pdf",
+      "status": "Berlaku",
+      "statusKorpus": "JDIH BPK 1 Nov 2026: Berlaku sejak 14 Januari 2005; tanpa relasi perubahan.",
+      "amendedBy": [],
+      "revokedBy": [],
+      "ujiMateri": [
+        "132/PUU-XXIII/2025",
+        "94/PUU-XXI/2023",
+        "49/PUU-XIV/2016",
+        "114/PUU-XIII/2015",
+        "68/PUU-XIII/2015"
+      ],
+      "catatanKelengkapan": "Naskah asli. Lima uji materi tercatat; amarnya belum dibaca untuk korpus ini.",
+      "checkedAt": "2026-11-01",
+      "impor": {
+        "hasil": "masuk",
+        "jumlahPotongan": 255,
+        "kesehatanEkstraksi": "ok",
+        "complete": true,
+        "cakupanPasal": {
+          "jumlah": 126,
+          "berurutan": true,
+          "terakhir": "Pasal 126"
+        }
+      },
+      "sha256": "f4668a56e9e027fde5c363e8626cc957d866ff30ea445a5c80f2d82d29a6c605",
+      "bytes": 393405,
+      "retrievedAt": "2026-11-01T07:30:09.173Z",
+      "pasalPenutup": "Pasal 126"
+    },
+    {
+      "id": "pojk-10-2022",
+      "rujukan": "POJK 10/POJK.05/2022",
+      "judul": "Peraturan Otoritas Jasa Keuangan Nomor 10/POJK.05/2022 tentang Layanan Pendanaan Bersama Berbasis Teknologi Informasi",
+      "jenis": "peraturan",
+      "topik": [
+        "sewa-utang"
+      ],
+      "sourceUrl": "https://peraturan.bpk.go.id/Download/222173/Peraturan%20OJK%20No.%2010%20Tahun%202022.pdf",
+      "detailUrl": "https://peraturan.bpk.go.id/Details/227369",
+      "berkas": "pojk-10-2022.pdf",
+      "status": "Berlaku",
+      "statusKorpus": "JDIH BPK 1 Nov 2026: Berlaku sejak 4 Juli 2022; mencabut POJK 77/2016; tanpa perubahan tercatat.",
+      "amendedBy": [],
+      "revokedBy": [],
+      "ujiMateri": [],
+      "catatanKelengkapan": "Naskah asli. POJK 8/2026 (pelaporan data transaksi LPBBTI) sudah terbit tetapi menurut JDIH BPK baru berlaku sekitar sebulan lagi; tidak diimpor.",
+      "checkedAt": "2026-11-01",
+      "impor": {
+        "hasil": "masuk",
+        "jumlahPotongan": 242,
+        "kesehatanEkstraksi": "ok",
+        "complete": true,
+        "cakupanPasal": {
+          "jumlah": 120,
+          "berurutan": true,
+          "terakhir": "Pasal 120"
+        }
+      },
+      "sha256": "f92783a08e719470e84390164dbdeb9b722d9df49104254b55c5cd20f6373920",
+      "bytes": 1531551,
+      "retrievedAt": "2026-11-01T07:30:10.155Z",
+      "pasalPenutup": "Pasal 120"
+    },
+    {
+      "id": "uu-21-2008",
+      "rujukan": "UU 21/2008",
+      "judul": "Undang-Undang Nomor 21 Tahun 2008 tentang Perbankan Syariah",
+      "jenis": "peraturan",
+      "topik": [
+        "syariah"
+      ],
+      "sourceUrl": "https://peraturan.bpk.go.id/Download/29223/UU%20Nomor%2021%20Tahun%202008.pdf",
+      "detailUrl": "https://peraturan.bpk.go.id/Details/39655",
+      "berkas": "uu-21-2008.pdf",
+      "status": "Berlaku",
+      "statusKorpus": "Naskah asli 2008; diubah UU 4/2023 (P2SK) dan UU 6/2023 (Cipta Kerja).",
+      "amendedBy": [
+        "UU 11/2020 (dicabut UU 6/2023)",
+        "Perpu 2/2022",
+        "UU 4/2023",
+        "UU 6/2023"
+      ],
+      "revokedBy": [],
+      "ujiMateri": [],
+      "catatanKelengkapan": "Naskah asli, bukan konsolidasi. UU 4/2023 sendiri diubah UU 4/2026. Kedua UU pengubah utama tidak ada di korpus (lihat entri uu-4-2023 dan uu-6-2023). Halaman 64 PDF tanpa teks sehingga ekstraksi berstatus degraded; Pasal 1 sampai 70 tetap terbaca berurutan.",
+      "checkedAt": "2026-11-01",
+      "impor": {
+        "hasil": "masuk",
+        "jumlahPotongan": 142,
+        "kesehatanEkstraksi": "degraded",
+        "complete": false,
+        "cakupanPasal": {
+          "jumlah": 70,
+          "berurutan": true,
+          "terakhir": "Pasal 70"
+        }
+      },
+      "sha256": "ba044926efef1ab4d9ce708fa715dcd549532ed3ed257d9b9640b61d91c48ecd",
+      "bytes": 223080,
+      "retrievedAt": "2026-11-01T07:30:10.514Z",
+      "pasalPenutup": "Pasal 70"
+    },
+    {
+      "id": "uu-4-2023",
+      "rujukan": "UU 4/2023",
+      "judul": "Undang-Undang Nomor 4 Tahun 2023 tentang Pengembangan dan Penguatan Sektor Keuangan",
+      "jenis": "peraturan",
+      "topik": [
+        "syariah"
+      ],
+      "sourceUrl": "https://peraturan.bpk.go.id/Download/295189/UU%20Nomor%204%20Tahun%202023.pdf",
+      "detailUrl": "https://peraturan.bpk.go.id/Details/240203",
+      "berkas": "uu-4-2023.pdf",
+      "status": "Berlaku",
+      "statusKorpus": "JDIH BPK 1 Nov 2026: Berlaku; diubah UU 4/2026.",
+      "amendedBy": [
+        "UU 4/2026"
+      ],
+      "revokedBy": [],
+      "ujiMateri": [
+        "164/PUU-XXIII/2025",
+        "139/PUU-XXIII/2025",
+        "85/PUU-XXII/2024",
+        "59/PUU-XXI/2023"
+      ],
+      "impor": {
+        "hasil": "gagal"
+      },
+      "catatanKelengkapan": "Tidak dapat diimpor: PDF resmi 81,8 MB dan 819 halaman, melampaui PDF_LIMITS importer (16 MB, 600 halaman). Butuh keputusan yang sama dengan UU 6/2023.",
+      "checkedAt": "2026-11-01",
+      "sha256": "2be1b1e49af7c729fc2b09c16fcd94da0c601f70b9b6066e81e6b56d980b0e12",
+      "bytes": 81823248,
+      "retrievedAt": "2026-11-01T07:31:07.167Z"
+    },
+    {
+      "id": "khes",
+      "rujukan": "KHES",
+      "judul": "Kompilasi Hukum Ekonomi Syariah (Lampiran PERMA 2/2008), Edisi Revisi 2011",
+      "jenis": "khes",
+      "topik": [
+        "syariah"
+      ],
+      "sourceUrl": "https://perpustakaan.bldk.mahkamahagung.go.id/index.php?p=fstream&fid=4276&bid=3122&fname=kompilasi+hukum+ekonomi+syariah.pdf",
+      "detailUrl": null,
+      "berkas": null,
+      "status": "Berlaku sebagai hukum materiil Pengadilan Agama",
+      "statusKorpus": "Lampiran PERMA 2/2008.",
+      "amendedBy": [],
+      "revokedBy": [],
+      "ujiMateri": [],
+      "impor": {
+        "hasil": "perlu-unduh-manual"
+      },
+      "catatanKelengkapan": "1 Nov 2026: host perpustakaan.bldk.mahkamahagung.go.id tidak dapat di-resolve dari PC. Salinan lokal C:/Users/yennthekid/Downloads/khes.pdf (SHA-256 799b4548...d5dc, 285 halaman, 779 pasal terbaca oleh cari_pasal_khes) asal-usulnya tidak terverifikasi ke URL go.id, jadi tidak diimpor. Unduh manual dari sumber resmi MA, cocokkan sidiknya, lalu impor dengan jenis khes.",
+      "checkedAt": "2026-11-01",
+      "sha256": null,
+      "bytes": null,
+      "retrievedAt": null
+    },
+    {
+      "id": "fatwa-dsn-111",
+      "rujukan": "Fatwa DSN-MUI 111/DSN-MUI/IX/2017",
+      "judul": "Fatwa DSN-MUI Nomor 111/DSN-MUI/IX/2017 tentang Akad Jual Beli Murabahah",
+      "jenis": "fatwa-dsn",
+      "topik": [
+        "syariah"
+      ],
+      "sourceUrl": "https://drive.google.com/file/d/1PJqKTaew1MoSsxlJpXnblz5x2DKhSlfq/view?usp=sharing",
+      "detailUrl": "https://dsnmui.or.id",
+      "berkas": null,
+      "status": "Terdaftar di indeks DSN-MUI",
+      "statusKorpus": "",
+      "amendedBy": [],
+      "revokedBy": [],
+      "ujiMateri": [],
+      "impor": {
+        "hasil": "tidak-diimpor"
+      },
+      "catatanKelengkapan": "Tidak dapat masuk lewat importer korpus: salinan resmi DSN-MUI berada di Google Drive (bukan URL go.id yang diwajibkan importCorpusPdf) dan skema korpus belum punya jenis fatwa. Teksnya tetap dapat dibuka langsung lewat alat teks_fatwa_dsn.",
+      "checkedAt": "2026-11-01",
+      "sha256": null,
+      "bytes": null,
+      "retrievedAt": null
+    },
+    {
+      "id": "fatwa-dsn-112",
+      "rujukan": "Fatwa DSN-MUI 112/DSN-MUI/IX/2017",
+      "judul": "Fatwa DSN-MUI Nomor 112/DSN-MUI/IX/2017 tentang Akad Ijarah",
+      "jenis": "fatwa-dsn",
+      "topik": [
+        "syariah"
+      ],
+      "sourceUrl": "https://drive.google.com/file/d/1ZogoMTJgVp9kuVtfW1Gy_VT_4gw3RnQx/view?usp=sharing",
+      "detailUrl": "https://dsnmui.or.id",
+      "berkas": null,
+      "status": "Terdaftar di indeks DSN-MUI",
+      "statusKorpus": "",
+      "amendedBy": [],
+      "revokedBy": [],
+      "ujiMateri": [],
+      "impor": {
+        "hasil": "tidak-diimpor"
+      },
+      "catatanKelengkapan": "Tidak dapat masuk lewat importer korpus: salinan resmi DSN-MUI berada di Google Drive (bukan URL go.id yang diwajibkan importCorpusPdf) dan skema korpus belum punya jenis fatwa. Teksnya tetap dapat dibuka langsung lewat alat teks_fatwa_dsn.",
+      "checkedAt": "2026-11-01",
+      "sha256": null,
+      "bytes": null,
+      "retrievedAt": null
+    },
+    {
+      "id": "fatwa-dsn-115",
+      "rujukan": "Fatwa DSN-MUI 115/DSN-MUI/IX/2017",
+      "judul": "Fatwa DSN-MUI Nomor 115/DSN-MUI/IX/2017 tentang Akad Mudharabah",
+      "jenis": "fatwa-dsn",
+      "topik": [
+        "syariah"
+      ],
+      "sourceUrl": "https://drive.google.com/file/d/1Mxi_d4pec16F8TxcwSRtR0fZIuqnpNmb/view?usp=drivesdk",
+      "detailUrl": "https://dsnmui.or.id",
+      "berkas": null,
+      "status": "Terdaftar di indeks DSN-MUI",
+      "statusKorpus": "",
+      "amendedBy": [],
+      "revokedBy": [],
+      "ujiMateri": [],
+      "impor": {
+        "hasil": "tidak-diimpor"
+      },
+      "catatanKelengkapan": "Tidak dapat masuk lewat importer korpus: salinan resmi DSN-MUI berada di Google Drive (bukan URL go.id yang diwajibkan importCorpusPdf) dan skema korpus belum punya jenis fatwa. Teksnya tetap dapat dibuka langsung lewat alat teks_fatwa_dsn.",
+      "checkedAt": "2026-11-01",
+      "sha256": null,
+      "bytes": null,
+      "retrievedAt": null
+    },
+    {
+      "id": "fatwa-dsn-114",
+      "rujukan": "Fatwa DSN-MUI 114/DSN-MUI/IX/2017",
+      "judul": "Fatwa DSN-MUI Nomor 114/DSN-MUI/IX/2017 tentang Akad Syirkah (musyarakah)",
+      "jenis": "fatwa-dsn",
+      "topik": [
+        "syariah"
+      ],
+      "sourceUrl": "https://drive.google.com/file/d/1edwLUj1RKFvZok8E2Heo0qwYVgJvZw4I/view?usp=sharing",
+      "detailUrl": "https://dsnmui.or.id",
+      "berkas": null,
+      "status": "Terdaftar di indeks DSN-MUI",
+      "statusKorpus": "",
+      "amendedBy": [],
+      "revokedBy": [],
+      "ujiMateri": [],
+      "impor": {
+        "hasil": "tidak-diimpor"
+      },
+      "catatanKelengkapan": "Tidak dapat masuk lewat importer korpus: salinan resmi DSN-MUI berada di Google Drive (bukan URL go.id yang diwajibkan importCorpusPdf) dan skema korpus belum punya jenis fatwa. Teksnya tetap dapat dibuka langsung lewat alat teks_fatwa_dsn.",
+      "checkedAt": "2026-11-01",
+      "sha256": null,
+      "bytes": null,
+      "retrievedAt": null
+    },
+    {
+      "id": "fatwa-dsn-73",
+      "rujukan": "Fatwa DSN-MUI 73/DSN-MUI/XI/2008",
+      "judul": "Fatwa DSN-MUI Nomor 73/DSN-MUI/XI/2008 tentang Musyarakah Mutanaqishah",
+      "jenis": "fatwa-dsn",
+      "topik": [
+        "syariah"
+      ],
+      "sourceUrl": "https://drive.google.com/file/d/0BxTl-lNihFyzNm5SeFBsZnBaS1k/view?usp=sharing&resourcekey=0-kW_34aIw1VirMSpQAbtuUg",
+      "detailUrl": "https://dsnmui.or.id",
+      "berkas": null,
+      "status": "Terdaftar di indeks DSN-MUI",
+      "statusKorpus": "",
+      "amendedBy": [],
+      "revokedBy": [],
+      "ujiMateri": [],
+      "impor": {
+        "hasil": "tidak-diimpor"
+      },
+      "catatanKelengkapan": "Tidak dapat masuk lewat importer korpus: salinan resmi DSN-MUI berada di Google Drive (bukan URL go.id yang diwajibkan importCorpusPdf) dan skema korpus belum punya jenis fatwa. Teksnya tetap dapat dibuka langsung lewat alat teks_fatwa_dsn.",
+      "checkedAt": "2026-11-01",
+      "sha256": null,
+      "bytes": null,
+      "retrievedAt": null
+    },
+    {
+      "id": "fatwa-dsn-10",
+      "rujukan": "Fatwa DSN-MUI 10/DSN-MUI/IV/2000",
+      "judul": "Fatwa DSN-MUI Nomor 10/DSN-MUI/IV/2000 tentang Wakalah",
+      "jenis": "fatwa-dsn",
+      "topik": [
+        "syariah"
+      ],
+      "sourceUrl": "https://drive.google.com/file/d/0BxTl-lNihFyzdWhkNkpRLWd4Qms/view?usp=sharing&resourcekey=0-h2oKAFkz4IEhfSzj6I28pg",
+      "detailUrl": "https://dsnmui.or.id",
+      "berkas": null,
+      "status": "Terdaftar di indeks DSN-MUI",
+      "statusKorpus": "",
+      "amendedBy": [],
+      "revokedBy": [],
+      "ujiMateri": [],
+      "impor": {
+        "hasil": "tidak-diimpor"
+      },
+      "catatanKelengkapan": "Tidak dapat masuk lewat importer korpus: salinan resmi DSN-MUI berada di Google Drive (bukan URL go.id yang diwajibkan importCorpusPdf) dan skema korpus belum punya jenis fatwa. Teksnya tetap dapat dibuka langsung lewat alat teks_fatwa_dsn.",
+      "checkedAt": "2026-11-01",
+      "sha256": null,
+      "bytes": null,
+      "retrievedAt": null
+    },
+    {
+      "id": "fatwa-dsn-113",
+      "rujukan": "Fatwa DSN-MUI 113/DSN-MUI/IX/2017",
+      "judul": "Fatwa DSN-MUI Nomor 113/DSN-MUI/IX/2017 tentang Akad Wakalah bi al-Ujrah",
+      "jenis": "fatwa-dsn",
+      "topik": [
+        "syariah"
+      ],
+      "sourceUrl": "https://drive.google.com/file/d/1RcQnT2xlxxeLkSdmVSk1M1RHyVB39ciP/view?usp=sharing",
+      "detailUrl": "https://dsnmui.or.id",
+      "berkas": null,
+      "status": "Terdaftar di indeks DSN-MUI",
+      "statusKorpus": "",
+      "amendedBy": [],
+      "revokedBy": [],
+      "ujiMateri": [],
+      "impor": {
+        "hasil": "tidak-diimpor"
+      },
+      "catatanKelengkapan": "Tidak dapat masuk lewat importer korpus: salinan resmi DSN-MUI berada di Google Drive (bukan URL go.id yang diwajibkan importCorpusPdf) dan skema korpus belum punya jenis fatwa. Teksnya tetap dapat dibuka langsung lewat alat teks_fatwa_dsn.",
+      "checkedAt": "2026-11-01",
+      "sha256": null,
+      "bytes": null,
+      "retrievedAt": null
+    },
+    {
+      "id": "fatwa-dsn-25",
+      "rujukan": "Fatwa DSN-MUI 25/DSN-MUI/III/2002",
+      "judul": "Fatwa DSN-MUI Nomor 25/DSN-MUI/III/2002 tentang Rahn",
+      "jenis": "fatwa-dsn",
+      "topik": [
+        "syariah"
+      ],
+      "sourceUrl": "https://drive.google.com/file/d/0BxTl-lNihFyzS0UxSFd3MXFVTDg/view?usp=sharing&resourcekey=0-s1X-OP5v65MGB2ojILA52w",
+      "detailUrl": "https://dsnmui.or.id",
+      "berkas": null,
+      "status": "Terdaftar di indeks DSN-MUI",
+      "statusKorpus": "",
+      "amendedBy": [],
+      "revokedBy": [],
+      "ujiMateri": [],
+      "impor": {
+        "hasil": "tidak-diimpor"
+      },
+      "catatanKelengkapan": "Tidak dapat masuk lewat importer korpus: salinan resmi DSN-MUI berada di Google Drive (bukan URL go.id yang diwajibkan importCorpusPdf) dan skema korpus belum punya jenis fatwa. Teksnya tetap dapat dibuka langsung lewat alat teks_fatwa_dsn.",
+      "checkedAt": "2026-11-01",
+      "sha256": null,
+      "bytes": null,
+      "retrievedAt": null
+    },
+    {
+      "id": "fatwa-dsn-19",
+      "rujukan": "Fatwa DSN-MUI 19/DSN-MUI/IV/2001",
+      "judul": "Fatwa DSN-MUI Nomor 19/DSN-MUI/IV/2001 tentang Al-Qardh",
+      "jenis": "fatwa-dsn",
+      "topik": [
+        "syariah"
+      ],
+      "sourceUrl": "https://drive.google.com/file/d/0BxTl-lNihFyzMGFYQ1FXVGQ5X3M/view?usp=sharing&resourcekey=0-8t3ZTcPJKVYeFZGt_-8hMw",
+      "detailUrl": "https://dsnmui.or.id",
+      "berkas": null,
+      "status": "Terdaftar di indeks DSN-MUI",
+      "statusKorpus": "",
+      "amendedBy": [],
+      "revokedBy": [],
+      "ujiMateri": [],
+      "impor": {
+        "hasil": "tidak-diimpor"
+      },
+      "catatanKelengkapan": "Tidak dapat masuk lewat importer korpus: salinan resmi DSN-MUI berada di Google Drive (bukan URL go.id yang diwajibkan importCorpusPdf) dan skema korpus belum punya jenis fatwa. Teksnya tetap dapat dibuka langsung lewat alat teks_fatwa_dsn.",
+      "checkedAt": "2026-11-01",
+      "sha256": null,
+      "bytes": null,
+      "retrievedAt": null
+    }
+  ],
+  "ujiFts": {
+    "dijalankanPada": "2026-11-01T07:55:20.997Z",
+    "catatan": "CorpusIndex.search(kueri, 'peraturan', 3) pada korpus publik v1. Tiga hasil teratas per kueri.",
+    "hasil": [
+      {
+        "topik": "konsumen",
+        "kueri": "barang yang dibeli rusak minta ganti rugi",
+        "teratas": [
+          "UU 8/1999 Pasal 19",
+          "KUH Perdata Pasal 779",
+          "KUH Perdata Pasal 782"
+        ]
+      },
+      {
+        "topik": "konsumen",
+        "kueri": "hak konsumen atas informasi yang benar",
+        "teratas": [
+          "UU 8/1999 Pasal 4",
+          "Permendag 19/2026 Pasal 47",
+          "UU 11/2008 Pasal 28"
+        ]
+      },
+      {
+        "topik": "konsumen",
+        "kueri": "data pribadi bocor dari aplikasi belanja",
+        "teratas": [
+          "UU 27/2022 Pasal I",
+          "PP 80/2019 Pasal 59",
+          "PP 80/2019 Pasal 58"
+        ]
+      },
+      {
+        "topik": "konsumen",
+        "kueri": "iklan elektronik penjual online",
+        "teratas": [
+          "Permendag 19/2026 Pasal 1",
+          "Permendag 19/2026 Pasal 40",
+          "Permendag 19/2026 Pasal 37"
+        ]
+      },
+      {
+        "topik": "pekerjaan",
+        "kueri": "uang pesangon pemutusan hubungan kerja",
+        "teratas": [
+          "UU 13/2003 Pasal 163",
+          "UU 13/2003 Pasal 165",
+          "UU 13/2003 Pasal 169"
+        ]
+      },
+      {
+        "topik": "pekerjaan",
+        "kueri": "upah minimum",
+        "teratas": [
+          "PP 49/2025 Pasal 25",
+          "PP 51/2023 Pasal 25",
+          "PP 49/2025 Pasal 35C"
+        ]
+      },
+      {
+        "topik": "pekerjaan",
+        "kueri": "perselisihan hubungan industrial mediasi",
+        "teratas": [
+          "UU 13/2003 Pasal 136",
+          "UU 2/2004 Pasal 8",
+          "UU 2/2004 Pasal 5"
+        ]
+      },
+      {
+        "topik": "pekerjaan",
+        "kueri": "perjanjian kerja waktu tertentu",
+        "teratas": [
+          "UU 13/2003 Pasal 59",
+          "UU 13/2003 Pasal 56",
+          "UU 13/2003 Pasal 57"
+        ]
+      },
+      {
+        "topik": "sewa-utang",
+        "kueri": "penyewa wajib membayar harga sewa",
+        "teratas": [
+          "KUH Perdata Pasal 1582",
+          "KUH Perdata Pasal 1560",
+          "KUH Perdata Pasal 1599"
+        ]
+      },
+      {
+        "topik": "sewa-utang",
+        "kueri": "pinjam meminjam uang bunga",
+        "teratas": [
+          "POJK 10/POJK.05/2022 Pasal 116",
+          "KUH Perdata Pasal 1770",
+          "KUH Perdata Pasal 1766"
+        ]
+      },
+      {
+        "topik": "sewa-utang",
+        "kueri": "debitur lalai wanprestasi ganti rugi",
+        "teratas": [
+          "KUH Perdata Pasal 1843",
+          "KUH Perdata Pasal 1445",
+          "UU 8/1999 Pasal 25"
+        ]
+      },
+      {
+        "topik": "sewa-utang",
+        "kueri": "penagihan pinjaman daring",
+        "teratas": [
+          "POJK 10/POJK.05/2022 Pasal 104",
+          "KUH Perdata Pasal 1752",
+          "KUH Perdata Pasal 1766"
+        ]
+      },
+      {
+        "topik": "syariah",
+        "kueri": "dewan pengawas syariah",
+        "teratas": [
+          "UU 21/2008 Pasal 32",
+          "POJK 10/POJK.05/2022 Pasal 56",
+          "POJK 10/POJK.05/2022 Pasal 99"
+        ]
+      },
+      {
+        "topik": "syariah",
+        "kueri": "penyelesaian sengketa perbankan syariah",
+        "teratas": [
+          "UU 21/2008 Pasal 55",
+          "UU 21/2008 Pasal 54",
+          "UU 8/1999 Pasal 52"
+        ]
+      },
+      {
+        "topik": "syariah",
+        "kueri": "akad pembiayaan bank syariah",
+        "teratas": [
+          "UU 21/2008 Pasal 21",
+          "UU 21/2008 Pasal 19",
+          "POJK 10/POJK.05/2022 Pasal 1"
+        ]
+      },
+      {
+        "topik": "syariah",
+        "kueri": "prinsip syariah fatwa",
+        "teratas": [
+          "POJK 10/POJK.05/2022 Pasal 1",
+          "UU 21/2008 Pasal 26",
+          "UU 21/2008 Pasal 1"
+        ]
+      }
+    ]
+  }
+}
