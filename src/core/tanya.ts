@@ -295,19 +295,22 @@ export async function runTanya(input: ChatInput, deps: Deps) {
   const batas: string[] = [];
   const poin: PoinTanya[] = [];
   const quotes = new Set<string>();
+  // Alasan poin dibuang dicatat tanpa isi pertanyaan, supaya mutu kutipan bisa dipantau dari log.
+  const dibuang: Array<{ rujukan: string; alasan: string }> = [];
+  const buang = (rujukan: string, alasan: string) => { dibuang.push({ rujukan, alasan }); };
   for (const item of wire.poin) {
     if (poin.length >= LIMIT.poin) break;
     const p = passages.find((x) => x.id === item.passageId);
-    if (!p) continue;
-    if (dicabut(p)) { batas.push(`${p.rujukan} sudah dicabut, jadi tidak dipakai sebagai dasar.`); continue; }
+    if (!p) { buang("?", "id-sumber"); continue; }
+    if (dicabut(p)) { batas.push(`${p.rujukan} sudah dicabut, jadi tidak dipakai sebagai dasar.`); buang(p.rujukan, "dicabut"); continue; }
     const at = findQuote(p.text, item.kutipan);
-    if (!at) continue;
+    if (!at) { buang(p.rujukan, "kutipan-tidak-cocok"); continue; }
     const quote = p.text.slice(at.start, at.end).trim();
-    if (wordCount(quote) < 5 || quote.length > 1200 || quotes.has(quote)) continue;
+    if (wordCount(quote) < 5 || quote.length > 1200 || quotes.has(quote)) { buang(p.rujukan, "kutipan-ukuran-atau-ganda"); continue; }
     // Teks Arab dari PDF fatwa DSN memakai font non-Unicode dan keluar sebagai bentuk sajian rusak; jangan dikutip.
-    if (/[\uFB50-\uFDFF\uFE70-\uFEFF]/u.test(quote)) continue;
+    if (/[\uFB50-\uFDFF\uFE70-\uFEFF]/u.test(quote)) { buang(p.rujukan, "arab-rusak"); continue; }
     const teks = potongPanjang(saringKalimat(item.teks, izin), 450);
-    if (!teks) continue;
+    if (!teks) { buang(p.rujukan, "penjelasan-tersaring"); continue; }
     quotes.add(quote);
     poin.push({ id: `p${poin.length + 1}`, teks, kutipan: { passageId: p.id, quote } });
   }
@@ -315,6 +318,7 @@ export async function runTanya(input: ChatInput, deps: Deps) {
   const intinya = intinyaAsli || (poin.length ? "Pasla menemukan aturan yang berkaitan. Baca poin dan kutipan aslinya di bawah." : "Pasla membuka beberapa aturan, tetapi belum bisa menyimpulkan jawaban yang aman dari sumber itu.");
   const langkah = wire.langkah.map((s) => potongPanjang(saringKalimat(s, izin, { langkah: true }), 260)).filter(Boolean).slice(0, LIMIT.langkah);
   const tanyaBalik = wire.tanyaBalik.map((s) => saringKalimat(s, izin)).filter((s) => s && s.length <= 200 && !requestsUnavailableUpload(s)).slice(0, LIMIT.tanyaBalik);
+  if (dibuang.length) console.warn(JSON.stringify({ event: "tanya_poin_dibuang", turnId: input.turnId, diterima: poin.length, dibuang }));
   if (!poin.length) batas.push("Belum ada kutipan aturan yang lolos pemeriksaan, jadi anggap ini penjelasan umum.");
   if (passages.some((p) => p.verificationStatus === "verified_snapshot")) batas.push("Sebagian sumber adalah salinan tersimpan. Status terbarunya tetap perlu dicek di situs resmi.");
   batas.push(...peringatan);
