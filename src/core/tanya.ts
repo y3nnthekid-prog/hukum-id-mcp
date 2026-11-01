@@ -3,7 +3,7 @@ import type { JsonModel } from "../ai/json-model.js";
 import { heuristicPlan, normalizeRegulation } from "../ai/planner.js";
 import { canonicalize, findQuote, wordCount } from "./canonical.js";
 import { assertsPersonalNorm, requestsUnavailableUpload, suggestsPhysicalExperiment, ungroundedPlatformProcedure, type ChatInput } from "./chat.js";
-import { PROFIL_TOPIK, susunKueri, tentukanTopik, type Topik } from "./kamus-awam.js";
+import { PROFIL_TOPIK, pasalKunci, susunKueri, tentukanTopik, type Topik } from "./kamus-awam.js";
 import { checkPassage } from "./sintesis.js";
 import type { Signer } from "./sign.js";
 import type { PotonganBertanda, RujukanBuka, SumberService } from "./sumber.js";
@@ -169,7 +169,8 @@ export async function runTanya(input: ChatInput, deps: Deps) {
   }
 
   await deps.progress("searching");
-  const toOpen: RujukanBuka[] = [...refs];
+  // Rujukan eksplisit pengguna, lalu pasal kunci situasi, lalu hasil pencarian.
+  const toOpen: RujukanBuka[] = [...refs, ...(topik ? pasalKunci(topik, semuaPengguna) : [])];
   if (topik) {
     const profil = PROFIL_TOPIK[topik];
     const discoveries: RujukanBuka[][] = [];

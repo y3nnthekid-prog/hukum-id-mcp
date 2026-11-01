@@ -6,7 +6,7 @@ import { createSigner, generateSigningKey, verifySignature } from '../src/core/s
 import { contentHash } from '../src/core/passages.js';
 import { signedPart, type PotonganBertanda } from '../src/core/sumber.js';
 import { requestHash } from '../src/core/step-ticket.js';
-import { tentukanTopik, susunKueri } from '../src/core/kamus-awam.js';
+import { tentukanTopik, susunKueri, pasalKunci } from '../src/core/kamus-awam.js';
 import { runTanya, rujukanEksplisit, sebutanAturan } from '../src/core/tanya.js';
 import { createTanyaLedger, hariWib } from '../src/core/tanya-ledger.js';
 import { verifyAnyChatTicket, verifyChatTicket } from '../src/core/chat-ticket.js';
@@ -139,4 +139,10 @@ test('v4 public ticket runs one GPT-5.1 call and signs a settled usage receipt',
     assert.equal(ledger.status().dayRemainingMicro, 3_000_000 - receipt.costMicro);
     assert.ok(TANYA_RESERVE_MICRO > receipt.costMicro);
   } finally { ledger.close(); }
+});
+
+test('situations open verified key articles before search results', () => {
+  assert.deepEqual(pasalKunci('sewa-utang', 'Teman meminjam uang dan tidak mau membayar').map((r: any) => r.pasal), ['Pasal 1754', 'Pasal 1763', 'Pasal 1238', 'Pasal 1243']);
+  assert.deepEqual(pasalKunci('pekerjaan', 'Saya di-PHK, berapa pesangon saya?'), [{ jenis: 'peraturan', rujukan: 'PP 35/2021', pasal: 'Pasal 40' }]);
+  assert.deepEqual(pasalKunci('syariah', 'Saya terlambat bayar cicilan murabahah'), [{ jenis: 'fatwa', nomor: '17/DSN-MUI/IX/2000' }]);
 });

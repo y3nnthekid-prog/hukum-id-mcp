@@ -8,8 +8,11 @@
 export const TOPIK = ["konsumen", "pekerjaan", "sewa-utang", "syariah"] as const;
 export type Topik = (typeof TOPIK)[number];
 export type JenisSumberTopik = "peraturan" | "fatwa" | "khes";
+import type { RujukanBuka } from "./sumber.js";
 
-type Entri = { pola: RegExp; kueri: string };
+/** pasal: rujukan kunci yang dibuka langsung. Nomornya diperiksa ke korpus/indeks DSN 1 Nov 2026. */
+type Entri = { pola: RegExp; kueri: string; pasal?: RujukanBuka[] };
+const uu = (rujukan: string, ...pasal: string[]): RujukanBuka[] => pasal.map((p) => ({ jenis: "peraturan", rujukan, pasal: `Pasal ${p}` }));
 type Profil = {
   label: string;
   /** Penanda topik. Bobot 3 untuk istilah khas, 1 untuk kata yang bisa muncul di topik lain. */
@@ -28,9 +31,9 @@ export const PROFIL_TOPIK: Record<Topik, Profil> = {
       [/\b(?:belanja|beli|membeli|dibeli|pembelian|pembeli|penjual|seller|toko|barang|produk|paket|pesanan|dikirim|pengiriman|jasa|servis|bengkel|kedaluwarsa|palsu|iklan|promo)\b/iu, 1],
     ],
     entri: [
-      { pola: /\b(?:rusak|cacat|pecah|retak|mati|tidak berfungsi|tak berfungsi|bekas)\b/iu, kueri: "barang cacat rusak ganti rugi" },
-      { pola: /\b(?:refund|uang kembali|pengembalian (?:dana|uang)|balikin uang|minta uang)\b/iu, kueri: "pengembalian uang ganti rugi konsumen" },
-      { pola: /\b(?:tidak sesuai|tak sesuai|beda|berbeda|palsu|kw|tiruan|salah kirim)\b/iu, kueri: "barang tidak sesuai dengan yang dijanjikan" },
+      { pola: /\b(?:rusak|cacat|pecah|retak|mati|tidak berfungsi|tak berfungsi|bekas)\b/iu, kueri: "barang cacat rusak ganti rugi", pasal: uu("UU 8/1999", "19", "4") },
+      { pola: /\b(?:refund|uang kembali|pengembalian (?:dana|uang)|balikin uang|minta uang)\b/iu, kueri: "pengembalian uang ganti rugi konsumen", pasal: uu("UU 8/1999", "19") },
+      { pola: /\b(?:tidak sesuai|tak sesuai|beda|berbeda|palsu|kw|tiruan|salah kirim)\b/iu, kueri: "barang tidak sesuai dengan yang dijanjikan", pasal: uu("UU 8/1999", "4", "7") },
       { pola: /\bgaransi\b/iu, kueri: "jaminan garansi purna jual" },
       { pola: /\b(?:tidak (?:dikirim|sampai|datang)|belum (?:dikirim|sampai|datang)|hilang)\b/iu, kueri: "barang tidak dikirim pelaku usaha" },
       { pola: /\b(?:iklan|promo|diskon|menyesatkan|penipuan)\b/iu, kueri: "iklan informasi menyesatkan pelaku usaha" },
@@ -49,8 +52,8 @@ export const PROFIL_TOPIK: Record<Topik, Profil> = {
       [/\b(?:kerja|bekerja|pekerja|karyawan|buruh|pegawai|kantor|perusahaan|pabrik|bos|atasan|gaji|upah|shift)\b/iu, 1],
     ],
     entri: [
-      { pola: /\b(?:dipecat|diberhentikan|di-?phk|phk|pemutusan|disuruh berhenti|diminta berhenti)\b/iu, kueri: "pemutusan hubungan kerja" },
-      { pola: /\b(?:pesangon|uang (?:pisah|penghargaan))\b/iu, kueri: "uang pesangon penghargaan masa kerja" },
+      { pola: /\b(?:dipecat|diberhentikan|di-?phk|phk|pemutusan|disuruh berhenti|diminta berhenti)\b/iu, kueri: "pemutusan hubungan kerja", pasal: uu("PP 35/2021", "40") },
+      { pola: /\b(?:pesangon|uang (?:pisah|penghargaan))\b/iu, kueri: "uang pesangon penghargaan masa kerja", pasal: uu("PP 35/2021", "40") },
       { pola: /\b(?:gaji|upah)\b/iu, kueri: "pembayaran upah pekerja" },
       { pola: /\blembur\b/iu, kueri: "waktu kerja lembur upah lembur" },
       { pola: /\b(?:kontrak|pkwt|perjanjian kerja waktu tertentu|habis kontrak)\b/iu, kueri: "perjanjian kerja waktu tertentu" },
@@ -72,15 +75,15 @@ export const PROFIL_TOPIK: Record<Topik, Profil> = {
       [/\b(?:bayar|cicilan|angsuran|tagih|ditagih|tagihan|bunga|denda|kwitansi|jaminan|gadai|pemilik rumah|rumah|kamar)\b/iu, 1],
     ],
     entri: [
-      { pola: /\b(?:sewa|menyewa|disewa|kontrakan|kos|kost|indekos)\b/iu, kueri: "sewa menyewa penyewa" },
+      { pola: /\b(?:sewa|menyewa|disewa|kontrakan|kos|kost|indekos)\b/iu, kueri: "sewa menyewa penyewa", pasal: uu("KUH Perdata", "1548") },
       { pola: /\b(?:deposit|uang jaminan|uang muka)\b/iu, kueri: "sewa menyewa jaminan pengembalian" },
       { pola: /\b(?:diusir|disuruh pindah|diputus|berakhir|habis masa)\b/iu, kueri: "berakhirnya sewa menyewa" },
-      { pola: /\b(?:utang|hutang|piutang|pinjam|meminjam|dipinjam|pinjaman)\b/iu, kueri: "pinjam meminjam uang" },
-      { pola: /\b(?:tidak (?:bayar|membayar|dibayar|mau bayar)|belum (?:bayar|dibayar)|ingkar|wanprestasi|kabur|menghilang)\b/iu, kueri: "wanprestasi penggantian biaya rugi bunga" },
+      { pola: /\b(?:utang|hutang|piutang|pinjam|meminjam|dipinjam|pinjaman)\b/iu, kueri: "pinjam meminjam uang", pasal: uu("KUH Perdata", "1754", "1763") },
+      { pola: /\b(?:(?:tidak|tak|belum|enggan) (?:mau |juga )?(?:bayar|membayar|dibayar|melunasi|mengembalikan)|ingkar|wanprestasi|kabur|menghilang)\b/iu, kueri: "wanprestasi penggantian biaya rugi bunga", pasal: uu("KUH Perdata", "1238", "1243") },
       { pola: /\b(?:pinjol|pinjaman (?:online|daring)|aplikasi pinjaman|fintech)\b/iu, kueri: "layanan pendanaan bersama berbasis teknologi informasi" },
       { pola: /\b(?:penagih|debt collector|ditagih|teror|diancam|disebar)\b/iu, kueri: "penagihan pendanaan" },
       { pola: /\b(?:bunga|denda)\b/iu, kueri: "bunga perjanjian" },
-      { pola: /\b(?:tanpa (?:perjanjian|surat|hitam di atas putih)|lisan|kwitansi|bukti transfer)\b/iu, kueri: "syarat sahnya perjanjian" },
+      { pola: /\b(?:tanpa (?:perjanjian|surat|hitam di atas putih)|lisan|kwitansi|bukti transfer)\b/iu, kueri: "syarat sahnya perjanjian", pasal: uu("KUH Perdata", "1866") },
     ],
     kueriDasar: "perjanjian kewajiban debitur kreditur",
     sumber: ["peraturan"],
@@ -101,7 +104,7 @@ export const PROFIL_TOPIK: Record<Topik, Profil> = {
       { pola: /\bkafalah\b/iu, kueri: "kafalah" },
       { pola: /\b(?:rahn|gadai syariah|pegadaian)\b/iu, kueri: "rahn" },
       { pola: /\bqardh\b/iu, kueri: "qardh" },
-      { pola: /\b(?:telat|terlambat|tunggakan|menunggak|denda|ta'?zir)\b/iu, kueri: "sanksi nasabah mampu menunda pembayaran" },
+      { pola: /\b(?:telat|terlambat|tunggakan|menunggak|denda|ta'?zir)\b/iu, kueri: "sanksi nasabah mampu menunda pembayaran", pasal: [{ jenis: "fatwa", nomor: "17/DSN-MUI/IX/2000" }] },
       { pola: /\b(?:riba|bunga)\b/iu, kueri: "riba" },
       { pola: /\b(?:bagi hasil|nisbah)\b/iu, kueri: "nisbah bagi hasil" },
       { pola: /\b(?:sengketa|gugat|pengadilan agama|basyarnas)\b/iu, kueri: "penyelesaian sengketa ekonomi syariah" },
@@ -130,4 +133,11 @@ export function susunKueri(topik: Topik, teks: string, maks = 3): string[] {
   const profil = PROFIL_TOPIK[topik];
   const cocok = profil.entri.filter((entri) => entri.pola.test(teks)).map((entri) => entri.kueri);
   return [...new Set([...cocok, profil.kueriDasar])].slice(0, maks);
+}
+
+/** Rujukan kunci dari situasi yang cocok, dibuka sebelum hasil pencarian. Paling banyak empat. */
+export function pasalKunci(topik: Topik, teks: string, maks = 4): RujukanBuka[] {
+  const seen = new Set<string>();
+  return PROFIL_TOPIK[topik].entri.filter((e) => e.pola.test(teks)).flatMap((e) => e.pasal ?? [])
+    .filter((r) => { const k = JSON.stringify(r); if (seen.has(k)) return false; seen.add(k); return true; }).slice(0, maks);
 }
