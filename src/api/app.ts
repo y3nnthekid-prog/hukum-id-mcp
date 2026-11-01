@@ -11,7 +11,7 @@ import type { LegalResearchService, SearchSource } from "../core/service.js";
 import { observeApiRequest } from "../telemetry.js";
 import { HUKUM_ID_VERSION } from "../version.js";
 import { registerV2, type V2Dependencies } from "./v2.js";
-import { registerChat, type ChatEngine } from './chat.js';
+import { registerChat, type ChatEngine, type TanyaEngine } from './chat.js';
 
 type ApiEnv = { Variables: { traceId: string; userId: string | null } };
 
@@ -39,6 +39,7 @@ export interface JobStore {
 
 export type ApiDependencies = V2Dependencies & {
   chat?: ChatEngine | undefined;
+  tanya?: TanyaEngine | undefined;
   service: LegalResearchService;
   uploadStore?: UploadStore;
   jobStore?: JobStore;

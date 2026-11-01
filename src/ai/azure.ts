@@ -53,12 +53,18 @@ export function createAzureComparisonModel(input:Omit<AzureModelOptions,'profile
  if(input.maxCalls!==undefined&&(!Number.isInteger(input.maxCalls)||input.maxCalls<1||input.maxCalls>3))throw new Error('AZURE_COMPARISON_CONFIG');
  return createPinnedAzureModel({...input,maxCalls:input.maxCalls??3,profile:'low-4096'},AZURE_COMPARISON_51,1.25/1_000_000,10/1_000_000);
 }
-function createPinnedAzureModel(input:AzureModelOptions,pin:{endpoint:string;deployment:string;model:string;identity:string},inputPrice:number,outputPrice:number) {
+/** Public Tanya profile: one GPT-5.1 call per answer with a larger source budget.
+ * Prices are conservative configuration for the ledger, not an Azure invoice. */
+export const TANYA_PRICE={inputMicroPerToken:1.25,outputMicroPerToken:10};
+export function createAzureTanyaModel(input:Omit<AzureModelOptions,'profile'|'maxCalls'>){
+ return createPinnedAzureModel({...input,maxCalls:1,profile:'low-4096'},AZURE_COMPARISON_51,TANYA_PRICE.inputMicroPerToken/1_000_000,TANYA_PRICE.outputMicroPerToken/1_000_000,40000);
+}
+function createPinnedAzureModel(input:AzureModelOptions,pin:{endpoint:string;deployment:string;model:string;identity:string},inputPrice:number,outputPrice:number,inputCeiling=20000) {
   const maxCalls = input.maxCalls ?? 9;
   const profile = input.profile ?? "core";
   if (!["core", "low-4096"].includes(profile)) throw new Error("AZURE_PILOT_CONFIG");
   const inputLimit = input.maxInputTokens ?? 20000;
-  if (!Number.isInteger(inputLimit) || inputLimit < 1 || inputLimit > 20000) throw new Error("AZURE_PILOT_CONFIG");
+  if (!Number.isInteger(inputLimit) || inputLimit < 1 || inputLimit > inputCeiling) throw new Error("AZURE_PILOT_CONFIG");
   if (!/^[\x21-\x7e]{8,512}$/.test(input.apiKey) || !Number.isFinite(input.maxUsd) || input.maxUsd <= 0 || input.maxUsd > 1 || !Number.isInteger(maxCalls) || maxCalls < 1 || maxCalls > 9) throw new Error("AZURE_PILOT_CONFIG");
   let calls = 0; let reservedUsd = 0;
   let lastFailure: string | null = null;

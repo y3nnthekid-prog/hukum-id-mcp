@@ -6,6 +6,7 @@ import { createGeminiEvidenceProvider } from "../ai/gemini.js";
 import { AiProviderIdSchema, type AiProviderId } from "../ai/json-model.js";
 import { createJsonModel } from "../ai/registry.js";
 import { createManagedAzure, createManagedClaims } from "../core/managed-ai.js";
+import { createTanyaLedger } from "../core/tanya-ledger.js";
 import type { AiModelSelection, ResolvedAiModel } from "./app.js";
 import { createEntraAuthenticatorFromEnvironment } from "../auth.js";
 import { createAsk } from "../core/ask.js";
@@ -150,6 +151,13 @@ const ask = createAsk({
 });
 
 const server = createPlatformServer({
+  // Tanya publik: GPT-5.1, satu panggilan per jawaban, plafon WIB dicatat di SQLite mesin.
+  ...(process.env.PASLA_TANYA_ENABLED === "true" ? { tanya: (() => {
+    const file = process.env.PASLA_TANYA_LEDGER_FILE;
+    if (!process.env.PASLA_AZURE_OPENAI_KEY || !file || file === ":memory:") throw new Error("TANYA_CONFIG");
+    const number = (name: string, fallback: number) => { const value = Number(process.env[name] ?? fallback); if (!Number.isSafeInteger(value) || value < 1) throw new Error("TANYA_CONFIG"); return value; };
+    return { key: process.env.PASLA_AZURE_OPENAI_KEY, ledger: createTanyaLedger(file, { dayMicro: number("PASLA_TANYA_DAY_MICRO", 3_000_000), monthMicro: number("PASLA_TANYA_MONTH_MICRO", 30_000_000), concurrent: number("PASLA_TANYA_CONCURRENT", 3) }) };
+  })() } : {}),
   ...(process.env.PASLA_CHAT_ENABLED==='true'?{chat:(()=>{
     const rpm=Number(process.env.PASLA_CHAT_AZURE_RPM),tpm=Number(process.env.PASLA_CHAT_AZURE_TPM);
     if(!process.env.PASLA_AZURE_OPENAI_KEY||!process.env.PASLA_MANAGED_CLAIMS_FILE||process.env.PASLA_MANAGED_CLAIMS_FILE===':memory:'||!Number.isSafeInteger(rpm)||rpm<1||!Number.isSafeInteger(tpm)||tpm<24096)throw new Error('CHAT_CONFIG');

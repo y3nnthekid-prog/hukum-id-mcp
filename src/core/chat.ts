@@ -40,7 +40,7 @@ function inventedAppProvenance(text:string){return /\b(?:pasal|sumber|dokumen|pe
  * actual subject; a consumer/worker/tenant quote alone cannot establish that
  * the person asking qualifies or is the person to whom the norm applies.
  */
-function assertsPersonalNorm(text:string){return /\b(?:anda|kamu|kalian)\s+(?:(?:memiliki|mempunyai|punya)\s+hak|berhak|wajib|berkewajiban|harus|bertanggung\s+jawab)\b|\b(?:hakmu|kewajibanmu)\b|\b(?:hak|kewajiban)(?:\s+[\p{L}-]+){0,3}\s+(?:anda|kamu)\b/iu.test(text);}
+export function assertsPersonalNorm(text:string){return /\b(?:anda|kamu|kalian)\s+(?:(?:memiliki|mempunyai|punya)\s+hak|berhak|wajib|berkewajiban|harus|bertanggung\s+jawab)\b|\b(?:hakmu|kewajibanmu)\b|\b(?:hak|kewajiban)(?:\s+[\p{L}-]+){0,3}\s+(?:anda|kamu)\b/iu.test(text);}
 export function ungroundedPlatformProcedure(text:string){
  if(/\b(?:tombol|fitur)\b.{0,60}\b(?:akan|otomatis|mencairkan|menutup|mengakhiri|menyebabkan)\b/iu.test(text))return true;
  // A conditional button check does not establish the subsequent workflow.
