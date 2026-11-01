@@ -361,7 +361,7 @@
         "100/PUU-X/2012",
         "012/PUU-I/2003"
       ],
-      "catatanKelengkapan": "Naskah asli 2003, BUKAN konsolidasi. Pasal PKWT, alih daya, upah, PHK dan pesangon (mis. Pasal 59, 64-66, 88-98, 151-172) telah diubah atau dihapus Pasal 81 UU 6/2023, yang tidak ada di korpus. Mengutip pasal-pasal ini dari naskah asli berisiko keliru. Belum ada UU Ketenagakerjaan baru per 1 Nov 2026 (JDIH BPK: tidak ada UU 2025-2026 tentang ketenagakerjaan). Uji pencarian: kueri pesangon dan PKWT menempatkan Pasal 59, 163, 165 naskah asli di urutan teratas, padahal pasal-pasal ini sudah diubah atau dihapus UU 6/2023.",
+      "catatanKelengkapan": "Naskah asli 2003, BUKAN konsolidasi. Pasal PKWT, alih daya, upah, PHK dan pesangon (mis. Pasal 59, 64-66, 88-98, 151-172) telah diubah atau dihapus Pasal 81 UU 6/2023, yang tidak ada di korpus. Mengutip pasal-pasal ini dari naskah asli berisiko keliru. Belum ada UU Ketenagakerjaan baru per 1 Nov 2026 (JDIH BPK: tidak ada UU 2025-2026 tentang ketenagakerjaan). Uji pencarian: kueri pesangon dan PKWT menempatkan Pasal 59, 163, 165 naskah asli di urutan teratas, padahal pasal-pasal ini sudah diubah atau dihapus UU 6/2023. 2 Nov 2026: Pasal 81 UU 6/2023 kini ada di korpus (uu-6-2023-ketenagakerjaan). Tanya membuka bunyi terbaru 48 pasal yang diubah atau disisipkan dan tidak memakai 28 pasal yang dihapus (src/core/perubahan.ts).",
       "checkedAt": "2026-11-01",
       "impor": {
         "hasil": "masuk",
@@ -766,7 +766,7 @@
       "impor": {
         "hasil": "gagal"
       },
-      "catatanKelengkapan": "Tidak dapat diimpor: PDF resmi 81,8 MB dan 819 halaman, melampaui PDF_LIMITS importer (16 MB, 600 halaman). Butuh keputusan yang sama dengan UU 6/2023.",
+      "catatanKelengkapan": "Tidak dapat diimpor: PDF resmi 81,8 MB dan 819 halaman, melampaui PDF_LIMITS importer (16 MB, 600 halaman). Butuh keputusan yang sama dengan UU 6/2023. 2 Nov 2026: belum diimpor untuk rilis publik v1; perubahan atas UU 21/2008 kebanyakan soal tata kelola bank, dan lencana UU 21/2008 sudah menyebut pengubahnya.",
       "checkedAt": "2026-11-01",
       "sha256": "2be1b1e49af7c729fc2b09c16fcd94da0c601f70b9b6066e81e6b56d980b0e12",
       "bytes": 81823248,
