@@ -225,6 +225,9 @@ test('everyday wording reaches the right topic, weak words never pick sharia', (
 test('new verified key articles open for common situations', () => {
   assert.deepEqual(pasalKunci('pekerjaan', 'THR saya belum dibayar').map((r: any) => r.rujukan + ' ' + r.pasal), ['PP 36/2021 Pasal 9', 'PP 36/2021 Pasal 62']);
   assert.deepEqual(pasalKunci('pekerjaan', 'Saya mau resign, dapat apa?').map((r: any) => r.pasal), ['Pasal 50']);
+  assert.deepEqual(pasalKunci('pekerjaan', 'Gajiku sudah dua bulan belum dibayar').map((r: any) => r.rujukan + ' ' + r.pasal), ['PP 36/2021 Pasal 55', 'PP 36/2021 Pasal 61']);
+  assert.deepEqual(pasalKunci('pekerjaan', 'Bos telat gajian terus tiap bulan').map((r: any) => r.pasal), ['Pasal 55', 'Pasal 61']);
+  assert.deepEqual(pasalKunci('pekerjaan', 'Kapan kenaikan gaji wajib diberikan?'), []);
   assert.deepEqual(pasalKunci('sewa-utang', 'Pinjol neror dan menyebar data saya, penagih kasar').map((r: any) => r.rujukan + ' ' + r.pasal), ['POJK 10/POJK.05/2022 Pasal 102']);
   assert.deepEqual(pasalKunci('konsumen', 'Barang belum dikirim padahal sudah bayar').map((r: any) => r.pasal), ['Pasal 16']);
 });
