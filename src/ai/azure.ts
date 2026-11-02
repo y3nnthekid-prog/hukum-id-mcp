@@ -45,7 +45,7 @@ export function azureChatWireBytes(input:{system:string;user:string;schema:z.Zod
   const body={model:AZURE_PASLA.deployment,reasoning_effort:'low',max_completion_tokens:4096,response_format:{type:'json_schema',json_schema:{name:'pasla_pilot',strict:true,schema:azureSchema(z.toJSONSchema(input.schema))}},messages:[{role:'system',content:input.system},{role:'user',content:input.user}]};
   return Buffer.byteLength(JSON.stringify(body),'utf8')+1024;
 }
-type AzureModelOptions={apiKey:string;maxUsd:number;maxCalls?:number;maxInputTokens?:number;profile?:'core'|'low-4096';fetchImpl?:FetchLike};
+type AzureModelOptions={apiKey:string;maxUsd:number;maxCalls?:number;maxInputTokens?:number;profile?:'core'|'low-4096'|'low-6144';fetchImpl?:FetchLike};
 export function createAzureModel(input:AzureModelOptions){return createPinnedAzureModel(input,AZURE_PASLA,INPUT_USD_PER_TOKEN,OUTPUT_USD_PER_TOKEN);}
 /** Explicit operator diagnostic only. No public ticket or visitor selects this
  * profile; its stronger tariff must first be reserved in the shared campaign. */
@@ -57,12 +57,14 @@ export function createAzureComparisonModel(input:Omit<AzureModelOptions,'profile
  * Prices are conservative configuration for the ledger, not an Azure invoice. */
 export const TANYA_PRICE={inputMicroPerToken:1.25,outputMicroPerToken:10};
 export function createAzureTanyaModel(input:Omit<AzureModelOptions,'profile'|'maxCalls'>){
- return createPinnedAzureModel({...input,maxCalls:1,profile:'low-4096'},AZURE_COMPARISON_51,TANYA_PRICE.inputMicroPerToken/1_000_000,TANYA_PRICE.outputMicroPerToken/1_000_000,40000);
+ // Token penalaran ikut terhitung; 4096 membuat sekitar 6% jawaban terpotong (eval 2 Nov 2026).
+ return createPinnedAzureModel({...input,maxCalls:1,profile:'low-6144'},AZURE_COMPARISON_51,TANYA_PRICE.inputMicroPerToken/1_000_000,TANYA_PRICE.outputMicroPerToken/1_000_000,40000);
 }
 function createPinnedAzureModel(input:AzureModelOptions,pin:{endpoint:string;deployment:string;model:string;identity:string},inputPrice:number,outputPrice:number,inputCeiling=20000) {
   const maxCalls = input.maxCalls ?? 9;
   const profile = input.profile ?? "core";
-  if (!["core", "low-4096"].includes(profile)) throw new Error("AZURE_PILOT_CONFIG");
+  if (!["core", "low-4096", "low-6144"].includes(profile)) throw new Error("AZURE_PILOT_CONFIG");
+  const batasKeluaran = profile === "low-6144" ? 6144 : 4096;
   const inputLimit = input.maxInputTokens ?? 20000;
   if (!Number.isInteger(inputLimit) || inputLimit < 1 || inputLimit > inputCeiling) throw new Error("AZURE_PILOT_CONFIG");
   if (!/^[\x21-\x7e]{8,512}$/.test(input.apiKey) || !Number.isFinite(input.maxUsd) || input.maxUsd <= 0 || input.maxUsd > 1 || !Number.isInteger(maxCalls) || maxCalls < 1 || maxCalls > 9) throw new Error("AZURE_PILOT_CONFIG");
@@ -75,15 +77,15 @@ function createPinnedAzureModel(input:AzureModelOptions,pin:{endpoint:string;dep
   const summary = () => ({ transport: "azure-openai", ...pin, profile, maxUsd: input.maxUsd, maxCalls, calls, reservedUsd, lastFailure, retryAfterSeconds, validationIssues: validationIssues.map(row => ({ ...row, path: [...row.path] })), usage: usage.map(row => ({ ...row })), estimatedUsageUsd: usage.reduce((sum, row) => sum + row.prompt_tokens * inputPrice + row.completion_tokens * outputPrice, 0) });
   const model: JsonModel = {
     // OpenAI is the model vendor; the signed model name and trace identify Azure.
-    provider: "openai", model: pin.identity + (profile === "core" ? "" : ":low-4096"),
+    provider: "openai", model: pin.identity + (profile === "core" ? "" : ":" + profile),
     async generate({ system, user, schema, effort, signal, maxOutputTokens }) {
       signal?.throwIfAborted();
-      const requestedCap = maxOutputTokens ?? 4096;
-      if (!Number.isInteger(requestedCap) || requestedCap < 1 || requestedCap > 4096) throw new Error("AZURE_PILOT_OUTPUT_LIMIT");
+      const requestedCap = maxOutputTokens ?? batasKeluaran;
+      if (!Number.isInteger(requestedCap) || requestedCap < 1 || requestedCap > batasKeluaran) throw new Error("AZURE_PILOT_OUTPUT_LIMIT");
       // Explicit operator profile for reasoning models; reflected in trace and signed identity.
-      const cap = profile === "low-4096" ? 4096 : requestedCap;
+      const cap = profile === "core" ? requestedCap : batasKeluaran;
       const jsonSchema = azureSchema(z.toJSONSchema(schema));
-      const body = JSON.stringify({ model: pin.deployment, reasoning_effort: profile === "low-4096" ? "low" : effort, max_completion_tokens: cap, response_format: { type: "json_schema", json_schema: { name: "pasla_pilot", strict: true, schema: jsonSchema } }, messages: [{ role: "system", content: system }, { role: "user", content: user }] });
+      const body = JSON.stringify({ model: pin.deployment, reasoning_effort: profile === "core" ? effort : "low", max_completion_tokens: cap, response_format: { type: "json_schema", json_schema: { name: "pasla_pilot", strict: true, schema: jsonSchema } }, messages: [{ role: "system", content: system }, { role: "user", content: user }] });
       const inputUpperBound = Buffer.byteLength(body, "utf8") + 1024;
       if (inputUpperBound > inputLimit) throw new Error("AZURE_PILOT_INPUT_LIMIT");
       const reserve = inputUpperBound * inputPrice + cap * outputPrice;

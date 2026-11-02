@@ -16,8 +16,8 @@ import type { SumberService } from '../core/sumber.js';
 
 export type ChatEngine={key:string;claims:ReturnType<typeof createManagedClaims>;rpm:number;tpm:number};
 export type TanyaEngine={key:string;ledger:TanyaLedger;monitorToken?:string|undefined};
-// Worst case for one call: 40k input bytes (>= tokens) and 4096 output tokens.
-export const TANYA_RESERVE_MICRO=Math.ceil(40000*TANYA_PRICE.inputMicroPerToken+4096*TANYA_PRICE.outputMicroPerToken);
+// Worst case for one call: 40k input bytes (>= tokens) and 6144 output tokens.
+export const TANYA_RESERVE_MICRO=Math.ceil(40000*TANYA_PRICE.inputMicroPerToken+6144*TANYA_PRICE.outputMicroPerToken);
 const tanyaCost=(input:number,output:number)=>Math.ceil(input*TANYA_PRICE.inputMicroPerToken+output*TANYA_PRICE.outputMicroPerToken);
 type Env={Variables:{traceId:string;userId:string|null}};
 export function registerChat(app:Hono<Env>,deps:{chat?:ChatEngine|undefined;tanya?:TanyaEngine|undefined;stepTickets?:{secret:string;audience:string}|undefined;telusur?:TelusurService|undefined;sumber?:SumberService|undefined;signer?:Signer|undefined}) {

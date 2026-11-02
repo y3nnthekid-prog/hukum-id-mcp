@@ -156,3 +156,13 @@ test("overlapping Azure requests cannot both pass a one-call budget", async () =
   await pending;
   assert.equal(pilot.summary().calls, 1);
 });
+
+test("the public Tanya model sends a 6144-token cap at low reasoning and names that profile", async () => {
+  const { createAzureTanyaModel } = await import("../src/ai/azure.js");
+  let sent: any = null;
+  const tanya = createAzureTanyaModel({ apiKey: "synthetic-key-only", maxUsd: 1, maxInputTokens: 40000, fetchImpl: async (_url: string, init: any) => { sent = JSON.parse(init.body); return new Response(JSON.stringify({ choices: [{ finish_reason: "stop", message: { content: "{}" } }], usage: { prompt_tokens: 10, completion_tokens: 10, total_tokens: 20 } }), { status: 200, headers: { "content-type": "application/json" } }); } } as any);
+  assert.match(tanya.model.model, /:low-6144$/);
+  await tanya.model.generate({ system: "s", user: "u", schema: (await import("zod")).z.object({}).strict(), effort: "low", maxOutputTokens: 6144 } as any).catch(() => undefined);
+  assert.equal(sent?.max_completion_tokens, 6144);
+  assert.equal(sent?.reasoning_effort, "low");
+});

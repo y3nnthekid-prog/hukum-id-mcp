@@ -318,7 +318,7 @@ export async function runTanya(input: ChatInput, deps: Deps) {
     payload.sumber.splice(buang >= 0 ? buang : payload.sumber.length - 1, 1);
   }
   if (process.env.PASLA_TANYA_DIAG === "1") console.warn(JSON.stringify({ event: "tanya_diag_sumber", kunci, toOpen, sumber: payload.sumber.map((s) => ({ rujukan: s.rujukan, utama: s.utama, panjang: s.teks.length })) }));
-  const wire = await deps.model.generate({ system: SYSTEM, user: JSON.stringify(payload), schema: TanyaWireSchema, effort: "low", allowRetries: false, maxOutputTokens: 4096, signal: deps.signal });
+  const wire = await deps.model.generate({ system: SYSTEM, user: JSON.stringify(payload), schema: TanyaWireSchema, effort: "low", allowRetries: false, maxOutputTokens: 6144, signal: deps.signal });
 
   await deps.progress("checking");
   const izin = izinSebutan(passages);
