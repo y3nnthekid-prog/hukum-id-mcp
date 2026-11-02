@@ -286,3 +286,31 @@ test('a quote that skips clauses without an ellipsis is accepted only when every
   assert.ok(text.slice(at.start, at.end).includes('(21 Waktu istirahat'));
   assert.equal(cariKutipan(text, '(1) Pengusaha wajib memberi: a- waktu istirahat; dan (3) Cuti yang wajib diberikan kepada Pekerja/Buruh, yaitu cuti tahunan, paling sedikit 14 (empat belas) hari kerja.'), null);
 });
+
+test('a truncated model output is retried once and both calls are billed in one hold', async (t) => {
+  const secret = 's'.repeat(43), aud = 'https://api.pasla.tech', data = input('Barang belanja online saya datang rusak, penjual menolak refund');
+  const time = Math.floor(Date.now() / 1000);
+  const body = { v: 4, iss: 'https://pasla.tech', aud, sub: 'owner', conversationId: data.conversationId, turnId: data.turnId, inputHash: requestHash(data), profile: 'pasla-tanya-v1', jti: 'k'.repeat(43), iat: time, exp: time + 300 };
+  const content = { intinya: 'Kalau barangnya tidak sesuai perjanjian, konsumen dapat meminta ganti rugi.', poin: [{ passageId: 'p-hak', kutipan: 'hak atas kompensasi, ganti rugi dan/atau penggantian, apabila barang', teks: 'Konsumen berhak atas ganti rugi bila barang tidak sesuai.' }], langkah: ['Simpan bukti pembayaran.'], tanyaBalik: [] };
+  let dispatched = 0;
+  t.mock.method(globalThis, 'fetch', async () => {
+    dispatched++;
+    if (dispatched === 1) return Response.json({ model: 'gpt-5.1-2025-11-13', choices: [{ finish_reason: 'length', message: { content: '{"intinya":"a \r \r \r' } }], usage: { prompt_tokens: 3000, completion_tokens: 3000 } });
+    return Response.json({ model: 'gpt-5.1-2025-11-13', choices: [{ finish_reason: 'stop', message: { content: JSON.stringify(content) } }], usage: { prompt_tokens: 3000, completion_tokens: 500 } });
+  });
+  const ledger = createTanyaLedger(':memory:', { dayMicro: 3_000_000, monthMicro: 30_000_000, concurrent: 3 });
+  const app = new Hono();
+  const svc = services([hak]);
+  registerChat(app as any, { tanya: { key: 'synthetic-key-only', ledger }, stepTickets: { secret, audience: aud }, telusur: svc.telusur, sumber: svc.sumber, signer });
+  const response = await app.request('/v2/chat/turn', { method: 'POST', headers: { 'content-type': 'application/json', 'x-pasla-chat-ticket': ticket(secret, body) }, body: JSON.stringify(data) });
+  const events = (await response.text()).trim().split('\n').map((line) => JSON.parse(line));
+  const result = events.find((e) => e.type === 'result');
+  assert.ok(result, JSON.stringify(events.at(-1)));
+  assert.equal(dispatched, 2);
+  const { tanda: _tanda, ...receipt } = result.usageReceipt;
+  assert.equal(receipt.calls, 2);
+  assert.equal(receipt.costMicro, 6000 * 1.25 + 3500 * 10);
+  assert.ok(receipt.costMicro <= TANYA_RESERVE_MICRO);
+  assert.equal(ledger.status().dayRemainingMicro, 3_000_000 - receipt.costMicro);
+  ledger.close();
+});

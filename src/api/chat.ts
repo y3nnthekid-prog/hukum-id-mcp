@@ -16,7 +16,9 @@ import type { SumberService } from '../core/sumber.js';
 
 export type ChatEngine={key:string;claims:ReturnType<typeof createManagedClaims>;rpm:number;tpm:number};
 export type TanyaEngine={key:string;ledger:TanyaLedger;monitorToken?:string|undefined};
-// Worst case for one call: 40k input bytes (>= tokens) and 6144 output tokens.
+// Cadangan per giliran tetap 111440 mikro-USD (40k byte masukan, 6144 keluaran). Batas keluaran nyata
+// lebih kecil (TANYA_KELUARAN) sehingga satu coba ulang muat di cadangan yang sama untuk masukan wajar.
+export const TANYA_KELUARAN=3000;
 export const TANYA_RESERVE_MICRO=Math.ceil(40000*TANYA_PRICE.inputMicroPerToken+6144*TANYA_PRICE.outputMicroPerToken);
 const tanyaCost=(input:number,output:number)=>Math.ceil(input*TANYA_PRICE.inputMicroPerToken+output*TANYA_PRICE.outputMicroPerToken);
 type Env={Variables:{traceId:string;userId:string|null}};
@@ -95,21 +97,37 @@ function tanyaTurn(c:any,{input,ticket,tanya,signer,telusur,sumber}:TanyaTurn){
   const usage=()=>({calls,inputTokens,outputTokens,costMicro,elapsedMs:Date.now()-start});
   const receipt=()=>{const body={v:2,kind:'tanya_usage',profile:ticket.profile,conversationId:input.conversationId,turnId:input.turnId,version:input.version,inputHash:ticket.inputHash,...usage()};return {...body,tanda:signer.sign(body)};};
   try{
-   const azure=createAzureTanyaModel({apiKey:tanya.key,maxUsd:1,maxInputTokens:40000});
-   const model:JsonModel={provider:azure.model.provider,model:azure.model.model,async generate(request){
-    signal.throwIfAborted();if(calls>=1)throw new Error('CHAT_CALL_LIMIT');
-    tanya.ledger.admit(ticket.jti,TANYA_RESERVE_MICRO);calls++;
-    try{return await azure.model.generate({...request,signal});}
-    finally{
-     const summary=azure.summary();
-     inputTokens=summary.usage.reduce((n,row)=>n+row.prompt_tokens,0);outputTokens=summary.usage.reduce((n,row)=>n+row.completion_tokens,0);
-     if(summary.lastFailure)failureCode=summary.lastFailure;
-     if(summary.lastFailure==='HTTP_429')tanya.ledger.deferUntil(Math.floor(Date.now()/1000)+(summary.retryAfterSeconds??60));
-     // Measured usage settles exactly. A rejected HTTP call is not billed; an unknown network outcome keeps the full hold.
-     // Tidak pernah dikirim (mis. batas input lokal) atau ditolak HTTP: tidak ditagih. Hasil jaringan tak pasti: tahan penuh.
-     costMicro=summary.usage.length?tanyaCost(inputTokens,outputTokens):summary.calls===0||summary.lastFailure?.startsWith('HTTP_')?0:TANYA_RESERVE_MICRO;
-     tanya.ledger.settle(ticket.jti,costMicro);
-    }
+   // Satu tahanan buku per giliran. Bila keluaran model rusak (terpotong atau JSON tidak sah), dicoba
+   // sekali lagi dengan model baru, hanya jika kedua panggilan tetap muat di cadangan giliran ini.
+   const percobaan:Array<ReturnType<typeof createAzureTanyaModel>>=[];
+   let dipakai=false;
+   const model:JsonModel={provider:'openai',model:createAzureTanyaModel({apiKey:tanya.key,maxUsd:1,maxInputTokens:40000}).model.model,async generate(request){
+    signal.throwIfAborted();if(dipakai)throw new Error('CHAT_CALL_LIMIT');dipakai=true;
+    tanya.ledger.admit(ticket.jti,TANYA_RESERVE_MICRO);
+    const hitung=()=>{
+     const usage=percobaan.flatMap((a)=>a.summary().usage);
+     calls=percobaan.reduce((n,a)=>n+a.summary().calls,0);
+     inputTokens=usage.reduce((n,row)=>n+row.prompt_tokens,0);outputTokens=usage.reduce((n,row)=>n+row.completion_tokens,0);
+     const terakhir=percobaan.at(-1)!.summary();
+     if(terakhir.lastFailure)failureCode=terakhir.lastFailure;
+     if(terakhir.lastFailure==='HTTP_429')tanya.ledger.deferUntil(Math.floor(Date.now()/1000)+(terakhir.retryAfterSeconds??60));
+     // Pemakaian terukur ditagih persis. Tidak pernah dikirim atau ditolak HTTP: tidak ditagih. Hasil jaringan tak pasti: tahan penuh.
+     const pasti=percobaan.every((a)=>a.summary().usage.length>=a.summary().calls||a.summary().lastFailure?.startsWith('HTTP_'));
+     costMicro=pasti?tanyaCost(inputTokens,outputTokens):TANYA_RESERVE_MICRO;
+    };
+    try{
+     for(;;){
+      const azure=createAzureTanyaModel({apiKey:tanya.key,maxUsd:1,maxInputTokens:40000});percobaan.push(azure);
+      try{return await azure.model.generate({...request,signal});}
+      catch(cause){
+       hitung();
+       const rusak=['OUTPUT_LENGTH','CONTENT_JSON','LOCAL_SCHEMA'].includes(azure.summary().lastFailure??'');
+       const sisa=TANYA_RESERVE_MICRO-costMicro-tanyaCost(Math.max(inputTokens,1),TANYA_KELUARAN);
+       if(!rusak||percobaan.length>=2||sisa<0||signal.aborted)throw cause;
+       console.warn(JSON.stringify({event:'tanya_coba_ulang',turnId:input.turnId,sebab:azure.summary().lastFailure}));
+      }
+     }
+    }finally{hitung();tanya.ledger.settle(ticket.jti,costMicro);}
    }};
    // Penuh, sibuk atau dibatasi: tolak sebelum mencari sumber supaya pengguna tidak menunggu sia-sia.
    const penolakan=tanya.ledger.precheck(TANYA_RESERVE_MICRO);if(penolakan)throw new Error(penolakan);

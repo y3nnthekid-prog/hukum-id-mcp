@@ -65,7 +65,7 @@ Isi kolom:
 - langkah: 2 sampai 3 langkah praktis, masing-masing satu kalimat, yang aman dan umum, misalnya menyimpan bukti yang sudah ada, mencatat tanggal, menghubungi pihak lain secara tertulis dengan sopan. Jangan menebak fitur atau tombol aplikasi, jangan menyuruh menguji barang yang rusak, jangan meminta mengunggah berkas, jangan meminta data pribadi.
 - tanyaBalik: paling banyak 2 pertanyaan singkat tentang fakta penting yang belum diketahui dan belum pernah dijawab.
 Bila sumber berisi daftar atau tabel (misalnya besaran menurut masa kerja), cari butir yang cocok dengan fakta pengguna dan kutip butir itu saja sebagai satu rentang bersambung, tanpa pengantarnya; jangan menyalin seluruh daftar. Sumber dengan utama:true dipilih Pasla karena biasanya paling sesuai dengan situasinya; bila isinya memang menjawab pertanyaanTerbaru, jadikan sumber itu poin pertama dan dasar intinya, lalu pakai sumber lain hanya sebagai pelengkap. Jangan memakai sumber lain yang subjeknya berbeda (misalnya aturan untuk pejabat atau lembaga tertentu). faktaSebelumnya adalah pesan pengguna sebelumnya; koreksi yang lebih baru menggantikannya. jawabanSebelumnya hanya untuk memahami rujukan percakapan, bukan bukti.
-Jangan memakai tanda pisah panjang. Tulis dalam bahasa Indonesia.`;
+Setiap nilai teks (intinya, teks poin, langkah, tanyaBalik) satu paragraf tanpa baris baru. Jangan memakai tanda pisah panjang. Tulis dalam bahasa Indonesia.`;
 
 export function rapikan(text: string) {
   // Tanda pisah di antara angka adalah rentang ("1–3 tahun"); selain itu jadi koma.
@@ -258,7 +258,9 @@ export async function runTanya(input: ChatInput, deps: Deps) {
       const key = ref && JSON.stringify(ref).toLowerCase();
       if (ref && key && !kunciKey.has(key)) { kunciKey.add(key); tambahan.push(ref); }
     }
-    toOpen.push(...(kunci.length ? tambahan.slice(0, 3) : tambahan));
+    // Hasil pencarian peraturan tanpa pasal (metadata JDIH dokumen lama) hanya membuka pembukaan dokumen: lambat dan tidak menjawab.
+    const berpasal = tambahan.filter((r) => r.jenis !== "peraturan" || !!r.pasal);
+    toOpen.push(...(kunci.length ? berpasal.slice(0, 3) : berpasal));
   }
 
   await deps.progress("opening");
@@ -318,7 +320,7 @@ export async function runTanya(input: ChatInput, deps: Deps) {
     payload.sumber.splice(buang >= 0 ? buang : payload.sumber.length - 1, 1);
   }
   if (process.env.PASLA_TANYA_DIAG === "1") console.warn(JSON.stringify({ event: "tanya_diag_sumber", kunci, toOpen, sumber: payload.sumber.map((s) => ({ rujukan: s.rujukan, utama: s.utama, panjang: s.teks.length })) }));
-  const wire = await deps.model.generate({ system: SYSTEM, user: JSON.stringify(payload), schema: TanyaWireSchema, effort: "low", allowRetries: false, maxOutputTokens: 6144, signal: deps.signal });
+  const wire = await deps.model.generate({ system: SYSTEM, user: JSON.stringify(payload), schema: TanyaWireSchema, effort: "low", allowRetries: false, maxOutputTokens: 3000, signal: deps.signal });
 
   await deps.progress("checking");
   const izin = izinSebutan(passages);
