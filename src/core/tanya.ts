@@ -68,6 +68,9 @@ Bila sumber berisi daftar atau tabel (misalnya besaran menurut masa kerja), cari
 Setiap nilai teks (intinya, teks poin, langkah, tanyaBalik) satu paragraf tanpa baris baru. Di intinya, teks poin, dan langkah, tulis istilah akad dengan ejaan baku walau teks sumber salah eja, misalnya Ijarah al-Muntahiyah bi al-Tamlik (IMBT), murabahah, mudharabah, musyarakah mutanaqishah; kutipan tetap disalin persis. Jangan memakai tanda pisah panjang. Tulis dalam bahasa Indonesia.`;
 
 export function rapikan(text: string) {
+  // Model kadang membocorkan potongan JSON ke dalam teks ("... poin:[{"passageId":..."); teks dipotong sebelum bocoran.
+  const bocor = text.search(/\b(?:poin|langkah|tanyaBalik|kutipan)"?\s*:\s*[[{"]|"passageId"/u);
+  if (bocor >= 0) text = text.slice(0, bocor);
   // Tanda pisah di antara angka adalah rentang ("1–3 tahun"); selain itu jadi koma.
   return text.replace(/(\d)\s*[—–]\s*(\d)/g, "$1-$2").replace(/\s*[—–]\s*/g, ", ").replace(/\s+/g, " ").trim();
 }

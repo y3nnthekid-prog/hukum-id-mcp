@@ -314,3 +314,9 @@ test('a truncated model output is retried once and both calls are billed in one 
   assert.equal(ledger.status().dayRemainingMicro, 3_000_000 - receipt.costMicro);
   ledger.close();
 });
+
+test('JSON fragments leaked into explanation text are cut off', () => {
+  assert.equal(rapikan('Kewajiban sewa tetap ada. poin:[{"passageId":"ps_1","kutipan":"3.'), 'Kewajiban sewa tetap ada.');
+  assert.equal(rapikan('Simpan bukti pembayaran, lalu hubungi penjual.'), 'Simpan bukti pembayaran, lalu hubungi penjual.');
+  assert.deepEqual(kalimat('Intinya jelas. "passageId": "x"'), ['Intinya jelas.']);
+});
