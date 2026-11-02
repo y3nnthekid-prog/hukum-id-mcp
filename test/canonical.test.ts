@@ -59,3 +59,10 @@ test("OCR glyph confusions are forgiven but a different number is not", () => {
   assert.equal(findQuote(raw, "paling sedikit 2 (dua) hari untuk 6 (enam) hari kerja"), null);
   assert.equal(findQuote(raw, "(3) Waktu istirahat wajib diberikan paling sedikit"), null);
 });
+
+test("the OCR fallback accepts quotes containing hyphens and slashes without a regex error", () => {
+  const raw = "Fatwa DSN-MUI Nomor 04/DSN-MUI/IV/2000 tentang Murabahah: Bank membeli barang yang diperlukan nasabah atas nama bank sendiri, dan pembelian ini harus sah dan bebas riba.";
+  assert.ok(findQuote(raw, "Bank membeli barang yang diperIukan nasabah atas nama bank sendiri, dan pembelian ini harus sah"));
+  assert.doesNotThrow(() => findQuote(raw, "Fatwa DSN-MUI Nomor 05/DSN-MUI/IV/2000 tentang"));
+  assert.equal(findQuote(raw, "Fatwa DSN-MUI Nomor 05/DSN-MUI/IV/2000 tentang"), null);
+});

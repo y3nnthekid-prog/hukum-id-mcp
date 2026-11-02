@@ -278,3 +278,11 @@ test('everyday phrasings from the v1 eval set reach the right topic and key arti
   assert.deepEqual(pasalKunci('sewa-utang', 'Pinjol neror keluarga saya, penagihnya kasar').map((r: any) => r.rujukan), ['POJK 10/POJK.05/2022']);
   assert.deepEqual(pasalKunci('syariah', 'Dalam akad mudharabah, kalau usaha rugi siapa yang menanggung?').slice(0, 2), [{ jenis: 'fatwa', nomor: '115/DSN-MUI/IX/2017' }, { jenis: 'fatwa', nomor: '07/DSN-MUI/IV/2000' }]);
 });
+
+test('a quote that skips clauses without an ellipsis is accepted only when every part is in order', () => {
+  const text = 'Pasal 79\n(1) Pengusaha wajib memberi:\na- waktu istirahat; dan\nb. cuti.\n(21 Waktu istirahat wajib diberikan.\n(3) Cuti yang wajib diberikan kepada Pekerja/Buruh, yaitu\ncuti tahunan, paling sedikit 12 (dua belas) hari kerja.\n';
+  const at = cariKutipan(text, '(1) Pengusaha wajib memberi:\na- waktu istirahat; dan\nb. cuti.\n(3) Cuti yang wajib diberikan kepada Pekerja/Buruh, yaitu cuti tahunan, paling sedikit 12 (dua belas) hari kerja.');
+  assert.ok(at);
+  assert.ok(text.slice(at.start, at.end).includes('(21 Waktu istirahat'));
+  assert.equal(cariKutipan(text, '(1) Pengusaha wajib memberi: a- waktu istirahat; dan (3) Cuti yang wajib diberikan kepada Pekerja/Buruh, yaitu cuti tahunan, paling sedikit 14 (empat belas) hari kerja.'), null);
+});
