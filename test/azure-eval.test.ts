@@ -164,5 +164,8 @@ test("the public Tanya model sends a 6144-token cap without reasoning and names 
   assert.match(tanya.model.model, /:none-6144$/);
   await tanya.model.generate({ system: "s", user: "u", schema: (await import("zod")).z.object({}).strict(), effort: "low", maxOutputTokens: 6144 } as any).catch(() => undefined);
   assert.equal(sent?.max_completion_tokens, 6144);
+  const kedua = createAzureTanyaModel({ apiKey: "synthetic-key-only", maxUsd: 1, maxInputTokens: 40000, fetchImpl: async (_url: string, init: any) => { sent = JSON.parse(init.body); return new Response("{}", { status: 500 }); } } as any);
+  await kedua.model.generate({ system: "s", user: "u", schema: (await import("zod")).z.object({}).strict(), effort: "low", maxOutputTokens: 3000 } as any).catch(() => undefined);
+  assert.equal(sent?.max_completion_tokens, 3000);
   assert.equal(sent?.reasoning_effort, "none");
 });

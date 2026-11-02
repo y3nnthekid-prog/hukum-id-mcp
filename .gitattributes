@@ -1,3 +1,4 @@
 src/pdf-text.js text eol=lf
 pdf-profile.json text eol=lf
 docs/material-cases-2026-10-21/*.json text eol=lf
+test/fixtures/*.json text eol=lf

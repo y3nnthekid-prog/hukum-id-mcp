@@ -83,7 +83,8 @@ function createPinnedAzureModel(input:AzureModelOptions,pin:{endpoint:string;dep
       const requestedCap = maxOutputTokens ?? batasKeluaran;
       if (!Number.isInteger(requestedCap) || requestedCap < 1 || requestedCap > batasKeluaran) throw new Error("AZURE_PILOT_OUTPUT_LIMIT");
       // Explicit operator profile for reasoning models; reflected in trace and signed identity.
-      const cap = profile === "core" ? requestedCap : batasKeluaran;
+      // Profil low-* memaku batasnya; core dan none-* memakai batas yang diminta (paling besar batasKeluaran).
+      const cap = profile.startsWith("low-") ? batasKeluaran : requestedCap;
       const jsonSchema = azureSchema(z.toJSONSchema(schema));
       const body = JSON.stringify({ model: pin.deployment, reasoning_effort: profile === "core" ? effort : profile.startsWith("none-") ? "none" : "low", max_completion_tokens: cap, response_format: { type: "json_schema", json_schema: { name: "pasla_pilot", strict: true, schema: jsonSchema } }, messages: [{ role: "system", content: system }, { role: "user", content: user }] });
       const inputUpperBound = Buffer.byteLength(body, "utf8") + 1024;
