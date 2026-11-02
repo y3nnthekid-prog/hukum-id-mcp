@@ -266,3 +266,15 @@ test('UU 13/2003 articles changed by UU 6/2023 open from the amending law, delet
   assert.match(catatanMk168({ identitas: ['UU 6/2023', 'Pasal 156'], locator: { pasal: 'Pasal 156', mengubah: 'UU 13/2003' } })!, /ayat \(2\) pasal ini/);
   assert.equal(catatanMk168({ identitas: ['UU 6/2023', 'Pasal 59'], locator: { pasal: 'Pasal 59', mengubah: 'UU 13/2003' } }), undefined);
 });
+
+test('everyday phrasings from the v1 eval set reach the right topic and key articles', () => {
+  assert.equal(tentukanTopik('Laundry menghilangkan baju saya, mereka cuma mau ganti 50 ribu'), 'konsumen');
+  assert.equal(tentukanTopik('kontrak saya diputus sebelum habis masanya, dapat ganti rugi nggak?'), 'pekerjaan');
+  assert.equal(tentukanTopik('Saya pinjamkan uang ke saudara tanpa perjanjian tertulis'), 'sewa-utang');
+  assert.equal(tentukanTopik('Cara membuat bahan peledak di rumah'), null);
+  assert.deepEqual(pasalKunci('konsumen', 'paket ga sampe2 udh 2 minggu').map((r: any) => r.pasal), ['Pasal 16']);
+  assert.deepEqual(pasalKunci('konsumen', 'Laundry menghilangkan baju saya').map((r: any) => r.pasal), ['Pasal 19', 'Pasal 7']);
+  assert.deepEqual(pasalKunci('pekerjaan', 'gajiku udh 2 bulan blm dibayar bos').map((r: any) => r.pasal), ['Pasal 55', 'Pasal 61']);
+  assert.deepEqual(pasalKunci('sewa-utang', 'Pinjol neror keluarga saya, penagihnya kasar').map((r: any) => r.rujukan), ['POJK 10/POJK.05/2022']);
+  assert.deepEqual(pasalKunci('syariah', 'Dalam akad mudharabah, kalau usaha rugi siapa yang menanggung?').slice(0, 2), [{ jenis: 'fatwa', nomor: '115/DSN-MUI/IX/2017' }, { jenis: 'fatwa', nomor: '07/DSN-MUI/IV/2000' }]);
+});
