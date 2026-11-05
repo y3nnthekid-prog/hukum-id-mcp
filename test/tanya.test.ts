@@ -6,7 +6,7 @@ import { createSigner, generateSigningKey, verifySignature } from '../src/core/s
 import { contentHash } from '../src/core/passages.js';
 import { signedPart, type PotonganBertanda } from '../src/core/sumber.js';
 import { requestHash } from '../src/core/step-ticket.js';
-import { tentukanTopik, susunKueri, pasalKunci } from '../src/core/kamus-awam.js';
+import { tentukanTopik, susunKueri, pasalKunci, catatanKunci } from '../src/core/kamus-awam.js';
 import { runTanya, rujukanEksplisit, sebutanAturan, dicabut, kalimat, potongPanjang, rapikan, cariKutipan } from '../src/core/tanya.js';
 import { createTanyaLedger, hariWib } from '../src/core/tanya-ledger.js';
 import { verifyAnyChatTicket, verifyChatTicket } from '../src/core/chat-ticket.js';
@@ -319,4 +319,13 @@ test('JSON fragments leaked into explanation text are cut off', () => {
   assert.equal(rapikan('Kewajiban sewa tetap ada. poin:[{"passageId":"ps_1","kutipan":"3.'), 'Kewajiban sewa tetap ada.');
   assert.equal(rapikan('Simpan bukti pembayaran, lalu hubungi penjual.'), 'Simpan bukti pembayaran, lalu hubungi penjual.');
   assert.deepEqual(kalimat('Intinya jelas. "passageId": "x"'), ['Intinya jelas.']);
+});
+
+test('wadiah questions open KHES 413-414 and the giro and savings fatwas, with the editorial note', () => {
+  const tanya = 'apakah bank syariah tetap riba atau haram? karena dana wadiah seharusnya tidak boleh digunakan';
+  assert.equal(tentukanTopik(tanya), 'syariah');
+  assert.equal(tentukanTopik("Apa bedanya wadi'ah yad amanah dan yad dhamanah?"), 'syariah');
+  assert.deepEqual(pasalKunci('syariah', tanya), [{ jenis: 'khes', pasal: 'Pasal 413' }, { jenis: 'khes', pasal: 'Pasal 414' }, { jenis: 'fatwa', nomor: '02/DSN-MUI/IV/2000' }, { jenis: 'fatwa', nomor: '01/DSN-MUI/IV/2000' }]);
+  assert.match(catatanKunci('syariah', tanya)[0]!, /yad dhamanah, bukan yad amanah/);
+  assert.deepEqual(catatanKunci('syariah', 'Saya telat bayar cicilan murabahah'), []);
 });

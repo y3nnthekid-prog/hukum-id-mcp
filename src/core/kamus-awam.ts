@@ -12,7 +12,7 @@ export type Topik = (typeof TOPIK)[number];
 export type JenisSumberTopik = "peraturan" | "fatwa" | "khes";
 
 /** pasal: rujukan kunci yang dibuka langsung. Nomornya diperiksa ke teks korpus atau indeks DSN (1-2 Nov 2026). */
-type Entri = { pola: RegExp; kueri: string; pasal?: RujukanBuka[] };
+type Entri = { pola: RegExp; kueri: string; pasal?: RujukanBuka[]; catatan?: string };
 const uu = (rujukan: string, ...pasal: string[]): RujukanBuka[] => pasal.map((p) => ({ jenis: "peraturan", rujukan, pasal: `Pasal ${p}` }));
 const khes = (...pasal: string[]): RujukanBuka[] => pasal.map((p) => ({ jenis: "khes", pasal: `Pasal ${p}` }));
 const fatwa = (...nomor: string[]): RujukanBuka[] => nomor.map((n) => ({ jenis: "fatwa", nomor: n }));
@@ -104,7 +104,7 @@ export const PROFIL_TOPIK: Record<Topik, Profil> = {
     label: "Ekonomi syariah",
     penanda: [
       // "salam" sengaja tidak dipakai: lebih sering salam pembuka daripada akad salam.
-      [/\b(?:syariah|syar'?i|akad|murabahah|mudharabah|mudarabah|musyarakah|mmq|ijarah|imbt|wakalah|kafalah|rahn|qardh|wadiah|hawalah|istishna|ujrah|riba|gharar|nisbah|bagi hasil|fatwa|dsn|takaful|sukuk|wakaf)\b/iu, 3],
+      [/\b(?:syariah|syar'?i|akad|murabahah|mudharabah|mudarabah|musyarakah|mmq|ijarah|imbt|wakalah|kafalah|rahn|qardh|wadi['’]?ah|yad dhamanah|yad amanah|hawalah|istishna|ujrah|riba|gharar|nisbah|bagi hasil|fatwa|dsn|takaful|sukuk|wakaf)\b/iu, 3],
       [/\b(?:bank syariah|koperasi syariah|kpr syariah|pegadaian syariah)\b/iu, 3],
       [/\b(?:pembiayaan|nasabah|margin)\b/iu, 1],
     ],
@@ -115,6 +115,10 @@ export const PROFIL_TOPIK: Record<Topik, Profil> = {
       { pola: /\bmusyarakah\b/iu, kueri: "musyarakah" },
       { pola: /\b(?:imbt|ijarah muntahiyah)\b/iu, kueri: "ijarah muntahiyah bittamlik", pasal: fatwa("27/DSN-MUI/III/2002") },
       { pola: /\b(?:ijarah|sewa syariah)\b/iu, kueri: "ijarah", pasal: fatwa("112/DSN-MUI/IX/2017") },
+      {
+        pola: /\b(?:wadi['’]?ah|yad dhamanah|yad amanah)\b/iu, kueri: "wadiah titipan", pasal: [...khes("413", "414"), ...fatwa("02/DSN-MUI/IV/2000", "01/DSN-MUI/IV/2000")],
+        catatan: "Wadiah pada giro dan tabungan bank syariah dipahami sebagai wadiah yad dhamanah, bukan yad amanah: bank boleh memakai dana titipan tanpa izin penitip, menjamin pengembaliannya, dan bonusnya sukarela. Jelaskan ini langsung di awal intinya. Dasarnya KHES Pasal 413 ayat (3) dan Pasal 414 serta ciri wadiah di fatwa giro dan tabungan; sumber-sumber itu tidak menulis kesimpulan ini kata demi kata.",
+      },
       { pola: /\bwakalah\b/iu, kueri: "wakalah" },
       { pola: /\bkafalah\b/iu, kueri: "kafalah" },
       { pola: /\b(?:rahn|gadai syariah|pegadaian)\b/iu, kueri: "rahn" },
@@ -156,6 +160,11 @@ export function susunKueri(topik: Topik, teks: string, maks = 3, teksTerbaru = "
 }
 
 /** Rujukan kunci dari situasi yang cocok, dibuka sebelum hasil pencarian. Paling banyak empat. */
+/** Catatan redaksi Pasla untuk kesimpulan yang tidak tertulis kata demi kata di sumber. Bukan bahan kutipan. */
+export function catatanKunci(topik: Topik, teks: string): string[] {
+  return PROFIL_TOPIK[topik].entri.filter((e) => e.catatan && e.pola.test(teks)).map((e) => e.catatan!);
+}
+
 export function pasalKunci(topik: Topik, teks: string, maks = 4): RujukanBuka[] {
   const seen = new Set<string>();
   return PROFIL_TOPIK[topik].entri.filter((e) => e.pola.test(teks)).flatMap((e) => e.pasal ?? [])

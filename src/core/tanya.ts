@@ -3,7 +3,7 @@ import type { JsonModel } from "../ai/json-model.js";
 import { heuristicPlan, normalizeRegulation } from "../ai/planner.js";
 import { canonicalize, findQuote, wordCount } from "./canonical.js";
 import { assertsPersonalNorm, requestsUnavailableUpload, suggestsPhysicalExperiment, ungroundedPlatformProcedure, type ChatInput } from "./chat.js";
-import { PROFIL_TOPIK, pasalKunci, susunKueri, tentukanTopik, type Topik } from "./kamus-awam.js";
+import { PROFIL_TOPIK, catatanKunci, pasalKunci, susunKueri, tentukanTopik, type Topik } from "./kamus-awam.js";
 import { catatanMk168, naskahUsang, versiTerbaru } from "./perubahan.js";
 import { checkPassage } from "./sintesis.js";
 import type { Signer } from "./sign.js";
@@ -64,7 +64,7 @@ Isi kolom:
 - poin: 0 sampai 4 poin hukum, masing-masing SATU gagasan dari SATU sumber, teks paling banyak 2 kalimat. passageId persis id sumber. kutipan disalin PERSIS dari teks sumber itu, satu rentang utuh tanpa elipsis dan tanpa mengubah kata, 8 sampai 80 kata; salah ketik atau spasi aneh di sumber dibiarkan apa adanya, jangan dibetulkan. teks menjelaskan isi kutipan dengan bahasa sederhana, memakai subjek seperti dalam sumber (konsumen, pelaku usaha, pekerja, pengusaha, penyewa, debitur, nasabah). Jangan tulis "kamu berhak" atau "kamu wajib". Masukkan HANYA poin yang langsung membantu menjawab pertanyaanTerbaru. Sumber yang hanya setopik (misalnya soal gadai, pengalihan piutang, atau pelunasan dipercepat padahal yang ditanya hal lain) jangan dijadikan poin; poin kosong lebih baik daripada poin yang tidak menjawab. Sumber yang berstatus dicabut tidak boleh dipakai sebagai dasar yang berlaku.
 - langkah: 2 sampai 3 langkah praktis, masing-masing satu kalimat, yang aman dan umum, misalnya menyimpan bukti yang sudah ada, mencatat tanggal, menghubungi pihak lain secara tertulis dengan sopan. Jangan menebak fitur atau tombol aplikasi, jangan menyuruh menguji barang yang rusak, jangan meminta mengunggah berkas, jangan meminta data pribadi.
 - tanyaBalik: paling banyak 2 pertanyaan singkat tentang fakta penting yang belum diketahui dan belum pernah dijawab.
-Bila sumber berisi daftar atau tabel (misalnya besaran menurut masa kerja), cari butir yang cocok dengan fakta pengguna dan kutip butir itu saja sebagai satu rentang bersambung, tanpa pengantarnya; jangan menyalin seluruh daftar. Sumber dengan utama:true dipilih Pasla karena biasanya paling sesuai dengan situasinya; bila isinya memang menjawab pertanyaanTerbaru, jadikan sumber itu poin pertama dan dasar intinya, lalu pakai sumber lain hanya sebagai pelengkap. Jangan memakai sumber lain yang subjeknya berbeda (misalnya aturan untuk pejabat atau lembaga tertentu). faktaSebelumnya adalah pesan pengguna sebelumnya; koreksi yang lebih baru menggantikannya. jawabanSebelumnya hanya untuk memahami rujukan percakapan, bukan bukti.
+Bila sumber berisi daftar atau tabel (misalnya besaran menurut masa kerja), cari butir yang cocok dengan fakta pengguna dan kutip butir itu saja sebagai satu rentang bersambung, tanpa pengantarnya; jangan menyalin seluruh daftar. Sumber dengan utama:true dipilih Pasla karena biasanya paling sesuai dengan situasinya; bila isinya memang menjawab pertanyaanTerbaru, jadikan sumber itu poin pertama dan dasar intinya, lalu pakai sumber lain hanya sebagai pelengkap. Jangan memakai sumber lain yang subjeknya berbeda (misalnya aturan untuk pejabat atau lembaga tertentu). faktaSebelumnya adalah pesan pengguna sebelumnya; koreksi yang lebih baru menggantikannya. jawabanSebelumnya hanya untuk memahami rujukan percakapan, bukan bukti. catatanPasla adalah penjelasan redaksi Pasla: ikuti di intinya, tetapi jangan jadikan kutipan, karena kutipan tetap harus dari sumber.
 Setiap nilai teks (intinya, teks poin, langkah, tanyaBalik) satu paragraf tanpa baris baru. Di intinya, teks poin, dan langkah, tulis istilah akad dengan ejaan baku walau teks sumber salah eja, misalnya Ijarah al-Muntahiyah bi al-Tamlik (IMBT), murabahah, mudharabah, musyarakah mutanaqishah; kutipan tetap disalin persis. Jangan memakai tanda pisah panjang. Tulis dalam bahasa Indonesia.`;
 
 export function rapikan(text: string) {
@@ -313,6 +313,7 @@ export async function runTanya(input: ChatInput, deps: Deps) {
     pertanyaanTerbaru: current.text,
     faktaSebelumnya: users.slice(0, -1).map((m) => m.text).join("\n").slice(-3000),
     jawabanSebelumnya: lastAssistant ? lastAssistant.text.slice(0, 1200) : null,
+    catatanPasla: topik ? catatanKunci(topik, current.text) : [],
     sumber: passages.map((p) => ({ utama: utama.has(p.id), id: p.id, rujukan: p.rujukan, judul: p.judul.slice(0, 200), status: dicabut(p) ? "dicabut" : p.sumber.status, diubahDengan: p.sumber.diubahDengan.slice(0, 3), dicabutDengan: p.sumber.dicabutDengan.slice(0, 3), ...(catatanMk168(p) ? { catatan: catatanMk168(p) } : {}), teks: p.text })),
   };
   // Batas transport 40.000 byte memuat prompt, skema dan isi. Sisakan ruang dengan membuang
